@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.sg2022_we_got_the_moves.databinding.FragmentSettingsBinding;
+import com.example.sg2022_we_got_the_moves.databinding.FragmentTrainingBinding;
 
 public class TrainingFragment extends Fragment {
 
-    private FragmentSettingsBinding binding;
+    private FragmentTrainingBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        TrainingViewModel SettingsViewModel =
+        TrainingViewModel TrainingViewModel =
                 new ViewModelProvider(this).get(TrainingViewModel.class);
 
-        binding = FragmentSettingsBinding.inflate(inflater, container, false);
+        binding = FragmentTrainingBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textSettings;
-        SettingsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textTraining;
+        TrainingViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
