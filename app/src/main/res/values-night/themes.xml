@@ -4,13 +4,14 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/sg_design_green</item>
         <item name="colorPrimaryVariant">@color/sg_design_green</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/sg_design_green</item>
         <item name="colorSecondaryVariant">@color/sg_design_green</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
+        <item name="colorSurface">@color/sg_design_green</item>
         <!-- Customize your theme here. -->
     </style>
 </resources>
