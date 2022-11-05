@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">SG2022-We-Got-The-Moves</string>
+    <string name="empty_string"> </string>
+    <string name="app_name">We got the Moves!</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_training">Training</string>
+    <string name="title_workouts">Workouts</string>
+    <string name="title_settings">Settings</string>
 </resources>
