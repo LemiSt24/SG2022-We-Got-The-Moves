@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
+    <!--item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_home" />
+        android:title="@string/title_home" /-->
 
     <item
         android:id="@+id/navigation_dashboard"
@@ -20,6 +20,11 @@
         android:id="@+id/navigation_workouts"
         android:icon="@drawable/ic_workouts_black_24dp"
         android:title="@string/title_workouts" />
+
+    <item
+        android:id="@+id/navigation_statistics"
+        android:icon="@drawable/ic_statistics_black_24dp"
+        android:title="@string/title_statistics" />
 
     <item
         android:id="@+id/navigation_settings"
