@@ -34,11 +34,7 @@ public class WorkoutListFragment extends Fragment {
         WorkoutListViewModel.Factory factory = new WorkoutListViewModel.Factory(
                 this.requireActivity().getApplication());
         this.model = new ViewModelProvider(this, factory).get(WorkoutListViewModel.class);
-        this.model.loadAllWorkouts();
-        this.adapter = new WorkoutListAdapter(this.requireActivity().getApplication(), new ArrayList<>());
-        this.adapter.setWorkoutsList(this.model.getWorkouts().getValue());
-        this.adapter.notifyDataSetChanged();
-        List<Workout> l = this.adapter.getWorkoutsList();
+        //this.adapter = new WorkoutListAdapter(this.requireActivity().getApplication(), new ArrayList<>());
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
