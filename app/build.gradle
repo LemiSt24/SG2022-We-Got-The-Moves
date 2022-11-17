@@ -54,6 +54,13 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    // MediaPipe deps
+    implementation 'com.google.flogger:flogger:latest.release'
+    implementation 'com.google.flogger:flogger-system-backend:latest.release'
+    implementation 'com.google.code.findbugs:jsr305:latest.release'
+    implementation 'com.google.guava:guava:27.0.1-android'
+    implementation 'com.google.protobuf:protobuf-javalite:3.19.1'
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
@@ -73,13 +80,4 @@ dependencies {
     implementation "androidx.room:room-runtime:2.4.3"
     annotationProcessor "androidx.room:room-compiler:2.4.3"
     androidTestImplementation "androidx.room:room-testing:2.4.3"
-
-    // MediaPipe solution-core is the foundation of any MediaPipe Solutions.
-    implementation 'com.google.mediapipe:solution-core:0.8.11-alpha-1'
-    // Optional: MediaPipe Face Detection Solution.
-    implementation 'com.google.mediapipe:facedetection:0.8.11-alpha-1'
-    // Optional: MediaPipe Face Mesh Solution.
-    implementation 'com.google.mediapipe:facemesh:0.8.11-alpha-1'
-    // Optional: MediaPipe Hands Solution.
-    implementation 'com.google.mediapipe:hands:0.8.11-alpha-1'
 }
