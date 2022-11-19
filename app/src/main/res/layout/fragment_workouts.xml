@@ -4,29 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
+        <!--variable
             name="workListViewModel"
-            type="com.sg2022.we_got_the_moves.ui.workouts.viewmodel.WorkoutListViewModel" />
+            type="com.sg2022.we_got_the_moves.ui.workouts.viewmodel.WorkoutsViewModel" /-->
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout_workouts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.sg2022.we_got_the_moves.ui.workouts.WorkoutListFragment">
+        tools:context="com.sg2022.we_got_the_moves.ui.workouts.WorkoutsFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_workouts"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_workout" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floating_btn_workouts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="48dp"
             android:layout_marginBottom="24dp"
             android:clickable="true"
             android:contentDescription="@string/app_name"

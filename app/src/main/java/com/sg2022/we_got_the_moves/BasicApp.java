@@ -2,10 +2,7 @@ package com.sg2022.we_got_the_moves;
 
 import android.app.Application;
 
-import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
-
-import java.util.List;
 
 public class BasicApp extends Application {
 

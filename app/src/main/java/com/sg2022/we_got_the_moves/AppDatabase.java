@@ -51,18 +51,20 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase buildDatabase(final Context appContext,
                                              final AppExecutors executors) {
-        AppDatabase db = Room.databaseBuilder(appContext.getApplicationContext(), AppDatabase.class, DB_NAME)
+        //Force open in order to ensure that onCreate is executed once when DB doesn't exist
+        //db.getOpenHelper().getWritableDatabase();
+        return Room.databaseBuilder(appContext.getApplicationContext(), AppDatabase.class, DB_NAME)
                 .fallbackToDestructiveMigration()
                 .addCallback(new Callback() {
                     @Override
-                    public void onOpen(@NonNull SupportSQLiteDatabase db) {
-                        super.onOpen(db);
+                    public void onOpen(@NonNull SupportSQLiteDatabase db1) {
+                        super.onOpen(db1);
                         Log.d(TAG, "DB opened");
                     }
 
                     @Override
-                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                        super.onCreate(db);
+                    public void onCreate(@NonNull SupportSQLiteDatabase db1) {
+                        super.onCreate(db1);
                         Log.d(TAG, "DB created");
                         executors.getPoolThread().execute(
                                 () -> {
@@ -76,9 +78,6 @@ public abstract class AppDatabase extends RoomDatabase {
                     }
                 })
                 .build();
-        //Force open in order to ensure that onCreate is executed once when DB doesn't exist
-        db.getOpenHelper().getWritableDatabase();
-        return db;
     }
 
 }

@@ -81,4 +81,12 @@ public class WorkoutsRepository {
     public void insertWorkoutExercise(WorkoutExercise we) {
         this.executors.getPoolThread().execute(() -> this.workoutExerciseDao.insert(we));
     }
+
+    public void deleteWorkout(Workout w){
+        this.executors.getPoolThread().execute(() -> this.workoutDao.delete(w));
+    }
+
+    public LiveData<WorkoutExercise> getWorkoutExercise(long workoutId, long exerciseId){
+        return this.workoutExerciseDao.get(workoutId, exerciseId);
+    }
 }

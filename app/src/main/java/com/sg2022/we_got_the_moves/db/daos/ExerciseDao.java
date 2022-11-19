@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -18,23 +17,23 @@ import java.util.List;
 public interface ExerciseDao {
 
     @Insert(onConflict = REPLACE)
-    public void insert(Exercise e);
+    void insert(Exercise e);
 
     @Insert(onConflict = REPLACE)
     void insertAll(List<Exercise> es);
 
     @Update(onConflict = REPLACE)
-    public void update(Exercise e);
+    void update(Exercise e);
 
     @Delete
-    public void delete(Exercise e);
+    void delete(Exercise e);
 
     @Query("SELECT * FROM Exercise")
-    public LiveData<List<Exercise>> getAll();
+    LiveData<List<Exercise>> getAll();
 
     @Query("SELECT Exercise.* FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :id")
-    public LiveData<List<Exercise>>getExercisesByWorkoutId(long id);
+    LiveData<List<Exercise>>getExercisesByWorkoutId(long id);
 
     @Query("SELECT * FROM Exercise WHERE Exercise.id = :id")
-    public LiveData<Exercise> get(long id);
+    LiveData<Exercise> get(long id);
 }

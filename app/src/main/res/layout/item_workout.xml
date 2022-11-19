@@ -6,8 +6,8 @@
 
     <data>
         <variable
-            name="workoutViewModel"
-            type="com.sg2022.we_got_the_moves.ui.workouts.viewmodel.WorkoutViewModel"/>
+            name="workout"
+            type="com.sg2022.we_got_the_moves.db.entity.Workout"/>
     </data>
 
     <LinearLayout
@@ -19,7 +19,11 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardview_workout_item"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="8dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_layout_workout_item"
@@ -37,7 +41,6 @@
 
                 <TextView
                     android:id="@+id/text_title_workout_item"
-                    android:text="@{workoutViewModel.workout.name}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints=""
@@ -45,8 +48,8 @@
                     android:hint="@string/title_workouts"
                     android:inputType="none"
                     android:minHeight="32dp"
+                    android:text="@{workout.name}"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/recyclerview_workout_item"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="TextContrastCheck,TextContrastCheck" />
 
@@ -72,16 +75,22 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/edit_btn_workout_item" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerview_workout_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/delete_btn_workout_item"
+                <LinearLayout
+                    android:id="@+id/linear_layout_exercises"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@+id/edit_btn_workout_item"
                     app:layout_constraintStart_toEndOf="@+id/check_box_workout_item"
-                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item"
-                    tools:listitem="@layout/item_exercise" />
+                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview_exercises"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        tools:listitem="@layout/item_exercise" />
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

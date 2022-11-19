@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/navigation_workouts"
-        android:name="com.sg2022.we_got_the_moves.ui.workouts.WorkoutListFragment"
+        android:name="com.sg2022.we_got_the_moves.ui.workouts.WorkoutsFragment"
         android:label="@string/title_workouts"
         tools:layout="@layout/fragment_workouts" />
 
