@@ -20,10 +20,11 @@
             android:id="@+id/cardview_workout_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginBottom="8dp">
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            app:cardCornerRadius="16dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_layout_workout_item"
@@ -45,11 +46,16 @@
                     android:layout_height="wrap_content"
                     android:autofillHints=""
                     android:background="@color/sg_design_green"
+                    android:fontFamily="sans-serif"
                     android:hint="@string/title_workouts"
                     android:inputType="none"
                     android:minHeight="32dp"
                     android:text="@{workout.name}"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="TextContrastCheck,TextContrastCheck" />
 
