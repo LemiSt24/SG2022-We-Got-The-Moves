@@ -31,8 +31,10 @@
             android:contentDescription="@string/app_name"
             android:focusable="true"
             android:src="@drawable/ic_workouts_floating_btn_green_24dp"
+            app:backgroundTint="@color/sg_design_green_transparent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="ImageContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

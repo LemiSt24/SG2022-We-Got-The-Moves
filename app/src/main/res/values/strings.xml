@@ -11,4 +11,5 @@
     <string name="edit">edit</string>
     <string name="delete">delete</string>
     <string name="zero">0</string>
+    <string name="copy">copy</string>
 </resources>

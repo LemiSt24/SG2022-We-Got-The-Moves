@@ -1,5 +1,6 @@
 package com.sg2022.we_got_the_moves.ui.workouts.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,24 +25,40 @@ public class WorkoutListAdapter extends RecyclerView.Adapter<WorkoutListAdapter.
 
     private static final String TAG = "WorkoutListAdapter";
 
-    private List<Workout> workoutsList;
+    private final List<Workout> workoutsList;
     private final LifecycleOwner owner;
     private final WorkoutsViewModel model;
     private ItemWorkoutBinding binding;
 
+    @SuppressLint("NotifyDataSetChanged")
     public WorkoutListAdapter(@NonNull LifecycleOwner owner, @NonNull WorkoutsViewModel model) {
         this.workoutsList = new ArrayList<Workout>();
         this.owner = owner;
         this.model = model;
-        this.model.getRepository().getAllWorkouts().observe(owner, new Observer<List<Workout>>() {
-            @Override
-            public void onChanged(List<Workout> workouts) {
-                if (workouts == null || workouts.isEmpty()) {
-                    workoutsList.clear();
-                } else {
-                    workoutsList = workouts;
-                }
+        this.model.getRepository().getAllWorkouts().observe(owner, workouts -> {
+            if (workouts == null || workouts.isEmpty()) {
+                if (workoutsList.isEmpty())
+                    return;
+                workoutsList.clear();
                 notifyDataSetChanged();
+            } else {
+                //check removed items
+                List<Workout> diff = new ArrayList<Workout>(workoutsList);
+                diff.removeAll(workouts);
+                for (Workout w: diff) {
+                    int position = workoutsList.indexOf(w);
+                    workoutsList.remove(position);
+                    notifyItemRemoved(position);
+                }
+                //check added items
+                diff = new ArrayList<Workout>(workouts);
+                diff.removeAll(workoutsList);
+                for (int i = 0; i < diff.size(); i++) {
+                    int position = workoutsList.size();
+                    workoutsList.add(diff.get(i));
+                    notifyItemInserted(position+i);
+                }
+
             }
         });
     }
@@ -61,16 +78,10 @@ public class WorkoutListAdapter extends RecyclerView.Adapter<WorkoutListAdapter.
     public void onBindViewHolder(@NonNull WorkoutItemViewHolder holder, int position) {
         Workout w = this.workoutsList.get(position);
         holder.binding.setWorkout(w);
-        holder.binding.deleteBtnWorkoutItem.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        model.getRepository().deleteWorkout(w);
-                    }
-                }
-        );
+        holder.binding.deleteBtnWorkoutItem.setOnClickListener(v -> model.getRepository().deleteWorkout(w));
         holder.binding.editBtnWorkoutItem.setOnClickListener(v -> Toast.makeText(v.getContext(), "Click on Edit Button", Toast.LENGTH_SHORT).show());
         holder.binding.checkBoxWorkoutItem.setOnClickListener(v -> Toast.makeText(v.getContext(), "Click on Check Box", Toast.LENGTH_SHORT).show());
+        holder.binding.copyBtnWorkoutItem.setOnClickListener(v -> Toast.makeText(v.getContext(), "Click on Copy Button", Toast.LENGTH_SHORT).show());
         ExerciseListAdapter adapter = new ExerciseListAdapter(this.owner, this.model, w.id);
         holder.binding.recyclerviewExercises.setAdapter(adapter);
     }
