@@ -55,6 +55,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
     // MediaPipe deps
     implementation 'com.google.flogger:flogger:latest.release'
     implementation 'com.google.flogger:flogger-system-backend:latest.release'
@@ -76,8 +77,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 
-    // Android Room for SQL database purposes
+    // Android Room + RxJava for SQL database purposes
     implementation "androidx.room:room-runtime:2.4.3"
+    implementation "androidx.room:room-rxjava3:2.4.3"
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
     annotationProcessor "androidx.room:room-compiler:2.4.3"
     androidTestImplementation "androidx.room:room-testing:2.4.3"
 }
