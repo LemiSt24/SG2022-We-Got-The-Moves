@@ -10,5 +10,23 @@ public class User {
     public  int id;
 
     public String name;
+    public float hightInMeters;
+    public float weigthInKg;
+    public boolean isMale;
+    public int age;
+
+    public float getBMI(){
+        return weigthInKg / (hightInMeters*hightInMeters);
+    }
+
+
+    public User(String name, float hightInMeters, float weigthInKg, boolean isMale, int age){
+        this.id = 1;
+        this.name = name;
+        this.hightInMeters = hightInMeters;
+        this.weigthInKg = weigthInKg;
+        this.isMale = isMale;
+        this.age = age;
+    }
 
 }

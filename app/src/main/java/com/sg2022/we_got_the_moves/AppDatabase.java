@@ -19,7 +19,7 @@ import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 
 //TODO: Add new entity classes here
-@Database(entities = {User.class, Exercise.class, Workout.class, WorkoutExercise.class}, version = 1, exportSchema = false)
+@Database(entities = {User.class, Exercise.class, Workout.class, WorkoutExercise.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String TAG = "AppDatabase";
@@ -72,6 +72,7 @@ public abstract class AppDatabase extends RoomDatabase {
                                     getInstance(appContext).ExerciseDao().insertAll(DataGenerator.getDummyExercises());
                                     getInstance(appContext).WorkoutDao().insertAll(DataGenerator.getDummyWorkouts());
                                     getInstance(appContext).WorkoutExerciseDao().insertAll(DataGenerator.getDummyWorkoutExercises());
+                                    getInstance(appContext).UserDao().insert(new User("Simon Westermann", (float)1.77, 50, false, 22));
                                     Log.d(TAG, "Dummy Data inserted into DB ");
                                 }
                         );
