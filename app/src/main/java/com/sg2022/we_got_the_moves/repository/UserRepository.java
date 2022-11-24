@@ -42,4 +42,8 @@ public class UserRepository {
     public LiveData<User> getUser(){
         return this.userDao.getUser();
     }
+
+    public void update(User u){
+        this.executors.getPoolThread().execute(() -> this.userDao.update(u));
+    }
 }

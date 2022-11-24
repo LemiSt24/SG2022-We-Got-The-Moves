@@ -21,4 +21,5 @@ public interface UserDao {
 
     @Query("Select * From User")
     LiveData<User> getUser();
+
 }

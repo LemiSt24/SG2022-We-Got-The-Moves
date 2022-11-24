@@ -1,5 +1,6 @@
 package com.sg2022.we_got_the_moves;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,12 +11,18 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sg2022.we_got_the_moves.databinding.ActivityMainBinding;
+import com.sg2022.we_got_the_moves.ui.settings.SettingsViewModel;
+import com.sg2022.we_got_the_moves.ui.settings.UserDataChangeActivity;
+
+import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
     private ActivityMainBinding binding;
+
+    private static WeakReference<MainActivity> weakMainActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +41,17 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+        weakMainActivity = new WeakReference<>(MainActivity.this);
+    }
+
+    public static MainActivity getInstanceActivity(){
+        return weakMainActivity.get();
+    }
+
+    public void openUserDataChangeActivity(){
+        Intent intent = new Intent(this, UserDataChangeActivity.class);
+        startActivity(intent);
     }
 
     @Override
