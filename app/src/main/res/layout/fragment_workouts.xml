@@ -19,6 +19,8 @@
             android:id="@+id/recyclerview_workouts"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="-29dp"
+            tools:layout_editor_absoluteY="-354dp"
             tools:listitem="@layout/item_workout" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
