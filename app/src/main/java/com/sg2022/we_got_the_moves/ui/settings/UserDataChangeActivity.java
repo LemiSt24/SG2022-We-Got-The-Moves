@@ -62,10 +62,6 @@ public class UserDataChangeActivity extends AppCompatActivity{
             finish();
         });
 
-
-
-
-
     }
 
     public static UserDataChangeActivity getInstanceActivity() {

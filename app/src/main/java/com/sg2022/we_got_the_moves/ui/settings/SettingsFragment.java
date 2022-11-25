@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -23,13 +24,18 @@ import java.util.concurrent.atomic.AtomicReference;
 public class SettingsFragment extends Fragment {
 
     private FragmentSettingsBinding binding;
+    private SettingsViewModel model;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstance){
+        super.onCreate(savedInstance);
+        SettingsViewModel.Factory factory = new SettingsViewModel.Factory(this.requireActivity().getApplication());
+        SettingsViewModel model = new ViewModelProvider(this, factory).get(SettingsViewModel.class);
+        this.model = model;
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
-        SettingsViewModel.Factory factory = new SettingsViewModel.Factory(this.requireActivity().getApplication());
-        SettingsViewModel model = new ViewModelProvider(this, factory).get(SettingsViewModel.class);
-
 
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -39,12 +45,12 @@ public class SettingsFragment extends Fragment {
         });
 
         final TextView textView = binding.textSettings;
-        model.getDBUser().observe(getViewLifecycleOwner(), userData -> {
+        this.model.getDBUser().observe(getViewLifecycleOwner(), userData -> {
             //Setting the User Parameters to the text Views
             binding.textViewName.setText("Name: " + userData.name);
             binding.textViewAge.setText("Age: " + (String.valueOf(userData.age)));
             binding.textViewGender.setText("Gender: " + (userData.isMale ? "Male" : "Female"));
-            model.getText().observe(getViewLifecycleOwner(), textView::setText);
+            this.model.getText().observe(getViewLifecycleOwner(), textView::setText);
             binding.textViewHeight.setText("Height: " + (String.valueOf(userData.hightInMeters)) + "m");
             binding.textViewWeightInKg.setText("Weight: " + (String.valueOf(userData.weigthInKg)) + "kg");
 
