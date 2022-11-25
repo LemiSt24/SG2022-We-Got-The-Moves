@@ -39,9 +39,8 @@ public class InstructionListAdapter extends RecyclerView.Adapter<InstructionList
     private ItemInstructionBinding binding;
 
 
-    public InstructionListAdapter(LifecycleOwner owner, DashboardViewModel model) {
+    public InstructionListAdapter(@NonNull LifecycleOwner owner, @NonNull DashboardViewModel model) {
         this.exerciseList = new ArrayList<Exercise>();
-        //Exercise e = new Exercise(1, "test");
         this.owner = owner;
         this.model = model;
         this.model.getRepository().getAllExercises().observe(owner, exercises -> {
@@ -52,16 +51,12 @@ public class InstructionListAdapter extends RecyclerView.Adapter<InstructionList
             }
             notifyDataSetChanged();
         });
-        //this.exerciseList.add(e);
-        Log.println(1, String.valueOf(getItemCount()), "Test");
     }
 
     @NonNull
     @Override
     public InstructionListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         this.binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_instruction, parent, false);
-        //LinearLayoutManager layoutManager = new LinearLayoutManager((parent.getContext()), LinearLayoutManager.VERTICAL, false);
-        //binding.recyclerviewInstructions.setLayoutManager(layoutManager);
         binding.setLifecycleOwner(this.owner);
         return new InstructionListViewHolder(binding);
     }
@@ -71,18 +66,6 @@ public class InstructionListAdapter extends RecyclerView.Adapter<InstructionList
         Exercise e =  this.exerciseList.get(position);
         holder.binding.setExercise(e);
         holder.binding.elementInstruction.setText(e.name);
-        /*this.model.getRepository().getExercise(e.id).observe(this.owner, new Observer<Exercise>() {
-            @Override
-            public void onChanged(Exercise exercise) {
-                if (exercise == null)
-                    return;
-                holder.binding.elementInstruction.setText(exercise.name);
-            }
-        });*/
-
-       //holder.binding.instructionElement.setOnClickListener(v -> MainActivity.getInstanceActivity().openInstructionActivity());
-        //InstructionListAdapter adapter = new InstructionListAdapter(this.owner, this.model);
-        //holder.binding.recyclerviewInstructions.setAdapter(adapter);
     }
 
     @Override

@@ -10,7 +10,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_layout_workouts"
+        android:id="@+id/constraint_layout_dashboard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.sg2022.we_got_the_moves.ui.workouts.DashboardFragment">

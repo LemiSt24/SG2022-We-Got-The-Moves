@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentDashboardBinding;
 import com.sg2022.we_got_the_moves.ui.settings.SettingsViewModel;
+import com.sg2022.we_got_the_moves.ui.workouts.adapter.ExerciseListAdapter;
+
+import android.util.Log;
 
 public class DashboardFragment extends Fragment {
 
@@ -24,9 +27,8 @@ public class DashboardFragment extends Fragment {
     private InstructionListAdapter adapter;
     private DashboardViewModel model;
 
-
-    public void onCreate(@NonNull LayoutInflater inflater,
-                         ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DashboardViewModel.Factory factory = new  DashboardViewModel.Factory(this.requireActivity().getApplication());
         this.model = new ViewModelProvider(this, factory).get(DashboardViewModel.class);
