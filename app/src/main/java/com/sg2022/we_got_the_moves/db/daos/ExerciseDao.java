@@ -7,11 +7,15 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
+import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 
 import java.util.List;
+
+import io.reactivex.rxjava3.core.Maybe;
 
 @Dao
 public interface ExerciseDao {
@@ -29,11 +33,16 @@ public interface ExerciseDao {
     void delete(Exercise e);
 
     @Query("SELECT * FROM Exercise")
-    LiveData<List<Exercise>> getAll();
+    LiveData<List<Exercise>> getAllExercises();
 
-    @Query("SELECT Exercise.* FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :id")
-    LiveData<List<Exercise>>getExercisesByWorkoutId(long id);
+    @Query("SELECT Exercise.* FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :workoutId")
+    LiveData<List<Exercise>> getAllExercises(long workoutId);
 
-    @Query("SELECT * FROM Exercise WHERE Exercise.id = :id")
-    LiveData<Exercise> get(long id);
+    @Transaction
+    @Query("SELECT * FROM Exercise WHERE Exercise.id NOT IN (SELECT Exercise.id FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :workoutId)")
+    Maybe<List<Exercise>> getAllNotContainedExercisesMaybe(long workoutId);
+
+
+    @Query("SELECT * FROM Exercise WHERE Exercise.id = :exerciseId")
+    LiveData<Exercise> getExercise(long exerciseId);
 }

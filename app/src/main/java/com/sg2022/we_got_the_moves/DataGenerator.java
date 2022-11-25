@@ -9,9 +9,8 @@ import java.util.List;
 
 public class DataGenerator {
 
-    private static final String TAG = "DataGenerator";
+    public static final String TAG = "DataGenerator";
 
-    //Dummy Data Exercise
     public static String[] exerciseNames = {
             "Fly Steps",
             "Climbers",

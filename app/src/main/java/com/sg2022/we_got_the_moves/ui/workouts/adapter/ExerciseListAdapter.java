@@ -1,84 +1,84 @@
 package com.sg2022.we_got_the_moves.ui.workouts.adapter;
 
+import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.ItemExerciseBinding;
-import com.sg2022.we_got_the_moves.db.entity.Exercise;
-import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
-import com.sg2022.we_got_the_moves.ui.workouts.viewmodel.WorkoutsViewModel;
+import com.sg2022.we_got_the_moves.databinding.NumberInputDialogBinding;
+import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
+import com.sg2022.we_got_the_moves.ui.workouts.WorkoutsViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapter.ExerciseItemViewHolder> {
 
-    private static final String TAG = "ExerciseListAdapter";
+    public static final String TAG = "ExerciseListAdapter";
 
-    private List<Exercise> exercisesList;
-    private final LifecycleOwner owner;
+    private final Fragment owner;
     private final WorkoutsViewModel model;
-    private ItemExerciseBinding binding;
-    private final long workoutId;
+    private final List<WorkoutExerciseAndExercise> list;
 
-    public ExerciseListAdapter(@NonNull LifecycleOwner owner, @NonNull WorkoutsViewModel model, long workoutId) {
-        this.exercisesList = new ArrayList<Exercise>();
+    public ExerciseListAdapter(@NonNull Fragment owner, @NonNull WorkoutsViewModel model, List<WorkoutExerciseAndExercise> list) {
         this.owner = owner;
         this.model = model;
-        this.workoutId = workoutId;
-        this.model.getRepository().getExercisesByWorkoutId(workoutId).observe(owner, new Observer<List<Exercise>>() {
-            @Override
-            public void onChanged(List<Exercise> exercises) {
-                if (exercises == null || exercises.isEmpty()) {
-                    exercisesList.clear();
-                } else {
-                    exercisesList = exercises;
-                }
-                notifyDataSetChanged();
-            }
-        });
+        this.list = list;
     }
 
     @NonNull
     @Override
     public ExerciseItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        this.binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_exercise, parent, false);
-        binding.setLifecycleOwner(this.owner);
+        com.sg2022.we_got_the_moves.databinding.ItemExerciseBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_exercise, parent, false);
         return new ExerciseItemViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ExerciseItemViewHolder holder, int position) {
-        Exercise e = this.exercisesList.get(position);
-        holder.binding.setExercise(e);
-        this.model.getRepository().getWorkoutExercise(this.workoutId, e.id).observe(this.owner, new Observer<WorkoutExercise>() {
-            @Override
-            public void onChanged(WorkoutExercise workoutExercise) {
-                if (workoutExercise == null)
-                    return;
-                holder.binding.textCounterExerciseItem.setText(String.valueOf(workoutExercise.amount));
-            }
-        });
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return this.exercisesList.get(position).id;
+        WorkoutExerciseAndExercise wee = this.list.get(position);
+        holder.binding.setWorkoutExerciseAndExercise(wee);
+        holder.binding.buttonCounterExerciseItem.setOnClickListener(v -> showAmountDialog(wee, position));
     }
 
     @Override
     public int getItemCount() {
-        return this.exercisesList.size();
+        return this.list.size();
     }
 
-    protected static class ExerciseItemViewHolder extends RecyclerView.ViewHolder {
+    private void showAmountDialog(WorkoutExerciseAndExercise ewe, int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
+        NumberInputDialogBinding binding = DataBindingUtil.inflate(LayoutInflater.from(this.owner.getContext()), R.layout.number_input_dialog, null, false);
+        binding.numberPickerNumberDialog.setMinValue(0);
+        binding.numberPickerNumberDialog.setMaxValue(100);
+        binding.numberPickerNumberDialog.setWrapSelectorWheel(true);
+        binding.numberPickerNumberDialog.setValue(ewe.workoutExercise.amount);
+        builder.setView(binding.getRoot());
+        builder.setTitle(String.format(this.owner.getString(R.string.set_exercise_amount), ewe.exercise.name))
+                .setPositiveButton(R.string.yes, (dialog, id) -> {
+                    int amount = binding.numberPickerNumberDialog.getValue();
+                    if (amount == ewe.workoutExercise.amount)
+                        dialog.dismiss();
+                    if (amount == 0) {
+                        model.repository.deleteWorkoutExercise(ewe.workoutExercise);
+                        //notifyItemRemoved(position);
+                    } else {
+                        ewe.workoutExercise.amount = amount;
+                        model.repository.updateWorkoutExercise(ewe.workoutExercise);
+                        //notifyItemChanged(position);
+                    }
+                    dialog.dismiss();
+                })
+                .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+                .create()
+                .show();
+    }
+
+    public static class ExerciseItemViewHolder extends RecyclerView.ViewHolder {
 
         public ItemExerciseBinding binding;
 

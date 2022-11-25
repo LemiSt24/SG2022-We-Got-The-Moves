@@ -5,9 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
+        <import type="com.sg2022.we_got_the_moves.R" />
+
         <variable
             name="workout"
-            type="com.sg2022.we_got_the_moves.db.entity.Workout"/>
+            type="com.sg2022.we_got_the_moves.db.entity.Workout" />
+
+        <variable
+            name="util"
+            type="com.sg2022.we_got_the_moves.ui.workouts.util.WorkoutExpandUtil" />
     </data>
 
     <LinearLayout
@@ -23,7 +31,8 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/sg_design_green"
             app:cardCornerRadius="16dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,30 +40,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <CheckBox
-                    android:id="@+id/check_box_workout_item"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="52dp"
-                    android:autoSizeTextType="none"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item" />
-
                 <TextView
                     android:id="@+id/text_title_workout_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:autofillHints=""
-                    android:background="@color/sg_design_green"
                     android:fontFamily="sans-serif"
                     android:gravity="center|center_vertical"
                     android:hint="@string/title_workouts"
                     android:inputType="none"
                     android:minHeight="32dp"
                     android:text="@{workout.name}"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="TextContrastCheck,TextContrastCheck" />
@@ -65,9 +64,35 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:backgroundTint="#00FFFFFF"
-                    android:contentDescription="@string/edit"
+                    android:contentDescription="@string/expand"
                     android:minHeight="48dp"
                     android:src="@drawable/ic_edit_black_24dp"
+                    app:layout_constraintEnd_toStartOf="@+id/delete_btn_workout_item"
+                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item"
+                    tools:ignore="ImageContrastCheck" />
+
+                <ImageButton
+                    android:id="@+id/expand_btn_workout_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:backgroundTint="#00FFFFFF"
+                    android:contentDescription="@string/edit"
+                    android:minHeight="48dp"
+                    android:src="@drawable/ic_arrow_down_black_24dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item"
+                    tools:ignore="ImageContrastCheck" />
+
+                <ImageButton
+                    android:id="@+id/add_btn_workout_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:backgroundTint="#00FFFFFF"
+                    android:contentDescription="@string/add"
+                    android:minHeight="48dp"
+                    android:src="@drawable/ic_add_training_black_24dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item"
                     tools:ignore="ImageContrastCheck" />
@@ -76,42 +101,38 @@
                     android:id="@+id/delete_btn_workout_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:backgroundTint="#00FFFFFF"
                     android:contentDescription="@string/delete"
                     android:minHeight="48dp"
                     android:src="@drawable/ic_delete_black_24dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/edit_btn_workout_item" />
+                    app:layout_constraintEnd_toStartOf="@+id/copy_btn_workout_item"
+                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item" />
 
                 <ImageButton
                     android:id="@+id/copy_btn_workout_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:backgroundTint="#00FFFFFF"
                     android:contentDescription="@string/copy"
                     android:minHeight="48dp"
                     android:src="@drawable/ic_copy_black_24dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/delete_btn_workout_item" />
+                    app:layout_constraintEnd_toStartOf="@+id/add_btn_workout_item"
+                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item" />
 
-                <LinearLayout
-                    android:id="@+id/linear_layout_exercises"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview_exercises"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toStartOf="@+id/edit_btn_workout_item"
-                    app:layout_constraintStart_toEndOf="@+id/check_box_workout_item"
-                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerview_exercises"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        tools:listitem="@layout/item_exercise" />
-
-                </LinearLayout>
+                    android:layout_marginBottom="4dp"
+                    android:visibility="@{util.visibility}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/edit_btn_workout_item"
+                    tools:listitem="@layout/item_exercise" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
