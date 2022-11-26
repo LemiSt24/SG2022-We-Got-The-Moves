@@ -26,61 +26,63 @@ import java.util.concurrent.Executors;
 
 /**
  * Global executor PoolThreads for the whole application.
- * <p>
- * Grouping tasks like this avoids the effects of task starvation (e.g. disk reads don't wait behind
- * webservice requests).
+ *
+ * <p>Grouping tasks like this avoids the effects of task starvation (e.g. disk reads don't wait
+ * behind webservice requests).
  */
 public class AppExecutors {
 
-    private static final String TAG = "AppExecutors";
+  public static final String TAG = "AppExecutors";
 
-    private static final int NUMBER_OF_THREADS = 3;
-    private static volatile AppExecutors INSTANCE;
+  private static final int NUMBER_OF_THREADS = 4;
+  private static volatile AppExecutors INSTANCE;
 
-    private final Executor singleThread;
-    private final Executor PoolThread;
-    private final Executor mainThread;
+  private final Executor singleThread;
+  private final Executor PoolThread;
+  private final Executor mainThread;
 
-    public AppExecutors() {
-        this(Executors.newSingleThreadExecutor(), Executors.newFixedThreadPool(NUMBER_OF_THREADS),
-                new mainThreadExecutor());
-    }
+  public AppExecutors() {
+    this(
+        Executors.newSingleThreadExecutor(),
+        Executors.newFixedThreadPool(NUMBER_OF_THREADS),
+        new mainThreadExecutor());
+  }
 
-    private AppExecutors(Executor singleThread, Executor PoolThread, Executor mainThread) {
-        this.singleThread = singleThread;
-        this.PoolThread = PoolThread;
-        this.mainThread = mainThread;
-    }
+  private AppExecutors(Executor singleThread, Executor PoolThread, Executor mainThread) {
+    this.singleThread = singleThread;
+    this.PoolThread = PoolThread;
+    this.mainThread = mainThread;
+  }
 
-    public static AppExecutors getInstance() {
+  public static AppExecutors getInstance() {
+    if (INSTANCE == null) {
+      synchronized (AppExecutors.class) {
         if (INSTANCE == null) {
-            synchronized (AppExecutors.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new AppExecutors();
-                }
-            }
+          INSTANCE = new AppExecutors();
         }
-        return INSTANCE;
+      }
     }
+    return INSTANCE;
+  }
 
-    public Executor getSingleThread() {
-        return singleThread;
+  public Executor getSingleThread() {
+    return singleThread;
+  }
+
+  public Executor getPoolThread() {
+    return PoolThread;
+  }
+
+  public Executor getMainThread() {
+    return mainThread;
+  }
+
+  private static class mainThreadExecutor implements Executor {
+    private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
+
+    @Override
+    public void execute(@NonNull Runnable command) {
+      mainThreadHandler.post(command);
     }
-
-    public Executor getPoolThread() {
-        return PoolThread;
-    }
-
-    public Executor getMainThread() {
-        return mainThread;
-    }
-
-    private static class mainThreadExecutor implements Executor {
-        private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-
-        @Override
-        public void execute(@NonNull Runnable command) {
-            mainThreadHandler.post(command);
-        }
-    }
+  }
 }

@@ -14,24 +14,23 @@ import com.sg2022.we_got_the_moves.databinding.FragmentTrainingBinding;
 
 public class TrainingFragment extends Fragment {
 
-    private FragmentTrainingBinding binding;
+  private FragmentTrainingBinding binding;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        TrainingViewModel TrainingViewModel =
-                new ViewModelProvider(this).get(TrainingViewModel.class);
+  public View onCreateView(
+      @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    TrainingViewModel TrainingViewModel = new ViewModelProvider(this).get(TrainingViewModel.class);
 
-        binding = FragmentTrainingBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+    binding = FragmentTrainingBinding.inflate(inflater, container, false);
+    View root = binding.getRoot();
 
-        final TextView textView = binding.textTraining;
-        TrainingViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
-    }
+    final TextView textView = binding.textTraining;
+    TrainingViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+    return root;
+  }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    binding = null;
+  }
 }

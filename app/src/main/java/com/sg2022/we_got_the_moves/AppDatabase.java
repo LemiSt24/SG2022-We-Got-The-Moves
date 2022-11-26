@@ -18,49 +18,41 @@ import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 
-//TODO: Add new entity classes here
-@Database(entities = {User.class, Exercise.class, Workout.class, WorkoutExercise.class}, version = 3, exportSchema = false)
+// TODO: Add entity classes here
+@Database(
+    entities = {User.class, Exercise.class, Workout.class, WorkoutExercise.class},
+    version = 1,
+    exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
-    private static final String TAG = "AppDatabase";
+  public static final String TAG = "AppDatabase";
 
-    private static final String DB_NAME = "SGWeGotTheMovesDB";
-    private static volatile AppDatabase INSTANCE;
+  public static final String DB_NAME = "SGWeGotTheMovesDB";
+  private static volatile AppDatabase INSTANCE;
 
-    //TODO: Add newly created DAOs below
-    public abstract ExerciseDao ExerciseDao();
-
-    public abstract WorkoutDao WorkoutDao();
-
-    public abstract WorkoutExerciseDao WorkoutExerciseDao();
-
-    public abstract UserDao UserDao();
-
-    public static AppDatabase getInstance(final Context context) {
+  public static AppDatabase getInstance(final Context context) {
+    if (INSTANCE == null) {
+      synchronized (AppDatabase.class) {
         if (INSTANCE == null) {
-            synchronized (AppDatabase.class) {
-                if (INSTANCE == null) {
-                    Context c = context.getApplicationContext();
-                    AppExecutors e = AppExecutors.getInstance();
-                    INSTANCE = buildDatabase(c, e);
-                }
-            }
+          Context c = context.getApplicationContext();
+          AppExecutors e = AppExecutors.getInstance();
+          INSTANCE = buildDatabase(c, e);
         }
-        return INSTANCE;
+      }
     }
+    return INSTANCE;
+  }
 
-    private static AppDatabase buildDatabase(final Context appContext,
-                                             final AppExecutors executors) {
-        //Force open in order to ensure that onCreate is executed once when DB doesn't exist
-        //db.getOpenHelper().getWritableDatabase();
-        return Room.databaseBuilder(appContext.getApplicationContext(), AppDatabase.class, DB_NAME)
-                .fallbackToDestructiveMigration()
-                .addCallback(new Callback() {
-                    @Override
-                    public void onOpen(@NonNull SupportSQLiteDatabase db1) {
-                        super.onOpen(db1);
-                        Log.d(TAG, "DB opened");
-                    }
+  private static AppDatabase buildDatabase(final Context appContext, final AppExecutors executors) {
+    return Room.databaseBuilder(appContext.getApplicationContext(), AppDatabase.class, DB_NAME)
+        .fallbackToDestructiveMigration()
+        .addCallback(
+            new Callback() {
+              @Override
+              public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                super.onOpen(db);
+                Log.d(TAG, "DB opened");
+              }
 
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db1) {
@@ -81,4 +73,12 @@ public abstract class AppDatabase extends RoomDatabase {
                 .build();
     }
 
+  // TODO: Add DAOs below
+  public abstract ExerciseDao ExerciseDao();
+
+  public abstract WorkoutDao WorkoutDao();
+
+  public abstract WorkoutExerciseDao WorkoutExerciseDao();
+
+  public abstract UserDao UserDao();
 }

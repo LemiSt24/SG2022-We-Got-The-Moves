@@ -1,108 +1,280 @@
 package com.sg2022.we_got_the_moves.ui.workouts.adapter;
 
-import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.ItemWorkoutBinding;
+import com.sg2022.we_got_the_moves.databinding.TextInputDialogBinding;
+import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
-import com.sg2022.we_got_the_moves.ui.workouts.viewmodel.WorkoutsViewModel;
+import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
+import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExerciseAndExercise;
+import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
+import com.sg2022.we_got_the_moves.ui.workouts.WorkoutsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkoutListAdapter extends RecyclerView.Adapter<WorkoutListAdapter.WorkoutItemViewHolder> {
+import io.reactivex.rxjava3.core.MaybeObserver;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 
-    private static final String TAG = "WorkoutListAdapter";
+public class WorkoutListAdapter
+    extends RecyclerView.Adapter<WorkoutListAdapter.WorkoutItemViewHolder> {
 
-    private final List<Workout> workoutsList;
-    private final LifecycleOwner owner;
-    private final WorkoutsViewModel model;
-    private ItemWorkoutBinding binding;
+  public static final String TAG = "WorkoutListAdapter";
+  private final Fragment owner;
+  private final WorkoutsViewModel model;
+  private List<WorkoutAndWorkoutExerciseAndExercise> list;
 
-    @SuppressLint("NotifyDataSetChanged")
-    public WorkoutListAdapter(@NonNull LifecycleOwner owner, @NonNull WorkoutsViewModel model) {
-        this.workoutsList = new ArrayList<Workout>();
-        this.owner = owner;
-        this.model = model;
-        this.model.getRepository().getAllWorkouts().observe(owner, workouts -> {
-            if (workouts == null || workouts.isEmpty()) {
-                if (workoutsList.isEmpty())
-                    return;
-                workoutsList.clear();
-                notifyDataSetChanged();
-            } else {
-                //check removed items
-                List<Workout> diff = new ArrayList<Workout>(workoutsList);
-                diff.removeAll(workouts);
-                for (Workout w: diff) {
-                    int position = workoutsList.indexOf(w);
-                    workoutsList.remove(position);
-                    notifyItemRemoved(position);
-                }
-                //check added items
-                diff = new ArrayList<Workout>(workouts);
-                diff.removeAll(workoutsList);
-                for (int i = 0; i < diff.size(); i++) {
-                    int position = workoutsList.size();
-                    workoutsList.add(diff.get(i));
-                    notifyItemInserted(position+i);
-                }
-
-            }
+  public WorkoutListAdapter(@NonNull Fragment owner, @NonNull WorkoutsViewModel model) {
+    this.owner = owner;
+    this.model = model;
+    this.list = new ArrayList<>();
+    this.model.data.observe(
+        owner,
+        list -> {
+          if (list == null) list = new ArrayList<>();
+          WorkoutListDiffUtil workoutDiff = new WorkoutListDiffUtil(this.list, list);
+          DiffUtil.DiffResult diff = DiffUtil.calculateDiff(workoutDiff);
+          this.list = list;
+          diff.dispatchUpdatesTo(this);
         });
+  }
+
+  @NonNull
+  @Override
+  public WorkoutItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    ItemWorkoutBinding binding =
+        DataBindingUtil.inflate(
+            LayoutInflater.from(parent.getContext()), R.layout.item_workout, parent, false);
+    LinearLayoutManager layoutManager =
+        new LinearLayoutManager(parent.getContext(), LinearLayoutManager.VERTICAL, false);
+    binding.recyclerviewExercises.setLayoutManager(layoutManager);
+    return new WorkoutItemViewHolder(binding);
+  }
+
+  @Override
+  public void onBindViewHolder(@NonNull WorkoutItemViewHolder holder, int position) {
+    Workout w = this.list.get(position).workout;
+    List<WorkoutExerciseAndExercise> we = this.list.get(position).workoutAndExercises;
+    holder.binding.setWorkout(w);
+    holder.binding.setVisible(false);
+
+    holder.binding.editBtnWorkoutItem.setOnClickListener(v -> showEditDialog(w));
+    holder.binding.copyBtnWorkoutItem.setOnClickListener(v -> showCopyDialog(w));
+
+    ExerciseListAdapter adapter = new ExerciseListAdapter(this.owner, this.model, we);
+    holder.binding.addBtnWorkoutItem.setOnClickListener(v -> showAddDialog(w));
+    holder.binding.deleteBtnWorkoutItem.setOnClickListener(v -> showDeleteDialog(w));
+    holder.binding.expandBtnWorkoutItem.setOnClickListener(
+        v -> holder.binding.setVisible(!holder.binding.getVisible()));
+    holder.binding.recyclerviewExercises.setAdapter(adapter);
+  }
+
+  @Override
+  public int getItemCount() {
+    return this.list.size();
+  }
+
+  private void showDeleteDialog(Workout w) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
+    builder
+        .setTitle(String.format(this.owner.getString(R.string.delete_workout_titel), w.name))
+        .setMessage(R.string.delete_workout_message)
+        .setPositiveButton(
+            R.string.yes,
+            (dialog, id) -> {
+              this.model.repository.deleteWorkout(w);
+              dialog.dismiss();
+            })
+        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+        .create()
+        .show();
+  }
+
+  private void showCopyDialog(Workout w) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
+    builder
+        .setTitle(String.format(this.owner.getString(R.string.copy_workout_titel), w.name))
+        .setMessage(R.string.copy_workout_message)
+        .setPositiveButton(
+            R.string.yes,
+            (dialog, id) -> {
+              Workout copy = new Workout(0, w.name);
+              this.model.repository.insertWorkout(
+                  copy,
+                  new SingleObserver<Long>() {
+
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {}
+
+                    @Override
+                    public void onSuccess(@NonNull Long aLong) {
+                      model.repository.getAllWorkoutExercise(
+                          w.id,
+                          new MaybeObserver<List<WorkoutExercise>>() {
+
+                            @Override
+                            public void onSubscribe(@NonNull Disposable d) {}
+
+                            @Override
+                            public void onSuccess(@NonNull List<WorkoutExercise> workoutExercises) {
+                              if (workoutExercises.isEmpty()) return;
+                              for (WorkoutExercise we : workoutExercises) {
+                                we.workoutId = aLong;
+                              }
+                              model.repository.insertWorkoutExercise(workoutExercises);
+                            }
+
+                            @Override
+                            public void onError(@NonNull Throwable e) {}
+
+                            @Override
+                            public void onComplete() {}
+                          });
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {}
+                  });
+              dialog.dismiss();
+            })
+        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+        .create()
+        .show();
+  }
+
+  private void showEditDialog(Workout w) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
+    TextInputDialogBinding binding =
+        DataBindingUtil.inflate(
+            LayoutInflater.from(this.owner.getContext()), R.layout.text_input_dialog, null, false);
+    binding.setWorkout(w);
+    builder.setView(binding.getRoot());
+    builder
+        .setTitle(String.format(this.owner.getString(R.string.set_workout_title), w.name))
+        .setPositiveButton(
+            R.string.yes,
+            (dialog, id) -> {
+              String text = binding.textViewTextDialog.getText().toString();
+              if (!text.equals(w.name) && !text.isEmpty()) {
+                w.name = text;
+                this.model.repository.updateWorkout(w);
+              }
+              dialog.dismiss();
+            })
+        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+        .create()
+        .show();
+  }
+
+  private void showAddDialog(Workout w) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
+    this.model.repository.getAllNotContainedExercise(
+        w.id,
+        new MaybeObserver<List<Exercise>>() {
+          @Override
+          public void onSubscribe(@NonNull Disposable d) {}
+
+          @Override
+          public void onSuccess(@NonNull List<Exercise> list) {
+            if (list.isEmpty()) {
+              builder.setTitle(String.format(owner.getString(R.string.select_exercises), w.name));
+              builder.setMessage(R.string.no_items);
+              builder
+                  .setPositiveButton(R.string.yes, (dialog, id) -> dialog.dismiss())
+                  .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+                  .create()
+                  .show();
+            } else {
+              String[] items = new String[list.size()];
+              for (int i = 0; i < items.length; i++) {
+                items[i] = list.get(i).name;
+              }
+              boolean[] checkedList = new boolean[list.size()];
+              builder.setMultiChoiceItems(
+                  items, checkedList, (dialog, which, isChecked) -> checkedList[which] = isChecked);
+              builder.setTitle(String.format(owner.getString(R.string.select_exercises), w.name));
+              builder
+                  .setPositiveButton(
+                      R.string.yes,
+                      (dialog, id) -> {
+                        List<WorkoutExercise> result = new ArrayList<>();
+                        for (int i = 0; i < checkedList.length; i++) {
+                          if (checkedList[i]) {
+                            result.add(new WorkoutExercise(w.id, list.get(i).id, 5));
+                          }
+                        }
+                        if (result.size() > 0) {
+                          model.repository.insertWorkoutExercise(result);
+                        }
+                        dialog.dismiss();
+                      })
+                  .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+                  .create()
+                  .show();
+            }
+          }
+
+          @Override
+          public void onError(@NonNull Throwable e) {}
+
+          @Override
+          public void onComplete() {}
+        });
+  }
+
+  private static class WorkoutListDiffUtil extends DiffUtil.Callback {
+
+    private final List<WorkoutAndWorkoutExerciseAndExercise> oldList;
+    private final List<WorkoutAndWorkoutExerciseAndExercise> newList;
+
+    public WorkoutListDiffUtil(
+        List<WorkoutAndWorkoutExerciseAndExercise> oldList,
+        List<WorkoutAndWorkoutExerciseAndExercise> newList) {
+      this.oldList = oldList;
+      this.newList = newList;
     }
 
-    @NonNull
     @Override
-    public WorkoutItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        this.binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_workout, parent, false);
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(parent.getContext(), LinearLayoutManager.VERTICAL, false);
-        binding.recyclerviewExercises.setLayoutManager(layoutManager);
-        binding.setLifecycleOwner(this.owner);
-        return new WorkoutItemViewHolder(binding);
+    public int getOldListSize() {
+      return this.oldList.size();
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WorkoutItemViewHolder holder, int position) {
-        Workout w = this.workoutsList.get(position);
-        holder.binding.setWorkout(w);
-        holder.binding.deleteBtnWorkoutItem.setOnClickListener(v -> model.getRepository().deleteWorkout(w));
-        holder.binding.editBtnWorkoutItem.setOnClickListener(v -> Toast.makeText(v.getContext(), "Click on Edit Button", Toast.LENGTH_SHORT).show());
-        holder.binding.checkBoxWorkoutItem.setOnClickListener(v -> Toast.makeText(v.getContext(), "Click on Check Box", Toast.LENGTH_SHORT).show());
-        holder.binding.copyBtnWorkoutItem.setOnClickListener(v -> Toast.makeText(v.getContext(), "Click on Copy Button", Toast.LENGTH_SHORT).show());
-        ExerciseListAdapter adapter = new ExerciseListAdapter(this.owner, this.model, w.id);
-        holder.binding.recyclerviewExercises.setAdapter(adapter);
+    public int getNewListSize() {
+      return this.newList.size();
     }
 
     @Override
-    public long getItemId(int position) {
-        return this.workoutsList.get(position).id;
+    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+      return this.oldList.get(oldItemPosition).workout == this.newList.get(newItemPosition).workout;
     }
 
     @Override
-    public int getItemCount() {
-        return this.workoutsList.size();
+    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+      return this.oldList.get(oldItemPosition).workoutAndExercises
+          == this.newList.get(newItemPosition).workoutAndExercises;
     }
+  }
 
-    protected static class WorkoutItemViewHolder extends RecyclerView.ViewHolder {
+  public static class WorkoutItemViewHolder extends RecyclerView.ViewHolder {
 
-        public ItemWorkoutBinding binding;
+    public ItemWorkoutBinding binding;
 
-        public WorkoutItemViewHolder(ItemWorkoutBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-        }
+    public WorkoutItemViewHolder(ItemWorkoutBinding binding) {
+      super(binding.getRoot());
+      this.binding = binding;
     }
+  }
 }

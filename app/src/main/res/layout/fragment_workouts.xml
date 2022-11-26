@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <!--variable
-            name="workListViewModel"
-            type="com.sg2022.we_got_the_moves.ui.workouts.viewmodel.WorkoutsViewModel" /-->
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_layout_workouts"
         android:layout_width="match_parent"

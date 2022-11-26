@@ -55,6 +55,15 @@ $ git clone https://github.com/LemiSt24/SG2022-We-Got-The-Moves.git
   recommended)
 - [Guide UI Layout Editor](https://developer.android.com/studio/write/layout-editor.html)
 
+#### Code style / Code formatter
+
+To ensure that Code is readable and is formatted uniformly, the
+plugin [google-java-format](https://plugins.jetbrains.com/plugin/8527-google-java-format) be
+installed via Settings -> Plugins. Note that the plugin has be enabled afterwards. Furthermore it's
+advisable to enable the checkboxes 'Reformat Code', 'Organize imports', 'Rearrange Code' in Android
+Studio as
+show [here](https://www.jetbrains.com/idea/guide/tutorials/reformatting-code/reformatting-before-commit/)
+
 #### Useful Links for UI Resources
 
 - [Icons](https://www.veryicon.com/)
