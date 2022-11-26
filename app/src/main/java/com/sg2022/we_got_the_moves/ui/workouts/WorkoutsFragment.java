@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentWorkoutsBinding;
-import com.sg2022.we_got_the_moves.databinding.TextInputDialogBinding;
+import com.sg2022.we_got_the_moves.databinding.InputDialogTextBinding;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.ui.workouts.adapter.WorkoutListAdapter;
 
@@ -54,11 +54,11 @@ public class WorkoutsFragment extends Fragment {
 
   private void showNewDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-    TextInputDialogBinding binding =
+    InputDialogTextBinding binding =
         DataBindingUtil.inflate(
-            LayoutInflater.from(this.getContext()), R.layout.text_input_dialog, null, false);
+            LayoutInflater.from(this.getContext()), R.layout.input_dialog_text, null, false);
     Workout newItem = new Workout(0, getString(R.string.untitled));
-    binding.setWorkout(newItem);
+    binding.setText(newItem.name);
     builder.setView(binding.getRoot());
     builder
         .setTitle(getString(R.string.new_workout))

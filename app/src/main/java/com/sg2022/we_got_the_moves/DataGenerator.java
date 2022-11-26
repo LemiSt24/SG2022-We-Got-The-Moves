@@ -55,7 +55,17 @@ public class DataGenerator {
   };
 
   public static String[] workoutNames = {
-    "POWER", "Basic", "Relaxing", "Heavy", "Endurance", "Strength", "Agility", "Training"
+    "Power",
+    "Basic",
+    "Relaxing",
+    "Heavy",
+    "Endurance",
+    "Strength",
+    "Agility",
+    "Training",
+    "Easy",
+    "Stretching",
+    "Short"
   };
 
   public static List<Exercise> getDummyExercises() {

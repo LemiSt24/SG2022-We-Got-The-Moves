@@ -54,24 +54,33 @@ public abstract class AppDatabase extends RoomDatabase {
                 Log.d(TAG, "DB opened");
               }
 
-                    @Override
-                    public void onCreate(@NonNull SupportSQLiteDatabase db1) {
-                        super.onCreate(db1);
-                        Log.d(TAG, "DB created");
-                        executors.getPoolThread().execute(
-                                () -> {
-                                    //TODO: Init DB with Dummy Data only at creation time
-                                    getInstance(appContext).ExerciseDao().insertAll(DataGenerator.getDummyExercises());
-                                    getInstance(appContext).WorkoutDao().insertAll(DataGenerator.getDummyWorkouts());
-                                    getInstance(appContext).WorkoutExerciseDao().insertAll(DataGenerator.getDummyWorkoutExercises());
-                                    getInstance(appContext).UserDao().insert(new User("Simon Westermann", (float)1.77, 50, false, 22));
-                                    Log.d(TAG, "Dummy Data inserted into DB ");
-                                }
-                        );
-                    }
-                })
-                .build();
-    }
+              @Override
+              public void onCreate(@NonNull SupportSQLiteDatabase db1) {
+                super.onCreate(db1);
+                Log.d(TAG, "DB created");
+                executors
+                    .getPoolThread()
+                    .execute(
+                        () -> {
+                          // TODO: Init DB with Dummy Data only at creation time
+                          getInstance(appContext)
+                              .ExerciseDao()
+                              .insertAll(DataGenerator.getDummyExercises());
+                          getInstance(appContext)
+                              .WorkoutDao()
+                              .insertAll(DataGenerator.getDummyWorkouts());
+                          getInstance(appContext)
+                              .WorkoutExerciseDao()
+                              .insertAll(DataGenerator.getDummyWorkoutExercises());
+                          getInstance(appContext)
+                              .UserDao()
+                              .insert(new User("Simon Westermann", (float) 1.77, 50, false, 22));
+                          Log.d(TAG, "Dummy Data inserted into DB ");
+                        });
+              }
+            })
+        .build();
+  }
 
   // TODO: Add DAOs below
   public abstract ExerciseDao ExerciseDao();

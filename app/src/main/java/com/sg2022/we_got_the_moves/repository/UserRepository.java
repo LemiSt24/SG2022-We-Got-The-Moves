@@ -11,39 +11,39 @@ import com.sg2022.we_got_the_moves.db.daos.UserDao;
 import com.sg2022.we_got_the_moves.db.entity.User;
 
 public class UserRepository {
-    private static final String TAG = "UserRepository";
+  private static final String TAG = "UserRepository";
 
-    private static volatile UserRepository INSTANCE;
+  private static volatile UserRepository INSTANCE;
 
-    private final UserDao userDao;
-    private final AppExecutors executors;
+  private final UserDao userDao;
+  private final AppExecutors executors;
 
-    private UserRepository(@NonNull AppDatabase db){
-        this.userDao = db.UserDao();
-        this.executors = AppExecutors.getInstance();
-    }
+  private UserRepository(@NonNull AppDatabase db) {
+    this.userDao = db.UserDao();
+    this.executors = AppExecutors.getInstance();
+  }
 
-    public static UserRepository getInstance(Application app) {
+  public static UserRepository getInstance(Application app) {
+    if (INSTANCE == null) {
+      synchronized (WorkoutsRepository.class) {
         if (INSTANCE == null) {
-            synchronized (WorkoutsRepository.class) {
-                if (INSTANCE == null) {
-                    AppDatabase db = AppDatabase.getInstance(app.getApplicationContext());
-                    INSTANCE = new UserRepository(db);
-                }
-            }
+          AppDatabase db = AppDatabase.getInstance(app.getApplicationContext());
+          INSTANCE = new UserRepository(db);
         }
-        return INSTANCE;
+      }
     }
+    return INSTANCE;
+  }
 
-    public void insertUser(User u){
-        this.executors.getPoolThread().execute(() -> this.userDao.insert(u));
-    }
+  public void insertUser(User u) {
+    this.executors.getPoolThread().execute(() -> this.userDao.insert(u));
+  }
 
-    public LiveData<User> getUser(){
-        return this.userDao.getUser();
-    }
+  public LiveData<User> getUser() {
+    return this.userDao.getUser();
+  }
 
-    public void update(User u){
-        this.executors.getPoolThread().execute(() -> this.userDao.update(u));
-    }
+  public void update(User u) {
+    this.executors.getPoolThread().execute(() -> this.userDao.update(u));
+  }
 }

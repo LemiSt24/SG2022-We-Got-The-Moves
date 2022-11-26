@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg2022.we_got_the_moves.R;
+import com.sg2022.we_got_the_moves.databinding.InputDialogNumberBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemExerciseBinding;
-import com.sg2022.we_got_the_moves.databinding.NumberInputDialogBinding;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 import com.sg2022.we_got_the_moves.ui.workouts.WorkoutsViewModel;
 
@@ -59,10 +59,10 @@ public class ExerciseListAdapter
 
   private void showAmountDialog(WorkoutExerciseAndExercise ewe, int position) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
-    NumberInputDialogBinding binding =
+    InputDialogNumberBinding binding =
         DataBindingUtil.inflate(
             LayoutInflater.from(this.owner.getContext()),
-            R.layout.number_input_dialog,
+            R.layout.input_dialog_number,
             null,
             false);
     binding.numberPickerNumberDialog.setMinValue(0);

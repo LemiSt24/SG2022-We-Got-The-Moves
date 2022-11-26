@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg2022.we_got_the_moves.R;
+import com.sg2022.we_got_the_moves.databinding.InputDialogTextBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemWorkoutBinding;
-import com.sg2022.we_got_the_moves.databinding.TextInputDialogBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
@@ -156,10 +156,10 @@ public class WorkoutListAdapter
 
   private void showEditDialog(Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
-    TextInputDialogBinding binding =
+    InputDialogTextBinding binding =
         DataBindingUtil.inflate(
-            LayoutInflater.from(this.owner.getContext()), R.layout.text_input_dialog, null, false);
-    binding.setWorkout(w);
+            LayoutInflater.from(this.owner.getContext()), R.layout.input_dialog_text, null, false);
+    binding.setText(w.name);
     builder.setView(binding.getRoot());
     builder
         .setTitle(String.format(this.owner.getString(R.string.set_workout_title), w.name))

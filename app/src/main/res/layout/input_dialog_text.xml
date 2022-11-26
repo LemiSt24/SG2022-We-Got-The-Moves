@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="workout"
-            type="com.sg2022.we_got_the_moves.db.entity.Workout" />
+            name="text"
+            type="java.lang.String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,7 +28,7 @@
             android:inputType="text"
             android:maxLength="20"
             android:maxLines="1"
-            android:text="@{workout.name}"
+            android:text="@{text}"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

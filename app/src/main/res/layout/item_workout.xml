@@ -18,33 +18,34 @@
 
     </data>
 
-    <LinearLayout
-        android:id="@+id/linear_layout_workout_item"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_workout_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardview_workout_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="8dp"
             app:cardBackgroundColor="@color/sg_design_green"
-            app:cardCornerRadius="16dp">
+            app:cardCornerRadius="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_layout_workout_item"
+                android:id="@+id/constraint_layout_workout_item_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/text_title_workout_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:autofillHints=""
                     android:fontFamily="sans-serif"
                     android:gravity="center|center_vertical"
@@ -52,91 +53,96 @@
                     android:inputType="none"
                     android:minHeight="32dp"
                     android:text="@{workout.name}"
+                    android:textColorHint="#F5F5F5"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="TextContrastCheck,TextContrastCheck" />
-
-                <ImageButton
-                    android:id="@+id/edit_btn_workout_item"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:backgroundTint="#00FFFFFF"
-                    android:contentDescription="@string/expand"
-                    android:minHeight="48dp"
-                    android:src="@drawable/ic_edit_black_24dp"
-                    app:layout_constraintEnd_toStartOf="@+id/delete_btn_workout_item"
-                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item"
-                    tools:ignore="ImageContrastCheck" />
-
-                <ImageButton
-                    android:id="@+id/expand_btn_workout_item"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:backgroundTint="#00FFFFFF"
-                    android:contentDescription="@string/edit"
-                    android:minHeight="48dp"
-                    android:src="@{visible ? @drawable/ic_arrow_up_black_24dp : @drawable/ic_arrow_down_black_24dp,default=@drawable/ic_arrow_down_black_24dp}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item"
-                    tools:ignore="ImageContrastCheck" />
-
-                <ImageButton
-                    android:id="@+id/add_btn_workout_item"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:backgroundTint="#00FFFFFF"
-                    android:contentDescription="@string/add"
-                    android:minHeight="48dp"
-                    android:src="@drawable/ic_add_training_black_24dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item"
-                    tools:ignore="ImageContrastCheck" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageButton
-                    android:id="@+id/delete_btn_workout_item"
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:backgroundTint="#00FFFFFF"
-                    android:contentDescription="@string/delete"
-                    android:minHeight="48dp"
-                    android:src="@drawable/ic_delete_black_24dp"
-                    app:layout_constraintEnd_toStartOf="@+id/copy_btn_workout_item"
-                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item">
 
-                <ImageButton
-                    android:id="@+id/copy_btn_workout_item"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:backgroundTint="#00FFFFFF"
-                    android:contentDescription="@string/copy"
-                    android:minHeight="48dp"
-                    android:src="@drawable/ic_copy_black_24dp"
-                    app:layout_constraintEnd_toStartOf="@+id/add_btn_workout_item"
-                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item" />
+                    <ImageButton
+                        android:id="@+id/expand_btn_workout_item"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00FFFFFF"
+                        android:contentDescription="@string/edit"
+                        android:minHeight="48dp"
+                        android:src="@{visible ? @drawable/ic_arrow_up_black_24dp : @drawable/ic_arrow_down_black_24dp,default=@drawable/ic_arrow_down_black_24dp}"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <ImageButton
+                        android:id="@+id/edit_btn_workout_item"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00FFFFFF"
+                        android:contentDescription="@string/expand"
+                        android:minHeight="48dp"
+                        android:src="@drawable/ic_edit_black_24dp"
+                        app:layout_constraintEnd_toStartOf="@+id/copy_btn_workout_item"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <ImageButton
+                        android:id="@+id/copy_btn_workout_item"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00FFFFFF"
+                        android:contentDescription="@string/copy"
+                        android:minHeight="48dp"
+                        android:src="@drawable/ic_copy_black_24dp"
+                        app:layout_constraintEnd_toStartOf="@+id/add_btn_workout_item"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/add_btn_workout_item"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00FFFFFF"
+                        android:contentDescription="@string/add"
+                        android:minHeight="48dp"
+                        android:src="@drawable/ic_add_training_black_24dp"
+                        app:layout_constraintEnd_toStartOf="@+id/delete_btn_workout_item"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <ImageButton
+                        android:id="@+id/delete_btn_workout_item"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00FFFFFF"
+                        android:contentDescription="@string/delete"
+                        android:minHeight="48dp"
+                        android:src="@drawable/ic_delete_black_24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ImageContrastCheck" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerview_exercises"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
                     android:visibility="@{visible ? View.VISIBLE : View.GONE, default = gone}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/edit_btn_workout_item"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
                     tools:listitem="@layout/item_exercise" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

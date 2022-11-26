@@ -26,4 +26,5 @@
     <string name="new_workout">Add new Workout</string>
     <string name="untitled">Untitled</string>
     <string name="expand">expand</string>
+    <string name="amount">Amount</string>
 </resources>

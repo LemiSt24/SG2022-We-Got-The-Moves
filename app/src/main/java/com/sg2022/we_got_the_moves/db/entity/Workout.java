@@ -1,6 +1,5 @@
 package com.sg2022.we_got_the_moves.db.entity;
 
-import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -17,15 +16,5 @@ public class Workout {
   public Workout(long id, String name) {
     this.id = id;
     this.name = name;
-  }
-
-  @Override
-  public boolean equals(@Nullable Object obj) {
-    return super.equals(obj);
-  }
-
-  @Override
-  public int hashCode() {
-    return super.hashCode();
   }
 }
