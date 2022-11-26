@@ -20,8 +20,6 @@ import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExerciseAndExercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 import com.sg2022.we_got_the_moves.ui.workouts.WorkoutsViewModel;
-import com.sg2022.we_got_the_moves.ui.workouts.util.WorkoutExpandUtil;
-import com.sg2022.we_got_the_moves.ui.workouts.util.WorkoutListDiffUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,10 +66,9 @@ public class WorkoutListAdapter
   @Override
   public void onBindViewHolder(@NonNull WorkoutItemViewHolder holder, int position) {
     Workout w = this.list.get(position).workout;
-    WorkoutExpandUtil util = new WorkoutExpandUtil();
     List<WorkoutExerciseAndExercise> we = this.list.get(position).workoutAndExercises;
     holder.binding.setWorkout(w);
-    holder.binding.setUtil(util);
+    holder.binding.setVisible(false);
 
     holder.binding.editBtnWorkoutItem.setOnClickListener(v -> showEditDialog(w));
     holder.binding.copyBtnWorkoutItem.setOnClickListener(v -> showCopyDialog(w));
@@ -80,12 +77,7 @@ public class WorkoutListAdapter
     holder.binding.addBtnWorkoutItem.setOnClickListener(v -> showAddDialog(w));
     holder.binding.deleteBtnWorkoutItem.setOnClickListener(v -> showDeleteDialog(w));
     holder.binding.expandBtnWorkoutItem.setOnClickListener(
-        v -> {
-          util.switchValue();
-          holder.binding.recyclerviewExercises.setVisibility(util.getVisibility());
-          holder.binding.expandBtnWorkoutItem.setImageResource(util.getIcon());
-        });
-    holder.binding.recyclerviewExercises.setVisibility(util.getVisibility());
+        v -> holder.binding.setVisible(!holder.binding.getVisible()));
     holder.binding.recyclerviewExercises.setAdapter(adapter);
   }
 
@@ -240,6 +232,40 @@ public class WorkoutListAdapter
           @Override
           public void onComplete() {}
         });
+  }
+
+  private static class WorkoutListDiffUtil extends DiffUtil.Callback {
+
+    private final List<WorkoutAndWorkoutExerciseAndExercise> oldList;
+    private final List<WorkoutAndWorkoutExerciseAndExercise> newList;
+
+    public WorkoutListDiffUtil(
+        List<WorkoutAndWorkoutExerciseAndExercise> oldList,
+        List<WorkoutAndWorkoutExerciseAndExercise> newList) {
+      this.oldList = oldList;
+      this.newList = newList;
+    }
+
+    @Override
+    public int getOldListSize() {
+      return this.oldList.size();
+    }
+
+    @Override
+    public int getNewListSize() {
+      return this.newList.size();
+    }
+
+    @Override
+    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+      return this.oldList.get(oldItemPosition).workout == this.newList.get(newItemPosition).workout;
+    }
+
+    @Override
+    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+      return this.oldList.get(oldItemPosition).workoutAndExercises
+          == this.newList.get(newItemPosition).workoutAndExercises;
+    }
   }
 
   public static class WorkoutItemViewHolder extends RecyclerView.ViewHolder {

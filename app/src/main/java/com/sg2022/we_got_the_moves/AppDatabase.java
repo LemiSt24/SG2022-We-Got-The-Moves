@@ -27,7 +27,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
   public static final String TAG = "AppDatabase";
 
-  private static final String DB_NAME = "SGWeGotTheMovesDB";
+  public static final String DB_NAME = "SGWeGotTheMovesDB";
   private static volatile AppDatabase INSTANCE;
 
   public static AppDatabase getInstance(final Context context) {

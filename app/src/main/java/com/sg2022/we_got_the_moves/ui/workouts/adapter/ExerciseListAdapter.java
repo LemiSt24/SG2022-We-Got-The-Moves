@@ -38,7 +38,7 @@ public class ExerciseListAdapter
   @NonNull
   @Override
   public ExerciseItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    com.sg2022.we_got_the_moves.databinding.ItemExerciseBinding binding =
+    ItemExerciseBinding binding =
         DataBindingUtil.inflate(
             LayoutInflater.from(parent.getContext()), R.layout.item_exercise, parent, false);
     return new ExerciseItemViewHolder(binding);
