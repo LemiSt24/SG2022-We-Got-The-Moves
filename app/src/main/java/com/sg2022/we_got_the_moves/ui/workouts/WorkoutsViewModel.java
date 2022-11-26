@@ -18,43 +18,49 @@ import java.util.List;
 
 public class WorkoutsViewModel extends AndroidViewModel {
 
-    public static final String TAG = "WorkoutListViewModel";
+  public static final String TAG = "WorkoutListViewModel";
 
-    public final WorkoutsRepository repository;
-    public MutableLiveData<List<WorkoutAndWorkoutExerciseAndExercise>> data;
+  public final WorkoutsRepository repository;
+  public MutableLiveData<List<WorkoutAndWorkoutExerciseAndExercise>> data;
 
-    public WorkoutsViewModel(@NonNull final Application app, @NonNull final WorkoutsRepository repository, @NonNull LifecycleOwner owner) {
-        super(app);
-        this.repository = repository;
-        this.data = new MutableLiveData<>(new ArrayList<>());
-        this.repository.getAllWorkoutsWithExerciseAndWorkoutExercise().observe(owner, list -> {
-            if (list == null)
-                return;
-            if (list.isEmpty()){
+  public WorkoutsViewModel(
+      @NonNull final Application app,
+      @NonNull final WorkoutsRepository repository,
+      @NonNull LifecycleOwner owner) {
+    super(app);
+    this.repository = repository;
+    this.data = new MutableLiveData<>(new ArrayList<>());
+    this.repository
+        .getAllWorkoutsWithExerciseAndWorkoutExercise()
+        .observe(
+            owner,
+            list -> {
+              if (list == null) return;
+              if (list.isEmpty()) {
                 this.data.postValue(new ArrayList<>());
                 return;
-            }
-            this.data.postValue(list);
-        });
+              }
+              this.data.postValue(list);
+            });
+  }
+
+  public static class Factory implements ViewModelProvider.Factory {
+
+    private final Application app;
+    private final WorkoutsRepository repository;
+    private final LifecycleOwner owner;
+
+    public Factory(@NonNull final Application app, LifecycleOwner owner) {
+      this.app = app;
+      this.repository = ((BasicApp) app).getWorkoutsRepository();
+      this.owner = owner;
     }
 
-    public static class Factory implements ViewModelProvider.Factory {
-
-        private final Application app;
-        private final WorkoutsRepository repository;
-        private final LifecycleOwner owner;
-
-        public Factory(@NonNull final Application app, LifecycleOwner owner) {
-            this.app = app;
-            this.repository = ((BasicApp) app).getWorkoutsRepository();
-            this.owner = owner;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        @NonNull
-        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new WorkoutsViewModel(app, repository, owner);
-        }
+    @SuppressWarnings("unchecked")
+    @Override
+    @NonNull
+    public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+      return (T) new WorkoutsViewModel(app, repository, owner);
     }
+  }
 }

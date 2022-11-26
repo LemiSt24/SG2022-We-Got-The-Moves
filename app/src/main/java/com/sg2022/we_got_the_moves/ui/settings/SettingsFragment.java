@@ -14,24 +14,23 @@ import com.sg2022.we_got_the_moves.databinding.FragmentSettingsBinding;
 
 public class SettingsFragment extends Fragment {
 
-    private FragmentSettingsBinding binding;
+  private FragmentSettingsBinding binding;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        SettingsViewModel SettingsViewModel =
-                new ViewModelProvider(this).get(SettingsViewModel.class);
+  public View onCreateView(
+      @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    SettingsViewModel SettingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
 
-        binding = FragmentSettingsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+    binding = FragmentSettingsBinding.inflate(inflater, container, false);
+    View root = binding.getRoot();
 
-        final TextView textView = binding.textSettings;
-        SettingsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
-    }
+    final TextView textView = binding.textSettings;
+    SettingsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+    return root;
+  }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    binding = null;
+  }
 }

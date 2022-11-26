@@ -14,24 +14,24 @@ import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsBinding;
 
 public class StatisticsFragment extends Fragment {
 
-    private FragmentStatisticsBinding binding;
+  private FragmentStatisticsBinding binding;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        StatisticsViewModel StatisticsViewModel =
-                new ViewModelProvider(this).get(StatisticsViewModel.class);
+  public View onCreateView(
+      @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    StatisticsViewModel StatisticsViewModel =
+        new ViewModelProvider(this).get(StatisticsViewModel.class);
 
-        binding = FragmentStatisticsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+    binding = FragmentStatisticsBinding.inflate(inflater, container, false);
+    View root = binding.getRoot();
 
-        final TextView textView = binding.textStatistics;
-        StatisticsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
-    }
+    final TextView textView = binding.textStatistics;
+    StatisticsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+    return root;
+  }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    binding = null;
+  }
 }

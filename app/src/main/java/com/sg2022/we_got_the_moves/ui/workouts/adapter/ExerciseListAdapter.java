@@ -17,74 +17,89 @@ import com.sg2022.we_got_the_moves.ui.workouts.WorkoutsViewModel;
 
 import java.util.List;
 
-public class ExerciseListAdapter extends RecyclerView.Adapter<ExerciseListAdapter.ExerciseItemViewHolder> {
+public class ExerciseListAdapter
+    extends RecyclerView.Adapter<ExerciseListAdapter.ExerciseItemViewHolder> {
 
-    public static final String TAG = "ExerciseListAdapter";
+  public static final String TAG = "ExerciseListAdapter";
 
-    private final Fragment owner;
-    private final WorkoutsViewModel model;
-    private final List<WorkoutExerciseAndExercise> list;
+  private final Fragment owner;
+  private final WorkoutsViewModel model;
+  private final List<WorkoutExerciseAndExercise> list;
 
-    public ExerciseListAdapter(@NonNull Fragment owner, @NonNull WorkoutsViewModel model, List<WorkoutExerciseAndExercise> list) {
-        this.owner = owner;
-        this.model = model;
-        this.list = list;
+  public ExerciseListAdapter(
+      @NonNull Fragment owner,
+      @NonNull WorkoutsViewModel model,
+      List<WorkoutExerciseAndExercise> list) {
+    this.owner = owner;
+    this.model = model;
+    this.list = list;
+  }
+
+  @NonNull
+  @Override
+  public ExerciseItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    com.sg2022.we_got_the_moves.databinding.ItemExerciseBinding binding =
+        DataBindingUtil.inflate(
+            LayoutInflater.from(parent.getContext()), R.layout.item_exercise, parent, false);
+    return new ExerciseItemViewHolder(binding);
+  }
+
+  @Override
+  public void onBindViewHolder(@NonNull ExerciseItemViewHolder holder, int position) {
+    WorkoutExerciseAndExercise wee = this.list.get(position);
+    holder.binding.setWorkoutExerciseAndExercise(wee);
+    holder.binding.buttonCounterExerciseItem.setOnClickListener(
+        v -> showAmountDialog(wee, position));
+  }
+
+  @Override
+  public int getItemCount() {
+    return this.list.size();
+  }
+
+  private void showAmountDialog(WorkoutExerciseAndExercise ewe, int position) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
+    NumberInputDialogBinding binding =
+        DataBindingUtil.inflate(
+            LayoutInflater.from(this.owner.getContext()),
+            R.layout.number_input_dialog,
+            null,
+            false);
+    binding.numberPickerNumberDialog.setMinValue(0);
+    binding.numberPickerNumberDialog.setMaxValue(100);
+    binding.numberPickerNumberDialog.setWrapSelectorWheel(true);
+    binding.numberPickerNumberDialog.setValue(ewe.workoutExercise.amount);
+    builder.setView(binding.getRoot());
+    builder
+        .setTitle(
+            String.format(this.owner.getString(R.string.set_exercise_amount), ewe.exercise.name))
+        .setPositiveButton(
+            R.string.yes,
+            (dialog, id) -> {
+              int amount = binding.numberPickerNumberDialog.getValue();
+              if (amount == ewe.workoutExercise.amount) dialog.dismiss();
+              if (amount == 0) {
+                model.repository.deleteWorkoutExercise(ewe.workoutExercise);
+                // notifyItemRemoved(position);
+              } else {
+                ewe.workoutExercise.amount = amount;
+                model.repository.updateWorkoutExercise(ewe.workoutExercise);
+                // notifyItemChanged(position);
+              }
+              dialog.dismiss();
+            })
+        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+        .create()
+        .show();
+  }
+
+  public static class ExerciseItemViewHolder extends RecyclerView.ViewHolder {
+
+    public ItemExerciseBinding binding;
+
+    public ExerciseItemViewHolder(ItemExerciseBinding binding) {
+      super(binding.getRoot());
+      this.binding = binding;
     }
-
-    @NonNull
-    @Override
-    public ExerciseItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        com.sg2022.we_got_the_moves.databinding.ItemExerciseBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_exercise, parent, false);
-        return new ExerciseItemViewHolder(binding);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ExerciseItemViewHolder holder, int position) {
-        WorkoutExerciseAndExercise wee = this.list.get(position);
-        holder.binding.setWorkoutExerciseAndExercise(wee);
-        holder.binding.buttonCounterExerciseItem.setOnClickListener(v -> showAmountDialog(wee, position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return this.list.size();
-    }
-
-    private void showAmountDialog(WorkoutExerciseAndExercise ewe, int position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
-        NumberInputDialogBinding binding = DataBindingUtil.inflate(LayoutInflater.from(this.owner.getContext()), R.layout.number_input_dialog, null, false);
-        binding.numberPickerNumberDialog.setMinValue(0);
-        binding.numberPickerNumberDialog.setMaxValue(100);
-        binding.numberPickerNumberDialog.setWrapSelectorWheel(true);
-        binding.numberPickerNumberDialog.setValue(ewe.workoutExercise.amount);
-        builder.setView(binding.getRoot());
-        builder.setTitle(String.format(this.owner.getString(R.string.set_exercise_amount), ewe.exercise.name))
-                .setPositiveButton(R.string.yes, (dialog, id) -> {
-                    int amount = binding.numberPickerNumberDialog.getValue();
-                    if (amount == ewe.workoutExercise.amount)
-                        dialog.dismiss();
-                    if (amount == 0) {
-                        model.repository.deleteWorkoutExercise(ewe.workoutExercise);
-                        //notifyItemRemoved(position);
-                    } else {
-                        ewe.workoutExercise.amount = amount;
-                        model.repository.updateWorkoutExercise(ewe.workoutExercise);
-                        //notifyItemChanged(position);
-                    }
-                    dialog.dismiss();
-                })
-                .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
-                .create()
-                .show();
-    }
-
-    public static class ExerciseItemViewHolder extends RecyclerView.ViewHolder {
-
-        public ItemExerciseBinding binding;
-
-        public ExerciseItemViewHolder(ItemExerciseBinding binding) {
-            super(binding.getRoot());
-            this.binding = binding;
-        }
-    }
+  }
 }

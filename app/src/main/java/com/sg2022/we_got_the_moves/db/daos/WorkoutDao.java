@@ -21,34 +21,35 @@ import io.reactivex.rxjava3.core.Single;
 @Dao
 public interface WorkoutDao {
 
-    @Insert(onConflict = REPLACE)
-    void insert(Workout w);
+  @Insert(onConflict = REPLACE)
+  void insert(Workout w);
 
-    @Insert(onConflict = REPLACE)
-    Single<Long> insertSingle(Workout w);
+  @Insert(onConflict = REPLACE)
+  Single<Long> insertSingle(Workout w);
 
-    @Insert(onConflict = REPLACE)
-    void insertAll(List<Workout> ws);
+  @Insert(onConflict = REPLACE)
+  void insertAll(List<Workout> ws);
 
-    @Insert(onConflict = REPLACE)
-    Maybe<List<Long>> insertAllMaybe(List<Workout> ws);
+  @Insert(onConflict = REPLACE)
+  Maybe<List<Long>> insertAllMaybe(List<Workout> ws);
 
-    @Update(onConflict = REPLACE)
-    void update(Workout w);
+  @Update(onConflict = REPLACE)
+  void update(Workout w);
 
-    @Delete
-    void delete(Workout w);
+  @Delete
+  void delete(Workout w);
 
-    @Query("SELECT * FROM Workout WHERE Workout.id = :workoutId")
-    LiveData<Workout> getWorkout(long workoutId);
+  @Query("SELECT * FROM Workout WHERE Workout.id = :workoutId")
+  LiveData<Workout> getWorkout(long workoutId);
 
-    @Query("SELECT * FROM Workout WHERE Workout.id = :workoutId")
-    Single<Workout> getWorkoutSingle(long workoutId);
+  @Query("SELECT * FROM Workout WHERE Workout.id = :workoutId")
+  Single<Workout> getWorkoutSingle(long workoutId);
 
-    @Query("SELECT * FROM Workout")
-    LiveData<List<Workout>> getAllWorkouts();
+  @Query("SELECT * FROM Workout")
+  LiveData<List<Workout>> getAllWorkouts();
 
-    @Transaction
-    @Query("SELECT * FROM Workout")
-    LiveData<List<WorkoutAndWorkoutExerciseAndExercise>> getAllWorkoutsWithExerciseAndWorkoutExercise();
+  @Transaction
+  @Query("SELECT * FROM Workout")
+  LiveData<List<WorkoutAndWorkoutExerciseAndExercise>>
+      getAllWorkoutsWithExerciseAndWorkoutExercise();
 }

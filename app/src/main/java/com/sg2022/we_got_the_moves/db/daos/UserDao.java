@@ -11,9 +11,9 @@ import com.sg2022.we_got_the_moves.db.entity.User;
 @Dao
 public interface UserDao {
 
-    @Insert(onConflict = REPLACE)
-    void insert(User user);
+  @Insert(onConflict = REPLACE)
+  void insert(User user);
 
-    @Update(onConflict = REPLACE)
-    void update(User user);
+  @Update(onConflict = REPLACE)
+  void update(User user);
 }

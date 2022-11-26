@@ -20,31 +20,32 @@ import io.reactivex.rxjava3.core.Maybe;
 @Dao
 public interface WorkoutExerciseDao {
 
-    @Insert(onConflict = REPLACE)
-    void insert(WorkoutExercise e);
+  @Insert(onConflict = REPLACE)
+  void insert(WorkoutExercise e);
 
-    @Insert(onConflict = REPLACE)
-    void insertAll(List<WorkoutExercise> ws);
+  @Insert(onConflict = REPLACE)
+  void insertAll(List<WorkoutExercise> ws);
 
-    @Insert(onConflict = REPLACE)
-    Maybe<List<Long>> insertAllMaybe(List<WorkoutExercise> ws);
+  @Insert(onConflict = REPLACE)
+  Maybe<List<Long>> insertAllMaybe(List<WorkoutExercise> ws);
 
-    @Update(onConflict = REPLACE)
-    void update(WorkoutExercise e);
+  @Update(onConflict = REPLACE)
+  void update(WorkoutExercise e);
 
-    @Delete
-    void delete(WorkoutExercise e);
+  @Delete
+  void delete(WorkoutExercise e);
 
-    @Query("SELECT * FROM WorkoutExercise")
-    LiveData<List<WorkoutExercise>> getAllWorkoutExercise();
+  @Query("SELECT * FROM WorkoutExercise")
+  LiveData<List<WorkoutExercise>> getAllWorkoutExercise();
 
-    @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId = :workoutId AND WorkoutExercise.exerciseId = :exerciseId")
-    LiveData<WorkoutExercise> getWorkoutExercise(long workoutId, long exerciseId);
+  @Query(
+      "SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId = :workoutId AND WorkoutExercise.exerciseId = :exerciseId")
+  LiveData<WorkoutExercise> getWorkoutExercise(long workoutId, long exerciseId);
 
-    @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId = :workoutId")
-    Maybe<List<WorkoutExercise>> getAllWorkoutExerciseMaybe(long workoutId);
+  @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId = :workoutId")
+  Maybe<List<WorkoutExercise>> getAllWorkoutExerciseMaybe(long workoutId);
 
-    @Transaction
-    @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId == :workoutId")
-    LiveData<List<WorkoutExerciseAndExercise>> getAllWorkoutExercise(long workoutId);
+  @Transaction
+  @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId == :workoutId")
+  LiveData<List<WorkoutExerciseAndExercise>> getAllWorkoutExercise(long workoutId);
 }

@@ -18,63 +18,72 @@ import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 
-//TODO: Add entity classes here
-@Database(entities = {User.class, Exercise.class, Workout.class, WorkoutExercise.class}, version = 1, exportSchema = false)
+// TODO: Add entity classes here
+@Database(
+    entities = {User.class, Exercise.class, Workout.class, WorkoutExercise.class},
+    version = 1,
+    exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
-    public static final String TAG = "AppDatabase";
+  public static final String TAG = "AppDatabase";
 
-    private static final String DB_NAME = "SGWeGotTheMovesDB";
-    private static volatile AppDatabase INSTANCE;
+  private static final String DB_NAME = "SGWeGotTheMovesDB";
+  private static volatile AppDatabase INSTANCE;
 
-    public static AppDatabase getInstance(final Context context) {
+  public static AppDatabase getInstance(final Context context) {
+    if (INSTANCE == null) {
+      synchronized (AppDatabase.class) {
         if (INSTANCE == null) {
-            synchronized (AppDatabase.class) {
-                if (INSTANCE == null) {
-                    Context c = context.getApplicationContext();
-                    AppExecutors e = AppExecutors.getInstance();
-                    INSTANCE = buildDatabase(c, e);
-                }
-            }
+          Context c = context.getApplicationContext();
+          AppExecutors e = AppExecutors.getInstance();
+          INSTANCE = buildDatabase(c, e);
         }
-        return INSTANCE;
+      }
     }
+    return INSTANCE;
+  }
 
-    private static AppDatabase buildDatabase(final Context appContext,
-                                             final AppExecutors executors) {
-        return Room.databaseBuilder(appContext.getApplicationContext(), AppDatabase.class, DB_NAME)
-                .fallbackToDestructiveMigration()
-                .addCallback(new Callback() {
-                    @Override
-                    public void onOpen(@NonNull SupportSQLiteDatabase db) {
-                        super.onOpen(db);
-                        Log.d(TAG, "DB opened");
-                    }
+  private static AppDatabase buildDatabase(final Context appContext, final AppExecutors executors) {
+    return Room.databaseBuilder(appContext.getApplicationContext(), AppDatabase.class, DB_NAME)
+        .fallbackToDestructiveMigration()
+        .addCallback(
+            new Callback() {
+              @Override
+              public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                super.onOpen(db);
+                Log.d(TAG, "DB opened");
+              }
 
-                    @Override
-                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                        super.onCreate(db);
-                        Log.d(TAG, "DB created");
-                        executors.getPoolThread().execute(
-                                () -> {
-                                    //TODO: Init DB with Dummy Data only at creation
-                                    getInstance(appContext).ExerciseDao().insertAll(DataGenerator.getDummyExercises());
-                                    getInstance(appContext).WorkoutDao().insertAll(DataGenerator.getDummyWorkouts());
-                                    getInstance(appContext).WorkoutExerciseDao().insertAll(DataGenerator.getDummyWorkoutExercises());
-                                }
-                        );
-                    }
-                })
-                .build();
-    }
+              @Override
+              public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                super.onCreate(db);
+                Log.d(TAG, "DB created");
+                executors
+                    .getPoolThread()
+                    .execute(
+                        () -> {
+                          // TODO: Init DB with Dummy Data only at creation
+                          getInstance(appContext)
+                              .ExerciseDao()
+                              .insertAll(DataGenerator.getDummyExercises());
+                          getInstance(appContext)
+                              .WorkoutDao()
+                              .insertAll(DataGenerator.getDummyWorkouts());
+                          getInstance(appContext)
+                              .WorkoutExerciseDao()
+                              .insertAll(DataGenerator.getDummyWorkoutExercises());
+                        });
+              }
+            })
+        .build();
+  }
 
-    //TODO: Add DAOs below
-    public abstract ExerciseDao ExerciseDao();
+  // TODO: Add DAOs below
+  public abstract ExerciseDao ExerciseDao();
 
-    public abstract WorkoutDao WorkoutDao();
+  public abstract WorkoutDao WorkoutDao();
 
-    public abstract WorkoutExerciseDao WorkoutExerciseDao();
+  public abstract WorkoutExerciseDao WorkoutExerciseDao();
 
-    public abstract UserDao UserDao();
-
+  public abstract UserDao UserDao();
 }

@@ -7,6 +7,7 @@
     <data>
 
         <import type="android.view.View" />
+
         <import type="com.sg2022.we_got_the_moves.R" />
 
         <variable
