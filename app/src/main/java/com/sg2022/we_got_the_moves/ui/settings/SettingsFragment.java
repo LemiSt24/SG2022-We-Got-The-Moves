@@ -24,7 +24,8 @@ public class SettingsFragment extends Fragment {
     super.onCreate(savedInstance);
     SettingsViewModel.Factory factory =
         new SettingsViewModel.Factory(this.requireActivity().getApplication());
-    SettingsViewModel model = new ViewModelProvider(this, factory).get(SettingsViewModel.class);
+    SettingsViewModel model =
+        new ViewModelProvider(this, factory).get(SettingsViewModel.class);
     this.model = model;
   }
 
@@ -39,7 +40,6 @@ public class SettingsFragment extends Fragment {
           MainActivity.getInstanceActivity().openUserDataChangeActivity();
         });
 
-    final TextView textView = binding.textSettings;
     this.model
         .getDBUser()
         .observe(
@@ -49,7 +49,6 @@ public class SettingsFragment extends Fragment {
               binding.textViewName.setText("Name: " + userData.name);
               binding.textViewAge.setText("Age: " + (String.valueOf(userData.age)));
               binding.textViewGender.setText("Gender: " + (userData.isMale ? "Male" : "Female"));
-              this.model.getText().observe(getViewLifecycleOwner(), textView::setText);
               binding.textViewHeight.setText(
                   "Height: " + (String.valueOf(userData.hightInMeters)) + "m");
               binding.textViewWeightInKg.setText(

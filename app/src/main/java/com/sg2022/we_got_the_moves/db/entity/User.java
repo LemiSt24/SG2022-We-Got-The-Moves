@@ -24,7 +24,15 @@ public class User {
     this.age = age;
   }
 
-  public float getBMI() {
-    return weigthInKg / (hightInMeters * hightInMeters);
+  public float getBMI() {return weigthInKg / (hightInMeters * hightInMeters);}
+
+  public float kgToLbs(float kg) { return kg * (float)2.20462;}
+
+  public int[] mToFtIn(float m) {
+    int feet = (int) Math.floor(m / 0.3048);
+    float rest = (float) (m % 0.3048);
+    int inch = (int) Math.floor(rest / 0.0254);
+    return new int[] {feet, inch};
   }
+
 }
