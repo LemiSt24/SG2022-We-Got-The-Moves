@@ -174,6 +174,7 @@ public class TrainingFragment extends Fragment {
     converter.setConsumer(processor);
     if (PermissionHelper.cameraPermissionsGranted(this.getActivity())) {
       startCamera();
+      Log.v(TAG, "Permissions granted, starting camera...");
     }
   }
 
@@ -186,13 +187,6 @@ public class TrainingFragment extends Fragment {
     previewDisplayView.setVisibility(View.GONE);
   }
 
-  @Override
-  public void onRequestPermissionsResult(
-          int requestCode, String[] permissions, int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    PermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
-  }
-
   protected void onCameraStarted(SurfaceTexture surfaceTexture) {
     previewFrameTexture = surfaceTexture;
     // Make the display view visible to start showing the preview. This triggers the
@@ -201,7 +195,7 @@ public class TrainingFragment extends Fragment {
   }
 
   protected Size cameraTargetResolution() {
-    return new Size(TARGET_CAMERA_HEIGHT, TARGET_CAMERA_WIDTH);
+    return new Size(TARGET_CAMERA_WIDTH, TARGET_CAMERA_HEIGHT);
   }
 
   public void startCamera() {
@@ -214,6 +208,10 @@ public class TrainingFragment extends Fragment {
 
   protected void onPreviewDisplaySurfaceChanged(
           SurfaceHolder holder, int format, int width, int height) {
+    if(cameraHelper == null)
+    {
+      startCamera();
+    }
     // (Re-)Compute the ideal size of the camera-preview display (the area that the
     // camera-preview frames get rendered onto, potentially with scaling and rotation)
     // based on the size of the SurfaceView that contains the display.
