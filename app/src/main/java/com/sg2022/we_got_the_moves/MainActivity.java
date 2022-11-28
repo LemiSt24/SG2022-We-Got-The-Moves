@@ -25,6 +25,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static WeakReference<MainActivity> weakMainActivity;
 
+    public static MainActivity getInstanceActivity(){
+        return weakMainActivity.get();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,10 +48,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         weakMainActivity = new WeakReference<>(MainActivity.this);
-    }
-
-    public static MainActivity getInstanceActivity(){
-        return weakMainActivity.get();
     }
 
     public void openUserDataChangeActivity(){

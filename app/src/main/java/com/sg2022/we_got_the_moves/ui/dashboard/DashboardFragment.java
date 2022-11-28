@@ -14,42 +14,41 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentDashboardBinding;
-import com.sg2022.we_got_the_moves.ui.settings.SettingsViewModel;
-import com.sg2022.we_got_the_moves.ui.workouts.adapter.ExerciseListAdapter;
-
-import android.util.Log;
 
 public class DashboardFragment extends Fragment {
 
-    private static final String TAG = "InstructionListFragment";
+  private static final String TAG = "InstructionListFragment";
 
-    private FragmentDashboardBinding binding;
-    private InstructionListAdapter adapter;
-    private DashboardViewModel model;
+  private FragmentDashboardBinding binding;
+  private InstructionListAdapter adapter;
+  private DashboardViewModel model;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        DashboardViewModel.Factory factory = new  DashboardViewModel.Factory(this.requireActivity().getApplication());
-        this.model = new ViewModelProvider(this, factory).get(DashboardViewModel.class);
-        this.adapter = new InstructionListAdapter(this, this.model);
-    }
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    DashboardViewModel.Factory factory =
+        new DashboardViewModel.Factory(this.requireActivity().getApplication());
+    this.model = new ViewModelProvider(this, factory).get(DashboardViewModel.class);
+    this.adapter = new InstructionListAdapter(this, this.model);
+  }
 
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_dashboard, container, false);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.requireContext(), LinearLayoutManager.VERTICAL, false);
-        this.binding.recyclerviewInstructions.setLayoutManager(layoutManager);
-        this.binding.recyclerviewInstructions.setAdapter(this.adapter);
-        return binding.getRoot();
-    }
+  public View onCreateView(
+      @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_dashboard, container, false);
+    LinearLayoutManager layoutManager =
+        new LinearLayoutManager(this.requireContext(), LinearLayoutManager.VERTICAL, false);
+    this.binding.recyclerviewInstructions.setLayoutManager(layoutManager);
+    this.binding.recyclerviewInstructions.setAdapter(this.adapter);
+    return binding.getRoot();
+  }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+  }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+  }
 }
