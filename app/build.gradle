@@ -84,4 +84,7 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
     annotationProcessor "androidx.room:room-compiler:2.4.3"
     androidTestImplementation "androidx.room:room-testing:2.4.3"
+
+    //Youtube Player
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0'
 }

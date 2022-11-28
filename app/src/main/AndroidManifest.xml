@@ -29,6 +29,13 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity
+            android:name=".ui.dashboard.InstructionActivity"
+            android:exported="false">
+            <meta-data
+                android:name="com.sg2022.we_got_the_moves.ui.dashboard"
+                android:value="" />
+        </activity>
     </application>
 
 </manifest>

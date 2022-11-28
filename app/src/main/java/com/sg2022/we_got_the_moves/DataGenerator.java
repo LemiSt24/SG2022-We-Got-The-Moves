@@ -68,8 +68,22 @@ public class DataGenerator {
 
     public static List<Exercise> getDummyExercises() {
         List<Exercise> e = new ArrayList<>();
+
+        //get Testdata with TextInstruction and VideoInstruction
+        Exercise Squat = new Exercise(1, "Squat","1. Stand up with your feet shoulder-width apart.\n\n" +
+                "2. Bend your knees, press your hips back and stop the movement once the hip joint is slightly lower than the knees.\n\n" +
+                "3. Press your heels into the floor to return to the initial position.\n\n" +
+                "4. Repeat until set is complete." ,"Zqc_lc93hak");
+        Exercise PushUp = new Exercise(2, "Push-Up","1. With your legs extended back, place the hands below the shoulders, slightly wider than shoulder-width apart.\n\n" +
+                "2. Start bending your elbows and lower your chest until it’s just above the floor.\n\n" +
+                "3. Push back to the starting position. A 1-second push, 1-second pause, 2-second down count is ideal.\n\n" +
+                "4. Repeat ","v9LABVJzv8A");
+
+        e.add(Squat);
+        e.add(PushUp);
+
         for (int i = 0; i < exerciseNames.length; ++i) {
-            e.add(new Exercise(i + 1, exerciseNames[i]));
+            e.add(new Exercise(i + 3, exerciseNames[i], null, null));
         }
         return e;
     }

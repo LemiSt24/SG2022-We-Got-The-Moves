@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import javax.annotation.Nullable;
+
 @Entity(tableName = "Exercise")
 public class Exercise {
 
@@ -13,8 +15,33 @@ public class Exercise {
     @ColumnInfo(name = "name")
     public String name;
 
-    public Exercise(long id, String name) {
+    @Nullable
+    public String getTextInstruction() {
+        return textInstruction;
+    }
+
+    public void setTextInstruction(@Nullable String textInstruction) {
+        this.textInstruction = textInstruction;
+    }
+
+    @Nullable
+    public String getVideoInstruction() {
+        return videoInstruction;
+    }
+
+    public void setVideoInstruction(@Nullable String videoInstruction) {
+        this.videoInstruction = videoInstruction;
+    }
+
+    @Nullable
+    private String textInstruction;
+    @Nullable
+    private String videoInstruction;
+
+    public Exercise(long id, String name, String textInstruction, String videoInstruction) {
         this.id = id;
         this.name = name;
+        this.textInstruction = textInstruction;
+        this.videoInstruction = videoInstruction;
     }
 }

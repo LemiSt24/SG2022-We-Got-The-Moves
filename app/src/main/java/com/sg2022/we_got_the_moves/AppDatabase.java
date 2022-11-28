@@ -19,7 +19,7 @@ import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 
 //TODO: Add new entity classes here
-@Database(entities = {User.class, Exercise.class, Workout.class, WorkoutExercise.class}, version = 3, exportSchema = false)
+@Database(entities = {User.class, Exercise.class, Workout.class, WorkoutExercise.class}, version = 4, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String TAG = "AppDatabase";

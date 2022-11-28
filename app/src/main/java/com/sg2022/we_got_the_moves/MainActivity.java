@@ -11,6 +11,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sg2022.we_got_the_moves.databinding.ActivityMainBinding;
+import com.sg2022.we_got_the_moves.ui.dashboard.InstructionActivity;
 import com.sg2022.we_got_the_moves.ui.settings.SettingsViewModel;
 import com.sg2022.we_got_the_moves.ui.settings.UserDataChangeActivity;
 
@@ -51,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void openUserDataChangeActivity(){
         Intent intent = new Intent(this, UserDataChangeActivity.class);
+        startActivity(intent);
+    }
+
+    public void openInstructionActivity(long id){
+        Intent intent = new Intent(this, InstructionActivity.class);
+        intent.putExtra("EXERCISE_ID", id);
         startActivity(intent);
     }
 
