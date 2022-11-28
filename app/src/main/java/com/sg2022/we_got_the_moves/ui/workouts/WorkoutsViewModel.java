@@ -18,7 +18,7 @@ import java.util.List;
 
 public class WorkoutsViewModel extends AndroidViewModel {
 
-  public static final String TAG = "WorkoutListViewModel";
+  private static final String TAG = "WorkoutListViewModel";
 
   public final WorkoutsRepository repository;
   public MutableLiveData<List<WorkoutAndWorkoutExerciseAndExercise>> data;
@@ -50,7 +50,7 @@ public class WorkoutsViewModel extends AndroidViewModel {
     private final WorkoutsRepository repository;
     private final LifecycleOwner owner;
 
-    public Factory(@NonNull final Application app, LifecycleOwner owner) {
+    public Factory(@NonNull final Application app, @NonNull LifecycleOwner owner) {
       this.app = app;
       this.repository = ((BasicApp) app).getWorkoutsRepository();
       this.owner = owner;

@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
 public class MainActivity extends AppCompatActivity {
 
   private static final String TAG = "MainActivity";
+
   private static WeakReference<MainActivity> weakMainActivity;
   private ActivityMainBinding binding;
 
@@ -37,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     // menu should be considered as top level destinations.
     AppBarConfiguration appBarConfiguration =
         new AppBarConfiguration.Builder(
-                // R.id.navigation_home,
                 R.id.navigation_dashboard,
                 R.id.navigation_training,
                 R.id.navigation_workouts,

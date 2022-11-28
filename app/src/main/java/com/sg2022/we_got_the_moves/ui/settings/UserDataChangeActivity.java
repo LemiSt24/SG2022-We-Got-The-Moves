@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -75,8 +74,7 @@ public class UserDataChangeActivity extends AppCompatActivity {
                       ((TextInputEditText) findViewById(R.id.TextInputWeight))
                           .getText()
                           .toString()), // set Weight
-                  ((RadioButton)findViewById(R.id.maleButton))
-                          .isChecked(), // set Gender
+                  ((RadioButton) findViewById(R.id.maleButton)).isChecked(), // set Gender
                   Integer.parseInt(
                       ((TextInputEditText) findViewById(R.id.TextInputAge))
                           .getText()

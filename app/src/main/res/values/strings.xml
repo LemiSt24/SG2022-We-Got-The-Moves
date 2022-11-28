@@ -17,7 +17,7 @@
     <string name="delete_workout_message">Are you sure that you want to delete this item?</string>
     <string name="copy_workout_titel">Copy Workout: %1$s</string>
     <string name="copy_workout_message">Are you sure that you want to copy this item?</string>
-    <string name="set_workout_title">Set Workout: %1$s</string>
+    <string name="set_workout_title">Set title of Workout: %1$s</string>
     <string name="enter_text">Please enter text here</string>
     <string name="set_exercise_amount">Set amount of Exercise: %1$s</string>
     <string name="add">add</string>

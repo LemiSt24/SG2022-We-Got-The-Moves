@@ -1,6 +1,7 @@
 package com.sg2022.we_got_the_moves.ui.workouts.adapter;
 
 import android.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -23,6 +24,7 @@ import com.sg2022.we_got_the_moves.ui.workouts.WorkoutsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.rxjava3.core.MaybeObserver;
 import io.reactivex.rxjava3.core.SingleObserver;
@@ -31,7 +33,8 @@ import io.reactivex.rxjava3.disposables.Disposable;
 public class WorkoutListAdapter
     extends RecyclerView.Adapter<WorkoutListAdapter.WorkoutItemViewHolder> {
 
-  public static final String TAG = "WorkoutListAdapter";
+  private static final String TAG = "WorkoutListAdapter";
+
   private final Fragment owner;
   private final WorkoutsViewModel model;
   private List<WorkoutAndWorkoutExerciseAndExercise> list;
@@ -72,12 +75,11 @@ public class WorkoutListAdapter
 
     holder.binding.editBtnWorkoutItem.setOnClickListener(v -> showEditDialog(w));
     holder.binding.copyBtnWorkoutItem.setOnClickListener(v -> showCopyDialog(w));
-
-    ExerciseListAdapter adapter = new ExerciseListAdapter(this.owner, this.model, we);
     holder.binding.addBtnWorkoutItem.setOnClickListener(v -> showAddDialog(w));
     holder.binding.deleteBtnWorkoutItem.setOnClickListener(v -> showDeleteDialog(w));
     holder.binding.expandBtnWorkoutItem.setOnClickListener(
         v -> holder.binding.setVisible(!holder.binding.getVisible()));
+    ExerciseListAdapter adapter = new ExerciseListAdapter(this.owner, this.model, we);
     holder.binding.recyclerviewExercises.setAdapter(adapter);
   }
 
@@ -86,7 +88,7 @@ public class WorkoutListAdapter
     return this.list.size();
   }
 
-  private void showDeleteDialog(Workout w) {
+  private void showDeleteDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
     builder
         .setTitle(String.format(this.owner.getString(R.string.delete_workout_titel), w.name))
@@ -102,7 +104,7 @@ public class WorkoutListAdapter
         .show();
   }
 
-  private void showCopyDialog(Workout w) {
+  private void showCopyDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
     builder
         .setTitle(String.format(this.owner.getString(R.string.copy_workout_titel), w.name))
@@ -154,14 +156,14 @@ public class WorkoutListAdapter
         .show();
   }
 
-  private void showEditDialog(Workout w) {
+  private void showEditDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
     InputDialogTextBinding binding =
         DataBindingUtil.inflate(
             LayoutInflater.from(this.owner.getContext()), R.layout.input_dialog_text, null, false);
     binding.setText(w.name);
-    builder.setView(binding.getRoot());
     builder
+        .setView(binding.getRoot())
         .setTitle(String.format(this.owner.getString(R.string.set_workout_title), w.name))
         .setPositiveButton(
             R.string.yes,
@@ -178,7 +180,7 @@ public class WorkoutListAdapter
         .show();
   }
 
-  private void showAddDialog(Workout w) {
+  private void showAddDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
     this.model.repository.getAllNotContainedExercise(
         w.id,
@@ -189,9 +191,9 @@ public class WorkoutListAdapter
           @Override
           public void onSuccess(@NonNull List<Exercise> list) {
             if (list.isEmpty()) {
-              builder.setTitle(String.format(owner.getString(R.string.select_exercises), w.name));
-              builder.setMessage(R.string.no_items);
               builder
+                  .setTitle(String.format(owner.getString(R.string.select_exercises), w.name))
+                  .setMessage(R.string.no_items)
                   .setPositiveButton(R.string.yes, (dialog, id) -> dialog.dismiss())
                   .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
                   .create()
@@ -202,10 +204,12 @@ public class WorkoutListAdapter
                 items[i] = list.get(i).name;
               }
               boolean[] checkedList = new boolean[list.size()];
-              builder.setMultiChoiceItems(
-                  items, checkedList, (dialog, which, isChecked) -> checkedList[which] = isChecked);
-              builder.setTitle(String.format(owner.getString(R.string.select_exercises), w.name));
               builder
+                  .setMultiChoiceItems(
+                      items,
+                      checkedList,
+                      (dialog, which, isChecked) -> checkedList[which] = isChecked)
+                  .setTitle(String.format(owner.getString(R.string.select_exercises), w.name))
                   .setPositiveButton(
                       R.string.yes,
                       (dialog, id) -> {
@@ -227,7 +231,9 @@ public class WorkoutListAdapter
           }
 
           @Override
-          public void onError(@NonNull Throwable e) {}
+          public void onError(@NonNull Throwable e) {
+            Log.d(TAG, String.format("Error when fetching exercises for workout %1$s", w));
+          }
 
           @Override
           public void onComplete() {}
@@ -240,8 +246,8 @@ public class WorkoutListAdapter
     private final List<WorkoutAndWorkoutExerciseAndExercise> newList;
 
     public WorkoutListDiffUtil(
-        List<WorkoutAndWorkoutExerciseAndExercise> oldList,
-        List<WorkoutAndWorkoutExerciseAndExercise> newList) {
+        @NonNull List<WorkoutAndWorkoutExerciseAndExercise> oldList,
+        @NonNull List<WorkoutAndWorkoutExerciseAndExercise> newList) {
       this.oldList = oldList;
       this.newList = newList;
     }
@@ -258,13 +264,17 @@ public class WorkoutListAdapter
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-      return this.oldList.get(oldItemPosition).workout == this.newList.get(newItemPosition).workout;
+      return this.oldList.get(oldItemPosition).workout.id
+          == this.newList.get(newItemPosition).workout.id;
     }
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-      return this.oldList.get(oldItemPosition).workoutAndExercises
-          == this.newList.get(newItemPosition).workoutAndExercises;
+      return Objects.equals(
+              this.oldList.get(oldItemPosition).workout.name,
+              this.newList.get(newItemPosition).workout.name)
+          && this.oldList.get(oldItemPosition).workoutAndExercises
+              == this.newList.get(newItemPosition).workoutAndExercises;
     }
   }
 
@@ -272,7 +282,7 @@ public class WorkoutListAdapter
 
     public ItemWorkoutBinding binding;
 
-    public WorkoutItemViewHolder(ItemWorkoutBinding binding) {
+    public WorkoutItemViewHolder(@NonNull ItemWorkoutBinding binding) {
       super(binding.getRoot());
       this.binding = binding;
     }

@@ -6,7 +6,7 @@ import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 public class BasicApp extends Application {
 
-  public static final String TAG = "BasicApp";
+  private static final String TAG = "BasicApp";
 
   private AppExecutors executors;
   private AppDatabase db;

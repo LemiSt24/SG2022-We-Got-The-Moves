@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DataGenerator {
 
-  public static final String TAG = "DataGenerator";
+  private static final String TAG = "DataGenerator";
 
   public static String[] exerciseNames = {
     "Fly Steps",

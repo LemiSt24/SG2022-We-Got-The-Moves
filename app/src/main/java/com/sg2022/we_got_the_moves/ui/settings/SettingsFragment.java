@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,8 +23,7 @@ public class SettingsFragment extends Fragment {
     super.onCreate(savedInstance);
     SettingsViewModel.Factory factory =
         new SettingsViewModel.Factory(this.requireActivity().getApplication());
-    SettingsViewModel model =
-        new ViewModelProvider(this, factory).get(SettingsViewModel.class);
+    SettingsViewModel model = new ViewModelProvider(this, factory).get(SettingsViewModel.class);
     this.model = model;
   }
 

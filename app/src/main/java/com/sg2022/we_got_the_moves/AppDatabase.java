@@ -25,9 +25,8 @@ import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
     exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
-  public static final String TAG = "AppDatabase";
-
   public static final String DB_NAME = "SGWeGotTheMovesDB";
+  private static final String TAG = "AppDatabase";
   private static volatile AppDatabase INSTANCE;
 
   public static AppDatabase getInstance(final Context context) {

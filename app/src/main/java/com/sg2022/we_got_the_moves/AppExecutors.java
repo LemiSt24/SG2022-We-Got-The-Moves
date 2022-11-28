@@ -32,7 +32,7 @@ import java.util.concurrent.Executors;
  */
 public class AppExecutors {
 
-  public static final String TAG = "AppExecutors";
+  private static final String TAG = "AppExecutors";
 
   private static final int NUMBER_OF_THREADS = 4;
   private static volatile AppExecutors INSTANCE;

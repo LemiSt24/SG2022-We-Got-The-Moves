@@ -21,7 +21,7 @@ import com.sg2022.we_got_the_moves.ui.workouts.adapter.WorkoutListAdapter;
 
 public class WorkoutsFragment extends Fragment {
 
-  public static final String TAG = "WorkoutListFragment";
+  private static final String TAG = "WorkoutListFragment";
 
   private WorkoutListAdapter adapter;
   private WorkoutsViewModel model;
@@ -59,8 +59,8 @@ public class WorkoutsFragment extends Fragment {
             LayoutInflater.from(this.getContext()), R.layout.input_dialog_text, null, false);
     Workout newItem = new Workout(0, getString(R.string.untitled));
     binding.setText(newItem.name);
-    builder.setView(binding.getRoot());
     builder
+        .setView(binding.getRoot())
         .setTitle(getString(R.string.new_workout))
         .setPositiveButton(
             R.string.yes,
