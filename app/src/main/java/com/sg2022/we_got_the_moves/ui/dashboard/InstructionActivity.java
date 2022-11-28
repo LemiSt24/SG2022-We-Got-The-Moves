@@ -65,7 +65,7 @@ public class InstructionActivity extends AppCompatActivity {
             if (e == null){
             }
             else{
-                exercise = e;
+                exercise = (Exercise) e;
                 exerciseTitle.setText(exercise.name);
                 textInstruction.setText(exercise.getTextInstruction());
                 videoId = exercise.getVideoInstruction();

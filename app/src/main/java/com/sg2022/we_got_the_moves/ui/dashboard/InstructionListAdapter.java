@@ -24,7 +24,6 @@ import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 import com.sg2022.we_got_the_moves.ui.workouts.adapter.ExerciseListAdapter;
-import com.sg2022.we_got_the_moves.ui.workouts.viewmodel.WorkoutsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

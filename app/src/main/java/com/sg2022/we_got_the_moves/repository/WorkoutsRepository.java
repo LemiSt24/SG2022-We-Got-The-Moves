@@ -85,6 +85,8 @@ public class WorkoutsRepository {
     return this.exerciseDao.getAllExercises();
   }
 
+  public LiveData<Exercise> getExercise(long exerciseId){ return this.exerciseDao.getExercise(exerciseId);}
+
   public LiveData<List<WorkoutExerciseAndExercise>> getAllWorkoutExercise(long workoutId) {
     return this.workoutExerciseDao.getAllWorkoutExercise(workoutId);
   }
