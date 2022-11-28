@@ -30,8 +30,10 @@ public class WorkoutsFragment extends Fragment {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     WorkoutsViewModel.Factory factory =
-        new WorkoutsViewModel.Factory(this.requireActivity().getApplication(), this);
-    this.model = new ViewModelProvider(this, factory).get(WorkoutsViewModel.class);
+        new WorkoutsViewModel.Factory(
+            this.requireActivity().getApplication(), this.requireActivity());
+    this.model =
+        new ViewModelProvider(this.requireActivity(), factory).get(WorkoutsViewModel.class);
     this.adapter = new WorkoutListAdapter(this, this.model);
   }
 
