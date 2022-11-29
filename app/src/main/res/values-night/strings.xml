@@ -27,4 +27,6 @@
     <string name="untitled">Untitled</string>
     <string name="expand">expand</string>
     <string name="amount">Amount</string>
+    <string name="name">Name</string>
+    <string name="info">Info</string>
 </resources>

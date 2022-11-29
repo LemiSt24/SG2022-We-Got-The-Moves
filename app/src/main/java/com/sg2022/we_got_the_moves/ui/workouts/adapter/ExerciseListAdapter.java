@@ -3,6 +3,7 @@ package com.sg2022.we_got_the_moves.ui.workouts.adapter;
 import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -48,7 +49,14 @@ public class ExerciseListAdapter
   public void onBindViewHolder(@NonNull ExerciseItemViewHolder holder, int position) {
     WorkoutExerciseAndExercise wee = this.list.get(position);
     holder.binding.setWorkoutExerciseAndExercise(wee);
-    holder.binding.buttonCounterExerciseItem.setOnClickListener(v -> showAmountDialog(wee));
+    holder.binding.buttonAmountExerciseItem.setOnClickListener(v -> showAmountDialog(wee));
+    holder.binding.buttonInfoExerciseItem.setOnClickListener(
+        v ->
+            Toast.makeText(
+                    this.owner.getContext(),
+                    String.format("Click on Info button: %1$s", wee.exercise.name),
+                    Toast.LENGTH_SHORT)
+                .show());
   }
 
   @Override

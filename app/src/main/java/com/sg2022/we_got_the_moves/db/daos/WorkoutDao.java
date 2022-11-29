@@ -39,6 +39,9 @@ public interface WorkoutDao {
   @Delete
   void delete(Workout w);
 
+  @Delete
+  void delete(List<Workout> ws);
+
   @Query("SELECT * FROM Workout WHERE Workout.id = :workoutId")
   LiveData<Workout> getWorkout(long workoutId);
 

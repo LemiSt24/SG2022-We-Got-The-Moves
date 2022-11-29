@@ -4,44 +4,50 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 @Entity(tableName = "Exercise")
 public class Exercise {
 
-    @PrimaryKey(autoGenerate = true)
-    public long id;
+  @PrimaryKey(autoGenerate = true)
+  public long id;
 
-    @ColumnInfo(name = "name")
-    public String name;
+  @ColumnInfo(name = "name")
+  public String name;
 
-    @Nullable
-    public String getTextInstruction() {
-        return textInstruction;
-    }
+  private String textInstruction;
+  private String videoInstruction;
 
-    public void setTextInstruction(@Nullable String textInstruction) {
-        this.textInstruction = textInstruction;
-    }
+  public Exercise(long id, String name, String textInstruction, String videoInstruction) {
+    this.id = id;
+    this.name = name;
+    this.textInstruction = textInstruction;
+    this.videoInstruction = videoInstruction;
+  }
 
-    @Nullable
-    public String getVideoInstruction() {
-        return videoInstruction;
-    }
+  @Nullable
+  public String getTextInstruction() {
+    return textInstruction;
+  }
 
-    public void setVideoInstruction(@Nullable String videoInstruction) {
-        this.videoInstruction = videoInstruction;
-    }
+  public void setTextInstruction(@Nullable String textInstruction) {
+    this.textInstruction = textInstruction;
+  }
 
-    @Nullable
-    private String textInstruction;
-    @Nullable
-    private String videoInstruction;
+  @Nullable
+  public String getVideoInstruction() {
+    return videoInstruction;
+  }
 
-    public Exercise(long id, String name, String textInstruction, String videoInstruction) {
-        this.id = id;
-        this.name = name;
-        this.textInstruction = textInstruction;
-        this.videoInstruction = videoInstruction;
-    }
+  public void setVideoInstruction(@Nullable String videoInstruction) {
+    this.videoInstruction = videoInstruction;
+  }
+
+  @Override
+  public boolean equals(@Nullable Object obj) {
+    if (!(obj instanceof Exercise)) return false;
+    return this.id == ((Exercise) obj).id && Objects.equals(this.name, ((Exercise) obj).name);
+  }
 }

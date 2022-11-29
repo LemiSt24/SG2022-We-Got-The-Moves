@@ -74,7 +74,6 @@ public abstract class AppDatabase extends RoomDatabase {
                           getInstance(appContext)
                               .UserDao()
                               .insert(new User("Simon Westermann", (float) 1.77, 50, false, 22));
-                          Log.d(TAG, "Dummy Data inserted into DB ");
                         });
               }
             })

@@ -14,7 +14,7 @@ import com.sg2022.we_got_the_moves.db.entity.Exercise;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.core.Maybe;
+import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface ExerciseDao {
@@ -22,6 +22,7 @@ public interface ExerciseDao {
   @Insert(onConflict = REPLACE)
   void insert(Exercise e);
 
+  @Transaction
   @Insert(onConflict = REPLACE)
   void insertAll(List<Exercise> es);
 
@@ -34,14 +35,22 @@ public interface ExerciseDao {
   @Query("SELECT * FROM Exercise")
   LiveData<List<Exercise>> getAllExercises();
 
+  @Query("SELECT * FROM Exercise")
+  Single<List<Exercise>> getAllExercisesSingle();
+
   @Query(
       "SELECT Exercise.* FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :workoutId")
   LiveData<List<Exercise>> getAllExercises(long workoutId);
 
   @Transaction
   @Query(
+      "SELECT Exercise.* FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :workoutId")
+  Single<List<Exercise>> getAllExercisesSingle(long workoutId);
+
+  @Transaction
+  @Query(
       "SELECT * FROM Exercise WHERE Exercise.id NOT IN (SELECT Exercise.id FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :workoutId)")
-  Maybe<List<Exercise>> getAllNotContainedExercisesMaybe(long workoutId);
+  Single<List<Exercise>> getAllNotContainedExercisesSingle(long workoutId);
 
   @Query("SELECT * FROM Exercise WHERE Exercise.id = :exerciseId")
   LiveData<Exercise> getExercise(long exerciseId);

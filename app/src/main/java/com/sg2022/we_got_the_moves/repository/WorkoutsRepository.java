@@ -1,6 +1,7 @@
 package com.sg2022.we_got_the_moves.repository;
 
 import android.app.Application;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -17,9 +18,9 @@ import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExerciseA
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.MaybeObserver;
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -77,31 +78,60 @@ public class WorkoutsRepository {
     return this.workoutDao.getAllWorkouts();
   }
 
-  public LiveData<List<Exercise>> getExercises(long workoutId) {
+  public LiveData<List<Exercise>> getAllExercises(long workoutId) {
     return this.exerciseDao.getAllExercises(workoutId);
+  }
+
+  public void getAllExercisesSingle(long workoutId, SingleObserver<List<Exercise>> observer) {
+    this.exerciseDao
+        .getAllExercisesSingle(workoutId)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
   }
 
   public LiveData<List<Exercise>> getAllExercises() {
     return this.exerciseDao.getAllExercises();
   }
 
-  public LiveData<Exercise> getExercise(long exerciseId){ return this.exerciseDao.getExercise(exerciseId);}
-
-  public LiveData<List<WorkoutExerciseAndExercise>> getAllWorkoutExercise(long workoutId) {
-    return this.workoutExerciseDao.getAllWorkoutExercise(workoutId);
-  }
-
-  public void getAllNotContainedExercise(long workoutId, MaybeObserver<List<Exercise>> observer) {
+  public void getAllExercisesSingle(SingleObserver<List<Exercise>> observer) {
     this.exerciseDao
-        .getAllNotContainedExercisesMaybe(workoutId)
+        .getAllExercisesSingle()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer);
   }
 
-  public void getAllWorkoutExercise(long id, MaybeObserver<List<WorkoutExercise>> observer) {
+  public LiveData<Exercise> getExercise(long exerciseId) {
+    return this.exerciseDao.getExercise(exerciseId);
+  }
+
+  public LiveData<List<WorkoutExerciseAndExercise>> getAllWorkoutExerciseAndExercise(
+      long workoutId) {
+    return this.workoutExerciseDao.getAllWorkoutExerciseAndExercise(workoutId);
+  }
+
+  public void getAllNotContainedExercise(long workoutId, SingleObserver<List<Exercise>> observer) {
+    this.exerciseDao
+        .getAllNotContainedExercisesSingle(workoutId)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
+  }
+
+  public void getAllWorkoutExerciseSingle(
+      long workoutId, SingleObserver<List<WorkoutExercise>> observer) {
     this.workoutExerciseDao
-        .getAllWorkoutExerciseMaybe(id)
+        .getAllWorkoutExerciseSingle(workoutId)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
+  }
+
+  public void getAllWorkoutExerciseAndExerciseSingle(
+      long workoutId, SingleObserver<List<WorkoutExerciseAndExercise>> observer) {
+    this.workoutExerciseDao
+        .getAllWorkoutExerciseAndExerciseSingle(workoutId)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer);
@@ -111,9 +141,27 @@ public class WorkoutsRepository {
     this.executors.getPoolThread().execute(() -> this.workoutExerciseDao.insertAll(l));
   }
 
-  public void insertWorkoutExercise(List<WorkoutExercise> l, MaybeObserver<List<Long>> observer) {
+  public void insertOrDeleteWorkoutExercise(List<Pair<WorkoutExercise, Boolean>> wes) {
+    this.executors
+        .getPoolThread()
+        .execute(
+            () -> {
+              this.workoutExerciseDao.insertAll(
+                  wes.stream()
+                      .filter(e -> e.second)
+                      .map(e -> e.first)
+                      .collect(Collectors.toList()));
+              this.workoutExerciseDao.deleteAll(
+                  wes.stream()
+                      .filter(e -> !e.second)
+                      .map(e -> e.first)
+                      .collect(Collectors.toList()));
+            });
+  }
+
+  public void insertWorkoutExercise(List<WorkoutExercise> l, SingleObserver<List<Long>> observer) {
     this.workoutExerciseDao
-        .insertAllMaybe(l)
+        .insertAllSingle(l)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer);
@@ -123,8 +171,16 @@ public class WorkoutsRepository {
     this.executors.getPoolThread().execute(() -> this.workoutDao.delete(w));
   }
 
+  public void deleteWorkouts(List<Workout> ws) {
+    this.executors.getPoolThread().execute(() -> this.workoutDao.delete(ws));
+  }
+
   public void deleteWorkoutExercise(WorkoutExercise we) {
     this.executors.getPoolThread().execute(() -> this.workoutExerciseDao.delete(we));
+  }
+
+  public void deleteWorkoutExercises(List<WorkoutExercise> wes) {
+    this.executors.getPoolThread().execute(() -> this.workoutExerciseDao.deleteAll(wes));
   }
 
   public LiveData<WorkoutExercise> getWorkoutExercise(long workoutId, long exerciseId) {

@@ -2,6 +2,7 @@ package com.sg2022.we_got_the_moves.ui.workouts.adapter;
 
 import android.app.AlertDialog;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.common.primitives.Booleans;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.InputDialogTextBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemWorkoutBinding;
@@ -25,8 +27,8 @@ import com.sg2022.we_got_the_moves.ui.workouts.WorkoutsViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-import io.reactivex.rxjava3.core.MaybeObserver;
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
 
@@ -37,7 +39,7 @@ public class WorkoutListAdapter
 
   private final Fragment owner;
   private final WorkoutsViewModel model;
-  private List<WorkoutAndWorkoutExerciseAndExercise> list;
+  private final List<WorkoutAndWorkoutExerciseAndExercise> list;
 
   public WorkoutListAdapter(@NonNull Fragment owner, @NonNull WorkoutsViewModel model) {
     this.owner = owner;
@@ -46,10 +48,15 @@ public class WorkoutListAdapter
     this.model.data.observe(
         owner,
         list -> {
-          if (list == null) list = new ArrayList<>();
+          if (list == null) {
+            list = new ArrayList<>();
+          }
+          if (this.list == list) return;
+
           WorkoutListDiffUtil workoutDiff = new WorkoutListDiffUtil(this.list, list);
           DiffUtil.DiffResult diff = DiffUtil.calculateDiff(workoutDiff);
-          this.list = list;
+          this.list.clear();
+          this.list.addAll(list);
           diff.dispatchUpdatesTo(this);
         });
   }
@@ -122,9 +129,9 @@ public class WorkoutListAdapter
 
                     @Override
                     public void onSuccess(@NonNull Long aLong) {
-                      model.repository.getAllWorkoutExercise(
+                      model.repository.getAllWorkoutExerciseSingle(
                           w.id,
-                          new MaybeObserver<List<WorkoutExercise>>() {
+                          new SingleObserver<List<WorkoutExercise>>() {
 
                             @Override
                             public void onSubscribe(@NonNull Disposable d) {}
@@ -140,9 +147,6 @@ public class WorkoutListAdapter
 
                             @Override
                             public void onError(@NonNull Throwable e) {}
-
-                            @Override
-                            public void onComplete() {}
                           });
                     }
 
@@ -182,15 +186,15 @@ public class WorkoutListAdapter
 
   private void showAddDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
-    this.model.repository.getAllNotContainedExercise(
-        w.id,
-        new MaybeObserver<List<Exercise>>() {
+    this.model.repository.getAllExercisesSingle(
+        new SingleObserver<List<Exercise>>() {
+
           @Override
           public void onSubscribe(@NonNull Disposable d) {}
 
           @Override
-          public void onSuccess(@NonNull List<Exercise> list) {
-            if (list.isEmpty()) {
+          public void onSuccess(@NonNull List<Exercise> total) {
+            if (total.isEmpty()) {
               builder
                   .setTitle(String.format(owner.getString(R.string.select_exercises), w.name))
                   .setMessage(R.string.no_items)
@@ -199,44 +203,60 @@ public class WorkoutListAdapter
                   .create()
                   .show();
             } else {
-              String[] items = new String[list.size()];
-              for (int i = 0; i < items.length; i++) {
-                items[i] = list.get(i).name;
-              }
-              boolean[] checkedList = new boolean[list.size()];
-              builder
-                  .setMultiChoiceItems(
-                      items,
-                      checkedList,
-                      (dialog, which, isChecked) -> checkedList[which] = isChecked)
-                  .setTitle(String.format(owner.getString(R.string.select_exercises), w.name))
-                  .setPositiveButton(
-                      R.string.yes,
-                      (dialog, id) -> {
-                        List<WorkoutExercise> result = new ArrayList<>();
-                        for (int i = 0; i < checkedList.length; i++) {
-                          if (checkedList[i]) {
-                            result.add(new WorkoutExercise(w.id, list.get(i).id, 5));
-                          }
-                        }
-                        if (result.size() > 0) {
-                          model.repository.insertWorkoutExercise(result);
-                        }
-                        dialog.dismiss();
-                      })
-                  .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
-                  .create()
-                  .show();
+              model.repository.getAllWorkoutExerciseAndExerciseSingle(
+                  w.id,
+                  new SingleObserver<List<WorkoutExerciseAndExercise>>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {}
+
+                    @Override
+                    public void onSuccess(@NonNull List<WorkoutExerciseAndExercise> found) {
+                      List<Exercise> tmp =
+                          found.stream().map(e -> e.exercise).collect(Collectors.toList());
+                      String[] items = total.stream().map(e -> e.name).toArray(String[]::new);
+                      List<Boolean> b =
+                          total.stream().map(tmp::contains).collect(Collectors.toList());
+                      boolean[] checkedList = Booleans.toArray(b);
+                      builder
+                          .setMultiChoiceItems(
+                              items,
+                              checkedList,
+                              (dialog, which, isChecked) -> checkedList[which] = isChecked)
+                          .setTitle(
+                              String.format(owner.getString(R.string.select_exercises), w.name))
+                          .setPositiveButton(
+                              R.string.yes,
+                              (dialog, id) -> {
+                                List<Pair<WorkoutExercise, Boolean>> result = new ArrayList<>();
+                                for (int i = 0; i < checkedList.length; i++) {
+                                  result.add(
+                                      new Pair<>(
+                                          new WorkoutExercise(w.id, total.get(i).id, 5),
+                                          checkedList[i]));
+                                }
+                                if (result.size() > 0) {
+                                  model.repository.insertOrDeleteWorkoutExercise(result);
+                                }
+
+                                dialog.dismiss();
+                              })
+                          .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+                          .create()
+                          .show();
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                      Log.e(TAG, e.toString());
+                    }
+                  });
             }
           }
 
           @Override
           public void onError(@NonNull Throwable e) {
-            Log.d(TAG, String.format("Error when fetching exercises for workout %1$s", w));
+            Log.e(TAG, e.toString());
           }
-
-          @Override
-          public void onComplete() {}
         });
   }
 
