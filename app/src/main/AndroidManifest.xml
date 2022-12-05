@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:name=".BasicApp"
         android:allowBackup="true"
@@ -37,5 +38,13 @@
                 android:name="com.sg2022.we_got_the_moves.ui.dashboard"
                 android:value="" />
         </activity>
+        <activity
+            android:name=".ui.training.MediapipeActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
     </application>
+
 </manifest>

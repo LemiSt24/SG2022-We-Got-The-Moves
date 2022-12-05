@@ -60,7 +60,8 @@ public class InstructionListAdapter
     holder.binding.setExercise(e);
     holder.binding.elementInstruction.setText(e.name);
     holder.binding.elementInstruction.setOnClickListener(
-        v -> MainActivity.getInstanceActivity().openInstructionActivity(e.id));
+          v -> MainActivity.getInstanceActivity().openMediapipeActivity());
+    //    v -> MainActivity.getInstanceActivity().openInstructionActivity(e.id));
   }
 
   @Override

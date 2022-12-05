@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.sg2022.we_got_the_moves.databinding.ActivityMainBinding;
 import com.sg2022.we_got_the_moves.ui.dashboard.InstructionActivity;
 import com.sg2022.we_got_the_moves.ui.settings.UserDataChangeActivity;
+import com.sg2022.we_got_the_moves.ui.training.MediapipeActivity;
 
 import java.lang.ref.WeakReference;
 
@@ -57,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
   public void openInstructionActivity(long id) {
     Intent intent = new Intent(this, InstructionActivity.class);
     intent.putExtra("EXERCISE_ID", id);
+    startActivity(intent);
+  }
+
+  public void openMediapipeActivity() {
+    Intent intent = new Intent(this, MediapipeActivity.class);
     startActivity(intent);
   }
 
