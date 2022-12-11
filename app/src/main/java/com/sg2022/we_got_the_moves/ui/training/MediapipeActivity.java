@@ -7,13 +7,22 @@ import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
+import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
+import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.mediapipe.formats.proto.LandmarkProto;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
@@ -74,13 +83,18 @@ public class MediapipeActivity extends AppCompatActivity {
     // Handles camera access via the {@link CameraX} Jetpack support library.
     private CameraXPreviewHelper cameraHelper;
 
+    // Saves the current time in counter at stopTimeCounter to use this at startTimeCounter
+    private long time_counter_time = 0;
+    // Sets true if time gets stopped and true if time gets started again. Can only start time if time_stopped = true
+    private boolean time_stopped = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentViewLayoutResId());
 
-
+//wird für nichts benutzt?, keine metadata in manifest?
     try {
         applicationInfo =
                 getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
@@ -105,8 +119,8 @@ public class MediapipeActivity extends AppCompatActivity {
         processor
                 .getVideoSurfaceOutput()
                 .setFlipY(FLIP_FRAMES_VERTICALLY);
-
         PermissionHelper.checkAndRequestCameraPermissions(this);
+
     AndroidPacketCreator packetCreator = processor.getPacketCreator();
     Map<String, Packet> inputSidePackets = new HashMap<>();
 //        inputSidePackets.put(INPUT_NUM_HANDS_SIDE_PACKET_NAME, packetCreator.createInt32(NUM_HANDS));
@@ -141,6 +155,33 @@ public class MediapipeActivity extends AppCompatActivity {
             return;
         }
     });
+
+        ImageButton stop_but = findViewById(R.id.mediapipe_stop_button);
+        CardView stop_card = findViewById(R.id.mediapipe_stop_card);
+        Button continue_but = findViewById(R.id.mediapipe_continue_button);
+        Button finish_but = findViewById(R.id.mediapipe_finish_button);
+        stop_but.setOnClickListener(
+                v -> {
+                    stop_card.setVisibility(View.VISIBLE);
+                    continue_but.setClickable(true);
+                    finish_but.setClickable(true);
+                    stopTimeCounter();
+                }
+        );
+        continue_but.setOnClickListener(
+                v -> {
+                    stop_card.setVisibility(View.GONE);
+                    continue_but.setClickable(false);
+                    finish_but.setClickable(false);
+                    startTimeCounter();
+                }
+        );
+        finish_but.setOnClickListener(
+                v -> {
+                    setExerciseX("lower your hips");
+                    setTimeCounter(70);
+                }
+        );
     }
 
     private static String getLandmarksDebugString(LandmarkProto.NormalizedLandmarkList landmarks) {
@@ -232,6 +273,7 @@ public class MediapipeActivity extends AppCompatActivity {
         Size displaySize = cameraHelper.computeDisplaySizeFromViewSize(viewSize);
         boolean isCameraRotated = cameraHelper.isCameraRotated();
 
+
         // Connect the converter to the camera-preview frames as its input (via
         // previewFrameTexture), and configure the output width and height as the computed
         // display size.
@@ -239,6 +281,9 @@ public class MediapipeActivity extends AppCompatActivity {
                 previewFrameTexture,
                 isCameraRotated ? displaySize.getHeight() : displaySize.getWidth(),
                 isCameraRotated ? displaySize.getWidth() : displaySize.getHeight());
+        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE))
+                .getDefaultDisplay();
+        converter.setRotation(display.getRotation());
     }
 
     private void setupPreviewDisplayView() {
@@ -255,7 +300,7 @@ public class MediapipeActivity extends AppCompatActivity {
                                 processor.getVideoSurfaceOutput().setSurface(holder.getSurface());
                             }
 
-                            @Override
+                           @Override
                             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                                 onPreviewDisplaySurfaceChanged(holder, format, width, height);
                             }
@@ -266,4 +311,56 @@ public class MediapipeActivity extends AppCompatActivity {
                             }
                         });
     }
+
+    public void setExerciseCheck(){
+        ImageView check_x_mark = findViewById(R.id.mediapipe_check_x_mark);
+        check_x_mark.setImageResource(R.drawable.ic_check_green_24dp);
+        TextView evaluation_text = findViewById(R.id.mediapipe_evaluation_text);
+        evaluation_text.setText("all correct");
+
+    }
+
+    public void setExerciseX(String reason){
+        ImageView check_x_mark = findViewById(R.id.mediapipe_check_x_mark);
+        check_x_mark.setImageResource(R.drawable.ic_x_red_24dp);
+        TextView evaluation_text = findViewById(R.id.mediapipe_evaluation_text);
+        evaluation_text.setText(reason);
+    }
+
+    public void setTimeCounter(long seconds){
+        time_stopped = false;
+        Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
+        time_counter.setVisibility(View.VISIBLE);
+        time_counter.setBase(SystemClock.elapsedRealtime() + 1000 * seconds);
+        time_counter.start();
+        //so irgendwas programmieren was z.B. passiert, wenn Timer auf 0 geht
+       /* time_counter.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                long base=simpleChronometer.getBase();
+            }
+        });*/
+    }
+
+    public void stopTimeCounter(){
+        Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
+        time_counter_time = SystemClock.elapsedRealtime();
+        time_counter.stop();
+        time_stopped = true;
+    }
+
+    public void startTimeCounter(){
+        if (time_stopped){
+            Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
+            time_counter.setBase(time_counter.getBase() + SystemClock.elapsedRealtime() - time_counter_time);
+            time_counter.start();
+            time_stopped = false;
+        }
+    }
+
+    public void setRepetition(String Rep){
+        TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
+        repetition_counter.setVisibility(View.VISIBLE);
+    }
+
 }
