@@ -6,21 +6,27 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TypeConverters {
 
-  private final Gson gson = new Gson();
-
   @TypeConverter
-  protected <T> String fromListToJSON(List<T> l) {
-    return gson.toJson(l);
+  public static Date fromTimestamp(Long value) {
+    return value == null ? null : new Date(value);
   }
-
   @TypeConverter
-  protected <T> ArrayList<T> fromJSONToList(String s) {
-    Type listType = new TypeToken<List<String>>() {}.getType();
-    return gson.fromJson(s, listType);
+  public static Long dateToTimestamp(Date date) {
+    return date == null ? null : date.getTime();
+  }
+  @TypeConverter
+  public static Duration longToDuration(Long durationInSeconds){
+    return durationInSeconds == null ? null : java.time.Duration.ofSeconds(durationInSeconds);
+  }
+  @TypeConverter
+  public static long duratioToLong(Duration duration){
+    return duration == null ? null : duration.getSeconds();
   }
 }

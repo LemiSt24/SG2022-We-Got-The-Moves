@@ -57,7 +57,7 @@ public class InstructionListAdapter
   @Override
   public void onBindViewHolder(@NonNull InstructionListViewHolder holder, int position) {
     Exercise e = this.exerciseList.get(position);
-    holder.binding.setExercise(e);
+    //holder.binding.setExercise(e);
     holder.binding.elementInstruction.setText(e.name);
     holder.binding.elementInstruction.setOnClickListener(
           v -> MainActivity.getInstanceActivity().openMediapipeActivity());
