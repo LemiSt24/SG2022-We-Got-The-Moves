@@ -82,6 +82,11 @@ classes automatically.
 - [View Binding Library](http://developer.android.com/topic/libraries/view-binding)
 - [Data Binding Library](https://developer.android.com/topic/libraries/data-binding)
 
+## Charting
+
+We use a well known [library](https://github.com/PhilJay/MPAndroidChart) for building and displaying charts in the statistic view. This tool allows all kind of charts, like bar, graph or pie charts.  
+
+
 ## Database
 
 #### Android Room DB library
