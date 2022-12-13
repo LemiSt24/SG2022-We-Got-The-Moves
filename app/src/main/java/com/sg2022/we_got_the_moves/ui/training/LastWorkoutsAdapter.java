@@ -28,20 +28,20 @@ public class LastWorkoutsAdapter
     private final TrainingViewModel model;
     private List<Workout> workoutList;
     private ItemWorkoutNoEditBinding binding;
-    private List<FinishedTraining> finishedTrainings;
+    private List<Long> workoutIds;
 
     public LastWorkoutsAdapter(@NonNull LifecycleOwner owner, @NonNull TrainingViewModel model) {
         this.owner = owner;
         this.model = model;
 
-        finishedTrainings = new ArrayList<>();
+        workoutIds = new ArrayList<>();
         workoutList = new ArrayList<>();
-        this.model.repository.getNLastTrainigs(3).observe(
+        this.model.repository.getNLastDistinctWorkoutIds(3).observe(
                 owner, finishedTraining -> {
                     Log.println(Log.DEBUG, TAG, finishedTraining.toString());
-                    finishedTrainings = finishedTraining;
-                    for (int i = 0; i < finishedTrainings.size(); i++) {
-                        this.model.workoutsRepository.getWorkout(finishedTrainings.get(i).workoutId).observe(
+                    workoutIds = finishedTraining;
+                    for (int i = 0; i < workoutIds.size(); i++) {
+                        this.model.workoutsRepository.getWorkout(workoutIds.get(i)).observe(
                                 owner, workout -> {
                                     workoutList.add(workout);
                                     notifyDataSetChanged();
@@ -49,7 +49,6 @@ public class LastWorkoutsAdapter
                         );
                     }
                     notifyDataSetChanged();
-                    Log.println(Log.DEBUG, TAG, String.valueOf(workoutList.size()));
                 }
         );
 
