@@ -42,6 +42,8 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sg2022.we_got_the_moves.FullBodyPoseEmbedder;
+import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 
 public class MediapipeActivity extends AppCompatActivity {
@@ -88,6 +90,7 @@ public class MediapipeActivity extends AppCompatActivity {
     // Sets true if time gets stopped and true if time gets started again. Can only start time if time_stopped = true
     private boolean time_stopped = false;
 
+    private PoseClassifier classifier;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +104,8 @@ public class MediapipeActivity extends AppCompatActivity {
     } catch (PackageManager.NameNotFoundException e) {
         Log.e(TAG, "Cannot find application info: " + e);
     }
+
+    classifier = new PoseClassifier(getApplicationContext(), 20, 10, "dataset.csv");
 
     previewDisplayView = new SurfaceView(this);
     setupPreviewDisplayView();
@@ -143,13 +148,16 @@ public class MediapipeActivity extends AppCompatActivity {
                 return;
             }
             // Note: If eye_presence is false, these landmarks are useless.
-            Log.v(
+            /*Log.v(
                     TAG,
                     "[TS:"
                             + packet.getTimestamp()
                             + "] #Landmarks for iris: "
                             + landmarks.getLandmarkCount());
-            Log.v(TAG, getLandmarksDebugString(landmarks));
+            Log.v(TAG, getLandmarksDebugString(landmarks));*/
+            Map<String, Integer> classification = classifier.classify(landmarks);
+            Log.v(TAG, getClassificationDebugString(classification));
+
         } catch (InvalidProtocolBufferException e) {
             Log.e(TAG, "Couldn't Exception received - " + e);
             return;
@@ -182,6 +190,16 @@ public class MediapipeActivity extends AppCompatActivity {
                     setTimeCounter(70);
                 }
         );
+    }
+
+    private static String getClassificationDebugString(Map<String, Integer> classification)
+    {
+        String classificationString = "";
+        for(Map.Entry<String, Integer> entry : classification.entrySet())
+        {
+            classificationString += entry.getKey() + ": " + entry.getValue() + "\n";
+        }
+        return classificationString;
     }
 
     private static String getLandmarksDebugString(LandmarkProto.NormalizedLandmarkList landmarks) {
