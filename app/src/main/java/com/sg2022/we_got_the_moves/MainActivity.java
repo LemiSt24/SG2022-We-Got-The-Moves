@@ -61,8 +61,9 @@ public class MainActivity extends AppCompatActivity {
     startActivity(intent);
   }
 
-  public void openMediapipeActivity() {
+  public void openMediapipeActivity(long id) {
     Intent intent = new Intent(this, MediapipeActivity.class);
+    intent.putExtra("WORKOUT_ID", id);
     startActivity(intent);
   }
 

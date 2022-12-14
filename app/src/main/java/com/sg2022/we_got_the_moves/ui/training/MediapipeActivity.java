@@ -1,5 +1,8 @@
 package com.sg2022.we_got_the_moves.ui.training;
 
+import static kotlinx.coroutines.DelayKt.delay;
+
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -8,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.ListAdapter;
 
 import android.os.SystemClock;
 import android.util.Log;
@@ -18,6 +22,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
@@ -39,14 +44,19 @@ import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sg2022.we_got_the_moves.R;
+import com.sg2022.we_got_the_moves.db.entity.Exercise;
+import com.sg2022.we_got_the_moves.db.entity.Workout;
+import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 public class MediapipeActivity extends AppCompatActivity {
 
-    private static final String TAG = "YXH";
+    private static final String TAG = "Mediapipe_Activity";
     private static final String BINARY_GRAPH_NAME = "pose_tracking_gpu.binarypb";
     private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
     private static final String OUTPUT_VIDEO_STREAM_NAME = "output_video";
@@ -87,6 +97,10 @@ public class MediapipeActivity extends AppCompatActivity {
     private long time_counter_time = 0;
     // Sets true if time gets stopped and true if time gets started again. Can only start time if time_stopped = true
     private boolean time_stopped = false;
+
+    private long workoutId;
+
+    private List<Exercise> exercises;
 
 
     @Override
@@ -155,6 +169,29 @@ public class MediapipeActivity extends AppCompatActivity {
             return;
         }
     });
+
+
+
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        workoutId = extras.getLong("WORKOUT_ID");
+
+        Log.println(Log.DEBUG,"workoutID", String.valueOf(workoutId));
+
+        WorkoutsRepository workoutsRepository =  WorkoutsRepository.getInstance(this.getApplication());
+        exercises = new ArrayList<Exercise>();
+        workoutsRepository.getAllExercises(workoutId).observe(
+                this, e -> {
+                    exercises = e;
+                    Log.println(Log.DEBUG,"workoutID", String.valueOf(exercises.get(0).name));
+                    Exercise firstE = exercises.get(0);
+                        // rep or time
+                        //classifier(e.get(i))
+                        //
+
+                }
+        );
+
 
         ImageButton stop_but = findViewById(R.id.mediapipe_stop_button);
         CardView stop_card = findViewById(R.id.mediapipe_stop_card);
@@ -337,7 +374,9 @@ public class MediapipeActivity extends AppCompatActivity {
        /* time_counter.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                long base=simpleChronometer.getBase();
+                long base=time_counter.getBase();
+                if base == 0
+                return true
             }
         });*/
     }

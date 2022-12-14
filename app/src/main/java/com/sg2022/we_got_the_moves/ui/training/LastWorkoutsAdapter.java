@@ -69,7 +69,7 @@ public class LastWorkoutsAdapter
         Workout w = this.workoutList.get(position);
         holder.binding.setWorkout(w);
         holder.binding.workoutName.setText(w.name);
-        holder.binding.workoutName.setOnClickListener(v -> MainActivity.getInstanceActivity().openMediapipeActivity());
+        holder.binding.workoutName.setOnClickListener(v -> MainActivity.getInstanceActivity().openMediapipeActivity(w.id));
     }
 
 
