@@ -105,6 +105,8 @@ public class MediapipeActivity extends AppCompatActivity {
 
     private List<Exercise> exercises;
     private Map<Long, Integer> exterciseIDToAmount;
+    private int ExercisePointer = 0;
+    private boolean lastStateWasTop = true;
 
 
     @Override
@@ -168,6 +170,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
                 }
         );
+        setRepetition("0");
 
     AndroidPacketCreator packetCreator = processor.getPacketCreator();
     Map<String, Packet> inputSidePackets = new HashMap<>();
@@ -199,6 +202,21 @@ public class MediapipeActivity extends AppCompatActivity {
                             + "] #Landmarks for iris: "
                             + landmarks.getLandmarkCount());
             Log.v(TAG, getLandmarksDebugString(landmarks));*/
+            if (exercises.size() != 0) {
+                Log.println(Log.DEBUG, TAG, "Exercises there " + exercises.get(0).name);
+                Log.println(Log.DEBUG, TAG, exterciseIDToAmount.get(exercises.get(0).id).toString());
+
+                Exercise currentExercise = exercises.get(ExercisePointer);
+
+                if (lastStateWasTop != onTopExercise(classifier.classify(landmarks), lastStateWasTop, currentExercise.name)){
+                    if (lastStateWasTop) {
+                        countRepUp();
+                    }
+                    lastStateWasTop = !lastStateWasTop;
+                }
+
+
+            }
             Map<String, Integer> classification = classifier.classify(landmarks);
             Log.v(TAG, getClassificationDebugString(classification));
 
@@ -375,6 +393,12 @@ public class MediapipeActivity extends AppCompatActivity {
                         });
     }
 
+    public Boolean onTopExercise(Map<String, Integer> classifierOutput, Boolean lastStateWasTop, String exerciseName){
+        if (classifierOutput.get(exerciseName + "_top") >= 7) return true;
+        if (classifierOutput.get(exerciseName + "_bottom") >= 7) return false;
+        return lastStateWasTop;
+    }
+
     public void setExerciseCheck(){
         ImageView check_x_mark = findViewById(R.id.mediapipe_check_x_mark);
         check_x_mark.setImageResource(R.drawable.ic_check_green_24dp);
@@ -426,6 +450,14 @@ public class MediapipeActivity extends AppCompatActivity {
     public void setRepetition(String Rep){
         TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
         repetition_counter.setVisibility(View.VISIBLE);
+        repetition_counter.setText(Rep);
+    }
+
+    public void countRepUp(){
+        TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
+        repetition_counter.setVisibility(View.VISIBLE);
+        String old = repetition_counter.getText().toString();
+        repetition_counter.setText(Integer.getInteger(old) + 1);
     }
 
 }
