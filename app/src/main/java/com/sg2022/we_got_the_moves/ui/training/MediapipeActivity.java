@@ -49,6 +49,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sg2022.we_got_the_moves.FullBodyPoseEmbedder;
+import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
@@ -56,7 +58,7 @@ import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 public class MediapipeActivity extends AppCompatActivity {
 
-    private static final String TAG = "Mediapipe_Activity";
+    private static final String TAG = "YXH";
     private static final String BINARY_GRAPH_NAME = "pose_tracking_gpu.binarypb";
     private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
     private static final String OUTPUT_VIDEO_STREAM_NAME = "output_video";
@@ -98,6 +100,7 @@ public class MediapipeActivity extends AppCompatActivity {
     // Sets true if time gets stopped and true if time gets started again. Can only start time if time_stopped = true
     private boolean time_stopped = false;
 
+    private PoseClassifier classifier;
     private long workoutId;
 
     private List<Exercise> exercises;
@@ -115,6 +118,8 @@ public class MediapipeActivity extends AppCompatActivity {
     } catch (PackageManager.NameNotFoundException e) {
         Log.e(TAG, "Cannot find application info: " + e);
     }
+
+    classifier = new PoseClassifier(getApplicationContext(), 20, 10, "dataset.csv");
 
     previewDisplayView = new SurfaceView(this);
     setupPreviewDisplayView();
@@ -157,13 +162,16 @@ public class MediapipeActivity extends AppCompatActivity {
                 return;
             }
             // Note: If eye_presence is false, these landmarks are useless.
-            Log.v(
+            /*Log.v(
                     TAG,
                     "[TS:"
                             + packet.getTimestamp()
                             + "] #Landmarks for iris: "
                             + landmarks.getLandmarkCount());
-            Log.v(TAG, getLandmarksDebugString(landmarks));
+            Log.v(TAG, getLandmarksDebugString(landmarks));*/
+            Map<String, Integer> classification = classifier.classify(landmarks);
+            Log.v(TAG, getClassificationDebugString(classification));
+
         } catch (InvalidProtocolBufferException e) {
             Log.e(TAG, "Couldn't Exception received - " + e);
             return;
@@ -219,6 +227,16 @@ public class MediapipeActivity extends AppCompatActivity {
                     setTimeCounter(70);
                 }
         );
+    }
+
+    private static String getClassificationDebugString(Map<String, Integer> classification)
+    {
+        String classificationString = "";
+        for(Map.Entry<String, Integer> entry : classification.entrySet())
+        {
+            classificationString += entry.getKey() + ": " + entry.getValue() + "\n";
+        }
+        return classificationString;
     }
 
     private static String getLandmarksDebugString(LandmarkProto.NormalizedLandmarkList landmarks) {
