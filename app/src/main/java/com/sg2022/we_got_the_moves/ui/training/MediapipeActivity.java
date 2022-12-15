@@ -104,7 +104,7 @@ public class MediapipeActivity extends AppCompatActivity {
     private long workoutId;
 
     private List<Exercise> exercises;
-    private Map<Exercise, Integer> exterciseToAmount;
+    private Map<Long, Integer> exterciseIDToAmount;
 
 
     @Override
@@ -149,7 +149,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
         WorkoutsRepository workoutsRepository =  WorkoutsRepository.getInstance(this.getApplication());
         exercises = new ArrayList<Exercise>();
-        exterciseToAmount = new HashMap<>();
+        exterciseIDToAmount = new HashMap<>();
         workoutsRepository.getAllExercises(workoutId).observe(
                 this, e -> {
                     exercises = e;
@@ -161,7 +161,7 @@ public class MediapipeActivity extends AppCompatActivity {
                     for (int i = 0; i < exercises.size(); i++){
                         workoutsRepository.getWorkoutExercise(workoutId, exercises.get(i).id).observe(
                                 this, workoutExercise -> {
-                                    exterciseToAmount.put(exercises.get(i), workoutExercise.amount);
+                                    exterciseIDToAmount.put(workoutExercise.exerciseId, workoutExercise.amount);
                                 }
                         );
                     }
