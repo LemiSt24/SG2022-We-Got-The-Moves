@@ -45,6 +45,7 @@ import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -110,11 +111,15 @@ public class MediapipeActivity extends AppCompatActivity {
     private boolean lastStateWasTop = true;
     private int Reps = 0;
 
+    private Date startTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentViewLayoutResId());
+
+        startTime = new Date(System.currentTimeMillis());
 
 //wird für nichts benutzt?, keine metadata in manifest?
     try {
@@ -218,6 +223,7 @@ public class MediapipeActivity extends AppCompatActivity {
                 }
 
                 Exercise currentExercise = exercises.get(ExercisePointer);
+                setExcerciseName(currentExercise.name);
 
                 if (lastStateWasTop != onTopExercise(classifier.classify(landmarks), lastStateWasTop, currentExercise.name.toLowerCase())){
                     if (lastStateWasTop) {
@@ -461,6 +467,21 @@ public class MediapipeActivity extends AppCompatActivity {
             time_counter.start();
             time_stopped = false;
         }
+    }
+
+    public void setExcerciseName(String name){
+        TextView exerciseText = findViewById(R.id.mediapipe_exercise_name);
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                exerciseText.setText(name);
+
+            }
+        });
+
+
     }
 
     public void setRepetition(String Rep){
