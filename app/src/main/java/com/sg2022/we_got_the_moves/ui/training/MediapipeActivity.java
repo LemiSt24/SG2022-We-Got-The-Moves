@@ -1,17 +1,13 @@
 package com.sg2022.we_got_the_moves.ui.training;
 
-import static kotlinx.coroutines.DelayKt.delay;
-
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.ListAdapter;
 
 import android.os.SystemClock;
 import android.util.Log;
@@ -22,7 +18,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
@@ -30,8 +25,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.mediapipe.formats.proto.LandmarkProto;
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
-import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
 import com.google.mediapipe.components.CameraHelper;
 import com.google.mediapipe.components.CameraXPreviewHelper;
 import com.google.mediapipe.components.ExternalTextureConverter;
@@ -48,14 +41,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import com.sg2022.we_got_the_moves.FullBodyPoseEmbedder;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
-import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 public class MediapipeActivity extends AppCompatActivity {
@@ -106,7 +96,7 @@ public class MediapipeActivity extends AppCompatActivity {
     private long workoutId;
 
     private List<Exercise> exercises;
-    private Map<Long, Integer> exterciseIDToAmount;
+    private Map<Long, Integer> exerciseIdToAmount;
     private int ExercisePointer = 0;
     private boolean lastStateWasTop = true;
     private int Reps = 0;
@@ -158,7 +148,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
         WorkoutsRepository workoutsRepository =  WorkoutsRepository.getInstance(this.getApplication());
         exercises = new ArrayList<Exercise>();
-        exterciseIDToAmount = new HashMap<>();
+        exerciseIdToAmount = new HashMap<>();
         workoutsRepository.getAllExercises(workoutId).observe(
                 this, e -> {
                     exercises = e;
@@ -170,7 +160,7 @@ public class MediapipeActivity extends AppCompatActivity {
                     for (int i = 0; i < exercises.size(); i++){
                         workoutsRepository.getWorkoutExercise(workoutId, exercises.get(i).id).observe(
                                 this, workoutExercise -> {
-                                    exterciseIDToAmount.put(workoutExercise.exerciseId, workoutExercise.amount);
+                                    exerciseIdToAmount.put(workoutExercise.exerciseId, workoutExercise.amount);
                                 }
                         );
                     }
@@ -228,7 +218,7 @@ public class MediapipeActivity extends AppCompatActivity {
                 if (lastStateWasTop != onTopExercise(classifier.classify(landmarks), lastStateWasTop, currentExercise.name.toLowerCase())){
                     if (lastStateWasTop) {
                         countRepUp();
-                        if (Reps >= exterciseIDToAmount.get(currentExercise.id)) {
+                        if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
                             // TODO next Exercise
                             ExercisePointer++;
                             Reps = 0;
