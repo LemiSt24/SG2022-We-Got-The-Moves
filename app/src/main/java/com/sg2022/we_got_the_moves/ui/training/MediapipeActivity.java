@@ -206,18 +206,28 @@ public class MediapipeActivity extends AppCompatActivity {
             Log.v(TAG, getLandmarksDebugString(landmarks));*/
       //      Log.println(Log.DEBUG,"test", String.valueOf(exercises.size()));
             if (exercises.size() != 0) {
-                Map<String, Integer> classification = classifier.classify(landmarks);
        /*         Log.println(Log.DEBUG,"test", classification.toString());
 
 
                 Log.println(Log.DEBUG, TAG, "Exercises there " + exercises.get(0).name);
                 Log.println(Log.DEBUG, TAG, exterciseIDToAmount.get(exercises.get(0).id).toString());*/
 
+                if (ExercisePointer >= exercises.size()) {
+                    //TODO Workout finish
+                    //-> View wechseln
+                }
+
                 Exercise currentExercise = exercises.get(ExercisePointer);
 
                 if (lastStateWasTop != onTopExercise(classifier.classify(landmarks), lastStateWasTop, currentExercise.name.toLowerCase())){
                     if (lastStateWasTop) {
                         countRepUp();
+                        if (Reps >= exterciseIDToAmount.get(currentExercise.id)) {
+                            // TODO next Exercise
+                            ExercisePointer++;
+                            Reps = 0;
+                            setRepetition(String.valueOf(0));
+                        }
                     }
                     lastStateWasTop = !lastStateWasTop;
                 }
@@ -399,8 +409,8 @@ public class MediapipeActivity extends AppCompatActivity {
 
     public Boolean onTopExercise(Map<String, Integer> classifierOutput, Boolean lastStateWasTop, String exerciseName){
         if (classifierOutput != null){
-            if (classifierOutput.containsKey("squat_top") && classifierOutput.get("squat_top") >= 7) return true;
-            if (classifierOutput.containsKey("squat_bottom") && classifierOutput.get("squat_bottom") >= 7) return false;
+            if (classifierOutput.containsKey("squat_top") && classifierOutput.get("squat_top") >= 3) return true;
+            if (classifierOutput.containsKey("squat_bottom") && classifierOutput.get("squat_bottom") >= 3) return false;
         }
         return lastStateWasTop;
     }
@@ -456,7 +466,15 @@ public class MediapipeActivity extends AppCompatActivity {
     public void setRepetition(String Rep){
         TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
         repetition_counter.setVisibility(View.VISIBLE);
-        repetition_counter.setText(Rep);
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                repetition_counter.setText(Rep);
+
+            }
+        });
     }
 
     public void countRepUp(){
