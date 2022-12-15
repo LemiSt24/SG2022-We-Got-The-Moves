@@ -75,7 +75,7 @@ public class DataGenerator {
     Exercise PushUp =
         new Exercise(
             2,
-            "Push-Up",
+            "PushUp",
             "1. With your legs extended back, place the hands below the shoulders, slightly wider than shoulder-width apart.\n\n"
                 + "2. Start bending your elbows and lower your chest until it’s just above the floor.\n\n"
                 + "3. Push back to the starting position. A 1-second push, 1-second pause, 2-second down count is ideal.\n\n"

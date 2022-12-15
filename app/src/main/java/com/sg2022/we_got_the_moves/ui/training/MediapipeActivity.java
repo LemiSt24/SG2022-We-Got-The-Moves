@@ -409,8 +409,8 @@ public class MediapipeActivity extends AppCompatActivity {
 
     public Boolean onTopExercise(Map<String, Integer> classifierOutput, Boolean lastStateWasTop, String exerciseName){
         if (classifierOutput != null){
-            if (classifierOutput.containsKey("squat_top") && classifierOutput.get("squat_top") >= 3) return true;
-            if (classifierOutput.containsKey("squat_bottom") && classifierOutput.get("squat_bottom") >= 3) return false;
+            if (classifierOutput.containsKey(exerciseName + "_top") && classifierOutput.get(exerciseName + "_top") >= 3) return true;
+            if (classifierOutput.containsKey(exerciseName + "_bottom") && classifierOutput.get(exerciseName + "_bottom") >= 3) return false;
         }
         return lastStateWasTop;
     }
