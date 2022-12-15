@@ -47,6 +47,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.sg2022.we_got_the_moves.FullBodyPoseEmbedder;
@@ -107,6 +108,7 @@ public class MediapipeActivity extends AppCompatActivity {
     private Map<Long, Integer> exterciseIDToAmount;
     private int ExercisePointer = 0;
     private boolean lastStateWasTop = true;
+    private int Reps = 0;
 
 
     @Override
@@ -184,9 +186,9 @@ public class MediapipeActivity extends AppCompatActivity {
         processor.addPacketCallback(
     OUTPUT_LANDMARKS_STREAM_NAME,
             (packet) -> {
-        Log.v(TAG, "Received multi-hand landmarks packet.");
-
-        Log.v(TAG, packet.toString());
+    /*    Log.println(Log.DEBUG,"test", "drüber");
+        Log.println(Log.DEBUG,"test", packet.toString());
+        Log.println(Log.DEBUG,"test", "Received multi-hand landmarks packet.");*/
         byte[] landmarksRaw = PacketGetter.getProtoBytes(packet);
         try {
             LandmarkProto.NormalizedLandmarkList landmarks = LandmarkProto.NormalizedLandmarkList.parseFrom(landmarksRaw);
@@ -202,23 +204,25 @@ public class MediapipeActivity extends AppCompatActivity {
                             + "] #Landmarks for iris: "
                             + landmarks.getLandmarkCount());
             Log.v(TAG, getLandmarksDebugString(landmarks));*/
+      //      Log.println(Log.DEBUG,"test", String.valueOf(exercises.size()));
             if (exercises.size() != 0) {
+                Map<String, Integer> classification = classifier.classify(landmarks);
+       /*         Log.println(Log.DEBUG,"test", classification.toString());
+
+
                 Log.println(Log.DEBUG, TAG, "Exercises there " + exercises.get(0).name);
-                Log.println(Log.DEBUG, TAG, exterciseIDToAmount.get(exercises.get(0).id).toString());
+                Log.println(Log.DEBUG, TAG, exterciseIDToAmount.get(exercises.get(0).id).toString());*/
 
                 Exercise currentExercise = exercises.get(ExercisePointer);
 
-                if (lastStateWasTop != onTopExercise(classifier.classify(landmarks), lastStateWasTop, currentExercise.name)){
+                if (lastStateWasTop != onTopExercise(classifier.classify(landmarks), lastStateWasTop, currentExercise.name.toLowerCase())){
                     if (lastStateWasTop) {
                         countRepUp();
                     }
                     lastStateWasTop = !lastStateWasTop;
                 }
-
-
             }
-            Map<String, Integer> classification = classifier.classify(landmarks);
-            Log.v(TAG, getClassificationDebugString(classification));
+
 
         } catch (InvalidProtocolBufferException e) {
             Log.e(TAG, "Couldn't Exception received - " + e);
@@ -394,8 +398,10 @@ public class MediapipeActivity extends AppCompatActivity {
     }
 
     public Boolean onTopExercise(Map<String, Integer> classifierOutput, Boolean lastStateWasTop, String exerciseName){
-        if (classifierOutput.get(exerciseName + "_top") >= 7) return true;
-        if (classifierOutput.get(exerciseName + "_bottom") >= 7) return false;
+        if (classifierOutput != null){
+            if (classifierOutput.containsKey("squat_top") && classifierOutput.get("squat_top") >= 7) return true;
+            if (classifierOutput.containsKey("squat_bottom") && classifierOutput.get("squat_bottom") >= 7) return false;
+        }
         return lastStateWasTop;
     }
 
@@ -456,8 +462,19 @@ public class MediapipeActivity extends AppCompatActivity {
     public void countRepUp(){
         TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
         repetition_counter.setVisibility(View.VISIBLE);
-        String old = repetition_counter.getText().toString();
-        repetition_counter.setText(Integer.getInteger(old) + 1);
+        Reps = Reps + 1;
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                repetition_counter.setText(String.valueOf(Reps));
+
+            }
+        });
+
     }
+
+
 
 }
