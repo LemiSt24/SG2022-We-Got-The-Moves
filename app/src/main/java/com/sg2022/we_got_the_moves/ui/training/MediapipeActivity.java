@@ -104,6 +104,7 @@ public class MediapipeActivity extends AppCompatActivity {
     private long workoutId;
 
     private List<Exercise> exercises;
+    private Map<Exercise, Integer> exterciseToAmount;
 
 
     @Override
@@ -126,7 +127,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
     // Initialize asset manager so that MediaPipe native libraries can access the app assets, e.g.,
     // binary graphs.
-        AndroidAssetUtil.initializeNativeAssetManager(this);
+    AndroidAssetUtil.initializeNativeAssetManager(this);
     eglManager = new EglManager(null);
     processor =
             new FrameProcessor(
@@ -140,8 +141,37 @@ public class MediapipeActivity extends AppCompatActivity {
                 .setFlipY(FLIP_FRAMES_VERTICALLY);
         PermissionHelper.checkAndRequestCameraPermissions(this);
 
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        workoutId = extras.getLong("WORKOUT_ID");
+
+        Log.println(Log.DEBUG,"workoutID", String.valueOf(workoutId));
+
+        WorkoutsRepository workoutsRepository =  WorkoutsRepository.getInstance(this.getApplication());
+        exercises = new ArrayList<Exercise>();
+        exterciseToAmount = new HashMap<>();
+        workoutsRepository.getAllExercises(workoutId).observe(
+                this, e -> {
+                    exercises = e;
+                    //Log.println(Log.DEBUG,"workoutID", String.valueOf(exercises.get(0).name));
+                    //Exercise firstE = exercises.get(0);
+                    // rep or time
+                    //classifier(e.get(i))
+                    //
+                    for (int i = 0; i < exercises.size(); i++){
+                        workoutsRepository.getWorkoutExercise(workoutId, exercises.get(i).id).observe(
+                                this, workoutExercise -> {
+                                    exterciseToAmount.put(exercises.get(i), workoutExercise.amount);
+                                }
+                        );
+                    }
+
+                }
+        );
+
     AndroidPacketCreator packetCreator = processor.getPacketCreator();
     Map<String, Packet> inputSidePackets = new HashMap<>();
+
 //        inputSidePackets.put(INPUT_NUM_HANDS_SIDE_PACKET_NAME, packetCreator.createInt32(NUM_HANDS));
 //        processor.setInputSidePackets(inputSidePackets);
 
@@ -177,28 +207,6 @@ public class MediapipeActivity extends AppCompatActivity {
             return;
         }
     });
-
-
-
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        workoutId = extras.getLong("WORKOUT_ID");
-
-        Log.println(Log.DEBUG,"workoutID", String.valueOf(workoutId));
-
-        WorkoutsRepository workoutsRepository =  WorkoutsRepository.getInstance(this.getApplication());
-        exercises = new ArrayList<Exercise>();
-        workoutsRepository.getAllExercises(workoutId).observe(
-                this, e -> {
-                    exercises = e;
-                    Log.println(Log.DEBUG,"workoutID", String.valueOf(exercises.get(0).name));
-                    Exercise firstE = exercises.get(0);
-                        // rep or time
-                        //classifier(e.get(i))
-                        //
-
-                }
-        );
 
 
         ImageButton stop_but = findViewById(R.id.mediapipe_stop_button);

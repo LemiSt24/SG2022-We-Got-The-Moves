@@ -19,12 +19,14 @@ public class Exercise {
 
   private String textInstruction;
   private String videoInstruction;
+  private Boolean isCountable; //true if repetions can be counted -> non static exercise
 
-  public Exercise(long id, String name, String textInstruction, String videoInstruction) {
+  public Exercise(long id, String name, String textInstruction, String videoInstruction, Boolean isCountable) {
     this.id = id;
     this.name = name;
     this.textInstruction = textInstruction;
     this.videoInstruction = videoInstruction;
+    this.isCountable = isCountable;
   }
 
   @Nullable
@@ -49,5 +51,9 @@ public class Exercise {
   public boolean equals(@Nullable Object obj) {
     if (!(obj instanceof Exercise)) return false;
     return this.id == ((Exercise) obj).id && Objects.equals(this.name, ((Exercise) obj).name);
+  }
+
+  public Boolean getCountable() {
+    return isCountable;
   }
 }

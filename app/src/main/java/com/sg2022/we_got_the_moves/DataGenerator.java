@@ -71,7 +71,7 @@ public class DataGenerator {
                 + "2. Bend your knees, press your hips back and stop the movement once the hip joint is slightly lower than the knees.\n\n"
                 + "3. Press your heels into the floor to return to the initial position.\n\n"
                 + "4. Repeat until set is complete.",
-            "Zqc_lc93hak");
+            "Zqc_lc93hak", true);
     Exercise PushUp =
         new Exercise(
             2,
@@ -80,13 +80,13 @@ public class DataGenerator {
                 + "2. Start bending your elbows and lower your chest until it’s just above the floor.\n\n"
                 + "3. Push back to the starting position. A 1-second push, 1-second pause, 2-second down count is ideal.\n\n"
                 + "4. Repeat ",
-            "v9LABVJzv8A");
+            "v9LABVJzv8A", true);
 
     e.add(Squat);
     e.add(PushUp);
 
     for (int i = 0; i < exerciseNames.length; ++i) {
-      e.add(new Exercise(i + 3, exerciseNames[i], null, null));
+      e.add(new Exercise(i + 3, exerciseNames[i], null, null, false));
     }
     return e;
   }
