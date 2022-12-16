@@ -81,6 +81,15 @@ public class DataGenerator {
                 + "3. Push back to the starting position. A 1-second push, 1-second pause, 2-second down count is ideal.\n\n"
                 + "4. Repeat ",
             "v9LABVJzv8A", true);
+   /* Exercise Plank =
+            new Exercise(
+                    3,
+                    "Plank",
+                    "1. With your legs extended back, place the hands below the shoulders, slightly wider than shoulder-width apart.\n\n"
+                            + "2. Start bending your elbows and lower your chest until it’s just above the floor.\n\n"
+                            + "3. Push back to the starting position. A 1-second push, 1-second pause, 2-second down count is ideal.\n\n"
+                            + "4. Repeat ",
+                    "v9LABVJzv8A", false);*/
 
     e.add(Squat);
     e.add(PushUp);

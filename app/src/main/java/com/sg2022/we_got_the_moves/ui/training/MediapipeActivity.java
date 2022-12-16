@@ -100,6 +100,8 @@ public class MediapipeActivity extends AppCompatActivity {
     private int ExercisePointer = 0;
     private boolean lastStateWasTop = true;
     private int Reps = 0;
+    private Exercise currentExercise;
+    private boolean timerSet = false;
 
     private Date startTime;
 
@@ -157,6 +159,8 @@ public class MediapipeActivity extends AppCompatActivity {
                     // rep or time
                     //classifier(e.get(i))
                     //
+                    currentExercise = e.get(0);
+                    setExcerciseName(currentExercise.name);
                     for (int i = 0; i < exercises.size(); i++){
                         workoutsRepository.getWorkoutExercise(workoutId, exercises.get(i).id).observe(
                                 this, workoutExercise -> {
@@ -212,15 +216,24 @@ public class MediapipeActivity extends AppCompatActivity {
                     //-> View wechseln
                 }
 
-                Exercise currentExercise = exercises.get(ExercisePointer);
-                setExcerciseName(currentExercise.name);
+                //exercises time based
+                if (!currentExercise.getCountable()){
+                    if (!timerSet){
+                        setTimeCounter(exerciseIdToAmount.get(currentExercise.id));
+                        timerSet = true;
+                    }
 
-                if (lastStateWasTop != onTopExercise(classifier.classify(landmarks), lastStateWasTop, currentExercise.name.toLowerCase())){
+                }
+
+                //exercises rep based
+                else if (lastStateWasTop != onTopExercise(classifier.classify(landmarks), lastStateWasTop, currentExercise.name.toLowerCase())){
                     if (lastStateWasTop) {
                         countRepUp();
                         if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
                             // TODO next Exercise
                             ExercisePointer++;
+                            currentExercise = exercises.get(ExercisePointer);
+                            setExcerciseName(currentExercise.name);
                             Reps = 0;
                             setRepetition(String.valueOf(0));
                         }
@@ -260,7 +273,7 @@ public class MediapipeActivity extends AppCompatActivity {
         finish_but.setOnClickListener(
                 v -> {
                     setExerciseX("lower your hips");
-                    setTimeCounter(70);
+                    setTimeCounter(10);
                 }
         );
     }
@@ -429,18 +442,36 @@ public class MediapipeActivity extends AppCompatActivity {
     public void setTimeCounter(long seconds){
         time_stopped = false;
         Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
-        time_counter.setVisibility(View.VISIBLE);
-        time_counter.setBase(SystemClock.elapsedRealtime() + 1000 * seconds);
+        TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
+
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+
+                time_counter.setVisibility(View.VISIBLE);
+                repetition_counter.setVisibility(View.GONE);
+                time_counter.setBase(SystemClock.elapsedRealtime() + 1000 * seconds);
+
+            }
+        });
+
+
         time_counter.start();
-        //so irgendwas programmieren was z.B. passiert, wenn Timer auf 0 geht
-       /* time_counter.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+        time_counter.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                long base=time_counter.getBase();
-                if base == 0
-                return true
+                long base= time_counter.getBase();
+                if (base < SystemClock.elapsedRealtime()){
+                    ExercisePointer++;
+                    currentExercise = exercises.get(ExercisePointer);
+                    setExcerciseName(currentExercise.name);
+                    timerSet = false;
+                    time_counter.stop();
+
+                }
             }
-        });*/
+        });
     }
 
     public void stopTimeCounter(){
@@ -476,12 +507,13 @@ public class MediapipeActivity extends AppCompatActivity {
 
     public void setRepetition(String Rep){
         TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
-        repetition_counter.setVisibility(View.VISIBLE);
+
         runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
 
+                repetition_counter.setVisibility(View.VISIBLE);
                 repetition_counter.setText(Rep);
 
             }
@@ -491,6 +523,8 @@ public class MediapipeActivity extends AppCompatActivity {
     public void countRepUp(){
         TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
         repetition_counter.setVisibility(View.VISIBLE);
+        Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
+        time_counter.setVisibility(View.GONE);
         Reps = Reps + 1;
         runOnUiThread(new Runnable() {
 
