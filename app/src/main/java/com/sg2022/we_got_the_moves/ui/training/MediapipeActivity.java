@@ -102,6 +102,7 @@ public class MediapipeActivity extends AppCompatActivity {
     private int Reps = 0;
 
     private Date startTime;
+    private Exercise currentExercise;
 
 
     @Override
@@ -157,6 +158,8 @@ public class MediapipeActivity extends AppCompatActivity {
                     // rep or time
                     //classifier(e.get(i))
                     //
+                    currentExercise = exercises.get(ExercisePointer);
+                    setExcerciseName(currentExercise.name);
                     for (int i = 0; i < exercises.size(); i++){
                         workoutsRepository.getWorkoutExercise(workoutId, exercises.get(i).id).observe(
                                 this, workoutExercise -> {
@@ -200,7 +203,7 @@ public class MediapipeActivity extends AppCompatActivity {
                             + landmarks.getLandmarkCount());
             Log.v(TAG, getLandmarksDebugString(landmarks));*/
       //      Log.println(Log.DEBUG,"test", String.valueOf(exercises.size()));
-            if (exercises.size() != 0) {
+            if (currentExercise != null) {
        /*         Log.println(Log.DEBUG,"test", classification.toString());
 
 
@@ -212,9 +215,6 @@ public class MediapipeActivity extends AppCompatActivity {
                     //-> View wechseln
                 }
 
-                Exercise currentExercise = exercises.get(ExercisePointer);
-                setExcerciseName(currentExercise.name);
-
                 if (lastStateWasTop != onTopExercise(classifier.classify(landmarks), lastStateWasTop, currentExercise.name.toLowerCase())){
                     if (lastStateWasTop) {
                         countRepUp();
@@ -223,6 +223,8 @@ public class MediapipeActivity extends AppCompatActivity {
                             ExercisePointer++;
                             Reps = 0;
                             setRepetition(String.valueOf(0));
+                            currentExercise = exercises.get(ExercisePointer);
+                            setExcerciseName(currentExercise.name);
                         }
                     }
                     lastStateWasTop = !lastStateWasTop;
