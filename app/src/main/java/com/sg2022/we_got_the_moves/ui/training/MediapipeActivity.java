@@ -509,13 +509,14 @@ public class MediapipeActivity extends AppCompatActivity {
 
     public void setRepetition(String Rep){
         TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
-
+        Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
         runOnUiThread(new Runnable() {
 
             @Override
             public void run() {
 
                 repetition_counter.setVisibility(View.VISIBLE);
+                time_counter.setVisibility(View.GONE);
                 repetition_counter.setText(Rep);
 
             }
@@ -524,9 +525,6 @@ public class MediapipeActivity extends AppCompatActivity {
 
     public void countRepUp(){
         TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
-        repetition_counter.setVisibility(View.VISIBLE);
-        Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
-        time_counter.setVisibility(View.GONE);
         Reps = Reps + 1;
         runOnUiThread(new Runnable() {
 
