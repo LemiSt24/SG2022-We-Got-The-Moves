@@ -29,6 +29,7 @@ public class LastWorkoutsAdapter
     private List<Workout> workoutList;
     private ItemWorkoutNoEditBinding binding;
     private List<Long> workoutIds;
+    private List<FinishedTraining> finishedTrainings;
 
     public LastWorkoutsAdapter(@NonNull LifecycleOwner owner, @NonNull TrainingViewModel model) {
         this.owner = owner;
@@ -36,10 +37,17 @@ public class LastWorkoutsAdapter
 
         workoutIds = new ArrayList<>();
         workoutList = new ArrayList<>();
-        this.model.repository.getNLastDistinctWorkoutIds(3).observe(
+        finishedTrainings = new ArrayList<>();
+        this.model.repository.getOrderedFinishedWorkouts().observe(
                 owner, finishedTraining -> {
                     Log.println(Log.DEBUG, TAG, finishedTraining.toString());
-                    workoutIds = finishedTraining;
+                    finishedTrainings = finishedTraining;
+                    for (int i = 0; i < finishedTrainings.size() && workoutIds.size() < 3; i++){
+                        if (!workoutIds.contains(finishedTrainings.get(i).workoutId)) {
+                            workoutIds.add(finishedTrainings.get(i).workoutId);
+                        }
+                    }
+
                     for (int i = 0; i < workoutIds.size(); i++) {
                         this.model.workoutsRepository.getWorkout(workoutIds.get(i)).observe(
                                 owner, workout -> {
