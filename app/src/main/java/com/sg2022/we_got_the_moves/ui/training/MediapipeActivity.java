@@ -245,11 +245,12 @@ public class MediapipeActivity extends AppCompatActivity {
                                 finishedTrainingRepository.insert(training);
                                 finish();
                             }
-
-                            currentExercise = exercises.get(ExercisePointer);
-                            setExcerciseName(currentExercise.name);
-                            Reps = 0;
-                            setRepetition(String.valueOf(0));
+                            else{
+                                currentExercise = exercises.get(ExercisePointer);
+                                setExcerciseName(currentExercise.name);
+                                Reps = 0;
+                                setRepetition(String.valueOf(0));
+                            }
                         }
                     }
                     lastStateWasTop = !lastStateWasTop;
@@ -485,14 +486,14 @@ public class MediapipeActivity extends AppCompatActivity {
                                 finishedTrainingRepository.insert(training);
                                 finish();
                             }
-
-                            currentExercise = exercises.get(ExercisePointer);
-                            setExcerciseName(currentExercise.name);
-                            timerSet = false;
-                            Reps = 0;
-                            setRepetition(String.valueOf(0));
-                            time_counter.stop();
-
+                            else{
+                                currentExercise = exercises.get(ExercisePointer);
+                                setExcerciseName(currentExercise.name);
+                                timerSet = false;
+                                Reps = 0;
+                                setRepetition(String.valueOf(0));
+                                time_counter.stop();
+                            }
                         }
                     }
                 });
