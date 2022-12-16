@@ -22,7 +22,7 @@ public interface FinishedTrainingDao {
     @Query("Select * From FinishedTraining Order by date Desc limit :n")
     LiveData<List<FinishedTraining>> getNLastTrainings(int n);
 
-    @Query("Select * From FinishedTraining Order by date Desc")
+    @Query("Select * From FinishedTraining order by date Desc")
     LiveData<List<FinishedTraining>> getOrderedTrainings();
 
     @Query("Select * From FinishedTraining Order by date Desc limit 1")

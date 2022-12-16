@@ -48,14 +48,19 @@ public class LastWorkoutsAdapter
                         }
                     }
 
-                    for (int i = 0; i < workoutIds.size(); i++) {
-                        this.model.workoutsRepository.getWorkout(workoutIds.get(i)).observe(
-                                owner, workout -> {
-                                    workoutList.add(workout);
-                                    notifyDataSetChanged();
+                    this.model.workoutsRepository.getAllWorkouts().observe(
+                            owner, workout -> {
+                                for (int i = 0; i < workoutIds.size(); i++) {
+                                    for (int j = 0; j < workout.size(); j++) {
+                                        if (workout.get(j).id == workoutIds.get(i)){
+                                            workoutList.add(workout.get(j));
+                                            if (workoutList.size() == workoutIds.size()) break;
+                                        }
+                                    }
                                 }
-                        );
-                    }
+                                notifyDataSetChanged();
+                            });
+
                     notifyDataSetChanged();
                 }
         );
