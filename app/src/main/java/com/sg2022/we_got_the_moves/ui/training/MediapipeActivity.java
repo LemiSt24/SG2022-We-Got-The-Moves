@@ -37,6 +37,9 @@ import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,6 +49,8 @@ import java.util.Map;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
+import com.sg2022.we_got_the_moves.db.entity.FinishedTraining;
+import com.sg2022.we_got_the_moves.repository.FinishedTrainingRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 public class MediapipeActivity extends AppCompatActivity {
@@ -231,6 +236,13 @@ public class MediapipeActivity extends AppCompatActivity {
 
                             if (ExercisePointer >= exercises.size()) {
                                 Log.println(Log.DEBUG, TAG, "workout finished");
+                                Long endTime = System.currentTimeMillis();
+
+                                Duration timeSpent = Duration.of(endTime-startTime.getTime(), ChronoUnit.MILLIS);
+                                FinishedTraining training = new FinishedTraining(startTime, workoutId, timeSpent);
+
+                                FinishedTrainingRepository finishedTrainingRepository = FinishedTrainingRepository.getInstance(getApplication());
+                                finishedTrainingRepository.insert(training);
                                 finish();
                             }
 
@@ -464,6 +476,13 @@ public class MediapipeActivity extends AppCompatActivity {
 
                             if (ExercisePointer >= exercises.size()) {
                                 Log.println(Log.DEBUG, TAG, "workout finished");
+                                Long endTime = System.currentTimeMillis();
+
+                                Duration timeSpent = Duration.of(endTime-startTime.getTime(), ChronoUnit.MILLIS);
+                                FinishedTraining training = new FinishedTraining(startTime, workoutId, timeSpent);
+
+                                FinishedTrainingRepository finishedTrainingRepository = FinishedTrainingRepository.getInstance(getApplication());
+                                finishedTrainingRepository.insert(training);
                                 finish();
                             }
 
