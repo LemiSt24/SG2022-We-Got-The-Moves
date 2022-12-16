@@ -452,26 +452,28 @@ public class MediapipeActivity extends AppCompatActivity {
                 time_counter.setVisibility(View.VISIBLE);
                 repetition_counter.setVisibility(View.GONE);
                 time_counter.setBase(SystemClock.elapsedRealtime() + 1000 * seconds);
+                time_counter.start();
+                time_counter.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                    @Override
+                    public void onChronometerTick(Chronometer chronometer) {
+                        long base= time_counter.getBase();
+                        if (base < SystemClock.elapsedRealtime()){
+                            ExercisePointer++;
+                            currentExercise = exercises.get(ExercisePointer);
+                            setExcerciseName(currentExercise.name);
+                            timerSet = false;
+                            Reps = 0;
+                            setRepetition(String.valueOf(0));
+                            time_counter.stop();
 
+                        }
+                    }
+                });
             }
         });
 
 
-        time_counter.start();
-        time_counter.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer chronometer) {
-                long base= time_counter.getBase();
-                if (base < SystemClock.elapsedRealtime()){
-                    ExercisePointer++;
-                    currentExercise = exercises.get(ExercisePointer);
-                    setExcerciseName(currentExercise.name);
-                    timerSet = false;
-                    time_counter.stop();
 
-                }
-            }
-        });
     }
 
     public void stopTimeCounter(){

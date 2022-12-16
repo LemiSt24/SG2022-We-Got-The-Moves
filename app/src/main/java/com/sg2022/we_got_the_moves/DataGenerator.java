@@ -65,7 +65,7 @@ public class DataGenerator {
     // get Testdata with TextInstruction and VideoInstruction
     Exercise Squat =
         new Exercise(
-            1,
+            3,
             "Squat",
             "1. Stand up with your feet shoulder-width apart.\n\n"
                 + "2. Bend your knees, press your hips back and stop the movement once the hip joint is slightly lower than the knees.\n\n"
@@ -81,21 +81,22 @@ public class DataGenerator {
                 + "3. Push back to the starting position. A 1-second push, 1-second pause, 2-second down count is ideal.\n\n"
                 + "4. Repeat ",
             "v9LABVJzv8A", true);
-   /* Exercise Plank =
+    Exercise Plank =
             new Exercise(
-                    3,
+                    1,
                     "Plank",
                     "1. With your legs extended back, place the hands below the shoulders, slightly wider than shoulder-width apart.\n\n"
                             + "2. Start bending your elbows and lower your chest until it’s just above the floor.\n\n"
                             + "3. Push back to the starting position. A 1-second push, 1-second pause, 2-second down count is ideal.\n\n"
                             + "4. Repeat ",
-                    "v9LABVJzv8A", false);*/
+                    "v9LABVJzv8A", false);
 
+    e.add(Plank);
     e.add(Squat);
     e.add(PushUp);
 
     for (int i = 0; i < exerciseNames.length; ++i) {
-      e.add(new Exercise(i + 3, exerciseNames[i], null, null, false));
+      e.add(new Exercise(i + 4, exerciseNames[i], null, null, false));
     }
     return e;
   }
