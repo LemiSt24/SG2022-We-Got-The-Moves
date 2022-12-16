@@ -161,6 +161,7 @@ public class MediapipeActivity extends AppCompatActivity {
                     //
                     currentExercise = e.get(0);
                     setExcerciseName(currentExercise.name);
+                    if (currentExercise.getCountable()) setRepetition("0");
                     for (int i = 0; i < exercises.size(); i++){
                         workoutsRepository.getWorkoutExercise(workoutId, exercises.get(i).id).observe(
                                 this, workoutExercise -> {
@@ -168,10 +169,10 @@ public class MediapipeActivity extends AppCompatActivity {
                                 }
                         );
                     }
-
                 }
         );
-        setRepetition("0");
+
+
 
     AndroidPacketCreator packetCreator = processor.getPacketCreator();
     Map<String, Packet> inputSidePackets = new HashMap<>();
@@ -211,11 +212,6 @@ public class MediapipeActivity extends AppCompatActivity {
                 Log.println(Log.DEBUG, TAG, "Exercises there " + exercises.get(0).name);
                 Log.println(Log.DEBUG, TAG, exterciseIDToAmount.get(exercises.get(0).id).toString());*/
 
-                if (ExercisePointer >= exercises.size()) {
-                    //TODO Workout finish
-                    //-> View wechseln
-                }
-
                 //exercises time based
                 if (!currentExercise.getCountable()){
                     if (!timerSet){
@@ -232,6 +228,12 @@ public class MediapipeActivity extends AppCompatActivity {
                         if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
                             // TODO next Exercise
                             ExercisePointer++;
+
+                            if (ExercisePointer >= exercises.size()) {
+                                Log.println(Log.DEBUG, TAG, "workout finished");
+                                finish();
+                            }
+
                             currentExercise = exercises.get(ExercisePointer);
                             setExcerciseName(currentExercise.name);
                             Reps = 0;
@@ -459,6 +461,12 @@ public class MediapipeActivity extends AppCompatActivity {
                         long base= time_counter.getBase();
                         if (base < SystemClock.elapsedRealtime()){
                             ExercisePointer++;
+
+                            if (ExercisePointer >= exercises.size()) {
+                                Log.println(Log.DEBUG, TAG, "workout finished");
+                                finish();
+                            }
+
                             currentExercise = exercises.get(ExercisePointer);
                             setExcerciseName(currentExercise.name);
                             timerSet = false;
