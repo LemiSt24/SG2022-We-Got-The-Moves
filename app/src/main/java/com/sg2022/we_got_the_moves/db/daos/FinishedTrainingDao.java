@@ -20,14 +20,12 @@ public interface FinishedTrainingDao {
   @Query("Select * From FinishedTraining Order by date Desc limit :n")
   LiveData<List<FinishedTraining>> getNLastTrainings(int n);
 
+  @Query("Select * From FinishedTraining order by date Desc")
+  LiveData<List<FinishedTraining>> getOrderedTrainings();
+
   @Query("Select * From FinishedTraining Order by date Desc limit 1")
   LiveData<FinishedTraining> getLastTraining();
 
   @Query("Select distinct workoutId From FinishedTraining Order by date Desc limit :n")
   LiveData<List<Long>> getNLastDistictWorkoutIds(int n);
-
-  /*
-  @Query("Select * From FinishedTraining Where date >= :endDate Order by date Desc")
-  List<FinishedTraining> getTrainingsAfter(LocalDate endDate);
-  */
 }

@@ -28,12 +28,16 @@ public class Exercise {
   @ColumnInfo(name = "imageId", defaultValue = "" + R.drawable.missing)
   public int imageId;
 
-  public Exercise(long id, String name, String instruction, String youtubeId, int imageId) {
+  @ColumnInfo(name = "isCountable")
+  private boolean isCountable;
+
+  public Exercise(long id, String name, String instruction, String youtubeId, int imageId, boolean isCountable) {
     this.id = id;
     this.name = name;
     this.instruction = instruction;
     this.youtubeId = youtubeId;
     this.imageId = imageId;
+    this.isCountable = isCountable;
   }
 
   @Override

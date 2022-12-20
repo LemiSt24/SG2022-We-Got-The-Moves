@@ -26,6 +26,7 @@ public class LastWorkoutsAdapter
   private List<Workout> workoutList;
   private ItemWorkoutNoEditBinding binding;
   private List<Long> workoutIds;
+  private List<FinishedTraining> finishedTrainings;
 
   public LastWorkoutsAdapter(@NonNull LifecycleOwner owner, @NonNull TrainingViewModel model) {
     this.owner = owner;
@@ -33,25 +34,38 @@ public class LastWorkoutsAdapter
 
     workoutIds = new ArrayList<>();
     workoutList = new ArrayList<>();
+    finishedTrainings = new ArrayList<>();
     this.model
         .repository
-        .getNLastDistinctWorkoutIds(3)
+        .getOrderedFinishedWorkouts()
         .observe(
             owner,
             finishedTraining -> {
               Log.println(Log.DEBUG, TAG, finishedTraining.toString());
-              workoutIds = finishedTraining;
-              for (int i = 0; i < workoutIds.size(); i++) {
-                this.model
-                    .workoutsRepository
-                    .getWorkout(workoutIds.get(i))
-                    .observe(
-                        owner,
-                        workout -> {
-                          workoutList.add(workout);
-                          notifyDataSetChanged();
-                        });
+              finishedTrainings = finishedTraining;
+              for (int i = 0; i < finishedTrainings.size() && workoutIds.size() < 3; i++) {
+                if (!workoutIds.contains(finishedTrainings.get(i).workoutId)) {
+                  workoutIds.add(finishedTrainings.get(i).workoutId);
+                }
               }
+
+              this.model
+                  .workoutsRepository
+                  .getAllWorkouts()
+                  .observe(
+                      owner,
+                      workout -> {
+                        for (int i = 0; i < workoutIds.size(); i++) {
+                          for (int j = 0; j < workout.size(); j++) {
+                            if (workout.get(j).id == workoutIds.get(i)) {
+                              workoutList.add(workout.get(j));
+                              if (workoutList.size() == workoutIds.size()) break;
+                            }
+                          }
+                        }
+                        notifyDataSetChanged();
+                      });
+
               notifyDataSetChanged();
             });
   }
@@ -73,7 +87,7 @@ public class LastWorkoutsAdapter
     holder.binding.setWorkout(w);
     holder.binding.workoutName.setText(w.name);
     holder.binding.workoutName.setOnClickListener(
-        v -> MainActivity.getInstanceActivity().openMediapipeActivity());
+        v -> MainActivity.getInstanceActivity().openMediapipeActivity(w.id));
   }
 
   @Override

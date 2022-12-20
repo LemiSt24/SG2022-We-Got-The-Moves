@@ -52,4 +52,8 @@ public class FinishedTrainingRepository {
   public LiveData<List<Long>> getNLastDistinctWorkoutIds(int n) {
     return this.Dao.getNLastDistictWorkoutIds(n);
   }
+
+  public LiveData<List<FinishedTraining>> getOrderedFinishedWorkouts() {
+    return this.Dao.getOrderedTrainings();
+  }
 }
