@@ -43,13 +43,15 @@ class EmbeddingDistanceComparator implements Comparator<EmbeddingDistance> {
     @Override
     public int compare(EmbeddingDistance o1, EmbeddingDistance o2)
     {
-        if(o1.distance == o2.distance)
-            return 0;
-        if(o1.distance > o2.distance)
-            return 1;
-        else
-            return -1;
+        return Double.compare(o1.distance, o2.distance);
     }
+}
+
+class ClassificationResult {
+    public double min_distance;
+    public NormalizedLandmark[] landmarks;
+    public double[] embedding;
+    public Map<String, Integer> result;
 }
 
 /*
@@ -65,10 +67,17 @@ public class PoseClassifier {
     private List<PoseSample> dataset;
     private List<String> class_names;
 
+    private List<ClassificationResult> classification_history;
+    private int history_depth = 10; // wie viele Schritte kann man in die Vergangenheit blicken?
+
+    double[] current_embedding;
+
     public PoseClassifier(Context myContext, int top_n_max, int top_n_mean, String filename)
     {
         dataset = new ArrayList<PoseSample>();
         class_names = new ArrayList<String>();
+
+        classification_history = new ArrayList<ClassificationResult>();
 
         context = myContext;
         top_n_by_max_distance = top_n_max;
@@ -112,10 +121,26 @@ public class PoseClassifier {
         }
     }
 
-    public Map<String, Integer> classify(LandmarkProto.NormalizedLandmarkList landmarks)
+    public Map<String, Integer> get_result()
     {
-        double[] embedding = FullBodyPoseEmbedder.generate_embedding(landmarks);
-        double[] embedding_flipped = FullBodyPoseEmbedder.generate_embedding(landmarks, true);
+        return get_result(0);
+    }
+
+    // index zählt von "oben", also ist 0 das neuste Ergebnis, 1 das zweitneuste, etc.
+    public Map<String, Integer> get_result(int index)
+    {
+        if(classification_history.size() > index)
+            return classification_history.get(classification_history.size() - 1 - index).result;
+        else
+            return new HashMap<>();
+    }
+
+    public void classify(LandmarkProto.NormalizedLandmarkList landmarks)
+    {
+        NormalizedLandmark[] normalized_landmarks = NormalizedLandmark.convertFromMediapipe(landmarks);
+
+        double[] embedding = FullBodyPoseEmbedder.generate_embedding(normalized_landmarks);
+        double[] embedding_flipped = FullBodyPoseEmbedder.generate_embedding(normalized_landmarks, true);
 
         /* Filter by max distance.
          This helps to remove outliers - poses that are almost the same as the
@@ -174,6 +199,51 @@ public class PoseClassifier {
                 ret.put(class_name, 0);
             ret.put(class_name, ret.get(class_name) + 1);
         }
-        return ret;
+        //return ret;
+        ClassificationResult res = new ClassificationResult();
+        res.landmarks = normalized_landmarks;
+        res.embedding = embedding;
+        res.result = ret;
+        res.min_distance = mean_dist_heap.get(0).distance;
+        classification_history.add(res);
+
+        if(classification_history.size() > history_depth)
+        {
+            classification_history.remove(0);
+        }
+    }
+
+    // Bewertet die zuletzt übermittelte Pose bezüglich Einschränkungen wie Abstand der Füße etc
+    // Rückgabewert ist eine Distanz (z.B. der Unterschied zwischen Fußabstand und Schulterabstand)
+    // erwartet (eine Liste von) Strings pro Argument, falls zwei genannt: Landmarks werden gemittelt
+    public double get_distance(String from, String to)
+    {
+        NormalizedLandmark[] landmarks = classification_history.get(classification_history.size() - 1).landmarks;
+
+        NormalizedLandmark lmfrom;
+        // mehrere Landmarks in "from"
+        if(from.contains(","))
+        {
+            String[] spl = from.split(",");
+            lmfrom = NormalizedLandmark.getAverageByNames(landmarks, spl[0], spl[1]);
+        }
+        else
+        {
+            lmfrom = landmarks[NormalizedLandmark.landmark_names.indexOf(from)];
+        }
+
+        NormalizedLandmark lmto;
+        // mehrere Landmarks in "from"
+        if(to.contains(","))
+        {
+            String[] spl = to.split(",");
+            lmto = NormalizedLandmark.getAverageByNames(landmarks, spl[0], spl[1]);
+        }
+        else
+        {
+            lmto = landmarks[NormalizedLandmark.landmark_names.indexOf(to)];
+        }
+
+        return lmfrom.getDistance(lmto);
     }
 }

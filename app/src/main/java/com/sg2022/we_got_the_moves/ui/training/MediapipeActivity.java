@@ -201,6 +201,13 @@ public class MediapipeActivity extends AppCompatActivity {
                 Log.v(TAG, "[TS:" + packet.getTimestamp() + "] No iris landmarks.");
                 return;
             }
+
+            // Klassifizierung durchführen.
+            // Der Classifier speichert das Ergebnis, es lässt sich aus get_result abrufen und für weitere Untersuchungen weiterverwenden
+            classifier.classify(landmarks);
+
+            // Beispielhafte Analyse von Rahmenbedingungen
+            Log.v(TAG, "Schultern: " + classifier.get_distance("left_shoulder", "right_shoulder") + ", Füße: " + classifier.get_distance("left_ankle", "right_ankle"));
             // Note: If eye_presence is false, these landmarks are useless.
             /*Log.v(
                     TAG,
@@ -227,7 +234,7 @@ public class MediapipeActivity extends AppCompatActivity {
                 }
 
                 //exercises rep based
-                else if (lastStateWasTop != onTopExercise(classifier.classify(landmarks), lastStateWasTop, currentExercise.name.toLowerCase())){
+                else if (lastStateWasTop != onTopExercise(classifier.get_result(), lastStateWasTop, currentExercise.name.toLowerCase())){
                     if (lastStateWasTop) {
                         countRepUp();
                         if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
