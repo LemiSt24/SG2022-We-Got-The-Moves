@@ -11,7 +11,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_layout_text_dialog"
+        android:id="@+id/constraint_layout_instruction_dialog"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -22,11 +22,12 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeTextType="uniform"
             android:autofillHints="@string/enter_text"
             android:gravity="center"
             android:hint="@string/enter_text"
             android:inputType="text"
-            android:maxLength="20"
             android:maxLines="1"
             android:text="@{text}"
             android:textSize="20sp"

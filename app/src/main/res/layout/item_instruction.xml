@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -10,48 +11,64 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_layout_instruction_item"
+        android:id="@+id/constraint_layout_exercise_instruction_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:outlineProvider="background">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardview_instruction_item"
+            android:id="@+id/cardview_exercise_instruction_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            app:cardBackgroundColor="@color/sg_design_light_green"
-            app:cardCornerRadius="16dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:outlineProvider="background"
+            app:cardBackgroundColor="@color/sg_design_green"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_layout_instruction_card"
+                android:id="@+id/constraint_layout_exercise_instruction_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Button
-                    android:id="@+id/element_instruction"
-                    style="?android:attr/borderlessButtonStyle"
+                <TextView
+                    android:id="@+id/textview_exercise_instruction_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeMaxTextSize="24sp"
+                    android:autoSizeTextType="uniform"
+                    android:contentDescription="@string/empty_string"
+                    android:maxLines="1"
+                    android:outlineProvider="background"
+                    android:text="@{exercise.name, default=@string/enter_text}"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="TextContrastCheck" />
+
+                <ImageView
+                    android:id="@+id/image_view_exercise_instruction_item"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:autofillHints="@string/app_name"
-                    android:background="@null"
-                    android:gravity="center_horizontal"
-                    android:minHeight="32dp"
-                    android:text="Test"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:adjustViewBounds="true"
+                    android:outlineProvider="background"
+                    android:scaleType="fitCenter"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/textview_exercise_instruction_item"
+                    app:layout_optimizationLevel="ratio"
+                    app:srcCompat="@drawable/missing"
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.cardview.widget.CardView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

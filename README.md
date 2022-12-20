@@ -26,7 +26,7 @@ Project-)Praktikum.
 
 ## Demo
 
-You can download a Demo apk for Android [here]() (TODO)
+You can download the demo apk for Android [here]() (TODO)
 
 ## Github repository
 
@@ -51,24 +51,20 @@ $ git clone https://github.com/LemiSt24/SG2022-We-Got-The-Moves.git
 #### Android Developer Guides
 
 - [Basic Android Developer Guide](https://developer.android.com/guide)
-- [Detailed Tutorial / Training](https://google-developer-training.github.io/android-developer-fundamentals-course-concepts-v2/unit-1-get-started/lesson-1-build-your-first-app/1-0-c-introduction-to-android/1-0-c-introduction-to-android.html) (
-  recommended)
+- [Detailed Tutorial / Training](https://google-developer-training.github.io/android-developer-fundamentals-course-concepts-v2/unit-1-get-started/lesson-1-build-your-first-app/1-0-c-introduction-to-android/1-0-c-introduction-to-android.html)
 - [Guide UI Layout Editor](https://developer.android.com/studio/write/layout-editor.html)
 
 #### Code style / Code formatter
 
 To ensure that Code is readable and is formatted uniformly, the
-plugin [google-java-format](https://plugins.jetbrains.com/plugin/8527-google-java-format) be
-installed via Settings -> Plugins. Note that the plugin has be enabled afterwards. Furthermore it's
-advisable to enable the checkboxes 'Reformat Code', 'Organize imports', 'Rearrange Code' in Android
-Studio as
+plugin [google-java-format](https://plugins.jetbrains.com/plugin/8527-google-java-format) can be
+installed via Settings -> Plugins. Note that the plugin has to be enabled afterwards. Furthermore
+it's advisable to enable 'Reformat Code', 'Organize imports', 'Rearrange Code' in Android Studio as
 show [here](https://www.jetbrains.com/idea/guide/tutorials/reformatting-code/reformatting-before-commit/)
 
-#### Useful Links for UI Resources
+## UI libraries
 
-- [Icons](https://www.veryicon.com/)
-
-## UI / View binding
+### Basics
 
 'We got the moves' offers the use of two UI binding libraries as **alternative** possibilities.
 Please refer to the specific links below.
@@ -76,16 +72,38 @@ Please refer to the specific links below.
 For most purposes, it's easier to use the **View Binding Library**. In case you want to bind
 specific data objects to a view's components (e.g. list items bounded to certain objects), it can be
 advantageous to use the **Data Binding Library** instead. Once any **example_layout.xml** file has
-been created under **app/src/main/res/layout**, both libraries will generate the target binding
-classes automatically.
+been created under **app/src/main/res/layout**, both libraries will generate the target layout
+binding class, e.g. named as **ExampleLayoutBinding**
+automatically.
 
 - [View Binding Library](http://developer.android.com/topic/libraries/view-binding)
 - [Data Binding Library](https://developer.android.com/topic/libraries/data-binding)
 
-## Charting
+### Images
 
-We use a well known [library](https://github.com/PhilJay/MPAndroidChart) for building and displaying charts in the statistic view. This tool allows all kind of charts, like bar, graph or pie charts.  
+In order to render images of exercises in the Dashboard in fitting size,
+the [Bumptech / Glide library](https://github.com/bumptech/glide) is used. It's recommend to place
+input images in the drawable folder **res/images/drawable** in order to not mix them with **
+icons.xml** files in the common **res/drawable** folder.
 
+### Youtube Videos
+
+Exercises are links with their corresponding Youtube videos provided darebee
+using [PierfrancescoSoffritti / Android-youtube-player library](https://github.com/PierfrancescoSoffritti/android-youtube-player)
+.
+
+### Statistics
+
+We use a well known [PhilJay / MPAndroidChart library](https://github.com/PhilJay/MPAndroidChart)
+for building and displaying charts in the statistic view. This tool allows all kind of charts, like
+bar, graph or pie charts.
+
+## ML libraries
+
+### Mediapipe
+
+One of core features (pose and position tracking) provided by 'We go the Moves' App relies on
+the [Google's Mediapipe library](https://google.github.io/mediapipe/).
 
 ## Database
 

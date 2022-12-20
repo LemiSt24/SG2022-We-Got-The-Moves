@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.adapters.Converters;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -23,14 +22,18 @@ import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Date;
 
 // TODO: Add entity classes here
 @Database(
-    entities = {User.class, Exercise.class, Workout.class, WorkoutExercise.class, FinishedTraining.class},
+    entities = {
+      User.class,
+      Exercise.class,
+      Workout.class,
+      WorkoutExercise.class,
+      FinishedTraining.class
+    },
     version = 1,
     exportSchema = false)
 @TypeConverters({com.sg2022.we_got_the_moves.db.converter.TypeConverters.class})
@@ -86,11 +89,19 @@ public abstract class AppDatabase extends RoomDatabase {
                               .UserDao()
                               .insert(new User("Simon Westermann", (float) 1.77, 50, false, 22));
                           getInstance(appContext)
-                                  .FinishedTrainingDao()
-                                  .insert(new FinishedTraining( new Date(System.currentTimeMillis()), 1, Duration.of(5, ChronoUnit.MINUTES)));
+                              .FinishedTrainingDao()
+                              .insert(
+                                  new FinishedTraining(
+                                      new Date(System.currentTimeMillis()),
+                                      1,
+                                      Duration.of(5, ChronoUnit.MINUTES)));
                           getInstance(appContext)
-                                    .FinishedTrainingDao()
-                                    .insert(new FinishedTraining( new Date(System.currentTimeMillis()), 3, Duration.of(4, ChronoUnit.MINUTES)));
+                              .FinishedTrainingDao()
+                              .insert(
+                                  new FinishedTraining(
+                                      new Date(System.currentTimeMillis()),
+                                      3,
+                                      Duration.of(4, ChronoUnit.MINUTES)));
                         });
               }
             })

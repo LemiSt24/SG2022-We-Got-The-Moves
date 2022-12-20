@@ -60,7 +60,7 @@ public class WorkoutsViewModel extends AndroidViewModel {
     @Override
     @NonNull
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-      return (T) new WorkoutsViewModel(app, repository, owner);
+      return (T) new WorkoutsViewModel(this.app, this.repository, this.owner);
     }
   }
 }

@@ -1,18 +1,23 @@
 package com.sg2022.we_got_the_moves.ui.workouts.adapter;
 
 import android.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.sg2022.we_got_the_moves.R;
+import com.sg2022.we_got_the_moves.databinding.InputDialogInstructionBinding;
 import com.sg2022.we_got_the_moves.databinding.InputDialogNumberBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemExerciseBinding;
+import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 import com.sg2022.we_got_the_moves.ui.workouts.WorkoutsViewModel;
 
@@ -51,12 +56,7 @@ public class ExerciseListAdapter
     holder.binding.setWorkoutExerciseAndExercise(wee);
     holder.binding.buttonAmountExerciseItem.setOnClickListener(v -> showAmountDialog(wee));
     holder.binding.buttonInfoExerciseItem.setOnClickListener(
-        v ->
-            Toast.makeText(
-                    this.owner.getContext(),
-                    String.format("Click on Info button: %1$s", wee.exercise.name),
-                    Toast.LENGTH_SHORT)
-                .show());
+        v -> showInstructionDialog(wee.exercise));
   }
 
   @Override
@@ -94,6 +94,40 @@ public class ExerciseListAdapter
               dialog.dismiss();
             })
         .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+        .create()
+        .show();
+  }
+
+  private void showInstructionDialog(@NonNull Exercise e) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
+    InputDialogInstructionBinding binding =
+        DataBindingUtil.inflate(
+            LayoutInflater.from(this.owner.requireContext()),
+            R.layout.input_dialog_instruction,
+            null,
+            false);
+    binding.setExercise(e);
+    this.owner.getLifecycle().addObserver(binding.youtubePlayerViewInstructionDialog);
+    binding.youtubePlayerViewInstructionDialog.addYouTubePlayerListener(
+        new AbstractYouTubePlayerListener() {
+          @Override
+          public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+            youTubePlayer.loadVideo(e.youtubeId, 0);
+          }
+
+          @Override
+          public void onError(
+              @NonNull YouTubePlayer youTubePlayer, @NonNull PlayerConstants.PlayerError error) {
+            super.onError(youTubePlayer, error);
+            Log.e(TAG, error.toString());
+            binding.youtubePlayerViewInstructionDialog.release();
+          }
+        });
+    builder
+        .setOnDismissListener(dialog -> binding.youtubePlayerViewInstructionDialog.release())
+        .setView(binding.getRoot())
+        .setTitle(String.format(this.owner.getString(R.string.instruction_title), e.name))
+        .setNeutralButton(R.string.ok, (dialog, id) -> dialog.dismiss())
         .create()
         .show();
   }

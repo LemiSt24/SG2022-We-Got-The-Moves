@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.sg2022.we_got_the_moves.R;
+
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -17,32 +19,21 @@ public class Exercise {
   @ColumnInfo(name = "name")
   public String name;
 
-  private String textInstruction;
-  private String videoInstruction;
+  @ColumnInfo(name = "instruction")
+  public String instruction;
 
-  public Exercise(long id, String name, String textInstruction, String videoInstruction) {
+  @ColumnInfo(name = "youtubeId")
+  public String youtubeId;
+
+  @ColumnInfo(name = "imageId", defaultValue = "" + R.drawable.missing)
+  public int imageId;
+
+  public Exercise(long id, String name, String instruction, String youtubeId, int imageId) {
     this.id = id;
     this.name = name;
-    this.textInstruction = textInstruction;
-    this.videoInstruction = videoInstruction;
-  }
-
-  @Nullable
-  public String getTextInstruction() {
-    return textInstruction;
-  }
-
-  public void setTextInstruction(@Nullable String textInstruction) {
-    this.textInstruction = textInstruction;
-  }
-
-  @Nullable
-  public String getVideoInstruction() {
-    return videoInstruction;
-  }
-
-  public void setVideoInstruction(@Nullable String videoInstruction) {
-    this.videoInstruction = videoInstruction;
+    this.instruction = instruction;
+    this.youtubeId = youtubeId;
+    this.imageId = imageId;
   }
 
   @Override

@@ -41,5 +41,7 @@ public class BasicApp extends Application {
     return workoutsRepository;
   }
 
-  public FinishedTrainingRepository getFinishedTrainingRepository(){return finishedTrainingRepository;}
+  public FinishedTrainingRepository getFinishedTrainingRepository() {
+    return finishedTrainingRepository;
+  }
 }
