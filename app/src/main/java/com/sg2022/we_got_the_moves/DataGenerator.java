@@ -19,7 +19,7 @@ public class DataGenerator {
     "1. Stand up with your feet shoulder-width apart.\n\n"
         + "2. Bend your knees, press your hips back and stop the movement once the hip joint is slightly lower than the knees.\n\n"
         + "3. Press your heels into the floor to return to the initial position.\n\n"
-        + "4. Repeat until set is complete.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+        + "4. Repeat until set is complete.",
     "1. Lie on your side with your body fully extended.\n\n"
         + "2. Lift your body off the ground and balance your weight between the forearm and the side of the foot.\n\n"
         + "3. Keep your body in a straight line and hold for as long as you can.\n\n"
