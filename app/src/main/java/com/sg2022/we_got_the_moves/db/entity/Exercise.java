@@ -22,16 +22,22 @@ public class Exercise {
   @ColumnInfo(name = "instruction")
   public String instruction;
 
-  @ColumnInfo(name = "youtubeId")
+  @ColumnInfo(name = "youtubeId", defaultValue = "" + R.string.testvideo)
   public String youtubeId;
 
   @ColumnInfo(name = "imageId", defaultValue = "" + R.drawable.missing)
   public int imageId;
 
   @ColumnInfo(name = "isCountable")
-  private boolean isCountable;
+  public boolean isCountable;
 
-  public Exercise(long id, String name, String instruction, String youtubeId, int imageId, boolean isCountable) {
+  public Exercise(
+      long id,
+      String name,
+      String instruction,
+      String youtubeId,
+      int imageId,
+      boolean isCountable) {
     this.id = id;
     this.name = name;
     this.instruction = instruction;

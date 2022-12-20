@@ -38,21 +38,19 @@ public class DataGenerator {
   };
 
   public static String[] youtubeIds = {
-    "C0DPdy98e4c", /* Testvideo */
-    "Zqc_lc93hak",
-    "Fum_2H2cog4",
-    "w2iTOneGPdU",
-    "v9LABVJzv8A",
-    "5bOjqyL0PGE"
+    "Zqc_lc93hak", "Fum_2H2cog4", "w2iTOneGPdU", "v9LABVJzv8A", "5bOjqyL0PGE"
   };
 
   public static int[] imageIds = {
-    R.drawable.missing, /* Missing Image */
     R.drawable.squates,
     R.drawable.sideplanks,
     R.drawable.mountainclimbers,
     R.drawable.pushups,
     R.drawable.situps
+  };
+
+  public static boolean[] isCountable = {
+    true, false, /* set to false for test purposes */ true, true, true
   };
 
   public static String[] workoutNames = {
@@ -68,8 +66,9 @@ public class DataGenerator {
               i + 1,
               exerciseNames[i],
               exerciseInstructions[i],
-              youtubeIds[i + 1],
-              imageIds[i + 1]));
+              youtubeIds[i],
+              imageIds[i],
+              isCountable[i]));
     }
     return e;
   }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sg2022.we_got_the_moves.MainActivity;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.ItemWorkoutNoEditBinding;
+import com.sg2022.we_got_the_moves.db.entity.FinishedTraining;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 
 import java.util.ArrayList;
