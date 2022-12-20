@@ -19,6 +19,7 @@ import java.util.List;
 
     constraint
         - id
+        - name
         - from1 (=left_ankle)
         - to1 (=right_ankle)
         - from2 (left shoulder)
@@ -28,10 +29,11 @@ import java.util.List;
         - message_too_small (id in StringListe)
 
         Beispiel Schulterbreit:
-        - from1 left_shoulder
-        - to1 right_shoulder
-        - from2 left_ankle
-        - to2 right_ankle
+        - name "schulterbreit"
+        - from1 "left_shoulder"
+        - to1 "right_shoulder"
+        - from2 "left_ankle"
+        - to2 "right_ankle"
         - max_diff 0.1 (10%)
         - messages müssen dann foreign keys sein
  */
