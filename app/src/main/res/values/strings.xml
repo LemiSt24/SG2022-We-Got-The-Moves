@@ -31,7 +31,7 @@
     <string name="info">Info</string>
     <string name="instructions">Instructions</string>
     <string name="testvideo">C0DPdy98e4c</string>
-    <string name="instruction_title">Instruction of Exercise:%1$s</string>
+    <string name="instruction_title">Instruction of Exercise: %1$s</string>
     <string name="ok">OK</string>
     <string name="description">Description</string>
 </resources>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -33,10 +32,10 @@
                     android:id="@+id/youtube_player_view_instruction_dialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     app:autoPlay="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0">
@@ -57,8 +56,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/text_view_instruction_dialog"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/youtube_player_view_instruction_dialog"
-                    tools:ignore="TextContrastCheck" />
+                    app:layout_constraintTop_toBottomOf="@+id/youtube_player_view_instruction_dialog" />
 
                 <TextView
                     android:id="@+id/text_view_instruction_dialog"
@@ -68,16 +66,13 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:autoSizeTextType="uniform"
-                    android:text="@{exercise != null ? exercise.instruction : @string/enter_text}"
+                    android:text="@{exercise.instruction, default= @string/enter_text}"
                     android:textAlignment="textStart"
                     android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:verticalScrollbarPosition="right"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_description_instruction_item"
-                    tools:ignore="TextContrastCheck" />
+                    app:layout_constraintTop_toBottomOf="@+id/textview_description_instruction_item" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 
