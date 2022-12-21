@@ -609,8 +609,7 @@ public class MediapipeActivity extends AppCompatActivity {
                                 false);
                 binding.setExercise(e);
                 builder
-                        .setView(binding.getRoot())
-                        .setTitle(String.format("", e.name));
+                        .setView(binding.getRoot());
                 AlertDialog dialog = builder.create();
                 dialog.show();
 
@@ -620,8 +619,9 @@ public class MediapipeActivity extends AppCompatActivity {
 
                 TextView amountView = dialog.findViewById(R.id.pause_screen_excercise_amount);
                 String text = String.valueOf(amount);
-                if (e.isCountable) text += " Reps";
-                else text += " seconds";
+                if (e.isCountable) text += " x ";
+                else text += " seconds ";
+                text += e.name;
                 amountView.setText(text);
 
                 pause_countdown.setOnChronometerTickListener(
