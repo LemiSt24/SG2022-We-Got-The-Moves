@@ -12,7 +12,7 @@ public class DataGenerator {
   private static final String TAG = "DataGenerator";
 
   public static String[] exerciseNames = {
-    "Squats", "Side-Planks", "Mountain-Climbers", "Push-Ups", "Sit-Ups"
+    "Squats", "Side-Planks", "Mountain-Climbers", "Push-Ups", "Sit-Ups", "Plank", "Biceps-Curls"
   };
 
   public static String[] exerciseInstructions = {
@@ -34,11 +34,19 @@ public class DataGenerator {
     "1. Lie down on your back, keep your knees bent, and your back and feet flat on the mat.\n\n"
         + "2. Slowly lift your torso and sit up.\n\n"
         + "3. Return to the starting position by rolling down one vertebra at a time.\n\n"
-        + "4. Repeat the exercise until set is complete."
+        + "4. Repeat the exercise until set is complete.",
+    "1. Begin in a kneeling position with your hands directly beneath your shoulders and your knees positioned hip-width apart.\n\n"
+        + "2. Slowly lower your body until your elbows are at a 90-degree angle while keeping your core engaged.\n\n"
+        + "3. Hold the position for the duration of the exercise, then release and return to the starting position.\n\n"
+        + "4. Remember to engage your core and keep your back straight throughout the entire movement.",
+    "1. Stand straight with a dumbbell in each hand, your feet shoulder-width apart, and hands by your sides.\n\n"
+        + "2. Squeeze the biceps and lift the dumbbells. Keep the elbows close to your body and the upper arms stationary, only the forearms should move.\n\n"
+        + "3. Once the dumbbells are at shoulder level, slowly lower the arms to the starting position.\n\n"
+        + "4. Repeat."
   };
 
   public static String[] youtubeIds = {
-    "Zqc_lc93hak", "Fum_2H2cog4", "w2iTOneGPdU", "v9LABVJzv8A", "5bOjqyL0PGE"
+    "Zqc_lc93hak", "Fum_2H2cog4", "w2iTOneGPdU", "v9LABVJzv8A", "5bOjqyL0PGE" , "EvNPYh3OMKw", "P8MNX2ocp2U"
   };
 
   public static int[] imageIds = {
@@ -46,11 +54,13 @@ public class DataGenerator {
     R.drawable.sideplanks,
     R.drawable.mountainclimbers,
     R.drawable.pushups,
-    R.drawable.situps
+    R.drawable.situps,
+    R.drawable.plank,
+    R.drawable.bicepsculs
   };
 
   public static boolean[] isCountable = {
-    true, false, /* set to false for test purposes */ true, true, true
+    true, false, /* set to false for test purposes */ true, true, true, false, true
   };
 
   public static String[] workoutNames = {
@@ -61,6 +71,8 @@ public class DataGenerator {
     List<Exercise> e = new ArrayList<>();
 
     for (int i = 0; i < exerciseNames.length; ++i) {
+      if (i == 1 || i == 2);
+      else {
       e.add(
           new Exercise(
               i + 1,
@@ -69,7 +81,7 @@ public class DataGenerator {
               youtubeIds[i],
               imageIds[i],
               isCountable[i]));
-    }
+    }}
     return e;
   }
 
