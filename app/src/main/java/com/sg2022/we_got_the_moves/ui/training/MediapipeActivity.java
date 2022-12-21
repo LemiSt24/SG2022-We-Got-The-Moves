@@ -606,12 +606,28 @@ public class MediapipeActivity extends AppCompatActivity {
                 AlertDialog dialog = builder.create();
                 dialog.show();
 
+                Chronometer pause_countdown = dialog.findViewById(R.id.pause_countdown);
+                pause_countdown.setBase(SystemClock.elapsedRealtime() + 5000);
+                pause_countdown.start();
+
+
+                pause_countdown.setOnChronometerTickListener(
+                        new Chronometer.OnChronometerTickListener() {
+                          @Override
+                          public void onChronometerTick(Chronometer chronometer) {
+                            long base = pause_countdown.getBase();
+                            if (base < SystemClock.elapsedRealtime()) {
+                              dialog.dismiss();
+                              noPause = true;
+                            }
+                          }
+                        });
+
                 Timer t = new Timer();
                 t.schedule(new TimerTask() {
                   @Override
                   public void run() {
-                    dialog.dismiss();
-                    noPause = true;
+
                     t.cancel();
                   }
                 }, 5000);
