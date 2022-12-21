@@ -1,5 +1,6 @@
 package com.sg2022.we_got_the_moves.ui.training;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -20,8 +22,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.databinding.DataBindingUtil;
 
 import com.google.mediapipe.components.CameraHelper;
 import com.google.mediapipe.components.CameraXPreviewHelper;
@@ -35,8 +39,13 @@ import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
+import com.sg2022.we_got_the_moves.databinding.DialogBetweenExerciseScreenBinding;
+import com.sg2022.we_got_the_moves.databinding.InputDialogInstructionBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedTraining;
 import com.sg2022.we_got_the_moves.repository.FinishedTrainingRepository;
@@ -49,6 +58,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MediapipeActivity extends AppCompatActivity {
 
@@ -107,6 +118,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private boolean timerSet = false;
 
   private Date startTime;
+  private Boolean noPause = true;
 
   private static String getClassificationDebugString(Map<String, Integer> classification) {
     String classificationString = "";
@@ -258,7 +270,7 @@ public class MediapipeActivity extends AppCompatActivity {
               Log.println(Log.DEBUG, TAG, exterciseIDToAmount.get(exercises.get(0).id).toString());*/
 
               // exercises time based
-              if (!currentExercise.isCountable) {
+              if (noPause && !currentExercise.isCountable) {
                 if (!timerSet) {
                   setTimeCounter(exerciseIdToAmount.get(currentExercise.id));
                   timerSet = true;
@@ -267,7 +279,7 @@ public class MediapipeActivity extends AppCompatActivity {
               }
 
               // exercises rep based
-              else if (lastStateWasTop != onTopExercise( classifier.get_result(), lastStateWasTop, currentExercise.name.toLowerCase())) {
+              else if (noPause && lastStateWasTop != onTopExercise( classifier.get_result(), lastStateWasTop, currentExercise.name.toLowerCase())) {
                 if (lastStateWasTop) {
                   countRepUp();
                   if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
@@ -289,6 +301,8 @@ public class MediapipeActivity extends AppCompatActivity {
                       finish();
                     } else {
                       currentExercise = exercises.get(ExercisePointer);
+                      noPause = false;
+                      showNextExerciseDialog(currentExercise);
                       setExcerciseName(currentExercise.name);
                       Reps = 0;
                       setRepetition(String.valueOf(0));
@@ -570,5 +584,39 @@ public class MediapipeActivity extends AppCompatActivity {
             repetition_counter.setText(String.valueOf(Reps));
           }
         });
+  }
+
+  private void showNextExerciseDialog(@NonNull Exercise e) {
+    runOnUiThread(
+            new Runnable() {
+
+              @Override
+              public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MediapipeActivity.this);
+                DialogBetweenExerciseScreenBinding binding =
+                        DataBindingUtil.inflate(
+                                LayoutInflater.from(MediapipeActivity.this),
+                                R.layout.dialog_between_exercise_screen,
+                                null,
+                                false);
+                binding.setExercise(e);
+                builder
+                        .setView(binding.getRoot())
+                        .setTitle(String.format("", e.name));
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                Timer t = new Timer();
+                t.schedule(new TimerTask() {
+                  @Override
+                  public void run() {
+                    dialog.dismiss();
+                    noPause = true;
+                    t.cancel();
+                  }
+                }, 5000);
+
+              }
+            });
   }
 }
