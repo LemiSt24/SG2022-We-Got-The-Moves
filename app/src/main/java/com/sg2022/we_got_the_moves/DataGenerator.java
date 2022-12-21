@@ -12,7 +12,7 @@ public class DataGenerator {
   private static final String TAG = "DataGenerator";
 
   public static String[] exerciseNames = {
-    "Squats", "Side-Planks", "Mountain-Climbers", "Push-Ups", "Sit-Ups", "Plank", "Biceps-Curls"
+    "Squat", "Side-Planks", "Mountain-Climbers", "PushUp", "Sit-Ups", "Plank", "Biceps-Curls"
   };
 
   public static String[] exerciseInstructions = {

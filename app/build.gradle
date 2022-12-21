@@ -63,7 +63,8 @@ dependencies {
     implementation 'com.google.flogger:flogger-system-backend:0.7.4'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.google.guava:guava:27.0.1-android'
-    implementation 'com.google.protobuf:protobuf-java:3.17.2'
+    implementation 'com.google.protobuf:protobuf-java:3.11.4'
+    //implementation 'com.google.protobuf:protobuf-java:3.17.2' wrong version, do not change !!!
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'

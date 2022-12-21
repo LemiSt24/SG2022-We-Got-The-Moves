@@ -235,20 +235,20 @@ public class MediapipeActivity extends AppCompatActivity {
             classifier.classify(landmarks);
 
             // Beispielhafte Analyse von Rahmenbedingungen
-            Log.v(
+            /*Log.v(
                 TAG,
                 "Schultern: "
                     + classifier.get_distance("left_shoulder", "right_shoulder")
                     + ", Füße: "
-                    + classifier.get_distance("left_ankle", "right_ankle"));
+                    + classifier.get_distance("left_ankle", "right_ankle")); */
             // Note: If eye_presence is false, these landmarks are useless.
-            /*Log.v(
+            Log.v(
                     TAG,
                     "[TS:"
                             + packet.getTimestamp()
                             + "] #Landmarks for iris: "
                             + landmarks.getLandmarkCount());
-            Log.v(TAG, getLandmarksDebugString(landmarks));*/
+            Log.v(TAG, getLandmarksDebugString(landmarks));
             //      Log.println(Log.DEBUG,"test", String.valueOf(exercises.size()));
             if (exercises.size() != 0) {
               /*         Log.println(Log.DEBUG,"test", classification.toString());
@@ -267,11 +267,7 @@ public class MediapipeActivity extends AppCompatActivity {
               }
 
               // exercises rep based
-              else if (lastStateWasTop
-                  != onTopExercise(
-                      classifier.get_result(),
-                      lastStateWasTop,
-                      currentExercise.name.toLowerCase())) {
+              else if (lastStateWasTop != onTopExercise( classifier.get_result(), lastStateWasTop, currentExercise.name.toLowerCase())) {
                 if (lastStateWasTop) {
                   countRepUp();
                   if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
@@ -441,6 +437,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
   public Boolean onTopExercise(
       Map<String, Integer> classifierOutput, Boolean lastStateWasTop, String exerciseName) {
+    Log.println(Log.DEBUG, "classifier", classifierOutput.toString());
     if (classifierOutput != null) {
       if (classifierOutput.containsKey(exerciseName + "_top")
           && classifierOutput.get(exerciseName + "_top") >= 3) return true;
