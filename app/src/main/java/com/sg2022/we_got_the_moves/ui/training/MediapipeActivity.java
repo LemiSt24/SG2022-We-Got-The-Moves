@@ -639,4 +639,64 @@ public class MediapipeActivity extends AppCompatActivity {
               }
             });
   }
+
+  private void showEndScreenAndSave() {
+    //Build new finished Training and Save
+    Long endTime = System.currentTimeMillis();
+
+    Duration timeSpent =
+            Duration.of(endTime - startTime.getTime(), ChronoUnit.MILLIS);
+    FinishedTraining training =
+            new FinishedTraining(startTime, workoutId, timeSpent);
+
+    FinishedTrainingRepository finishedTrainingRepository =
+            FinishedTrainingRepository.getInstance(getApplication());
+    finishedTrainingRepository.insert(training);
+
+    //Show Dialog
+    runOnUiThread(
+      new Runnable() {
+        @Override
+        public void run() {
+          AlertDialog.Builder builder = new AlertDialog.Builder(MediapipeActivity.this);
+          DialogBetweenExerciseScreenBinding binding =
+                  DataBindingUtil.inflate(
+                          LayoutInflater.from(MediapipeActivity.this),
+                          R.layout.dialog_finished_training_screen,
+                          null,
+                          false);
+          builder
+                  .setView(binding.getRoot())
+                  .setNeutralButton(
+                          "Finish",
+                          (dialog, id) -> {
+                            finish();
+                            dialog.dismiss();
+                          });
+          AlertDialog dialog = builder.create();
+          dialog.show();
+
+          //Getting the textViews
+          TextView titel = dialog.findViewById(R.id.finished_trainings_screen_titel);
+          TextView exerciseList = dialog.findViewById(R.id.finished_trainings_screen_exercise_list);
+          TextView duration = dialog.findViewById(R.id.finished_trainings_screen_duration);
+
+          //Setting the Workout Name
+          WorkoutsRepository workoutsRepository = WorkoutsRepository.getInstance(getApplication());
+          workoutsRepository.getWorkout(workoutId).observe(
+                  MediapipeActivity.this, x -> {
+                    titel.setText(x.name);
+                  }
+          );
+
+          //Setting the duration
+          duration.setText(timeSpent.toString());
+
+          //Setting the exercise List
+          exerciseList.setText("");
+        }
+      }
+    );
+  }
+
 }
