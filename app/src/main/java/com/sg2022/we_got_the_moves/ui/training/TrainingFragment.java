@@ -37,7 +37,7 @@ public class TrainingFragment extends Fragment {
       @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     binding = FragmentTrainingBinding.inflate(inflater, container, false);
 
-    binding.titleLastUsed.setText("Same as last Workouts");
+    binding.titleLastUsed.setText("Last Workouts");
 
     LinearLayoutManager layoutManager =
         new LinearLayoutManager(this.requireContext(), LinearLayoutManager.VERTICAL, false);
