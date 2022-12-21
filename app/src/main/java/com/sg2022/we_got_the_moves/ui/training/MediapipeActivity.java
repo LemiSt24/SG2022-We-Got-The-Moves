@@ -42,6 +42,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.DialogBetweenExerciseScreenBinding;
+import com.sg2022.we_got_the_moves.databinding.DialogFinishedTrainingScreenBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedTraining;
 import com.sg2022.we_got_the_moves.repository.FinishedTrainingRepository;
@@ -293,17 +294,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
                     if (ExercisePointer >= exercises.size()) {
                       Log.println(Log.DEBUG, TAG, "workout finished");
-                      Long endTime = System.currentTimeMillis();
-
-                      Duration timeSpent =
-                          Duration.of(endTime - startTime.getTime(), ChronoUnit.MILLIS);
-                      FinishedTraining training =
-                          new FinishedTraining(startTime, workoutId, timeSpent);
-
-                      FinishedTrainingRepository finishedTrainingRepository =
-                          FinishedTrainingRepository.getInstance(getApplication());
-                      finishedTrainingRepository.insert(training);
-                      finish();
+                      showEndScreenAndSave();
                     } else {
                       currentExercise = exercises.get(ExercisePointer);
                       noPause = false;
@@ -347,6 +338,7 @@ public class MediapipeActivity extends AppCompatActivity {
     finish_but.setOnClickListener(
         v -> {
           finishedExercises.add(exerciseToString(currentExercise, false));
+          showEndScreenAndSave();
         });
   }
 
@@ -507,17 +499,8 @@ public class MediapipeActivity extends AppCompatActivity {
 
                       if (ExercisePointer >= exercises.size()) {
                         Log.println(Log.DEBUG, TAG, "workout finished");
-                        Long endTime = System.currentTimeMillis();
-
-                        Duration timeSpent =
-                            Duration.of(endTime - startTime.getTime(), ChronoUnit.MILLIS);
-                        FinishedTraining training =
-                            new FinishedTraining(startTime, workoutId, timeSpent);
-
-                        FinishedTrainingRepository finishedTrainingRepository =
-                            FinishedTrainingRepository.getInstance(getApplication());
-                        finishedTrainingRepository.insert(training);
-                        finish();
+                        showEndScreenAndSave();
+                        time_counter.stop();
                       } else {
                         currentExercise = exercises.get(ExercisePointer);
                         setExcerciseName(currentExercise.name);
@@ -609,9 +592,11 @@ public class MediapipeActivity extends AppCompatActivity {
       }
       else{
         Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
-        amount = (int) ((time_counter.getBase() - SystemClock.elapsedRealtime())/ 1000);
+        amount = exerciseIdToAmount.get(e.id) - ((int) ((time_counter.getBase() - SystemClock.elapsedRealtime())/ 1000));
       }
     }
+
+    if (amount == 0) return "";
 
       if (e.isCountable){
         exerciseString = amount + " x " + e.name;
@@ -687,7 +672,7 @@ public class MediapipeActivity extends AppCompatActivity {
         @Override
         public void run() {
           AlertDialog.Builder builder = new AlertDialog.Builder(MediapipeActivity.this);
-          DialogBetweenExerciseScreenBinding binding =
+          DialogFinishedTrainingScreenBinding binding =
                   DataBindingUtil.inflate(
                           LayoutInflater.from(MediapipeActivity.this),
                           R.layout.dialog_finished_training_screen,
@@ -718,10 +703,21 @@ public class MediapipeActivity extends AppCompatActivity {
           );
 
           //Setting the duration
-          duration.setText(timeSpent.toString());
+          String durationString = "Duration: " + String.valueOf(timeSpent.toMinutes()) + ":";
+          if (timeSpent.getSeconds()%60 < 10){
+            durationString += "0" + String.valueOf(timeSpent.getSeconds()%60);
+          }
+          else{
+            durationString += String.valueOf(timeSpent.getSeconds()%60);
+          }
+          duration.setText(durationString);
 
           //Setting the exercise List
-          exerciseList.setText("");
+          String text ="";
+          for (int i = 0; i < finishedExercises.size(); i++){
+            text += finishedExercises.get(i) + "\n";
+          }
+          exerciseList.setText(text);
         }
       }
     );
