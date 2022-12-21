@@ -57,7 +57,7 @@ import java.util.Map;
 
 public class MediapipeActivity extends AppCompatActivity {
 
-  private static final String TAG = "YXH";
+  private static final String TAG = "MediapipeActivity";
   private static final String BINARY_GRAPH_NAME = "pose_tracking_gpu.binarypb";
   private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
   private static final String OUTPUT_VIDEO_STREAM_NAME = "output_video";
@@ -620,7 +620,7 @@ public class MediapipeActivity extends AppCompatActivity {
                 TextView amountView = dialog.findViewById(R.id.pause_screen_excercise_amount);
                 String text = String.valueOf(amount);
                 if (e.isCountable) text += " x ";
-                else text += " seconds ";
+                else text += " s ";
                 text += e.name;
                 amountView.setText(text);
 
