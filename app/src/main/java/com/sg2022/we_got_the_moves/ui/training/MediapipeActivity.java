@@ -39,13 +39,9 @@ import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.DialogBetweenExerciseScreenBinding;
-import com.sg2022.we_got_the_moves.databinding.InputDialogInstructionBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedTraining;
 import com.sg2022.we_got_the_moves.repository.FinishedTrainingRepository;
@@ -58,8 +54,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MediapipeActivity extends AppCompatActivity {
 
@@ -118,7 +112,8 @@ public class MediapipeActivity extends AppCompatActivity {
   private boolean timerSet = false;
 
   private Date startTime;
-  private Boolean noPause = true;
+  private Boolean noPause = false;
+  private Boolean firstTimeShowDialog = true;
 
   private static String getClassificationDebugString(Map<String, Integer> classification) {
     String classificationString = "";
@@ -212,7 +207,14 @@ public class MediapipeActivity extends AppCompatActivity {
                         workoutExercise -> {
                           exerciseIdToAmount.put(
                               workoutExercise.exerciseId, workoutExercise.amount);
+                          if (firstTimeShowDialog) {
+                            showNextExerciseDialog(currentExercise,
+                                    workoutExercise.amount,
+                                    5);
+                            firstTimeShowDialog = false;
+                          }
                         });
+
               }
             });
 
@@ -302,7 +304,9 @@ public class MediapipeActivity extends AppCompatActivity {
                     } else {
                       currentExercise = exercises.get(ExercisePointer);
                       noPause = false;
-                      showNextExerciseDialog(currentExercise);
+                      showNextExerciseDialog(currentExercise,
+                              exerciseIdToAmount.get(currentExercise.id),
+                              5);
                       setExcerciseName(currentExercise.name);
                       Reps = 0;
                       setRepetition(String.valueOf(0));
@@ -514,6 +518,10 @@ public class MediapipeActivity extends AppCompatActivity {
                       } else {
                         currentExercise = exercises.get(ExercisePointer);
                         setExcerciseName(currentExercise.name);
+                        showNextExerciseDialog(currentExercise,
+                                exerciseIdToAmount.get(currentExercise.id),
+                                5);
+                        noPause = false;
                         timerSet = false;
                         Reps = 0;
                         setRepetition(String.valueOf(0));
@@ -586,7 +594,7 @@ public class MediapipeActivity extends AppCompatActivity {
         });
   }
 
-  private void showNextExerciseDialog(@NonNull Exercise e) {
+  private void showNextExerciseDialog(@NonNull Exercise e, @NonNull int amount, @NonNull int seconds) {
     runOnUiThread(
             new Runnable() {
 
@@ -607,9 +615,14 @@ public class MediapipeActivity extends AppCompatActivity {
                 dialog.show();
 
                 Chronometer pause_countdown = dialog.findViewById(R.id.pause_countdown);
-                pause_countdown.setBase(SystemClock.elapsedRealtime() + 5000);
+                pause_countdown.setBase(SystemClock.elapsedRealtime() + 1000 * seconds);
                 pause_countdown.start();
 
+                TextView amountView = dialog.findViewById(R.id.pause_screen_excercise_amount);
+                String text = String.valueOf(amount);
+                if (e.isCountable) text += " Reps";
+                else text += " seconds";
+                amountView.setText(text);
 
                 pause_countdown.setOnChronometerTickListener(
                         new Chronometer.OnChronometerTickListener() {
@@ -622,15 +635,6 @@ public class MediapipeActivity extends AppCompatActivity {
                             }
                           }
                         });
-
-                Timer t = new Timer();
-                t.schedule(new TimerTask() {
-                  @Override
-                  public void run() {
-
-                    t.cancel();
-                  }
-                }, 5000);
 
               }
             });
