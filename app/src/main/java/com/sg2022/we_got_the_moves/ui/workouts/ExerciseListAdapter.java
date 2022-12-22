@@ -52,9 +52,9 @@ public class ExerciseListAdapter
   @Override
   public void onBindViewHolder(@NonNull ExerciseItemViewHolder holder, int position) {
     WorkoutExerciseAndExercise wee = this.list.get(position);
-    holder.binding.setWorkoutExerciseAndExercise(wee);
+    holder.binding.setWee(wee);
     holder.binding.buttonAmountExerciseItem.setOnClickListener(v -> showAmountDialog(wee));
-    holder.binding.buttonInfoExerciseItem.setOnClickListener(
+    holder.binding.imagebuttonInfoExerciseItem.setOnClickListener(
         v -> showInstructionDialog(wee.exercise));
   }
 

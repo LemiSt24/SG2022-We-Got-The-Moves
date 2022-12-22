@@ -31,4 +31,8 @@
     <string name="instruction_title">Instruction of Exercise: %s</string>
     <string name="ok">OK</string>
     <string name="description">Description</string>
+    <string name="header">Header</string>
+    <string name="unit">Unit</string>
+    <string name="repetitions">Repetitions</string>
+    <string name="duration">Duration\n[seconds]</string>
 </resources>

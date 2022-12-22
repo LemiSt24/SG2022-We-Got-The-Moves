@@ -38,7 +38,7 @@ public class WorkoutListAdapter
 
   private final Fragment owner;
   private final WorkoutsViewModel model;
-  private final List<WorkoutAndWorkoutExercises> list;
+  private List<WorkoutAndWorkoutExercises> list;
 
   public WorkoutListAdapter(@NonNull Fragment owner, @NonNull WorkoutsViewModel model) {
     this.owner = owner;
@@ -54,8 +54,7 @@ public class WorkoutListAdapter
 
           WorkoutListDiffUtil workoutDiff = new WorkoutListDiffUtil(this.list, list);
           DiffUtil.DiffResult diff = DiffUtil.calculateDiff(workoutDiff);
-          this.list.clear();
-          this.list.addAll(list);
+          this.list = list;
           diff.dispatchUpdatesTo(this);
         });
   }
@@ -292,8 +291,18 @@ public class WorkoutListAdapter
       return Objects.equals(
               this.oldList.get(oldItemPosition).workout.name,
               this.newList.get(newItemPosition).workout.name)
-          && this.oldList.get(oldItemPosition).workoutAndExercises
-              == this.newList.get(newItemPosition).workoutAndExercises;
+          && areListsTheSame(
+              this.oldList.get(oldItemPosition).workoutAndExercises,
+              this.newList.get(newItemPosition).workoutAndExercises);
+    }
+
+    private boolean areListsTheSame(
+        List<WorkoutExerciseAndExercise> l1, List<WorkoutExerciseAndExercise> l2) {
+      if (l1.size() != l2.size()) return false;
+      for (int i = 0; i < l1.size(); i++) {
+        if (!l1.get(i).equals(l2.get(i))) return false;
+      }
+      return true;
     }
   }
 

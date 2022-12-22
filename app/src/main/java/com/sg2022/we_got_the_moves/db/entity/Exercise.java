@@ -14,6 +14,9 @@ import javax.annotation.Nullable;
 @Entity(tableName = "Exercise")
 public class Exercise {
 
+  @ColumnInfo(name = "count")
+  public COUNT count;
+
   @PrimaryKey(autoGenerate = true)
   @ColumnInfo(name = "id")
   public long id;
@@ -30,38 +33,43 @@ public class Exercise {
   @ColumnInfo(name = "imageId", defaultValue = "" + R.drawable.no_image)
   public int imageId;
 
-  @ColumnInfo(name = "isCountable")
-  public boolean isCountable;
-
   public Exercise(
       long id,
       String name,
       String instruction,
       String youtubeId,
       int imageId,
-      boolean isCountable) {
+      Exercise.COUNT count) {
     this.id = id;
     this.name = name;
     this.instruction = instruction;
     this.youtubeId = youtubeId;
     this.imageId = imageId;
-    this.isCountable = isCountable;
+    this.count = count;
   }
 
   @Ignore
-  public Exercise(
-      String name, String instruction, String youtubeId, int imageId, boolean isCountable) {
-    this(0, name, instruction, youtubeId, imageId, isCountable);
+  public Exercise(String name, String instruction, String youtubeId, int imageId, COUNT count) {
+    this(0, name, instruction, youtubeId, imageId, count);
   }
 
   @Ignore
-  public Exercise(String name, String instruction, int imageId, boolean isCountable) {
-    this(name, instruction, null, imageId, isCountable);
+  public Exercise(String name, String instruction, int imageId, COUNT count) {
+    this(name, instruction, null, imageId, count);
   }
 
   @Ignore
-  public Exercise(String name, String instruction, boolean isCountable) {
-    this(name, instruction, 0, isCountable);
+  public Exercise(String name, String instruction, COUNT count) {
+    this(name, instruction, R.drawable.no_image, count);
+  }
+
+  public boolean isCountable() {
+    return this.count == COUNT.REPETITION;
+  }
+
+  public enum COUNT {
+    REPETITION,
+    DURATION
   }
 
   @Override

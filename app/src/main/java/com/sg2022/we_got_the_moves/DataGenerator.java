@@ -70,8 +70,14 @@ public class DataGenerator {
     R.drawable.bicepsculs
   };
 
-  public static boolean[] isCountable = {
-    true, false, /* set to false for test purposes */ true, true, true, false, true
+  public static Exercise.COUNT[] isCountable = {
+    Exercise.COUNT.REPETITION,
+    Exercise.COUNT.DURATION,
+    Exercise.COUNT.REPETITION,
+    Exercise.COUNT.REPETITION,
+    Exercise.COUNT.REPETITION,
+    Exercise.COUNT.DURATION,
+    Exercise.COUNT.REPETITION
   };
 
   public static String[] workoutNames = {

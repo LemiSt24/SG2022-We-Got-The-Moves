@@ -5,8 +5,11 @@
 
     <data>
 
+        <import
+            alias="count"
+            type="com.sg2022.we_got_the_moves.db.entity.Exercise.COUNT" />
         <variable
-            name="workoutExerciseAndExercise"
+            name="wee"
             type="com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise" />
     </data>
 
@@ -20,8 +23,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="4dp"
             app:cardBackgroundColor="@color/sg_design_light_green"
             app:cardCornerRadius="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,47 +38,71 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <TextView
+                    android:id="@+id/textview_unit_header_exercise_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@{wee.exercise.count == count.REPETITION? @string/repetitions : @string/duration, default = @string/duration}"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintBottom_toTopOf="@+id/button_amount_exercise_item"
+                    app:layout_constraintStart_toStartOf="@+id/button_amount_exercise_item"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textview_title_header_exercise_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/name"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintBottom_toBottomOf="@+id/textview_unit_header_exercise_item"
+                    app:layout_constraintEnd_toEndOf="@+id/textview_name_exercise_item"
+                    app:layout_constraintStart_toStartOf="@+id/textview_name_exercise_item"
+                    app:layout_constraintTop_toTopOf="@+id/textview_unit_header_exercise_item" />
+
                 <Button
                     android:id="@+id/button_amount_exercise_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
                     android:autofillHints="0"
                     android:contentDescription="@string/amount"
                     android:gravity="center"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
-                    android:minEms="5"
-                    android:text="@{Integer.toString(workoutExerciseAndExercise.workoutExercise.amount)}"
-                    android:textSize="16sp"
+                    android:text="@{Integer.toString(wee.workoutExercise.amount)}"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="DuplicateSpeakableTextCheck" />
 
                 <TextView
-                    android:id="@+id/text_name_exercise_item"
+                    android:id="@+id/textview_name_exercise_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="4dp"
-                    android:autoSizeMaxTextSize="20sp"
                     android:autoSizeTextType="uniform"
                     android:autofillHints="@string/untitled"
-                    android:backgroundTint="@color/white"
                     android:gravity="center|center_vertical"
-                    android:minHeight="48dp"
-                    android:text="@{workoutExerciseAndExercise.exercise.name, default=@string/enter_text}"
-                    android:textColor="#004D40"
+                    android:text="@{wee.exercise.name, default=@string/enter_text}"
                     android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/button_info_exercise_item"
+                    app:layout_constraintBottom_toBottomOf="@+id/button_amount_exercise_item"
+                    app:layout_constraintEnd_toStartOf="@+id/imagebutton_info_exercise_item"
                     app:layout_constraintStart_toEndOf="@+id/button_amount_exercise_item"
                     app:layout_constraintTop_toTopOf="@+id/button_amount_exercise_item" />
 
                 <ImageButton
-                    android:id="@+id/button_info_exercise_item"
+                    android:id="@+id/imagebutton_info_exercise_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -82,9 +110,9 @@
                     android:contentDescription="@string/info"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@+id/button_amount_exercise_item"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textview_title_header_exercise_item"
                     app:srcCompat="@drawable/ic_info_black_24dp"
                     tools:ignore="ImageContrastCheck" />
 

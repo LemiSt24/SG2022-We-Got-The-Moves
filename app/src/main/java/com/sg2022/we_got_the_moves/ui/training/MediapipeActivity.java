@@ -201,7 +201,7 @@ public class MediapipeActivity extends AppCompatActivity {
               //
               currentExercise = e.get(0);
               setExcerciseName(currentExercise.name);
-              if (currentExercise.isCountable) setRepetition("0");
+              if (currentExercise.isCountable()) setRepetition("0");
               for (int i = 0; i < exercises.size(); i++) {
                 workoutsRepository
                     .getWorkoutExercise(workoutId, exercises.get(i).id)
@@ -211,13 +211,10 @@ public class MediapipeActivity extends AppCompatActivity {
                           exerciseIdToAmount.put(
                               workoutExercise.exerciseId, workoutExercise.amount);
                           if (firstTimeShowDialog) {
-                            showNextExerciseDialog(currentExercise,
-                                    workoutExercise.amount,
-                                    5);
+                            showNextExerciseDialog(currentExercise, workoutExercise.amount, 5);
                             firstTimeShowDialog = false;
                           }
                         });
-
               }
             });
 
@@ -253,18 +250,18 @@ public class MediapipeActivity extends AppCompatActivity {
 
             // Beispielhafte Analyse von Rahmenbedingungen
             /*Log.v(
-                TAG,
-                "Schultern: "
-                    + classifier.get_distance("left_shoulder", "right_shoulder")
-                    + ", Füße: "
-                    + classifier.get_distance("left_ankle", "right_ankle")); */
+            TAG,
+            "Schultern: "
+                + classifier.get_distance("left_shoulder", "right_shoulder")
+                + ", Füße: "
+                + classifier.get_distance("left_ankle", "right_ankle")); */
             // Note: If eye_presence is false, these landmarks are useless.
             Log.v(
-                    TAG,
-                    "[TS:"
-                            + packet.getTimestamp()
-                            + "] #Landmarks for iris: "
-                            + landmarks.getLandmarkCount());
+                TAG,
+                "[TS:"
+                    + packet.getTimestamp()
+                    + "] #Landmarks for iris: "
+                    + landmarks.getLandmarkCount());
             Log.v(TAG, getLandmarksDebugString(landmarks));
             //      Log.println(Log.DEBUG,"test", String.valueOf(exercises.size()));
             if (exercises.size() != 0) {
@@ -275,7 +272,7 @@ public class MediapipeActivity extends AppCompatActivity {
               Log.println(Log.DEBUG, TAG, exterciseIDToAmount.get(exercises.get(0).id).toString());*/
 
               // exercises time based
-              if (noPause && !currentExercise.isCountable) {
+              if (noPause && !currentExercise.isCountable()) {
                 if (!timerSet) {
                   setTimeCounter(exerciseIdToAmount.get(currentExercise.id));
                   timerSet = true;
@@ -284,7 +281,12 @@ public class MediapipeActivity extends AppCompatActivity {
               }
 
               // exercises rep based
-              else if (noPause && lastStateWasTop != onTopExercise( classifier.get_result(), lastStateWasTop, currentExercise.name.toLowerCase())) {
+              else if (noPause
+                  && lastStateWasTop
+                      != onTopExercise(
+                          classifier.get_result(),
+                          lastStateWasTop,
+                          currentExercise.name.toLowerCase())) {
                 if (lastStateWasTop) {
                   countRepUp();
                   if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
@@ -298,9 +300,8 @@ public class MediapipeActivity extends AppCompatActivity {
                     } else {
                       currentExercise = exercises.get(ExercisePointer);
                       noPause = false;
-                      showNextExerciseDialog(currentExercise,
-                              exerciseIdToAmount.get(currentExercise.id),
-                              5);
+                      showNextExerciseDialog(
+                          currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
                       setExcerciseName(currentExercise.name);
                       Reps = 0;
                       setRepetition(String.valueOf(0));
@@ -587,7 +588,7 @@ public class MediapipeActivity extends AppCompatActivity {
       amount = exerciseIdToAmount.get(e.id);
     }
     else{
-      if (e.isCountable){
+      if (e.isCountable()) {
         amount = Reps;
       }
       else{
@@ -598,7 +599,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
     if (amount == 0) return "";
 
-      if (e.isCountable){
+    if (e.isCountable()) {
         exerciseString = amount + " x " + e.name;
     }
       else{
@@ -609,48 +610,46 @@ public class MediapipeActivity extends AppCompatActivity {
 
   private void showNextExerciseDialog(@NonNull Exercise e, @NonNull int amount, @NonNull int seconds) {
     runOnUiThread(
-            new Runnable() {
+        new Runnable() {
 
-              @Override
-              public void run() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MediapipeActivity.this);
-                DialogBetweenExerciseScreenBinding binding =
-                        DataBindingUtil.inflate(
-                                LayoutInflater.from(MediapipeActivity.this),
-                                R.layout.dialog_between_exercise_screen,
-                                null,
-                                false);
-                binding.setExercise(e);
-                builder
-                        .setView(binding.getRoot());
-                AlertDialog dialog = builder.create();
-                dialog.show();
+          @Override
+          public void run() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MediapipeActivity.this);
+            DialogBetweenExerciseScreenBinding binding =
+                DataBindingUtil.inflate(
+                    LayoutInflater.from(MediapipeActivity.this),
+                    R.layout.dialog_between_exercise_screen,
+                    null,
+                    false);
+            binding.setExercise(e);
+            builder.setView(binding.getRoot());
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
-                Chronometer pause_countdown = dialog.findViewById(R.id.pause_countdown);
-                pause_countdown.setBase(SystemClock.elapsedRealtime() + 1000 * seconds);
-                pause_countdown.start();
+            Chronometer pause_countdown = dialog.findViewById(R.id.pause_countdown);
+            pause_countdown.setBase(SystemClock.elapsedRealtime() + 1000 * seconds);
+            pause_countdown.start();
 
-                TextView amountView = dialog.findViewById(R.id.pause_screen_excercise_amount);
-                String text = String.valueOf(amount);
-                if (e.isCountable) text += " x ";
-                else text += " s ";
-                text += e.name;
-                amountView.setText(text);
+            TextView amountView = dialog.findViewById(R.id.pause_screen_excercise_amount);
+            String text = String.valueOf(amount);
+            if (e.isCountable()) text += " x ";
+            else text += " s ";
+            text += e.name;
+            amountView.setText(text);
 
-                pause_countdown.setOnChronometerTickListener(
-                        new Chronometer.OnChronometerTickListener() {
-                          @Override
-                          public void onChronometerTick(Chronometer chronometer) {
-                            long base = pause_countdown.getBase();
-                            if (base < SystemClock.elapsedRealtime()) {
-                              dialog.dismiss();
-                              noPause = true;
-                            }
-                          }
-                        });
-
-              }
-            });
+            pause_countdown.setOnChronometerTickListener(
+                new Chronometer.OnChronometerTickListener() {
+                  @Override
+                  public void onChronometerTick(Chronometer chronometer) {
+                    long base = pause_countdown.getBase();
+                    if (base < SystemClock.elapsedRealtime()) {
+                      dialog.dismiss();
+                      noPause = true;
+                    }
+                  }
+                });
+          }
+        });
   }
 
   private void showEndScreenAndSave() {
