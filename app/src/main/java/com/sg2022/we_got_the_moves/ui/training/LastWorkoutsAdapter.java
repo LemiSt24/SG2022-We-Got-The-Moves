@@ -33,15 +33,16 @@ public class LastWorkoutsAdapter
     this.owner = owner;
     this.model = model;
 
-    workoutIds = new ArrayList<>();
-    workoutList = new ArrayList<>();
     finishedTrainings = new ArrayList<>();
+
     this.model
         .finishedTrainingRepository
         .getOrderedFinishedWorkouts()
         .observe(
             owner,
             finishedTraining -> {
+              workoutIds = new ArrayList<>();
+              workoutList = new ArrayList<>();
               Log.println(Log.DEBUG, TAG, finishedTraining.toString());
               finishedTrainings = finishedTraining;
               for (int i = 0; i < finishedTrainings.size() && workoutIds.size() < 3; i++) {
