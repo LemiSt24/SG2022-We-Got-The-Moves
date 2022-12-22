@@ -3,6 +3,7 @@ package com.sg2022.we_got_the_moves;
 import android.app.Application;
 
 import com.sg2022.we_got_the_moves.repository.FinishedTrainingRepository;
+import com.sg2022.we_got_the_moves.repository.TrainingRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 public class BasicApp extends Application {
@@ -15,6 +16,7 @@ public class BasicApp extends Application {
   // TODO: Add repos here
   private WorkoutsRepository workoutsRepository;
   private FinishedTrainingRepository finishedTrainingRepository;
+  private TrainingRepository trainingRepository;
 
   @Override
   public void onCreate() {
@@ -27,6 +29,7 @@ public class BasicApp extends Application {
     // TODO: Create instances of singleton-based repositories here
     this.workoutsRepository = WorkoutsRepository.getInstance(this);
     this.finishedTrainingRepository = FinishedTrainingRepository.getInstance(this);
+    this.trainingRepository = TrainingRepository.getInstance(this);
   }
 
   public AppExecutors getExecutors() {
@@ -38,10 +41,14 @@ public class BasicApp extends Application {
   }
 
   public WorkoutsRepository getWorkoutsRepository() {
-    return workoutsRepository;
+    return this.workoutsRepository;
   }
 
   public FinishedTrainingRepository getFinishedTrainingRepository() {
-    return finishedTrainingRepository;
+    return this.finishedTrainingRepository;
+  }
+
+  public TrainingRepository getTrainingRepository() {
+    return this.trainingRepository;
   }
 }

@@ -11,11 +11,10 @@ import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.sg2022.we_got_the_moves.db.entity.Workout;
-import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExerciseAndExercise;
+import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExercises;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.core.Maybe;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao
@@ -31,7 +30,7 @@ public interface WorkoutDao {
   void insertAll(List<Workout> ws);
 
   @Insert(onConflict = REPLACE)
-  Maybe<List<Long>> insertAllMaybe(List<Workout> ws);
+  Single<List<Long>> insertAllSingle(List<Workout> ws);
 
   @Update(onConflict = REPLACE)
   void update(Workout w);
@@ -53,6 +52,5 @@ public interface WorkoutDao {
 
   @Transaction
   @Query("SELECT * FROM Workout")
-  LiveData<List<WorkoutAndWorkoutExerciseAndExercise>>
-      getAllWorkoutsWithExerciseAndWorkoutExercise();
+  LiveData<List<WorkoutAndWorkoutExercises>> getAllWorkoutsWithExerciseAndWorkoutExercise();
 }

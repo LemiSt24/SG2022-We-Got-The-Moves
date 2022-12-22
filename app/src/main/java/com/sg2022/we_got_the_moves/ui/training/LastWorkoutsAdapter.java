@@ -37,7 +37,7 @@ public class LastWorkoutsAdapter
     workoutList = new ArrayList<>();
     finishedTrainings = new ArrayList<>();
     this.model
-        .repository
+        .finishedTrainingRepository
         .getOrderedFinishedWorkouts()
         .observe(
             owner,

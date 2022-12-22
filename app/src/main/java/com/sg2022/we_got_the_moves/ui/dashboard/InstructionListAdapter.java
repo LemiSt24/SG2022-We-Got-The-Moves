@@ -28,14 +28,12 @@ public class InstructionListAdapter
 
   private static final String TAG = "InstructionListAdapter";
   private final Fragment owner;
-  private final DashboardViewModel model;
   private final List<Exercise> list;
 
   public InstructionListAdapter(@NonNull Fragment owner, @NonNull DashboardViewModel model) {
     this.list = new ArrayList<>();
     this.owner = owner;
-    this.model = model;
-    this.model.data.observe(
+    model.data.observe(
         owner,
         list -> {
           if (list == null) {
@@ -69,12 +67,10 @@ public class InstructionListAdapter
     holder.binding.setExercise(e);
     Glide.with(this.owner.requireContext())
         .load(e.imageId)
-        .placeholder(R.drawable.missing)
+        .placeholder(R.drawable.no_image)
         .into(holder.binding.imageViewExerciseInstructionItem);
     holder.binding.imageViewExerciseInstructionItem.setOnClickListener(
-        v -> {
-          showInstructionDialog(e);
-        });
+        v -> showInstructionDialog(e));
   }
 
   @Override
@@ -116,11 +112,7 @@ public class InstructionListAdapter
         .setOnDismissListener(dialog -> binding.youtubePlayerViewInstructionDialog.release())
         .setView(binding.getRoot())
         .setTitle(String.format(this.owner.getString(R.string.instruction_title), e.name))
-        .setNeutralButton(
-            R.string.ok,
-            (dialog, id) -> {
-              dialog.dismiss();
-            })
+        .setNeutralButton(R.string.ok, (dialog, id) -> dialog.dismiss())
         .create()
         .show();
   }

@@ -88,7 +88,7 @@ icons.xml** files in the common **res/drawable** folder.
 
 ### Youtube Videos
 
-Exercises are links with their corresponding Youtube videos provided darebee
+Exercises are links with their corresponding Youtube Videos provided
 using [PierfrancescoSoffritti / Android-youtube-player library](https://github.com/PierfrancescoSoffritti/android-youtube-player)
 .
 

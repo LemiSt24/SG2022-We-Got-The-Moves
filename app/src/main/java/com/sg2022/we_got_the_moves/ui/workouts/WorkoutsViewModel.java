@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.sg2022.we_got_the_moves.BasicApp;
-import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExerciseAndExercise;
+import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExercises;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class WorkoutsViewModel extends AndroidViewModel {
   private static final String TAG = "WorkoutListViewModel";
 
   public final WorkoutsRepository repository;
-  public MutableLiveData<List<WorkoutAndWorkoutExerciseAndExercise>> data;
+  public MutableLiveData<List<WorkoutAndWorkoutExercises>> data;
 
   public WorkoutsViewModel(
       @NonNull final Application app,

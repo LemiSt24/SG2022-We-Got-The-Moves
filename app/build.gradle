@@ -63,8 +63,10 @@ dependencies {
     implementation 'com.google.flogger:flogger-system-backend:0.7.4'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.google.guava:guava:27.0.1-android'
-    implementation 'com.google.protobuf:protobuf-java:3.11.4'
-    //implementation 'com.google.protobuf:protobuf-java:3.17.2' wrong version, do not change !!!
+
+    def protobufVersion = '3.11.4'
+    //noinspection GradleDependency
+    implementation "com.google.protobuf:protobuf-java:$protobufVersion"
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
@@ -97,7 +99,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
-    //import for Charts for Statistics
+    //import for Charts for statistics
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     //Youtube Player

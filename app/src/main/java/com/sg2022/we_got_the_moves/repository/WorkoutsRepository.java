@@ -14,7 +14,7 @@ import com.sg2022.we_got_the_moves.db.daos.WorkoutExerciseDao;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
-import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExerciseAndExercise;
+import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExercises;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 
 import java.util.List;
@@ -82,11 +82,11 @@ public class WorkoutsRepository {
     return this.workoutDao.getWorkout(id);
   }
 
-  public LiveData<List<Exercise>> getAllExercises(long workoutId) {
+  public LiveData<List<Exercise>> getAllExercises(int workoutId) {
     return this.exerciseDao.getAllExercises(workoutId);
   }
 
-  public void getAllExercisesSingle(long workoutId, SingleObserver<List<Exercise>> observer) {
+  public void getAllExercisesSingle(int workoutId, SingleObserver<List<Exercise>> observer) {
     this.exerciseDao
         .getAllExercisesSingle(workoutId)
         .subscribeOn(Schedulers.io())
@@ -106,7 +106,7 @@ public class WorkoutsRepository {
         .subscribe(observer);
   }
 
-  public LiveData<Exercise> getExercise(long exerciseId) {
+  public LiveData<Exercise> getExercise(int exerciseId) {
     return this.exerciseDao.getExercise(exerciseId);
   }
 
@@ -115,7 +115,7 @@ public class WorkoutsRepository {
     return this.workoutExerciseDao.getAllWorkoutExerciseAndExercise(workoutId);
   }
 
-  public void getAllNotContainedExercise(long workoutId, SingleObserver<List<Exercise>> observer) {
+  public void getAllNotContainedExercise(int workoutId, SingleObserver<List<Exercise>> observer) {
     this.exerciseDao
         .getAllNotContainedExercisesSingle(workoutId)
         .subscribeOn(Schedulers.io())
@@ -145,7 +145,7 @@ public class WorkoutsRepository {
     this.executors.getPoolThread().execute(() -> this.workoutExerciseDao.insertAll(l));
   }
 
-  public void insertOrDeleteWorkoutExercise(List<Pair<WorkoutExercise, Boolean>> wes) {
+  public void insertOrDeleteWorkoutExercises(List<Pair<WorkoutExercise, Boolean>> wes) {
     this.executors
         .getPoolThread()
         .execute(
@@ -191,8 +191,7 @@ public class WorkoutsRepository {
     return this.workoutExerciseDao.getWorkoutExercise(workoutId, exerciseId);
   }
 
-  public LiveData<List<WorkoutAndWorkoutExerciseAndExercise>>
-      getAllWorkoutsWithExerciseAndWorkoutExercise() {
+  public LiveData<List<WorkoutAndWorkoutExercises>> getAllWorkoutsWithExerciseAndWorkoutExercise() {
     return this.workoutDao.getAllWorkoutsWithExerciseAndWorkoutExercise();
   }
 }

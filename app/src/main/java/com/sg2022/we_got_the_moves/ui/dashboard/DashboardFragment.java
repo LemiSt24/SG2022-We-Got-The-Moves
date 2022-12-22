@@ -11,7 +11,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentDashboardBinding;
@@ -26,8 +25,10 @@ public class DashboardFragment extends Fragment {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     DashboardViewModel.Factory factory =
-        new DashboardViewModel.Factory(this.requireActivity().getApplication(), this);
-    DashboardViewModel model = new ViewModelProvider(this, factory).get(DashboardViewModel.class);
+        new DashboardViewModel.Factory(
+            this.requireActivity().getApplication(), this.requireActivity());
+    DashboardViewModel model =
+        new ViewModelProvider(this.requireActivity(), factory).get(DashboardViewModel.class);
     this.adapter = new InstructionListAdapter(this, model);
   }
 
@@ -35,7 +36,7 @@ public class DashboardFragment extends Fragment {
       @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     FragmentDashboardBinding binding =
         DataBindingUtil.inflate(inflater, R.layout.fragment_dashboard, container, false);
-    LinearLayoutManager layoutManager =
+    GridLayoutManager layoutManager =
         new GridLayoutManager(this.requireContext(), 2, GridLayoutManager.VERTICAL, false);
     binding.recyclerviewDashboard.setLayoutManager(layoutManager);
     binding.recyclerviewDashboard.setAdapter(this.adapter);

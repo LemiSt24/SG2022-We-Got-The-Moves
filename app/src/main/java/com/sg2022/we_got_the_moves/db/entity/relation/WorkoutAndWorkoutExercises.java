@@ -8,7 +8,7 @@ import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 
 import java.util.List;
 
-public class WorkoutAndWorkoutExerciseAndExercise {
+public class WorkoutAndWorkoutExercises {
 
   @Embedded public Workout workout;
 

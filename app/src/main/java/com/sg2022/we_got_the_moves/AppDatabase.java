@@ -10,12 +10,16 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.sg2022.we_got_the_moves.db.daos.ConstraintDao;
 import com.sg2022.we_got_the_moves.db.daos.ExerciseDao;
+import com.sg2022.we_got_the_moves.db.daos.ExerciseStateDao;
 import com.sg2022.we_got_the_moves.db.daos.FinishedTrainingDao;
 import com.sg2022.we_got_the_moves.db.daos.UserDao;
 import com.sg2022.we_got_the_moves.db.daos.WorkoutDao;
 import com.sg2022.we_got_the_moves.db.daos.WorkoutExerciseDao;
+import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
+import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.FinishedTraining;
 import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
@@ -32,7 +36,9 @@ import java.util.Date;
       Exercise.class,
       Workout.class,
       WorkoutExercise.class,
-      FinishedTraining.class
+      FinishedTraining.class,
+      ExerciseState.class,
+      Constraint.class
     },
     version = 1,
     exportSchema = false)
@@ -102,6 +108,12 @@ public abstract class AppDatabase extends RoomDatabase {
                                       new Date(System.currentTimeMillis()),
                                       3,
                                       Duration.of(4, ChronoUnit.MINUTES)));
+                          getInstance(appContext)
+                              .ConstraintDao()
+                              .insert(DataGenerator.getDummyExerciseStatesAndConstraints().second);
+                          getInstance(appContext)
+                              .ExerciseStateDao()
+                              .insert(DataGenerator.getDummyExerciseStatesAndConstraints().first);
                         });
               }
             })
@@ -118,4 +130,8 @@ public abstract class AppDatabase extends RoomDatabase {
   public abstract UserDao UserDao();
 
   public abstract FinishedTrainingDao FinishedTrainingDao();
+
+  public abstract ExerciseStateDao ExerciseStateDao();
+
+  public abstract ConstraintDao ConstraintDao();
 }

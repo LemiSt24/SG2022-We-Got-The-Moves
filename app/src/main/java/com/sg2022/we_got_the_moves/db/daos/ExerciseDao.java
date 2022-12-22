@@ -40,18 +40,18 @@ public interface ExerciseDao {
 
   @Query(
       "SELECT Exercise.* FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :workoutId")
-  LiveData<List<Exercise>> getAllExercises(long workoutId);
+  LiveData<List<Exercise>> getAllExercises(int workoutId);
 
   @Transaction
   @Query(
       "SELECT Exercise.* FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :workoutId")
-  Single<List<Exercise>> getAllExercisesSingle(long workoutId);
+  Single<List<Exercise>> getAllExercisesSingle(int workoutId);
 
   @Transaction
   @Query(
       "SELECT * FROM Exercise WHERE Exercise.id NOT IN (SELECT Exercise.id FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :workoutId)")
-  Single<List<Exercise>> getAllNotContainedExercisesSingle(long workoutId);
+  Single<List<Exercise>> getAllNotContainedExercisesSingle(int workoutId);
 
   @Query("SELECT * FROM Exercise WHERE Exercise.id = :exerciseId")
-  LiveData<Exercise> getExercise(long exerciseId);
+  LiveData<Exercise> getExercise(int exerciseId);
 }

@@ -17,7 +17,6 @@ import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentWorkoutsBinding;
 import com.sg2022.we_got_the_moves.databinding.InputDialogTextBinding;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
-import com.sg2022.we_got_the_moves.ui.workouts.adapter.WorkoutListAdapter;
 
 public class WorkoutsFragment extends Fragment {
 

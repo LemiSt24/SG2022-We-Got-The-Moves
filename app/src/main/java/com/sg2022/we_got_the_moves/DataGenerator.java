@@ -1,6 +1,11 @@
 package com.sg2022.we_got_the_moves;
 
+import android.annotation.SuppressLint;
+import android.util.Pair;
+
+import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
+import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 
@@ -12,7 +17,7 @@ public class DataGenerator {
   private static final String TAG = "DataGenerator";
 
   public static String[] exerciseNames = {
-    "Squat", "Side-Planks", "Mountain-Climbers", "PushUp", "Sit-Ups", "Plank", "Biceps-Curls"
+    "Squat", "Side-planks", "Mountain-climbers", "Push-up", "Sit-up", "Plank", "Biceps-curl"
   };
 
   public static String[] exerciseInstructions = {
@@ -46,15 +51,21 @@ public class DataGenerator {
   };
 
   public static String[] youtubeIds = {
-    "Zqc_lc93hak", "Fum_2H2cog4", "w2iTOneGPdU", "v9LABVJzv8A", "5bOjqyL0PGE" , "EvNPYh3OMKw", "P8MNX2ocp2U"
+    "Zqc_lc93hak",
+    "Fum_2H2cog4",
+    "w2iTOneGPdU",
+    "v9LABVJzv8A",
+    "5bOjqyL0PGE",
+    "EvNPYh3OMKw",
+    "P8MNX2ocp2U"
   };
 
   public static int[] imageIds = {
     R.drawable.squates,
-    R.drawable.sideplanks,
-    R.drawable.mountainclimbers,
-    R.drawable.pushups,
-    R.drawable.situps,
+    R.drawable.side_planks,
+    R.drawable.mountain_climbers,
+    R.drawable.push_ups,
+    R.drawable.sit_ups,
     R.drawable.plank,
     R.drawable.bicepsculs
   };
@@ -71,17 +82,19 @@ public class DataGenerator {
     List<Exercise> e = new ArrayList<>();
 
     for (int i = 0; i < exerciseNames.length; ++i) {
-      if (i == 1 || i == 2);
+      if (i == 1 || i == 2)
+        ;
       else {
-      e.add(
-          new Exercise(
-              i + 1,
-              exerciseNames[i],
-              exerciseInstructions[i],
-              youtubeIds[i],
-              imageIds[i],
-              isCountable[i]));
-    }}
+        e.add(
+            new Exercise(
+                i + 1,
+                exerciseNames[i],
+                exerciseInstructions[i],
+                youtubeIds[i],
+                imageIds[i],
+                isCountable[i]));
+      }
+    }
     return e;
   }
 
@@ -103,5 +116,40 @@ public class DataGenerator {
       }
     }
     return we;
+  }
+
+  public static Pair<List<ExerciseState>, List<Constraint>> getDummyExerciseStatesAndConstraints() {
+    List<Constraint> constraints = new ArrayList<>();
+    List<ExerciseState> exerciseStates = new ArrayList<>();
+    List<Exercise> exs = getDummyExercises();
+    long count = 1;
+    for (int i = 0; i < exs.size(); ++i) {
+      for (int j = 0; j < ExerciseState.STATE.values().length; j++) {
+        for (int k = 0; k < NormalizedLandmark.landmark_names.size(); k++) {
+          String from1 = NormalizedLandmark.landmark_names.get(k);
+          String to1 =
+              NormalizedLandmark.landmark_names.get(
+                  (k + 1) % NormalizedLandmark.landmark_names.size());
+          String from2 =
+              NormalizedLandmark.landmark_names.get(
+                  (k + 2) % NormalizedLandmark.landmark_names.size());
+          String to2 =
+              NormalizedLandmark.landmark_names.get(
+                  (k + 3) % NormalizedLandmark.landmark_names.size());
+          double max_diff = 1.0;
+          String template =
+              "Message for constraint [from1: %s, to1: %s, from2: %s, to2: %s, max_diff: %f]";
+          @SuppressLint("DefaultLocale")
+          String msg = String.format(template, from1, to1, from2, to2, max_diff);
+          Constraint c = new Constraint(count, from1, to1, from2, to2, max_diff, msg);
+          ++count;
+          constraints.add(c);
+          ExerciseState es =
+              new ExerciseState(exs.get(i).id, ExerciseState.STATE.values()[j], c.id);
+          exerciseStates.add(es);
+        }
+      }
+    }
+    return new Pair<>(exerciseStates, constraints);
   }
 }

@@ -1,4 +1,4 @@
-package com.sg2022.we_got_the_moves.ui.workouts.adapter;
+package com.sg2022.we_got_the_moves.ui.workouts;
 
 import android.app.AlertDialog;
 import android.util.Log;
@@ -20,9 +20,8 @@ import com.sg2022.we_got_the_moves.databinding.ItemWorkoutBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
-import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExerciseAndExercise;
+import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExercises;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
-import com.sg2022.we_got_the_moves.ui.workouts.WorkoutsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ public class WorkoutListAdapter
 
   private final Fragment owner;
   private final WorkoutsViewModel model;
-  private final List<WorkoutAndWorkoutExerciseAndExercise> list;
+  private final List<WorkoutAndWorkoutExercises> list;
 
   public WorkoutListAdapter(@NonNull Fragment owner, @NonNull WorkoutsViewModel model) {
     this.owner = owner;
@@ -235,7 +234,7 @@ public class WorkoutListAdapter
                                           checkedList[i]));
                                 }
                                 if (result.size() > 0) {
-                                  model.repository.insertOrDeleteWorkoutExercise(result);
+                                  model.repository.insertOrDeleteWorkoutExercises(result);
                                 }
 
                                 dialog.dismiss();
@@ -262,12 +261,12 @@ public class WorkoutListAdapter
 
   private static class WorkoutListDiffUtil extends DiffUtil.Callback {
 
-    private final List<WorkoutAndWorkoutExerciseAndExercise> oldList;
-    private final List<WorkoutAndWorkoutExerciseAndExercise> newList;
+    private final List<WorkoutAndWorkoutExercises> oldList;
+    private final List<WorkoutAndWorkoutExercises> newList;
 
     public WorkoutListDiffUtil(
-        @NonNull List<WorkoutAndWorkoutExerciseAndExercise> oldList,
-        @NonNull List<WorkoutAndWorkoutExerciseAndExercise> newList) {
+        @NonNull List<WorkoutAndWorkoutExercises> oldList,
+        @NonNull List<WorkoutAndWorkoutExercises> newList) {
       this.oldList = oldList;
       this.newList = newList;
     }

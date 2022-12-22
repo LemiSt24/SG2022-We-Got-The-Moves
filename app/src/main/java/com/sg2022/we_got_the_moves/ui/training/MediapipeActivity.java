@@ -96,7 +96,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private boolean time_stopped = false;
 
   private PoseClassifier classifier;
-  private long workoutId;
+  private int workoutId;
 
   private List<Exercise> exercises;
   private Map<Long, Integer> exerciseIdToAmount;
@@ -171,7 +171,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
     Intent intent = getIntent();
     Bundle extras = intent.getExtras();
-    workoutId = extras.getLong("WORKOUT_ID");
+    workoutId = extras.getInt("WORKOUT_ID");
 
     Log.println(Log.DEBUG, "workoutID", String.valueOf(workoutId));
 
@@ -236,18 +236,18 @@ public class MediapipeActivity extends AppCompatActivity {
 
             // Beispielhafte Analyse von Rahmenbedingungen
             /*Log.v(
-                TAG,
-                "Schultern: "
-                    + classifier.get_distance("left_shoulder", "right_shoulder")
-                    + ", Füße: "
-                    + classifier.get_distance("left_ankle", "right_ankle")); */
+            TAG,
+            "Schultern: "
+                + classifier.get_distance("left_shoulder", "right_shoulder")
+                + ", Füße: "
+                + classifier.get_distance("left_ankle", "right_ankle")); */
             // Note: If eye_presence is false, these landmarks are useless.
             Log.v(
-                    TAG,
-                    "[TS:"
-                            + packet.getTimestamp()
-                            + "] #Landmarks for iris: "
-                            + landmarks.getLandmarkCount());
+                TAG,
+                "[TS:"
+                    + packet.getTimestamp()
+                    + "] #Landmarks for iris: "
+                    + landmarks.getLandmarkCount());
             Log.v(TAG, getLandmarksDebugString(landmarks));
             //      Log.println(Log.DEBUG,"test", String.valueOf(exercises.size()));
             if (exercises.size() != 0) {
@@ -267,7 +267,11 @@ public class MediapipeActivity extends AppCompatActivity {
               }
 
               // exercises rep based
-              else if (lastStateWasTop != onTopExercise( classifier.get_result(), lastStateWasTop, currentExercise.name.toLowerCase())) {
+              else if (lastStateWasTop
+                  != onTopExercise(
+                      classifier.get_result(),
+                      lastStateWasTop,
+                      currentExercise.name.toLowerCase())) {
                 if (lastStateWasTop) {
                   countRepUp();
                   if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {

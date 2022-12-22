@@ -1,4 +1,4 @@
-package com.sg2022.we_got_the_moves.ui.workouts.adapter;
+package com.sg2022.we_got_the_moves.ui.workouts;
 
 import android.app.AlertDialog;
 import android.util.Log;
@@ -19,7 +19,6 @@ import com.sg2022.we_got_the_moves.databinding.InputDialogNumberBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemExerciseBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
-import com.sg2022.we_got_the_moves.ui.workouts.WorkoutsViewModel;
 
 import java.util.List;
 
