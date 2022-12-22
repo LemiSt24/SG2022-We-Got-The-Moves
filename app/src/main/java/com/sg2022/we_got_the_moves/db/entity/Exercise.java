@@ -15,6 +15,7 @@ import javax.annotation.Nullable;
 public class Exercise {
 
   @PrimaryKey(autoGenerate = true)
+  @ColumnInfo(name = "id")
   public long id;
 
   @ColumnInfo(name = "name")
