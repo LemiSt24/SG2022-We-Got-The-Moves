@@ -22,6 +22,6 @@ public class Workout {
 
   @Ignore
   public Workout(String name) {
-    this(0, name);
+    this.name = name;
   }
 }

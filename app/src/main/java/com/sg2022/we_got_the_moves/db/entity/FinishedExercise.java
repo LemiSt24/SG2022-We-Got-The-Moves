@@ -6,13 +6,13 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 
 @Entity(
-    tableName = "WorkoutExercise",
-    primaryKeys = {"workoutId", "exerciseId"},
+    tableName = "FinishedExercise",
+    primaryKeys = {"finishedWorkoutId", "exerciseId"},
     foreignKeys = {
       @ForeignKey(
-          entity = Workout.class,
+          entity = FinishedWorkout.class,
           parentColumns = "id",
-          childColumns = "workoutId",
+          childColumns = "finishedWorkoutId",
           onDelete = ForeignKey.CASCADE,
           onUpdate = ForeignKey.CASCADE),
       @ForeignKey(
@@ -24,27 +24,24 @@ import androidx.room.Index;
     },
     indices = {
       @Index(
-          value = {"workoutId", "exerciseId"},
+          value = {"finishedWorkoutId", "exerciseId"},
           unique = true),
-      @Index(value = {"exerciseId"}),
-      @Index(value = {"workoutId"})
+      @Index(value = {"exerciseId"})
     })
-public class WorkoutExercise {
+public class FinishedExercise {
 
-  @ColumnInfo(name = "workoutId")
-  public long workoutId;
+  @ColumnInfo(name = "finishedWorkoutId")
+  public long finishedWorkoutId;
 
   @ColumnInfo(name = "exerciseId")
   public long exerciseId;
 
-  @ColumnInfo(name = "amount")
-  public int amount; // in [sec] or [#]
+  @ColumnInfo(name = "duration")
+  public int units;
 
-  public WorkoutExercise(long workoutId, long exerciseId, int amount) {
-    this.workoutId = workoutId;
+  public FinishedExercise(long finishedWorkoutId, long exerciseId, int units) {
+    this.finishedWorkoutId = finishedWorkoutId;
     this.exerciseId = exerciseId;
-    this.amount = amount;
+    this.units = units;
   }
-
-
 }

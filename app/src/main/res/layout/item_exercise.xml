@@ -6,8 +6,13 @@
     <data>
 
         <import
-            alias="count"
-            type="com.sg2022.we_got_the_moves.db.entity.Exercise.COUNT" />
+            alias="util"
+            type="com.sg2022.we_got_the_moves.util.TimeFormatUtil" />
+
+        <import
+            alias="unit"
+            type="com.sg2022.we_got_the_moves.db.entity.Exercise.UNIT" />
+
         <variable
             name="wee"
             type="com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise" />
@@ -44,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="@{wee.exercise.count == count.REPETITION? @string/repetitions : @string/duration, default = @string/duration}"
+                    android:text="@{wee.exercise.unit == unit.REPETITION? @string/repetitions : @string/duration, default = @string/duration}"
                     android:textAlignment="center"
                     android:textSize="20sp"
                     android:textStyle="bold|italic"
@@ -78,7 +83,7 @@
                     android:gravity="center"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
-                    android:text="@{Integer.toString(wee.workoutExercise.amount)}"
+                    android:text="@{wee.exercise.unit == unit.REPETITION? Integer.toString(wee.workoutExercise.amount) : util.formatTime(wee.workoutExercise.amount)}"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"

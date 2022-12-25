@@ -1,5 +1,6 @@
 package com.sg2022.we_got_the_moves.ui.settings;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -22,6 +23,7 @@ public class UserDataChangeActivity extends AppCompatActivity {
     return weakUserDataChangeActivity.get();
   }
 
+  @SuppressLint("SetTextI18n")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -47,10 +49,10 @@ public class UserDataChangeActivity extends AppCompatActivity {
               ((TextInputEditText) findViewById(R.id.TextInputAge))
                   .setText(Integer.toString(userData.age));
               ((TextInputEditText) findViewById(R.id.TextInputHeight))
-                  .setText(Float.toString(userData.hightInMeters));
+                  .setText(Float.toString(userData.height));
               ((TextInputEditText) findViewById(R.id.TextInputWeight))
-                  .setText(Float.toString(userData.weigthInKg));
-              if (userData.isMale) {
+                  .setText(Float.toString(userData.weight));
+              if (userData.gender == User.SEX.MALE) {
                 ((RadioButton) findViewById(R.id.maleButton)).toggle();
               } else {
                 ((RadioButton) findViewById(R.id.femaleButton)).toggle();
@@ -74,7 +76,9 @@ public class UserDataChangeActivity extends AppCompatActivity {
                       ((TextInputEditText) findViewById(R.id.TextInputWeight))
                           .getText()
                           .toString()), // set Weight
-                  ((RadioButton) findViewById(R.id.maleButton)).isChecked(), // set Gender
+                  ((RadioButton) findViewById(R.id.maleButton)).isChecked()
+                      ? User.SEX.MALE
+                      : User.SEX.FEMALE, // set Gender
                   Integer.parseInt(
                       ((TextInputEditText) findViewById(R.id.TextInputAge))
                           .getText()

@@ -117,7 +117,7 @@ public class WorkoutListAdapter
         .setPositiveButton(
             R.string.yes,
             (dialog, id) -> {
-              Workout copy = new Workout(0, w.name);
+              Workout copy = new Workout(w.name);
               this.model.repository.insertWorkout(
                   copy,
                   new SingleObserver<Long>() {
@@ -184,7 +184,7 @@ public class WorkoutListAdapter
 
   private void showAddDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
-    this.model.repository.getAllExercisesSingle(
+    this.model.repository.getAllExercises(
         new SingleObserver<List<Exercise>>() {
 
           @Override

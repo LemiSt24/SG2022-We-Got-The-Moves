@@ -10,6 +10,10 @@ import com.sg2022.we_got_the_moves.AppExecutors;
 import com.sg2022.we_got_the_moves.db.daos.UserDao;
 import com.sg2022.we_got_the_moves.db.entity.User;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class UserRepository {
   private static final String TAG = "UserRepository";
 
@@ -41,6 +45,14 @@ public class UserRepository {
 
   public LiveData<User> getUser() {
     return this.userDao.getUser();
+  }
+
+  public void getUser(SingleObserver<User> observer) {
+    this.userDao
+        .getUserSingle()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
   }
 
   public void update(User u) {

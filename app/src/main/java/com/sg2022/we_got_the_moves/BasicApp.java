@@ -2,8 +2,9 @@ package com.sg2022.we_got_the_moves;
 
 import android.app.Application;
 
-import com.sg2022.we_got_the_moves.repository.FinishedTrainingRepository;
-import com.sg2022.we_got_the_moves.repository.TrainingRepository;
+import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
+import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
+import com.sg2022.we_got_the_moves.repository.UserRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 public class BasicApp extends Application {
@@ -15,8 +16,9 @@ public class BasicApp extends Application {
 
   // TODO: Add repos here
   private WorkoutsRepository workoutsRepository;
-  private FinishedTrainingRepository finishedTrainingRepository;
-  private TrainingRepository trainingRepository;
+  private FinishedWorkoutRepository finishedWorkoutRepository;
+  private ConstraintRepository constraintRepository;
+  private UserRepository userRepository;
 
   @Override
   public void onCreate() {
@@ -28,8 +30,9 @@ public class BasicApp extends Application {
 
     // TODO: Create instances of singleton-based repositories here
     this.workoutsRepository = WorkoutsRepository.getInstance(this);
-    this.finishedTrainingRepository = FinishedTrainingRepository.getInstance(this);
-    this.trainingRepository = TrainingRepository.getInstance(this);
+    this.finishedWorkoutRepository = FinishedWorkoutRepository.getInstance(this);
+    this.constraintRepository = ConstraintRepository.getInstance(this);
+    this.userRepository = UserRepository.getInstance(this);
   }
 
   public AppExecutors getExecutors() {
@@ -44,11 +47,16 @@ public class BasicApp extends Application {
     return this.workoutsRepository;
   }
 
-  public FinishedTrainingRepository getFinishedTrainingRepository() {
-    return this.finishedTrainingRepository;
+  public FinishedWorkoutRepository getFinishedTrainingRepository() {
+    return this.finishedWorkoutRepository;
   }
 
-  public TrainingRepository getTrainingRepository() {
-    return this.trainingRepository;
+  public ConstraintRepository getConstraintRepository() {
+    return this.constraintRepository;
   }
+
+  public UserRepository getUserRepository() {
+    return this.userRepository;
+  }
+
 }

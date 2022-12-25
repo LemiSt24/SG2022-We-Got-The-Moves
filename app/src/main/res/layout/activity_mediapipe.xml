@@ -29,12 +29,13 @@
 
     <ImageButton
         android:id="@+id/mediapipe_stop_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_stop_red_24dp" />
+        app:srcCompat="@drawable/ic_stop_red_24dp"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/mediapipe_stop_card"

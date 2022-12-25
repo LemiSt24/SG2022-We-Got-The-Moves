@@ -44,7 +44,12 @@ public class Constraint {
   @Ignore
   public Constraint(
       String from1, String to1, String from2, String to2, double maxDiff, String message) {
-    this(0, from1, to1, from2, to2, maxDiff, message);
+    this.from1 = from1;
+    this.to1 = to1;
+    this.from2 = from2;
+    this.to2 = to2;
+    this.maxDiff = maxDiff;
+    this.message = message;
   }
 
   @Ignore

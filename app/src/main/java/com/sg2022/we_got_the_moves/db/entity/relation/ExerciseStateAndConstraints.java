@@ -14,3 +14,5 @@ public class ExerciseStateAndConstraints {
   @Relation(entity = Constraint.class, parentColumn = "constraintId", entityColumn = "id")
   public List<Constraint> constraints;
 }
+
+

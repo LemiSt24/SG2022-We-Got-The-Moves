@@ -10,6 +10,8 @@ import androidx.room.Update;
 
 import com.sg2022.we_got_the_moves.db.entity.User;
 
+import io.reactivex.rxjava3.core.Single;
+
 @Dao
 public interface UserDao {
 
@@ -19,6 +21,9 @@ public interface UserDao {
   @Update(onConflict = REPLACE)
   void update(User user);
 
-  @Query("Select * From User")
+  @Query("SELECT * FROM User LIMIT 1")
   LiveData<User> getUser();
+
+  @Query("Select * From User LIMIT 1")
+  Single<User> getUserSingle();
 }

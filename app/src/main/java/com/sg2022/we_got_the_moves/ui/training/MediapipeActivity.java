@@ -44,8 +44,8 @@ import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.DialogBetweenExerciseScreenBinding;
 import com.sg2022.we_got_the_moves.databinding.DialogFinishedTrainingScreenBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
-import com.sg2022.we_got_the_moves.db.entity.FinishedTraining;
-import com.sg2022.we_got_the_moves.repository.FinishedTrainingRepository;
+import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
+import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 import java.time.Duration;
@@ -653,73 +653,66 @@ public class MediapipeActivity extends AppCompatActivity {
   }
 
   private void showEndScreenAndSave() {
-    //Build new finished Training and Save
     Long endTime = System.currentTimeMillis();
 
     Duration timeSpent =
             Duration.of(endTime - startTime.getTime(), ChronoUnit.MILLIS);
-    FinishedTraining training =
-            new FinishedTraining(startTime, workoutId, timeSpent);
+    FinishedWorkout training = new FinishedWorkout(startTime, workoutId, timeSpent);
+    FinishedWorkoutRepository finishedWorkoutRepository =
+        FinishedWorkoutRepository.getInstance(getApplication());
+    finishedWorkoutRepository.insert(training);
 
-    FinishedTrainingRepository finishedTrainingRepository =
-            FinishedTrainingRepository.getInstance(getApplication());
-    finishedTrainingRepository.insert(training);
-
-    //Show Dialog
     runOnUiThread(
-      new Runnable() {
-        @Override
-        public void run() {
+        () -> {
           AlertDialog.Builder builder = new AlertDialog.Builder(MediapipeActivity.this);
           DialogFinishedTrainingScreenBinding binding =
-                  DataBindingUtil.inflate(
-                          LayoutInflater.from(MediapipeActivity.this),
-                          R.layout.dialog_finished_training_screen,
-                          null,
-                          false);
+              DataBindingUtil.inflate(
+                  LayoutInflater.from(MediapipeActivity.this),
+                  R.layout.dialog_finished_training_screen,
+                  null,
+                  false);
           builder
-                  .setView(binding.getRoot())
-                  .setNeutralButton(
-                          "Finish",
-                          (dialog, id) -> {
-                            finish();
-                            dialog.dismiss();
-                          });
+              .setView(binding.getRoot())
+              .setNeutralButton(
+                  "Finish",
+                  (dialog, id) -> {
+                    finish();
+                    dialog.dismiss();
+                  });
           AlertDialog dialog = builder.create();
           dialog.show();
 
-          //Getting the textViews
+          // Getting the textViews
           TextView titel = dialog.findViewById(R.id.finished_trainings_screen_titel);
           TextView exerciseList = dialog.findViewById(R.id.finished_trainings_screen_exercise_list);
           TextView duration = dialog.findViewById(R.id.finished_trainings_screen_duration);
 
-          //Setting the Workout Name
+          // Setting the Workout Name
           WorkoutsRepository workoutsRepository = WorkoutsRepository.getInstance(getApplication());
-          workoutsRepository.getWorkout(workoutId).observe(
-                  MediapipeActivity.this, x -> {
+          workoutsRepository
+              .getWorkout(workoutId)
+              .observe(
+                  MediapipeActivity.this,
+                  x -> {
                     titel.setText(x.name);
-                  }
-          );
+                  });
 
-          //Setting the duration
+          // Setting the duration
           String durationString = "Duration: " + String.valueOf(timeSpent.toMinutes()) + ":";
-          if (timeSpent.getSeconds()%60 < 10){
-            durationString += "0" + String.valueOf(timeSpent.getSeconds()%60);
-          }
-          else{
-            durationString += String.valueOf(timeSpent.getSeconds()%60);
+          if (timeSpent.getSeconds() % 60 < 10) {
+            durationString += "0" + String.valueOf(timeSpent.getSeconds() % 60);
+          } else {
+            durationString += String.valueOf(timeSpent.getSeconds() % 60);
           }
           duration.setText(durationString);
 
-          //Setting the exercise List
-          String text ="";
-          for (int i = 0; i < finishedExercises.size(); i++){
+          // Setting the exercise List
+          String text = "";
+          for (int i = 0; i < finishedExercises.size(); i++) {
             text += finishedExercises.get(i) + "\n";
           }
           exerciseList.setText(text);
-        }
-      }
-    );
+        });
   }
 
 }

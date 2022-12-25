@@ -1,5 +1,6 @@
 package com.sg2022.we_got_the_moves.db.entity;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -7,25 +8,39 @@ import androidx.room.PrimaryKey;
 public class User {
 
   @PrimaryKey(autoGenerate = true)
+  @ColumnInfo(name = "id")
   public int id;
 
+  @ColumnInfo(name = "name")
   public String name;
-  public float hightInMeters;
-  public float weigthInKg;
-  public boolean isMale;
+
+  @ColumnInfo(name = "height")
+  public float height; // [m]
+
+  @ColumnInfo(name = "weight")
+  public float weight; // [kg]
+
+  @ColumnInfo(name = "gender")
+  public SEX gender;
+
+  @ColumnInfo(name = "age")
   public int age;
 
-  public User(String name, float hightInMeters, float weigthInKg, boolean isMale, int age) {
-    this.id = 1;
+  public User(String name, float height, float weight, SEX gender, int age) {
     this.name = name;
-    this.hightInMeters = hightInMeters;
-    this.weigthInKg = weigthInKg;
-    this.isMale = isMale;
+    this.height = height;
+    this.weight = weight;
+    this.gender = gender;
     this.age = age;
   }
 
-  public float getBMI() {
-    return weigthInKg / (hightInMeters * hightInMeters);
+  public double getBMI() {
+    return this.weight / Math.pow(this.height, 2);
+  }
+
+  public enum SEX {
+    MALE,
+    FEMALE
   }
 
   public float kgToLbs(float kg) {

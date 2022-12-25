@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sg2022.we_got_the_moves.MainActivity;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.ItemWorkoutNoEditBinding;
-import com.sg2022.we_got_the_moves.db.entity.FinishedTraining;
+import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 
 import java.util.ArrayList;
@@ -27,16 +27,16 @@ public class LastWorkoutsAdapter
   private List<Workout> workoutList;
   private ItemWorkoutNoEditBinding binding;
   private List<Long> workoutIds;
-  private List<FinishedTraining> finishedTrainings;
+  private List<FinishedWorkout> finishedWorkouts;
 
   public LastWorkoutsAdapter(@NonNull LifecycleOwner owner, @NonNull TrainingViewModel model) {
     this.owner = owner;
     this.model = model;
 
-    finishedTrainings = new ArrayList<>();
+    finishedWorkouts = new ArrayList<>();
 
     this.model
-        .finishedTrainingRepository
+        .finishedWorkoutRepository
         .getOrderedFinishedWorkouts()
         .observe(
             owner,
@@ -44,10 +44,10 @@ public class LastWorkoutsAdapter
               workoutIds = new ArrayList<>();
               workoutList = new ArrayList<>();
               Log.println(Log.DEBUG, TAG, finishedTraining.toString());
-              finishedTrainings = finishedTraining;
-              for (int i = 0; i < finishedTrainings.size() && workoutIds.size() < 3; i++) {
-                if (!workoutIds.contains(finishedTrainings.get(i).workoutId)) {
-                  workoutIds.add(finishedTrainings.get(i).workoutId);
+              finishedWorkouts = finishedTraining;
+              for (int i = 0; i < finishedWorkouts.size() && workoutIds.size() < 3; i++) {
+                if (!workoutIds.contains(finishedWorkouts.get(i).workoutId)) {
+                  workoutIds.add(finishedWorkouts.get(i).workoutId);
                 }
               }
 

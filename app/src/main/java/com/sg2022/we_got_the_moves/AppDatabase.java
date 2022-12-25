@@ -13,21 +13,19 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.sg2022.we_got_the_moves.db.daos.ConstraintDao;
 import com.sg2022.we_got_the_moves.db.daos.ExerciseDao;
 import com.sg2022.we_got_the_moves.db.daos.ExerciseStateDao;
-import com.sg2022.we_got_the_moves.db.daos.FinishedTrainingDao;
+import com.sg2022.we_got_the_moves.db.daos.FinishedExerciseDao;
+import com.sg2022.we_got_the_moves.db.daos.FinishedWorkoutDao;
 import com.sg2022.we_got_the_moves.db.daos.UserDao;
 import com.sg2022.we_got_the_moves.db.daos.WorkoutDao;
 import com.sg2022.we_got_the_moves.db.daos.WorkoutExerciseDao;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
-import com.sg2022.we_got_the_moves.db.entity.FinishedTraining;
+import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
+import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
-
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 
 // TODO: Add entity classes here
 @Database(
@@ -36,7 +34,8 @@ import java.util.Date;
       Exercise.class,
       Workout.class,
       WorkoutExercise.class,
-      FinishedTraining.class,
+      FinishedWorkout.class,
+      FinishedExercise.class,
       ExerciseState.class,
       Constraint.class
     },
@@ -93,21 +92,15 @@ public abstract class AppDatabase extends RoomDatabase {
                               .insertAll(DataGenerator.getDummyWorkoutExercises());
                           getInstance(appContext)
                               .UserDao()
-                              .insert(new User("Simon Westermann", (float) 1.77, 50, false, 22));
-                          getInstance(appContext)
-                              .FinishedTrainingDao()
                               .insert(
-                                  new FinishedTraining(
-                                      new Date(System.currentTimeMillis()),
-                                      1,
-                                      Duration.of(5, ChronoUnit.MINUTES)));
+                                  new User(
+                                      "Simon Westermann", (float) 1.77, 50, User.SEX.MALE, 22));
                           getInstance(appContext)
-                              .FinishedTrainingDao()
-                              .insert(
-                                  new FinishedTraining(
-                                      new Date(System.currentTimeMillis()),
-                                      3,
-                                      Duration.of(4, ChronoUnit.MINUTES)));
+                              .FinishedWorkoutDao()
+                              .insert(DataGenerator.getDummyFinsishedWorkouts());
+                          getInstance(appContext)
+                              .FinishedExerciseDao()
+                              .insert(DataGenerator.getDummyFinsishedExercise());
                           getInstance(appContext)
                               .ConstraintDao()
                               .insert(DataGenerator.getDummyExerciseStatesAndConstraints().second);
@@ -129,7 +122,9 @@ public abstract class AppDatabase extends RoomDatabase {
 
   public abstract UserDao UserDao();
 
-  public abstract FinishedTrainingDao FinishedTrainingDao();
+  public abstract FinishedWorkoutDao FinishedWorkoutDao();
+
+  public abstract FinishedExerciseDao FinishedExerciseDao();
 
   public abstract ExerciseStateDao ExerciseStateDao();
 

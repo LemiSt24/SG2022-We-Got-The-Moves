@@ -6,11 +6,17 @@ import android.util.Pair;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
+import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
+import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DataGenerator {
 
@@ -70,14 +76,34 @@ public class DataGenerator {
     R.drawable.bicepsculs
   };
 
-  public static Exercise.COUNT[] isCountable = {
-    Exercise.COUNT.REPETITION,
-    Exercise.COUNT.DURATION,
-    Exercise.COUNT.REPETITION,
-    Exercise.COUNT.REPETITION,
-    Exercise.COUNT.REPETITION,
-    Exercise.COUNT.DURATION,
-    Exercise.COUNT.REPETITION
+  public static Exercise.UNIT[] isCountable = {
+    Exercise.UNIT.REPETITION,
+    Exercise.UNIT.DURATION,
+    Exercise.UNIT.REPETITION,
+    Exercise.UNIT.REPETITION,
+    Exercise.UNIT.REPETITION,
+    Exercise.UNIT.DURATION,
+    Exercise.UNIT.REPETITION
+  };
+
+  public static double[] minPerRep = {
+    (1.0d / 20.0d),
+    0.0d, // if UNIT.DURATION
+    (1.0d / 40.0d),
+    (1.0d / 20.0d),
+    (1.0d / 20.0d),
+    0.0d,
+    (1.0d / 40.0d)
+  };
+
+  public static double[] metScores = {
+    5.5d, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
+    5.0d, // https://fitnessvolt.com/side-planks-calculator
+    8.0d, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
+    3.8d, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
+    8.0d, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
+    5.0d, // https://fitnessvolt.com/side-planks-calculator
+    5.0d // estimated (moderate-intensive training between [3.9, 5.9])
   };
 
   public static String[] workoutNames = {
@@ -98,7 +124,11 @@ public class DataGenerator {
                 exerciseInstructions[i],
                 youtubeIds[i],
                 imageIds[i],
-                isCountable[i]));
+                isCountable[i],
+                0,
+                0,
+                metScores[i],
+                minPerRep[i]));
       }
     }
     return e;
@@ -122,6 +152,28 @@ public class DataGenerator {
       }
     }
     return we;
+  }
+
+  public static List<FinishedWorkout> getDummyFinsishedWorkouts() {
+    List<FinishedWorkout> l = new ArrayList<>();
+    l.add(new FinishedWorkout(new Date(), 1, Duration.of(5, ChronoUnit.MINUTES)));
+    l.add(new FinishedWorkout(new Date(), 2, Duration.of(5, ChronoUnit.MINUTES)));
+    return l;
+  }
+
+  public static List<FinishedExercise> getDummyFinsishedExercise() {
+    List<WorkoutExercise> we = getDummyWorkoutExercises();
+    List<FinishedWorkout> fw = getDummyFinsishedWorkouts();
+    List<FinishedExercise> fe = new ArrayList<>();
+    for (int i = 0; i < fw.size(); i++) {
+      final FinishedWorkout w = fw.get(i);
+      List<WorkoutExercise> result =
+          we.stream().filter(e -> e.workoutId == w.workoutId).collect(Collectors.toList());
+      for (int j = 0; j < result.size(); j++) {
+        fe.add(new FinishedExercise(fw.get(i).workoutId, result.get(j).exerciseId, 30));
+      }
+    }
+    return fe;
   }
 
   public static Pair<List<ExerciseState>, List<Constraint>> getDummyExerciseStatesAndConstraints() {

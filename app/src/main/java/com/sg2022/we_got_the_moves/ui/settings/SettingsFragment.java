@@ -23,8 +23,7 @@ public class SettingsFragment extends Fragment {
     super.onCreate(savedInstance);
     SettingsViewModel.Factory factory =
         new SettingsViewModel.Factory(this.requireActivity().getApplication());
-    SettingsViewModel model = new ViewModelProvider(this, factory).get(SettingsViewModel.class);
-    this.model = model;
+    this.model = new ViewModelProvider(this, factory).get(SettingsViewModel.class);
   }
 
   public View onCreateView(
@@ -34,9 +33,7 @@ public class SettingsFragment extends Fragment {
     View root = binding.getRoot();
 
     binding.editBtnUserDataChange.setOnClickListener(
-        v -> {
-          MainActivity.getInstanceActivity().openUserDataChangeActivity();
-        });
+        v -> MainActivity.getInstanceActivity().openUserDataChangeActivity());
 
     this.model
         .getDBUser()
@@ -46,11 +43,10 @@ public class SettingsFragment extends Fragment {
               // Setting the User Parameters to the text Views
               binding.textViewName.setText("Name: " + userData.name);
               binding.textViewAge.setText("Age: " + (String.valueOf(userData.age)));
-              binding.textViewGender.setText("Gender: " + (userData.isMale ? "Male" : "Female"));
-              binding.textViewHeight.setText(
-                  "Height: " + (String.valueOf(userData.hightInMeters)) + "m");
+              binding.textViewGender.setText("Gender: " + (userData.gender.name()));
+              binding.textViewHeight.setText("Height: " + (String.valueOf(userData.height)) + "m");
               binding.textViewWeightInKg.setText(
-                  "Weight: " + (String.valueOf(userData.weigthInKg)) + "kg");
+                  "Weight: " + (String.valueOf(userData.weight)) + "kg");
             });
 
     return root;

@@ -14,9 +14,6 @@ import javax.annotation.Nullable;
 @Entity(tableName = "Exercise")
 public class Exercise {
 
-  @ColumnInfo(name = "count")
-  public COUNT count;
-
   @PrimaryKey(autoGenerate = true)
   @ColumnInfo(name = "id")
   public long id;
@@ -33,43 +30,77 @@ public class Exercise {
   @ColumnInfo(name = "imageId", defaultValue = "" + R.drawable.no_image)
   public int imageId;
 
+  @ColumnInfo(name = "unit")
+  public Exercise.UNIT unit;
+
+  @ColumnInfo(name = "totalAmount", defaultValue = "0")
+  public int totalAmount;
+
+  @ColumnInfo(name = "totalTime", defaultValue = "0")
+  public int totalTime;
+
+  @ColumnInfo(name = "met")
+  public double met;
+
+  @ColumnInfo(name = "minPerRep")
+  public double minPerRep;
+
   public Exercise(
       long id,
       String name,
       String instruction,
       String youtubeId,
       int imageId,
-      Exercise.COUNT count) {
+      Exercise.UNIT unit,
+      int totalAmount,
+      int totalTime,
+      double met,
+      double minPerRep) {
     this.id = id;
     this.name = name;
     this.instruction = instruction;
     this.youtubeId = youtubeId;
     this.imageId = imageId;
-    this.count = count;
+    this.unit = unit;
+    this.totalAmount = totalAmount;
+    this.totalTime = totalTime;
+    this.met = met; // (1 MET = 3.5 ml·kg^-1·min^-1)
+    this.minPerRep = minPerRep;
   }
 
   @Ignore
-  public Exercise(String name, String instruction, String youtubeId, int imageId, COUNT count) {
-    this(0, name, instruction, youtubeId, imageId, count);
-  }
-
-  @Ignore
-  public Exercise(String name, String instruction, int imageId, COUNT count) {
-    this(name, instruction, null, imageId, count);
-  }
-
-  @Ignore
-  public Exercise(String name, String instruction, COUNT count) {
-    this(name, instruction, R.drawable.no_image, count);
+  public Exercise(
+      String name,
+      String instruction,
+      String youtubeId,
+      String imageId,
+      Exercise.UNIT unit,
+      double met,
+      double minPerRep) {
+    this.name = name;
+    this.instruction = instruction;
+    this.youtubeId = youtubeId;
+    this.unit = unit;
+    this.met = met;
+    this.minPerRep = minPerRep;
   }
 
   public boolean isCountable() {
-    return this.count == COUNT.REPETITION;
+    return this.unit == UNIT.REPETITION;
   }
 
-  public enum COUNT {
+  public double getCalories(
+      double weight, // body weight [kg]
+      double units) // [minutes] or [reps]
+      {
+
+    double time = this.unit == UNIT.REPETITION ? this.minPerRep * units : units;
+    return time * (this.met * 3.5f) * (weight / 200);
+  }
+
+  public enum UNIT {
     REPETITION,
-    DURATION
+    DURATION // [secs]
   }
 
   @Override

@@ -86,7 +86,7 @@ public class WorkoutsRepository {
     return this.exerciseDao.getAllExercises(workoutId);
   }
 
-  public void getAllExercisesSingle(int workoutId, SingleObserver<List<Exercise>> observer) {
+  public void getAllExercises(int workoutId, SingleObserver<List<Exercise>> observer) {
     this.exerciseDao
         .getAllExercisesSingle(workoutId)
         .subscribeOn(Schedulers.io())
@@ -98,7 +98,7 @@ public class WorkoutsRepository {
     return this.exerciseDao.getAllExercises();
   }
 
-  public void getAllExercisesSingle(SingleObserver<List<Exercise>> observer) {
+  public void getAllExercises(SingleObserver<List<Exercise>> observer) {
     this.exerciseDao
         .getAllExercisesSingle()
         .subscribeOn(Schedulers.io())

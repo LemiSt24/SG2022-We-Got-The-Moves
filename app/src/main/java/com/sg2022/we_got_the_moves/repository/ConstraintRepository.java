@@ -14,30 +14,30 @@ import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 
 import java.util.List;
 
-public class TrainingRepository {
+public class ConstraintRepository {
 
-  private static final String TAG = "TrainingRepository";
+  private static final String TAG = "ConstraintRepository";
 
-  private static volatile TrainingRepository INSTANCE;
+  private static volatile ConstraintRepository INSTANCE;
 
   private final ExerciseDao exerciseDao;
   private final ExerciseStateDao exerciseStateDao;
   private final ConstraintDao constraintDao;
   private final AppExecutors executors;
 
-  private TrainingRepository(@NonNull AppDatabase db) {
+  private ConstraintRepository(@NonNull AppDatabase db) {
     this.exerciseDao = db.ExerciseDao();
     this.exerciseStateDao = db.ExerciseStateDao();
     this.constraintDao = db.ConstraintDao();
     this.executors = AppExecutors.getInstance();
   }
 
-  public static TrainingRepository getInstance(Application app) {
+  public static ConstraintRepository getInstance(Application app) {
     if (INSTANCE == null) {
-      synchronized (TrainingRepository.class) {
+      synchronized (ConstraintRepository.class) {
         if (INSTANCE == null) {
           AppDatabase db = AppDatabase.getInstance(app.getApplicationContext());
-          INSTANCE = new TrainingRepository(db);
+          INSTANCE = new ConstraintRepository(db);
         }
       }
     }
