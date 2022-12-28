@@ -334,7 +334,7 @@ public class MediapipeActivity extends AppCompatActivity {
         });
     continue_but.setOnClickListener(
         v -> {
-          tts("Weiter gehts");
+          tts("continue");
           stop_card.setVisibility(View.GONE);
           continue_but.setClickable(false);
           finish_but.setClickable(false);
@@ -614,7 +614,7 @@ public class MediapipeActivity extends AppCompatActivity {
   }
 
   private void showNextExerciseDialog(@NonNull Exercise e, @NonNull int amount, @NonNull int seconds) {
-    tts("Nächste Übung " + amount +  e.name);
+    tts("Next Exercise " + amount +  e.name);
     runOnUiThread(
         new Runnable() {
 
@@ -684,7 +684,7 @@ public class MediapipeActivity extends AppCompatActivity {
               .setNeutralButton(
                   "Finish",
                   (dialog, id) -> {
-                    tts("Training wurde beendet");
+                    tts("Training finished");
                     finish();
                     dialog.dismiss();
                   });
@@ -727,7 +727,7 @@ public class MediapipeActivity extends AppCompatActivity {
   }
 
   public void showPauseCard(){
-    tts("pause");
+    tts("Pause");
     runOnUiThread(
             new Runnable() {
 
@@ -753,7 +753,7 @@ public class MediapipeActivity extends AppCompatActivity {
     tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
       public void onInit(int status) {
         if (status != TextToSpeech.ERROR) {
-          tts.setLanguage(Locale.GERMAN);
+          tts.setLanguage(Locale.UK);
           if (!tts.isSpeaking())
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "1");
         }
