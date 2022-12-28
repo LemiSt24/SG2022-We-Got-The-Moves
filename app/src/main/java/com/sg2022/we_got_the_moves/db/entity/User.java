@@ -20,17 +20,18 @@ public class User {
   @ColumnInfo(name = "weight")
   public float weight; // [kg]
 
-  @ColumnInfo(name = "gender")
-  public SEX gender;
+  @ColumnInfo(name = "sex")
+  public SEX sex;
 
   @ColumnInfo(name = "age")
   public int age;
 
-  public User(String name, float height, float weight, SEX gender, int age) {
+  public User(String name, float height, float weight, SEX sex, int age) {
+    this.id = 1;
     this.name = name;
     this.height = height;
     this.weight = weight;
-    this.gender = gender;
+    this.sex = sex;
     this.age = age;
   }
 

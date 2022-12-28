@@ -43,7 +43,7 @@ public class SettingsFragment extends Fragment {
               // Setting the User Parameters to the text Views
               binding.textViewName.setText("Name: " + userData.name);
               binding.textViewAge.setText("Age: " + (String.valueOf(userData.age)));
-              binding.textViewGender.setText("Gender: " + (userData.gender.name()));
+              binding.textViewGender.setText("Gender: " + (userData.sex.name()));
               binding.textViewHeight.setText("Height: " + (String.valueOf(userData.height)) + "m");
               binding.textViewWeightInKg.setText(
                   "Weight: " + (String.valueOf(userData.weight)) + "kg");

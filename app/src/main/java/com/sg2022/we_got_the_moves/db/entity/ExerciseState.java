@@ -43,6 +43,6 @@ public class ExerciseState {
   public enum STATE {
     GLOBAL,
     BOTTOM,
-    TO
+    TOP
   }
 }

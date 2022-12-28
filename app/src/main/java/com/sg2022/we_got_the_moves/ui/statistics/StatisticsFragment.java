@@ -57,7 +57,9 @@ public class StatisticsFragment extends Fragment {
           @Override
           public void onSuccess(@NonNull User user) {
             final float weight = user.weight;
-            final float avgDailyCalories = user.gender == User.SEX.MALE ? 2600.0f : 2200.0f;
+            final int avgDailyCalories = user.sex == User.SEX.MALE ? 2600 : 2200;
+            binding.editviewCalorieValueStatistics.setText(String.format("%s", avgDailyCalories));
+
             final Date today_begin = TimeFormatUtil.atStartOfDay(new Date());
             final Date today_end = TimeFormatUtil.atEndOfDay(new Date());
 
@@ -78,7 +80,7 @@ public class StatisticsFragment extends Fragment {
                         finishedWorkoutAndFinishedExercises) {
                       for (FinishedExerciseAndExercise fee : fwfe.finishedExerciseAndExercises) {
                         burnedCalories +=
-                            fee.exercise.getCalories(weight, fee.finishedExercise.units);
+                            fee.exercise.getCalories(weight, fee.finishedExercise.duration);
                       }
                     }
                     PieDataSet pieDataSet = new PieDataSet(new ArrayList<>(), "Data");
@@ -88,11 +90,8 @@ public class StatisticsFragment extends Fragment {
                     pieDataSet.setColors(Color.RED, Color.GREEN);
                     PieData pieData = new PieData();
                     pieData.setDataSet(pieDataSet);
-                    binding.pieChartStatistics.getLegend().setEnabled(false);
-                    binding.pieChartStatistics.getDescription().setEnabled(false);
+
                     binding.pieChartStatistics.setData(pieData);
-                    binding.pieChartStatistics.setEnabled(true);
-                    binding.textviewStatistics.setText(R.string.statistiscs_titel_calorie_burn);
                     binding.pieChartStatistics.invalidate();
                   }
 
@@ -109,6 +108,11 @@ public class StatisticsFragment extends Fragment {
           }
         });
     // binding.pieChartStatistics.setHoleColor(Color.WHITE);
+    binding.pieChartStatistics.getLegend().setEnabled(false);
+    binding.pieChartStatistics.getDescription().setEnabled(false);
+    binding.pieChartStatistics.setEnabled(true);
+    binding.textviewStatistics.setText(R.string.statistiscs_titel_calorie_burn);
+    binding.textviewCalorieLevelStatistics.setText(R.string.your_calorie_level);
     binding.pieChartStatistics.setDrawHoleEnabled(true);
     return binding.getRoot();
   }

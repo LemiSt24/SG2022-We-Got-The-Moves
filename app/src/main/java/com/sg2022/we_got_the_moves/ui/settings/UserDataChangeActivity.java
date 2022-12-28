@@ -52,7 +52,7 @@ public class UserDataChangeActivity extends AppCompatActivity {
                   .setText(Float.toString(userData.height));
               ((TextInputEditText) findViewById(R.id.TextInputWeight))
                   .setText(Float.toString(userData.weight));
-              if (userData.gender == User.SEX.MALE) {
+              if (userData.sex == User.SEX.MALE) {
                 ((RadioButton) findViewById(R.id.maleButton)).toggle();
               } else {
                 ((RadioButton) findViewById(R.id.femaleButton)).toggle();

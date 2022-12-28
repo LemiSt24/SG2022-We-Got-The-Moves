@@ -37,11 +37,11 @@ public class FinishedExercise {
   public long exerciseId;
 
   @ColumnInfo(name = "duration")
-  public int units;
+  public int duration;
 
-  public FinishedExercise(long finishedWorkoutId, long exerciseId, int units) {
+  public FinishedExercise(long finishedWorkoutId, long exerciseId, int duration) {
     this.finishedWorkoutId = finishedWorkoutId;
     this.exerciseId = exerciseId;
-    this.units = units;
+    this.duration = duration;
   }
 }

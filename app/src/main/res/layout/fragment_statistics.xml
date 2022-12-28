@@ -20,6 +20,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textview_calorie_level_statistics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/your_calorie_level"
+        android:textAlignment="viewStart"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_statistics" />
+
+    <TextView
+        android:id="@+id/editview_calorie_value__statistics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoSizeTextType="uniform"
+        android:ems="4"
+        android:fontFamily="serif"
+        android:hint="@string/empty_string"
+        android:importantForAutofill="no"
+        android:minHeight="48dp"
+        android:text="@string/empty_string"
+        android:textAlignment="viewStart"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/textview_calorie_level_statistics"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textview_calorie_level_statistics"
+        tools:ignore="SpeakableTextPresentCheck" />
+
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pie_chart_statistics"
         android:layout_width="0dp"
@@ -29,8 +62,10 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_statistics"
+        app:layout_constraintTop_toBottomOf="@+id/textview_calorie_level_statistics"
+        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintWidth="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
