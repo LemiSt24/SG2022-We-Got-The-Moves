@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.Size;
 import android.view.Display;
@@ -54,7 +55,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import android.speech.tts.TextToSpeech;
 
 public class MediapipeActivity extends AppCompatActivity {
 
@@ -116,6 +120,8 @@ public class MediapipeActivity extends AppCompatActivity {
   private boolean noPause = false;
   private boolean firstTimeShowDialog = true;
   private List<String> finishedExercises;
+
+  private TextToSpeech tts;
 
   private static String getClassificationDebugString(Map<String, Integer> classification) {
     String classificationString = "";
@@ -328,6 +334,7 @@ public class MediapipeActivity extends AppCompatActivity {
         });
     continue_but.setOnClickListener(
         v -> {
+          tts("Weiter gehts");
           stop_card.setVisibility(View.GONE);
           continue_but.setClickable(false);
           finish_but.setClickable(false);
@@ -607,6 +614,7 @@ public class MediapipeActivity extends AppCompatActivity {
   }
 
   private void showNextExerciseDialog(@NonNull Exercise e, @NonNull int amount, @NonNull int seconds) {
+    tts("Nächste Übung " + amount +  e.name);
     runOnUiThread(
         new Runnable() {
 
@@ -676,6 +684,7 @@ public class MediapipeActivity extends AppCompatActivity {
               .setNeutralButton(
                   "Finish",
                   (dialog, id) -> {
+                    tts("Training wurde beendet");
                     finish();
                     dialog.dismiss();
                   });
@@ -718,6 +727,7 @@ public class MediapipeActivity extends AppCompatActivity {
   }
 
   public void showPauseCard(){
+    tts("pause");
     runOnUiThread(
             new Runnable() {
 
@@ -737,6 +747,20 @@ public class MediapipeActivity extends AppCompatActivity {
   public void onBackPressed()
   {
     showPauseCard();
+  }
+
+  public void tts(String text){
+    tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+      public void onInit(int status) {
+        if (status != TextToSpeech.ERROR) {
+          tts.setLanguage(Locale.GERMAN);
+          if (!tts.isSpeaking())
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "1");
+        }
+    }});
+
+
+
   }
 
 }
