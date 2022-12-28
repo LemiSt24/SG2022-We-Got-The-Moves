@@ -37,7 +37,7 @@ public class FinishedExercise {
   public long exerciseId;
 
   @ColumnInfo(name = "duration")
-  public int duration;
+  public int duration; // in [secs]
 
   public FinishedExercise(long finishedWorkoutId, long exerciseId, int duration) {
     this.finishedWorkoutId = finishedWorkoutId;

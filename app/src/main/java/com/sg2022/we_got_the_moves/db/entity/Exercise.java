@@ -42,9 +42,6 @@ public class Exercise {
   @ColumnInfo(name = "met")
   public double met;
 
-  @ColumnInfo(name = "minPerRep")
-  public double minPerRep;
-
   public Exercise(
       long id,
       String name,
@@ -54,8 +51,7 @@ public class Exercise {
       Exercise.UNIT unit,
       int totalAmount,
       int totalTime,
-      double met,
-      double minPerRep) {
+      double met) {
     this.id = id;
     this.name = name;
     this.instruction = instruction;
@@ -65,7 +61,6 @@ public class Exercise {
     this.totalAmount = totalAmount;
     this.totalTime = totalTime;
     this.met = met; // (1 MET = 3.5 ml·kg^-1·min^-1)
-    this.minPerRep = minPerRep;
   }
 
   @Ignore
@@ -75,14 +70,12 @@ public class Exercise {
       String youtubeId,
       String imageId,
       Exercise.UNIT unit,
-      double met,
-      double minPerRep) {
+      double met) {
     this.name = name;
     this.instruction = instruction;
     this.youtubeId = youtubeId;
     this.unit = unit;
     this.met = met;
-    this.minPerRep = minPerRep;
   }
 
   public boolean isCountable() {
@@ -91,11 +84,10 @@ public class Exercise {
 
   public double getCalories(
       double weight, // body weight [kg]
-      double units) // [minutes] or [reps]
+      double duration) // [seconds]
       {
 
-    double time = this.unit == UNIT.REPETITION ? this.minPerRep * units : units;
-    return time * (this.met * 3.5f) * (weight / 200);
+    return duration / 60 * (this.met * 3.5f) * (weight / 200);
   }
 
   public enum UNIT {
