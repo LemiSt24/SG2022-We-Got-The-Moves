@@ -324,11 +324,7 @@ public class MediapipeActivity extends AppCompatActivity {
     Button finish_but = findViewById(R.id.mediapipe_finish_button);
     stop_but.setOnClickListener(
         v -> {
-          stop_card.setVisibility(View.VISIBLE);
-          continue_but.setClickable(true);
-          finish_but.setClickable(true);
-          stopTimeCounter();
-          noPause = false;
+          showPauseCard();
         });
     continue_but.setOnClickListener(
         v -> {
@@ -721,10 +717,26 @@ public class MediapipeActivity extends AppCompatActivity {
         });
   }
 
+  public void showPauseCard(){
+    runOnUiThread(
+            new Runnable() {
+
+              @Override
+              public void run() {
+                findViewById(R.id.mediapipe_stop_card).setVisibility(View.VISIBLE);
+                findViewById(R.id.mediapipe_continue_button).setClickable(true);
+                findViewById(R.id.mediapipe_finish_button).setClickable(true);
+              }
+            }
+    );
+    stopTimeCounter();
+    noPause = false;
+  }
+
   @Override
   public void onBackPressed()
   {
-    ;
-  };
+    showPauseCard();
+  }
 
 }
