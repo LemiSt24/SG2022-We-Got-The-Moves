@@ -127,8 +127,7 @@ public class DataGenerator {
                 isCountable[i],
                 0,
                 0,
-                metScores[i],
-                minPerRep[i]));
+                metScores[i]));
       }
     }
     return e;
