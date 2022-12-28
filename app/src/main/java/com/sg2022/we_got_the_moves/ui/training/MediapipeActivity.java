@@ -328,6 +328,7 @@ public class MediapipeActivity extends AppCompatActivity {
           continue_but.setClickable(true);
           finish_but.setClickable(true);
           stopTimeCounter();
+          noPause = false;
         });
     continue_but.setOnClickListener(
         v -> {
@@ -335,6 +336,7 @@ public class MediapipeActivity extends AppCompatActivity {
           continue_but.setClickable(false);
           finish_but.setClickable(false);
           startTimeCounter();
+          noPause = true;
         });
     finish_but.setOnClickListener(
         v -> {
@@ -624,6 +626,8 @@ public class MediapipeActivity extends AppCompatActivity {
             binding.setExercise(e);
             builder.setView(binding.getRoot());
             AlertDialog dialog = builder.create();
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setCancelable(false);
             dialog.show();
 
             Chronometer pause_countdown = dialog.findViewById(R.id.pause_countdown);
@@ -680,6 +684,8 @@ public class MediapipeActivity extends AppCompatActivity {
                     dialog.dismiss();
                   });
           AlertDialog dialog = builder.create();
+          dialog.setCanceledOnTouchOutside(false);
+          dialog.setCancelable(false);
           dialog.show();
 
           // Getting the textViews
@@ -714,5 +720,11 @@ public class MediapipeActivity extends AppCompatActivity {
           exerciseList.setText(text);
         });
   }
+
+  @Override
+  public void onBackPressed()
+  {
+    ;
+  };
 
 }
