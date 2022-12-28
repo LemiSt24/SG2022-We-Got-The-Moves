@@ -153,6 +153,7 @@ public class MediapipeActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    tts("");
     setContentView(getContentViewLayoutResId());
 
     startTime = new Date(System.currentTimeMillis());
@@ -754,13 +755,10 @@ public class MediapipeActivity extends AppCompatActivity {
       public void onInit(int status) {
         if (status != TextToSpeech.ERROR) {
           tts.setLanguage(Locale.UK);
-          if (!tts.isSpeaking())
+          if (!tts.isSpeaking());
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "1");
         }
     }});
-
-
-
   }
 
 }
