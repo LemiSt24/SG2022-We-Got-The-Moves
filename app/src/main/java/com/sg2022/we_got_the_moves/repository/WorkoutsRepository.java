@@ -8,9 +8,9 @@ import androidx.lifecycle.LiveData;
 
 import com.sg2022.we_got_the_moves.AppDatabase;
 import com.sg2022.we_got_the_moves.AppExecutors;
-import com.sg2022.we_got_the_moves.db.daos.ExerciseDao;
-import com.sg2022.we_got_the_moves.db.daos.WorkoutDao;
-import com.sg2022.we_got_the_moves.db.daos.WorkoutExerciseDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutExerciseDao;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
@@ -106,7 +106,7 @@ public class WorkoutsRepository {
         .subscribe(observer);
   }
 
-  public LiveData<Exercise> getExercise(int exerciseId) {
+  public LiveData<Exercise> getExercise(long exerciseId) {
     return this.exerciseDao.getExercise(exerciseId);
   }
 

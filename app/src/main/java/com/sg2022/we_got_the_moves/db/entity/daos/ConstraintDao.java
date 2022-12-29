@@ -1,4 +1,4 @@
-package com.sg2022.we_got_the_moves.db.daos;
+package com.sg2022.we_got_the_moves.db.entity.daos;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 

@@ -7,8 +7,8 @@ import androidx.lifecycle.LiveData;
 
 import com.sg2022.we_got_the_moves.AppDatabase;
 import com.sg2022.we_got_the_moves.AppExecutors;
-import com.sg2022.we_got_the_moves.db.daos.FinishedExerciseDao;
-import com.sg2022.we_got_the_moves.db.daos.FinishedWorkoutDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.FinishedExerciseDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.FinishedWorkoutDao;
 import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedWorkoutAndFinishedExercises;

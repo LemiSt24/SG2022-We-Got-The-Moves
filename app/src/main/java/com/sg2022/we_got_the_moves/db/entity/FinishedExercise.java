@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 
+import javax.annotation.Nullable;
+
 @Entity(
     tableName = "FinishedExercise",
     primaryKeys = {"finishedWorkoutId", "exerciseId"},
@@ -30,18 +32,31 @@ import androidx.room.Index;
     })
 public class FinishedExercise {
 
+
   @ColumnInfo(name = "finishedWorkoutId")
   public long finishedWorkoutId;
 
   @ColumnInfo(name = "exerciseId")
   public long exerciseId;
 
+  @ColumnInfo(name = "exerciseName")
+  public String exerciseName;
+
   @ColumnInfo(name = "duration")
   public int duration; // in [secs]
 
-  public FinishedExercise(long finishedWorkoutId, long exerciseId, int duration) {
+  @ColumnInfo(name = "amount")
+  public int amount; // 0 for time-based
+
+  public FinishedExercise(long finishedWorkoutId, long exerciseId, String exerciseName, int duration, int amount) {
     this.finishedWorkoutId = finishedWorkoutId;
     this.exerciseId = exerciseId;
+    this.exerciseName = exerciseName;
     this.duration = duration;
+    this.amount = amount;
+  }
+
+  public void setFinishedWorkoutId(long finishedWorkoutId) {
+    this.finishedWorkoutId = finishedWorkoutId;
   }
 }

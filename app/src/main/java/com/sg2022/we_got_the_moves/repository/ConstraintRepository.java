@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 
 import com.sg2022.we_got_the_moves.AppDatabase;
 import com.sg2022.we_got_the_moves.AppExecutors;
-import com.sg2022.we_got_the_moves.db.daos.ConstraintDao;
-import com.sg2022.we_got_the_moves.db.daos.ExerciseDao;
-import com.sg2022.we_got_the_moves.db.daos.ExerciseStateDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.ConstraintDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseStateDao;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 
