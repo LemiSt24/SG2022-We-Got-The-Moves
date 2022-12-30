@@ -169,7 +169,7 @@ public class DataGenerator {
       List<WorkoutExercise> result =
           we.stream().filter(e -> e.workoutId == w.workoutId).collect(Collectors.toList());
       for (int j = 0; j < result.size(); j++) {
-        fe.add(new FinishedExercise(fw.get(i).workoutId, result.get(j).exerciseId,"exercise"+j, 30, 0));
+        fe.add(new FinishedExercise(fw.get(i).workoutId, result.get(j).exerciseId, 30, 0));
       }
     }
     return fe;

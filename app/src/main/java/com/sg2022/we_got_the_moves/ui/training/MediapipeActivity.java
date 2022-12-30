@@ -640,7 +640,7 @@ public class MediapipeActivity extends AppCompatActivity {
       }
     }
 
-    FinishedExercise finishedExercise = new FinishedExercise(0, e.id, e.name, duration, amount);
+    FinishedExercise finishedExercise = new FinishedExercise(0, e.id, duration, amount);
     return finishedExercise;
   }
 
@@ -702,10 +702,14 @@ public class MediapipeActivity extends AppCompatActivity {
         FinishedWorkoutRepository.getInstance(getApplication());
     finishedWorkoutRepository.insert(training);
 
-    for (int i = 0; i< finishedExercises.size(); i++){
-      finishedExercises.get(i).setFinishedWorkoutId(training.id);
-    }
-    finishedWorkoutRepository.insertFinishedExercise(finishedExercises);
+    finishedWorkoutRepository.getLastTraining().observe(this, lastTraining -> {
+      for (int i = 0; i< finishedExercises.size(); i++){
+        Log.println(Log.DEBUG, "test", String.valueOf(lastTraining.id));
+        finishedExercises.get(i).setFinishedWorkoutId(lastTraining.id);
+      }
+      finishedWorkoutRepository.insertFinishedExercise(finishedExercises);
+    });
+
 
     runOnUiThread(
         () -> {
@@ -757,22 +761,26 @@ public class MediapipeActivity extends AppCompatActivity {
 
           // Setting the exercise List
 
-          for (FinishedExercise finishedExercise : finishedExercises) {
-            workoutsRepository
-                    .getExercise(finishedExercise.exerciseId)
-                    .observe(
-                            MediapipeActivity.this,
-                            x -> {
-                              if (!x.isCountable()){
-                                finishedExerciseSummary += finishedExercise.amount + " x " + finishedExercise.exerciseName + "\n";
-                              }
-                              else{
-                                finishedExerciseSummary += finishedExercise.duration +" s "+ finishedExercise.exerciseName + "\n";
-                              }
-                              exerciseList.setText(finishedExerciseSummary);
-                            });
-          }
 
+          workoutsRepository
+                  .getAllExercises(workoutId)
+                  .observe(
+                          MediapipeActivity.this,
+                          exercises -> {
+                            for (FinishedExercise finishedExercise : finishedExercises) {
+                              for (Exercise exercise: exercises){
+                                if (exercise.id == finishedExercise.exerciseId){
+                                  if (exercise.isCountable()) {
+                                    finishedExerciseSummary += finishedExercise.amount + " x " + exercise.name + "\n";
+                                  } else {
+                                    finishedExerciseSummary += finishedExercise.duration + " s " + exercise.name + "\n";
+                                  }
+                                  break;
+                                }
+                              }
+                            }
+                            exerciseList.setText(finishedExerciseSummary);
+                          });
         });
   }
 

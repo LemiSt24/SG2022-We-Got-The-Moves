@@ -39,19 +39,15 @@ public class FinishedExercise {
   @ColumnInfo(name = "exerciseId")
   public long exerciseId;
 
-  @ColumnInfo(name = "exerciseName")
-  public String exerciseName;
-
   @ColumnInfo(name = "duration")
   public int duration; // in [secs]
 
   @ColumnInfo(name = "amount")
   public int amount; // 0 for time-based
 
-  public FinishedExercise(long finishedWorkoutId, long exerciseId, String exerciseName, int duration, int amount) {
+  public FinishedExercise(long finishedWorkoutId, long exerciseId, int duration, int amount) {
     this.finishedWorkoutId = finishedWorkoutId;
     this.exerciseId = exerciseId;
-    this.exerciseName = exerciseName;
     this.duration = duration;
     this.amount = amount;
   }
