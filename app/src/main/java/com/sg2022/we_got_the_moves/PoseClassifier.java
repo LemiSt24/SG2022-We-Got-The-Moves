@@ -7,6 +7,7 @@ import static java.lang.Math.abs;
 import android.content.Context;
 
 import com.google.mediapipe.formats.proto.LandmarkProto;
+import com.sg2022.we_got_the_moves.db.entity.Constraint;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -223,5 +224,17 @@ public class PoseClassifier {
     }
 
     return lmfrom.getDistance(lmto);
+  }
+
+  public boolean judge_constraint(Constraint constraint)
+  {
+    double dist_1 = get_distance(constraint.from1, constraint.to1);
+    double dist_2 = get_distance(constraint.from2, constraint.to2);
+    double rel = dist_1 / dist_2;
+    if(rel < 1.0 - constraint.maxDiff || rel > 1.0 + constraint.maxDiff)
+    {
+      return false;
+    }
+    return true;
   }
 }

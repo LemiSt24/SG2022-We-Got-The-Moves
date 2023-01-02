@@ -44,9 +44,13 @@ import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.DialogBetweenExerciseScreenBinding;
 import com.sg2022.we_got_the_moves.databinding.DialogFinishedTrainingScreenBinding;
+import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
+import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
+import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseStateAndConstraints;
+import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
@@ -60,6 +64,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import android.speech.tts.TextToSpeech;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MediapipeActivity extends AppCompatActivity {
 
@@ -115,6 +123,9 @@ public class MediapipeActivity extends AppCompatActivity {
   private boolean lastStateWasTop = true;
   private int Reps = 0;
   private Exercise currentExercise;
+  private List<Constraint> global_constraints;
+  private List<Constraint> bottom_constraints;
+  private List<Constraint> top_constraints;
   private boolean timerSet = false;
 
   private Date startTime;
@@ -153,6 +164,46 @@ public class MediapipeActivity extends AppCompatActivity {
       ++landmarkIndex;
     }
     return landmarksString;
+  }
+
+  // loads all constraints from db which are related to the supplied exercise and saves them in class variables
+  private void loadConstraintsForExercise(int exerciseId)
+  {
+    ConstraintRepository constraintRepository = ConstraintRepository.getInstance(this.getApplication());
+
+    global_constraints = new ArrayList<>();
+    bottom_constraints = new ArrayList<>();
+    top_constraints = new ArrayList<>();
+
+    constraintRepository.getAllStatesSingle((int)currentExercise.id)
+      .subscribeOn(Schedulers.io())
+      .subscribe(states -> {
+        for(ExerciseState.STATE state : states)
+        {
+          Log.println(Log.DEBUG,"constraintFrom", "moinsen");
+          constraintRepository.getStateAndConstraintsSingle((int)currentExercise.id, state)
+                  .subscribeOn(Schedulers.io())
+                  .subscribe(state_and_constraints -> {
+
+                    for(ExerciseStateAndConstraints stateAndConstraints : state_and_constraints)
+                    {
+                      if(stateAndConstraints.exerciseState.exerciseState == ExerciseState.STATE.BOTTOM)
+                      {
+                        bottom_constraints.addAll(stateAndConstraints.constraints);
+                      }
+                      else if(stateAndConstraints.exerciseState.exerciseState == ExerciseState.STATE.TOP)
+                      {
+                        top_constraints.addAll(stateAndConstraints.constraints);
+                      }
+                      else if(stateAndConstraints.exerciseState.exerciseState == ExerciseState.STATE.GLOBAL)
+                      {
+                        global_constraints.addAll(stateAndConstraints.constraints);
+                      }
+                    }
+
+          });
+        }
+      });
   }
 
   @Override
@@ -197,6 +248,7 @@ public class MediapipeActivity extends AppCompatActivity {
     Log.println(Log.DEBUG, "workoutID", String.valueOf(workoutId));
 
     WorkoutsRepository workoutsRepository = WorkoutsRepository.getInstance(this.getApplication());
+
     finishedExercises = new ArrayList<FinishedExercise>();
     exercises = new ArrayList<Exercise>();
     exerciseIdToAmount = new HashMap<>();
@@ -214,6 +266,7 @@ public class MediapipeActivity extends AppCompatActivity {
               currentExercise = e.get(0);
               setExcerciseName(currentExercise.name);
               if (currentExercise.isCountable()) setRepetition("0");
+              loadConstraintsForExercise((int)currentExercise.id);
 
               for (int i = 0; i < exercises.size(); i++) {
                 workoutsRepository
@@ -228,6 +281,7 @@ public class MediapipeActivity extends AppCompatActivity {
                             firstTimeShowDialog = false;
                           }
                         });
+
               }
             });
 
@@ -261,6 +315,16 @@ public class MediapipeActivity extends AppCompatActivity {
             // weitere Untersuchungen weiterverwenden
             classifier.classify(landmarks);
 
+            for(Constraint constraint : global_constraints)
+            {
+              if(!classifier.judge_constraint(constraint))
+              {
+                Log.v(TAG, constraint.message);
+                //setExerciseX(constraint.message); // TODO crasht, weil wir angeblich nicht im UI Thread sind?
+                tts(constraint.message);
+              }
+            }
+
             // Beispielhafte Analyse von Rahmenbedingungen
             /*Log.v(
             TAG,
@@ -275,7 +339,7 @@ public class MediapipeActivity extends AppCompatActivity {
                     + packet.getTimestamp()
                     + "] #Landmarks for iris: "
                     + landmarks.getLandmarkCount());
-            Log.v(TAG, getLandmarksDebugString(landmarks));
+            //Log.v(TAG, getLandmarksDebugString(landmarks));
             //      Log.println(Log.DEBUG,"test", String.valueOf(exercises.size()));
             if (exercises.size() != 0) {
               /*         Log.println(Log.DEBUG,"test", classification.toString());
@@ -313,6 +377,7 @@ public class MediapipeActivity extends AppCompatActivity {
                       showEndScreenAndSave();
                     } else {
                       currentExercise = exercises.get(ExercisePointer);
+                      loadConstraintsForExercise((int)currentExercise.id);
                       noPause = false;
                       showNextExerciseDialog(
                           currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
