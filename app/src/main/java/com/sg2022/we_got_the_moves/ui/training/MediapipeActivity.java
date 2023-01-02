@@ -540,16 +540,34 @@ public class MediapipeActivity extends AppCompatActivity {
 
   public void setExerciseCheck() {
     ImageView check_x_mark = findViewById(R.id.mediapipe_check_x_mark);
-    check_x_mark.setImageResource(R.drawable.ic_check_green_24dp);
     TextView evaluation_text = findViewById(R.id.mediapipe_evaluation_text);
-    evaluation_text.setText("all correct");
+
+    runOnUiThread(
+            new Runnable() {
+
+              @Override
+              public void run() {
+
+                check_x_mark.setImageResource(R.drawable.ic_check_green_24dp);
+                evaluation_text.setText("all correct");
+              }
+            });
   }
 
   public void setExerciseX(String reason) {
     ImageView check_x_mark = findViewById(R.id.mediapipe_check_x_mark);
-    check_x_mark.setImageResource(R.drawable.ic_x_red_24dp);
     TextView evaluation_text = findViewById(R.id.mediapipe_evaluation_text);
-    evaluation_text.setText(reason);
+
+    runOnUiThread(
+            new Runnable() {
+
+              @Override
+              public void run() {
+
+                check_x_mark.setImageResource(R.drawable.ic_x_red_24dp);
+                evaluation_text.setText(reason);
+              }
+            });
   }
 
   public void setTimeCounter(long seconds) {

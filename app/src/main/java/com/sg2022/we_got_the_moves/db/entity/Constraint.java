@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "Constraint")
 public class Constraint {
 
-  @PrimaryKey
+  @PrimaryKey (autoGenerate = true)
   @ColumnInfo(name = "id")
   public long id;
 
