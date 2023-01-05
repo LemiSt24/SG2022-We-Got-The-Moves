@@ -507,9 +507,8 @@ public class MediapipeActivity extends AppCompatActivity {
                       } else {
                         currentExercise = exercises.get(ExercisePointer);
                         setExcerciseName(currentExercise.name);
-                        showNextExerciseDialog(currentExercise,
-                                exerciseIdToAmount.get(currentExercise.id),
-                                5);
+                        showNextExerciseDialog(
+                            currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
                         noPause = false;
                         timerSet = false;
                         Reps = 0;
@@ -583,34 +582,34 @@ public class MediapipeActivity extends AppCompatActivity {
         });
   }
 
-  public String exerciseToString(Exercise e, boolean finished){
+  public String exerciseToString(Exercise e, boolean finished) {
     String exerciseString = "";
     int amount;
-    if (finished){
+    if (finished) {
       amount = exerciseIdToAmount.get(e.id);
-    }
-    else{
+    } else {
       if (e.isCountable()) {
         amount = Reps;
-      }
-      else{
+      } else {
         Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
-        amount = exerciseIdToAmount.get(e.id) - ((int) ((time_counter.getBase() - SystemClock.elapsedRealtime())/ 1000));
+        amount =
+            exerciseIdToAmount.get(e.id)
+                - ((int) ((time_counter.getBase() - SystemClock.elapsedRealtime()) / 1000));
       }
     }
 
     if (amount == 0) return "";
 
     if (e.isCountable()) {
-        exerciseString = amount + " x " + e.name;
+      exerciseString = amount + " x " + e.name;
+    } else {
+      exerciseString = amount + " s " + e.name;
     }
-      else{
-        exerciseString = amount + " s " + e.name;
-      }
     return exerciseString;
   }
 
-  private void showNextExerciseDialog(@NonNull Exercise e, @NonNull int amount, @NonNull int seconds) {
+  private void showNextExerciseDialog(
+      @NonNull Exercise e, @NonNull int amount, @NonNull int seconds) {
     runOnUiThread(
         new Runnable() {
 
@@ -659,8 +658,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private void showEndScreenAndSave() {
     Long endTime = System.currentTimeMillis();
 
-    Duration timeSpent =
-            Duration.of(endTime - startTime.getTime(), ChronoUnit.MILLIS);
+    Duration timeSpent = Duration.of(endTime - startTime.getTime(), ChronoUnit.MILLIS);
     FinishedWorkout training = new FinishedWorkout(startTime, workoutId, timeSpent);
     FinishedWorkoutRepository finishedWorkoutRepository =
         FinishedWorkoutRepository.getInstance(getApplication());
@@ -722,9 +720,8 @@ public class MediapipeActivity extends AppCompatActivity {
   }
 
   @Override
-  public void onBackPressed()
-  {
+  public void onBackPressed() {
     ;
-  };
-
+  }
+  ;
 }

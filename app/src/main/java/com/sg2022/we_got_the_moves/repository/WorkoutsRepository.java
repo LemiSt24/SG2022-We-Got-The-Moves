@@ -14,6 +14,7 @@ import com.sg2022.we_got_the_moves.db.daos.WorkoutExerciseDao;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
+import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseAndFinishedExercises;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExercises;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 
@@ -136,6 +137,15 @@ public class WorkoutsRepository {
       long workoutId, SingleObserver<List<WorkoutExerciseAndExercise>> observer) {
     this.workoutExerciseDao
         .getAllWorkoutExerciseAndExerciseSingle(workoutId)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
+  }
+
+  public void getAllExerciseAndFinishedExercisesSingle(
+      SingleObserver<List<ExerciseAndFinishedExercises>> observer) {
+    this.exerciseDao
+        .getAllFinishedExercisesSingle()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer);

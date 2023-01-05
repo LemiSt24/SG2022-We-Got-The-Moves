@@ -21,7 +21,7 @@ import com.sg2022.we_got_the_moves.databinding.InputDialogTimeBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemExerciseBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
-import com.sg2022.we_got_the_moves.util.TimeFormatUtil;
+import com.sg2022.we_got_the_moves.utils.TimeFormatUtil;
 
 import java.util.List;
 

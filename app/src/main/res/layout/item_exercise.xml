@@ -7,7 +7,7 @@
 
         <import
             alias="util"
-            type="com.sg2022.we_got_the_moves.util.TimeFormatUtil" />
+            type="com.sg2022.we_got_the_moves.utils.TimeFormatUtil" />
 
         <import
             alias="unit"
@@ -78,7 +78,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginBottom="8dp"
-                    android:autofillHints="0"
                     android:contentDescription="@string/amount"
                     android:gravity="center"
                     android:minWidth="48dp"

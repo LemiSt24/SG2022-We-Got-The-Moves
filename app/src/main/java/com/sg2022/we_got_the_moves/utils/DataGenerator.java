@@ -1,8 +1,10 @@
-package com.sg2022.we_got_the_moves;
+package com.sg2022.we_got_the_moves.utils;
 
 import android.annotation.SuppressLint;
 import android.util.Pair;
 
+import com.sg2022.we_got_the_moves.NormalizedLandmark;
+import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
@@ -86,16 +88,6 @@ public class DataGenerator {
     Exercise.UNIT.REPETITION
   };
 
-  public static double[] minPerRep = {
-    (1.0d / 20.0d),
-    0.0d, // if UNIT.DURATION
-    (1.0d / 40.0d),
-    (1.0d / 20.0d),
-    (1.0d / 20.0d),
-    0.0d,
-    (1.0d / 40.0d)
-  };
-
   public static double[] metScores = {
     5.5d, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
     5.0d, // https://fitnessvolt.com/side-planks-calculator
@@ -115,7 +107,8 @@ public class DataGenerator {
 
     for (int i = 0; i < exerciseNames.length; ++i) {
       if (i == 1 || i == 2)
-        ;
+        //noinspection UnnecessaryContinue
+        continue;
       else {
         e.add(
             new Exercise(
@@ -127,8 +120,7 @@ public class DataGenerator {
                 isCountable[i],
                 0,
                 0,
-                metScores[i],
-                minPerRep[i]));
+                metScores[i]));
       }
     }
     return e;

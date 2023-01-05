@@ -11,6 +11,7 @@ import androidx.room.Transaction;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedWorkoutAndFinishedExercises;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +46,10 @@ public interface FinishedWorkoutDao {
   LiveData<List<Long>> getNLastDistictWorkoutIds(int n);
 
   @Transaction
+  @Query("Select * From FinishedWorkout")
+  Single<List<FinishedWorkoutAndFinishedExercises>> getAll();
+
+  @Transaction
   @Query("Select * From FinishedWorkout WHERE FinishedWorkout.id = :finishWorkoutId")
   Single<FinishedWorkoutAndFinishedExercises> get(long finishWorkoutId);
 
@@ -53,4 +58,13 @@ public interface FinishedWorkoutDao {
       "Select * From FinishedWorkout WHERE FinishedWorkout.date >= :begin AND FinishedWorkout.date <= :end")
   Single<List<FinishedWorkoutAndFinishedExercises>> getAllFinishedWorkoutsAndExercise(
       Date begin, Date end);
+
+  @Transaction
+  @Query("Select SUM(FinishedWorkout.duration) From FinishedWorkout")
+  Single<Duration> getTotalDuration();
+
+  @Transaction
+  @Query(
+      "Select AVG(FinishedWorkout.duration) From FinishedWorkout WHERE FinishedWorkout.date >= :begin AND FinishedWorkout.date <= :end")
+  Single<Duration> getAvgDurationByRange(Date begin, Date end);
 }

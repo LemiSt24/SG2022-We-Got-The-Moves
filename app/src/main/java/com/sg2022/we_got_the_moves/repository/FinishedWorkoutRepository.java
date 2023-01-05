@@ -13,6 +13,7 @@ import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedWorkoutAndFinishedExercises;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
@@ -114,6 +115,31 @@ public class FinishedWorkoutRepository {
       Date begin, Date end, SingleObserver<List<FinishedWorkoutAndFinishedExercises>> observer) {
     this.finishedWorkoutDao
         .getAllFinishedWorkoutsAndExercise(begin, end)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
+  }
+
+  public void getAllFinishedWorkoutsSingle(
+      SingleObserver<List<FinishedWorkoutAndFinishedExercises>> observer) {
+    this.finishedWorkoutDao
+        .getAll()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
+  }
+
+  public void getTotalDurationSingle(SingleObserver<Duration> observer) {
+    this.finishedWorkoutDao
+        .getTotalDuration()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
+  }
+
+  public void getAvgDurationByRangeSingle(Date begin, Date end, SingleObserver<Duration> observer) {
+    this.finishedWorkoutDao
+        .getAvgDurationByRange(begin, end)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer);

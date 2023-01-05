@@ -11,21 +11,25 @@ import androidx.lifecycle.ViewModelProvider;
 import com.sg2022.we_got_the_moves.BasicApp;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.UserRepository;
+import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 public class StatisticsViewModel extends AndroidViewModel {
 
   public final FinishedWorkoutRepository finishedWorkoutRepository;
   public final UserRepository userRepository;
+  public final WorkoutsRepository workoutsRepository;
   public final LifecycleOwner owner;
 
   public StatisticsViewModel(
       @NonNull final Application app,
       @NonNull final FinishedWorkoutRepository finishedWorkoutRepository,
       @NonNull final UserRepository userRepository,
+      @NonNull final WorkoutsRepository workoutsRepository,
       @NonNull LifecycleOwner owner) {
     super(app);
     this.finishedWorkoutRepository = finishedWorkoutRepository;
     this.userRepository = userRepository;
+    this.workoutsRepository = workoutsRepository;
     this.owner = owner;
   }
 
@@ -33,6 +37,7 @@ public class StatisticsViewModel extends AndroidViewModel {
 
     public final FinishedWorkoutRepository finishedWorkoutRepository;
     public final UserRepository userRepository;
+    public final WorkoutsRepository workoutsRepository;
     public final LifecycleOwner owner;
     private final Application app;
 
@@ -40,6 +45,7 @@ public class StatisticsViewModel extends AndroidViewModel {
       this.app = app;
       this.finishedWorkoutRepository = ((BasicApp) app).getFinishedTrainingRepository();
       this.userRepository = ((BasicApp) app).getUserRepository();
+      this.workoutsRepository = ((BasicApp) app).getWorkoutsRepository();
       this.owner = owner;
     }
 
@@ -47,7 +53,9 @@ public class StatisticsViewModel extends AndroidViewModel {
     @Override
     @NonNull
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-      return (T) new StatisticsViewModel(app, finishedWorkoutRepository, userRepository, owner);
+      return (T)
+          new StatisticsViewModel(
+              app, finishedWorkoutRepository, userRepository, workoutsRepository, owner);
     }
   }
 }

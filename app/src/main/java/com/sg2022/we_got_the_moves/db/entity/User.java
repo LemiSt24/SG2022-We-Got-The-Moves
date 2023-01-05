@@ -39,11 +39,6 @@ public class User {
     return this.weight / Math.pow(this.height, 2);
   }
 
-  public enum SEX {
-    MALE,
-    FEMALE
-  }
-
   public float kgToLbs(float kg) {
     return kg * (float) 2.20462;
   }
@@ -53,5 +48,10 @@ public class User {
     float rest = (float) (m % 0.3048);
     int inch = (int) Math.floor(rest / 0.0254);
     return new int[] {feet, inch};
+  }
+
+  public enum SEX {
+    MALE,
+    FEMALE
   }
 }

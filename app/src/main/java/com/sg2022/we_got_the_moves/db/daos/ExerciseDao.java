@@ -11,6 +11,7 @@ import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
+import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseAndFinishedExercises;
 
 import java.util.List;
 
@@ -54,4 +55,8 @@ public interface ExerciseDao {
 
   @Query("SELECT * FROM Exercise WHERE Exercise.id = :exerciseId")
   LiveData<Exercise> getExercise(long exerciseId);
+
+  @Transaction
+  @Query("SELECT * FROM Exercise")
+  Single<List<ExerciseAndFinishedExercises>> getAllFinishedExercisesSingle();
 }

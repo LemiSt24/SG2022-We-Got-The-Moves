@@ -58,5 +58,4 @@ public class BasicApp extends Application {
   public UserRepository getUserRepository() {
     return this.userRepository;
   }
-
 }

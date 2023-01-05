@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_weekly_statistics"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.sg2022.we_got_the_moves.ui.statistics.StatisticsFragment">
+
+        <ScrollView
+            android:id="@+id/scrollview_weekly_statistics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/enter_text"
+            android:fillViewport="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_layout_scrollview_weekly_statistics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textview_header_total_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/yymmddhhmmss"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@+id/textview_value_total_statistics"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_title_weekly_statistics" />
+
+                <TextView
+                    android:id="@+id/textview_value_total_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeTextType="none"
+                    android:fontFamily="serif"
+                    android:hint="@string/default_total_time"
+                    android:importantForAutofill="no"
+                    android:maxLines="1"
+                    android:text="@string/default_total_time"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_header_total_statistics"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <TextView
+                    android:id="@+id/textview_text_total_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/your_total_training_time"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_header_total_statistics" />
+
+                <TextView
+                    android:id="@+id/textview_average_text_weekly_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/your_week_s_avg_training_time"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_average_header_weekly_statistics" />
+
+                <TextView
+                    android:id="@+id/textview_average_value_weekly_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="serif"
+                    android:hint="@string/empty_string"
+                    android:importantForAutofill="no"
+                    android:text="@string/default_time"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_average_header_weekly_statistics"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <TextView
+                    android:id="@+id/textview_average_header_weekly_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/hhmmss"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="@+id/textview_average_value_weekly_statistics"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_value_total_statistics" />
+
+                <TextView
+                    android:id="@+id/textview_title_weekly_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/weekly_training_results"
+                    android:textAlignment="center"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/bar_chart_weekly_statistics"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:background="@color/white"
+                    android:isScrollContainer="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_average_value_weekly_statistics"
+                    app:layout_constraintWidth="match_parent">
+
+                </com.github.mikephil.charting.charts.BarChart>
+
+                <SeekBar
+                    android:id="@+id/seekbar_yaxis_weekly_statistics"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:max="2"
+                    android:minHeight="24dp"
+                    android:progress="0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_calender_weekly_statistics" />
+
+                <TextView
+                    android:id="@+id/textview_calender_weekly_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/cw_zero"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/bar_chart_weekly_statistics" />
+
+                <TextView
+                    android:id="@+id/textview_seconds_weekly_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/minutes"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textview_hours_weekly_statistics"
+                    app:layout_constraintStart_toEndOf="@+id/textview_minutes_weekly_statistics"
+                    app:layout_constraintTop_toBottomOf="@+id/seekbar_yaxis_weekly_statistics" />
+
+                <TextView
+                    android:id="@+id/textview_minutes_weekly_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seconds"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@+id/seekbar_yaxis_weekly_statistics"
+                    app:layout_constraintTop_toTopOf="@+id/textview_seconds_weekly_statistics" />
+
+                <TextView
+                    android:id="@+id/textview_hours_weekly_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hours"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="@+id/seekbar_yaxis_weekly_statistics"
+                    app:layout_constraintTop_toTopOf="@+id/textview_seconds_weekly_statistics" />
+
+                <ImageButton
+                    android:id="@+id/imagebtn_calender_right_weekly_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/ic_arrow_right_black_24dp"
+                    android:backgroundTint="@color/white"
+                    android:contentDescription="@string/right"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textview_calender_weekly_statistics"
+                    app:layout_constraintStart_toEndOf="@+id/textview_calender_weekly_statistics"
+                    app:layout_constraintTop_toTopOf="@+id/textview_calender_weekly_statistics"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <ImageButton
+                    android:id="@+id/imagebtn_calender_left_weekly_statistics"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/ic_arrow_left_black_24dp"
+                    android:backgroundTint="@color/white"
+                    android:contentDescription="@string/left"
+                    android:minWidth="48dp"
+                    android:minHeight="48dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textview_calender_weekly_statistics"
+                    app:layout_constraintEnd_toStartOf="@+id/textview_calender_weekly_statistics"
+                    app:layout_constraintTop_toTopOf="@+id/textview_calender_weekly_statistics"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

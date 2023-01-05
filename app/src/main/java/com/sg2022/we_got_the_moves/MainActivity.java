@@ -1,5 +1,6 @@
 package com.sg2022.we_got_the_moves;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -14,6 +15,9 @@ import com.sg2022.we_got_the_moves.ui.settings.UserDataChangeActivity;
 import com.sg2022.we_got_the_moves.ui.training.MediapipeActivity;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,27 +28,24 @@ public class MainActivity extends AppCompatActivity {
     return weakMainActivity.get();
   }
 
+  @SuppressLint("ClickableViewAccessibility")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
-
     setContentView(binding.getRoot());
-
-    // Passing each menu ID as a set of Ids (maximal 5) because each
-    // menu should be considered as top level destinations.
+    List<Integer> fragments =
+        Arrays.asList(
+            R.id.navigation_dashboard,
+            R.id.navigation_training,
+            R.id.navigation_workouts,
+            R.id.navigation_statistics,
+            R.id.navigation_settings);
     AppBarConfiguration appBarConfiguration =
-        new AppBarConfiguration.Builder(
-                R.id.navigation_dashboard,
-                R.id.navigation_training,
-                R.id.navigation_workouts,
-                R.id.navigation_statistics,
-                R.id.navigation_settings)
-            .build();
-    NavController navController =
-        Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        new AppBarConfiguration.Builder(new HashSet<>(fragments)).build();
+    NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
     NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-    NavigationUI.setupWithNavController(binding.navView, navController);
+    NavigationUI.setupWithNavController(binding.bottomNavBarMain, navController);
 
     weakMainActivity = new WeakReference<>(MainActivity.this);
   }

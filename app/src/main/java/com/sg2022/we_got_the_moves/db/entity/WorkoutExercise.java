@@ -45,6 +45,4 @@ public class WorkoutExercise {
     this.exerciseId = exerciseId;
     this.amount = amount;
   }
-
-
 }

@@ -83,21 +83,21 @@ public class Exercise {
   }
 
   public double getCalories(
-      double weight, // body weight [kg]
-      double duration) // [seconds]
+      double weight, // weight [kg]
+      double duration) // [secs]
       {
 
     return duration / 60 * (this.met * 3.5f) * (weight / 200);
-  }
-
-  public enum UNIT {
-    REPETITION,
-    DURATION // [secs]
   }
 
   @Override
   public boolean equals(@Nullable Object obj) {
     if (!(obj instanceof Exercise)) return false;
     return this.id == ((Exercise) obj).id && Objects.equals(this.name, ((Exercise) obj).name);
+  }
+
+  public enum UNIT {
+    REPETITION,
+    DURATION // [secs]
   }
 }
