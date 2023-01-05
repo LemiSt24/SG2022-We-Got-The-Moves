@@ -25,7 +25,7 @@ public class DataGenerator {
   private static final String TAG = "DataGenerator";
 
   public static String[] exerciseNames = {
-    "Squat", "Side-planks", "Mountain-climbers", "Push-up", "Sit-up", "Plank", "Biceps-curl"
+    "Squat", "Side-planks", "Mountain-climbers", "Pushup", "Sit-up", "Plank", "Biceps-curl"
   };
 
   public static String[] exerciseInstructions = {
@@ -162,7 +162,7 @@ public class DataGenerator {
       List<WorkoutExercise> result =
           we.stream().filter(e -> e.workoutId == w.workoutId).collect(Collectors.toList());
       for (int j = 0; j < result.size(); j++) {
-        fe.add(new FinishedExercise(fw.get(i).workoutId, result.get(j).exerciseId, 30));
+        fe.add(new FinishedExercise(fw.get(i).workoutId, result.get(j).exerciseId, 30, 0));
       }
     }
     return fe;

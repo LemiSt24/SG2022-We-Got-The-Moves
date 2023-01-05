@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.Size;
 import android.view.Display;
@@ -43,8 +44,13 @@ import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.DialogBetweenExerciseScreenBinding;
 import com.sg2022.we_got_the_moves.databinding.DialogFinishedTrainingScreenBinding;
+import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
+import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
+import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
+import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseStateAndConstraints;
+import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
@@ -54,7 +60,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import android.speech.tts.TextToSpeech;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MediapipeActivity extends AppCompatActivity {
 
@@ -110,12 +123,21 @@ public class MediapipeActivity extends AppCompatActivity {
   private boolean lastStateWasTop = true;
   private int Reps = 0;
   private Exercise currentExercise;
+  private List<Constraint> global_constraints;
+  private List<Constraint> bottom_constraints;
+  private List<Constraint> top_constraints;
   private boolean timerSet = false;
 
   private Date startTime;
   private boolean noPause = false;
   private boolean firstTimeShowDialog = true;
-  private List<String> finishedExercises;
+  private List<FinishedExercise> finishedExercises;
+
+  private long countableStartTime;
+  private long countableEndTime;
+  private String finishedExerciseSummary = "";
+
+  private TextToSpeech tts;
 
   private static String getClassificationDebugString(Map<String, Integer> classification) {
     String classificationString = "";
@@ -144,9 +166,50 @@ public class MediapipeActivity extends AppCompatActivity {
     return landmarksString;
   }
 
+  // loads all constraints from db which are related to the supplied exercise and saves them in class variables
+  private void loadConstraintsForExercise(int exerciseId)
+  {
+    ConstraintRepository constraintRepository = ConstraintRepository.getInstance(this.getApplication());
+
+    global_constraints = new ArrayList<>();
+    bottom_constraints = new ArrayList<>();
+    top_constraints = new ArrayList<>();
+
+    constraintRepository.getAllStatesSingle((int)currentExercise.id)
+      .subscribeOn(Schedulers.io())
+      .subscribe(states -> {
+        for(ExerciseState.STATE state : states)
+        {
+          Log.println(Log.DEBUG,"constraintFrom", "moinsen");
+          constraintRepository.getStateAndConstraintsSingle((int)currentExercise.id, state)
+                  .subscribeOn(Schedulers.io())
+                  .subscribe(state_and_constraints -> {
+
+                    for(ExerciseStateAndConstraints stateAndConstraints : state_and_constraints)
+                    {
+                      if(stateAndConstraints.exerciseState.exerciseState == ExerciseState.STATE.BOTTOM)
+                      {
+                        bottom_constraints.addAll(stateAndConstraints.constraints);
+                      }
+                      else if(stateAndConstraints.exerciseState.exerciseState == ExerciseState.STATE.TOP)
+                      {
+                        top_constraints.addAll(stateAndConstraints.constraints);
+                      }
+                      else if(stateAndConstraints.exerciseState.exerciseState == ExerciseState.STATE.GLOBAL)
+                      {
+                        global_constraints.addAll(stateAndConstraints.constraints);
+                      }
+                    }
+
+          });
+        }
+      });
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    tts("");
     setContentView(getContentViewLayoutResId());
 
     startTime = new Date(System.currentTimeMillis());
@@ -185,7 +248,8 @@ public class MediapipeActivity extends AppCompatActivity {
     Log.println(Log.DEBUG, "workoutID", String.valueOf(workoutId));
 
     WorkoutsRepository workoutsRepository = WorkoutsRepository.getInstance(this.getApplication());
-    finishedExercises = new ArrayList<String>();
+
+    finishedExercises = new ArrayList<FinishedExercise>();
     exercises = new ArrayList<Exercise>();
     exerciseIdToAmount = new HashMap<>();
     workoutsRepository
@@ -202,6 +266,8 @@ public class MediapipeActivity extends AppCompatActivity {
               currentExercise = e.get(0);
               setExcerciseName(currentExercise.name);
               if (currentExercise.isCountable()) setRepetition("0");
+              loadConstraintsForExercise((int)currentExercise.id);
+
               for (int i = 0; i < exercises.size(); i++) {
                 workoutsRepository
                     .getWorkoutExercise(workoutId, exercises.get(i).id)
@@ -215,6 +281,7 @@ public class MediapipeActivity extends AppCompatActivity {
                             firstTimeShowDialog = false;
                           }
                         });
+
               }
             });
 
@@ -248,6 +315,16 @@ public class MediapipeActivity extends AppCompatActivity {
             // weitere Untersuchungen weiterverwenden
             classifier.classify(landmarks);
 
+            for(Constraint constraint : global_constraints)
+            {
+              if(!classifier.judge_constraint(constraint))
+              {
+                Log.v(TAG, constraint.message);
+                //setExerciseX(constraint.message); // TODO crasht, weil wir angeblich nicht im UI Thread sind?
+                tts(constraint.message);
+              }
+            }
+
             // Beispielhafte Analyse von Rahmenbedingungen
             /*Log.v(
             TAG,
@@ -262,7 +339,7 @@ public class MediapipeActivity extends AppCompatActivity {
                     + packet.getTimestamp()
                     + "] #Landmarks for iris: "
                     + landmarks.getLandmarkCount());
-            Log.v(TAG, getLandmarksDebugString(landmarks));
+            //Log.v(TAG, getLandmarksDebugString(landmarks));
             //      Log.println(Log.DEBUG,"test", String.valueOf(exercises.size()));
             if (exercises.size() != 0) {
               /*         Log.println(Log.DEBUG,"test", classification.toString());
@@ -291,7 +368,8 @@ public class MediapipeActivity extends AppCompatActivity {
                   countRepUp();
                   if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
                     // TODO next Exercise
-                    finishedExercises.add(exerciseToString(currentExercise, true));
+                    countableEndTime = SystemClock.elapsedRealtime();
+                    finishedExercises.add(createFinishedExercise(currentExercise, true));
                     ExercisePointer++;
 
                     if (ExercisePointer >= exercises.size()) {
@@ -299,6 +377,7 @@ public class MediapipeActivity extends AppCompatActivity {
                       showEndScreenAndSave();
                     } else {
                       currentExercise = exercises.get(ExercisePointer);
+                      loadConstraintsForExercise((int)currentExercise.id);
                       noPause = false;
                       showNextExerciseDialog(
                           currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
@@ -324,14 +403,11 @@ public class MediapipeActivity extends AppCompatActivity {
     Button finish_but = findViewById(R.id.mediapipe_finish_button);
     stop_but.setOnClickListener(
         v -> {
-          stop_card.setVisibility(View.VISIBLE);
-          continue_but.setClickable(true);
-          finish_but.setClickable(true);
-          stopTimeCounter();
-          noPause = false;
+          showPauseCard();
         });
     continue_but.setOnClickListener(
         v -> {
+          tts("continue");
           stop_card.setVisibility(View.GONE);
           continue_but.setClickable(false);
           finish_but.setClickable(false);
@@ -340,7 +416,7 @@ public class MediapipeActivity extends AppCompatActivity {
         });
     finish_but.setOnClickListener(
         v -> {
-          finishedExercises.add(exerciseToString(currentExercise, false));
+          finishedExercises.add(createFinishedExercise(currentExercise, false));
           showEndScreenAndSave();
         });
   }
@@ -464,16 +540,34 @@ public class MediapipeActivity extends AppCompatActivity {
 
   public void setExerciseCheck() {
     ImageView check_x_mark = findViewById(R.id.mediapipe_check_x_mark);
-    check_x_mark.setImageResource(R.drawable.ic_check_green_24dp);
     TextView evaluation_text = findViewById(R.id.mediapipe_evaluation_text);
-    evaluation_text.setText("all correct");
+
+    runOnUiThread(
+            new Runnable() {
+
+              @Override
+              public void run() {
+
+                check_x_mark.setImageResource(R.drawable.ic_check_green_24dp);
+                evaluation_text.setText("all correct");
+              }
+            });
   }
 
   public void setExerciseX(String reason) {
     ImageView check_x_mark = findViewById(R.id.mediapipe_check_x_mark);
-    check_x_mark.setImageResource(R.drawable.ic_x_red_24dp);
     TextView evaluation_text = findViewById(R.id.mediapipe_evaluation_text);
-    evaluation_text.setText(reason);
+
+    runOnUiThread(
+            new Runnable() {
+
+              @Override
+              public void run() {
+
+                check_x_mark.setImageResource(R.drawable.ic_x_red_24dp);
+                evaluation_text.setText(reason);
+              }
+            });
   }
 
   public void setTimeCounter(long seconds) {
@@ -497,7 +591,7 @@ public class MediapipeActivity extends AppCompatActivity {
                   public void onChronometerTick(Chronometer chronometer) {
                     long base = time_counter.getBase();
                     if (base < SystemClock.elapsedRealtime()) {
-                      finishedExercises.add(exerciseToString(currentExercise, true));
+                      finishedExercises.add(createFinishedExercise(currentExercise, true));
                       ExercisePointer++;
 
                       if (ExercisePointer >= exercises.size()) {
@@ -507,8 +601,9 @@ public class MediapipeActivity extends AppCompatActivity {
                       } else {
                         currentExercise = exercises.get(ExercisePointer);
                         setExcerciseName(currentExercise.name);
-                        showNextExerciseDialog(
-                            currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
+                        showNextExerciseDialog(currentExercise,
+                                exerciseIdToAmount.get(currentExercise.id),
+                                5);
                         noPause = false;
                         timerSet = false;
                         Reps = 0;
@@ -525,6 +620,7 @@ public class MediapipeActivity extends AppCompatActivity {
   public void stopTimeCounter() {
     Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
     time_counter_time = SystemClock.elapsedRealtime();
+    countableEndTime = time_counter_time;
     time_counter.stop();
     time_stopped = true;
   }
@@ -582,34 +678,57 @@ public class MediapipeActivity extends AppCompatActivity {
         });
   }
 
-  public String exerciseToString(Exercise e, boolean finished) {
+  public String exerciseToString(Exercise e, boolean finished){
     String exerciseString = "";
     int amount;
-    if (finished) {
+    if (finished){
       amount = exerciseIdToAmount.get(e.id);
-    } else {
+    }
+    else{
       if (e.isCountable()) {
         amount = Reps;
-      } else {
+      }
+      else{
         Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
-        amount =
-            exerciseIdToAmount.get(e.id)
-                - ((int) ((time_counter.getBase() - SystemClock.elapsedRealtime()) / 1000));
+        amount = exerciseIdToAmount.get(e.id) - ((int) ((time_counter.getBase() + SystemClock.elapsedRealtime())/ 1000));
+        //time_counter.getBase() + SystemClock.elapsedRealtime() - time_counter_time
       }
     }
-
     if (amount == 0) return "";
 
     if (e.isCountable()) {
-      exerciseString = amount + " x " + e.name;
-    } else {
-      exerciseString = amount + " s " + e.name;
+        exerciseString = amount + " x " + e.name;
     }
+      else{
+        exerciseString = amount + " s " + e.name;
+      }
     return exerciseString;
   }
 
-  private void showNextExerciseDialog(
-      @NonNull Exercise e, @NonNull int amount, @NonNull int seconds) {
+  public FinishedExercise createFinishedExercise(Exercise e, boolean finished){
+    String exerciseString = "";
+    int duration = 0;
+    int amount = 0;
+    if (e.isCountable()){
+      amount = Reps;
+      duration = (int) ((countableEndTime - countableStartTime) /1000);
+    }
+    else{
+      if (finished) {
+        duration = exerciseIdToAmount.get(e.id);
+      }
+      else{
+        Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
+        duration = exerciseIdToAmount.get(e.id) - ((int) ((time_counter.getBase() - time_counter_time)/ 1000));
+      }
+    }
+
+    FinishedExercise finishedExercise = new FinishedExercise(0, e.id, duration, amount);
+    return finishedExercise;
+  }
+
+  private void showNextExerciseDialog(@NonNull Exercise e, @NonNull int amount, @NonNull int seconds) {
+    tts("Next Exercise " + amount +  e.name);
     runOnUiThread(
         new Runnable() {
 
@@ -648,6 +767,7 @@ public class MediapipeActivity extends AppCompatActivity {
                     if (base < SystemClock.elapsedRealtime()) {
                       dialog.dismiss();
                       noPause = true;
+                      if (currentExercise.isCountable()) countableStartTime = SystemClock.elapsedRealtime();
                     }
                   }
                 });
@@ -658,11 +778,21 @@ public class MediapipeActivity extends AppCompatActivity {
   private void showEndScreenAndSave() {
     Long endTime = System.currentTimeMillis();
 
-    Duration timeSpent = Duration.of(endTime - startTime.getTime(), ChronoUnit.MILLIS);
+    Duration timeSpent =
+            Duration.of(endTime - startTime.getTime(), ChronoUnit.MILLIS);
     FinishedWorkout training = new FinishedWorkout(startTime, workoutId, timeSpent);
     FinishedWorkoutRepository finishedWorkoutRepository =
         FinishedWorkoutRepository.getInstance(getApplication());
     finishedWorkoutRepository.insert(training);
+
+    finishedWorkoutRepository.getLastTraining().observe(this, lastTraining -> {
+      for (int i = 0; i< finishedExercises.size(); i++){
+        Log.println(Log.DEBUG, "test", String.valueOf(lastTraining.id));
+        finishedExercises.get(i).setFinishedWorkoutId(lastTraining.id);
+      }
+      finishedWorkoutRepository.insertFinishedExercise(finishedExercises);
+    });
+
 
     runOnUiThread(
         () -> {
@@ -678,6 +808,7 @@ public class MediapipeActivity extends AppCompatActivity {
               .setNeutralButton(
                   "Finish",
                   (dialog, id) -> {
+                    tts("Training finished");
                     finish();
                     dialog.dismiss();
                   });
@@ -701,6 +832,7 @@ public class MediapipeActivity extends AppCompatActivity {
                     titel.setText(x.name);
                   });
 
+
           // Setting the duration
           String durationString = "Duration: " + String.valueOf(timeSpent.toMinutes()) + ":";
           if (timeSpent.getSeconds() % 60 < 10) {
@@ -711,17 +843,62 @@ public class MediapipeActivity extends AppCompatActivity {
           duration.setText(durationString);
 
           // Setting the exercise List
-          String text = "";
-          for (int i = 0; i < finishedExercises.size(); i++) {
-            text += finishedExercises.get(i) + "\n";
-          }
-          exerciseList.setText(text);
+
+
+          workoutsRepository
+                  .getAllExercises(workoutId)
+                  .observe(
+                          MediapipeActivity.this,
+                          exercises -> {
+                            for (FinishedExercise finishedExercise : finishedExercises) {
+                              for (Exercise exercise: exercises){
+                                if (exercise.id == finishedExercise.exerciseId){
+                                  if (exercise.isCountable()) {
+                                    finishedExerciseSummary += finishedExercise.amount + " x " + exercise.name + "\n";
+                                  } else {
+                                    finishedExerciseSummary += finishedExercise.duration + " s " + exercise.name + "\n";
+                                  }
+                                  break;
+                                }
+                              }
+                            }
+                            exerciseList.setText(finishedExerciseSummary);
+                          });
         });
   }
 
-  @Override
-  public void onBackPressed() {
-    ;
+  public void showPauseCard(){
+    tts("Pause");
+    runOnUiThread(
+            new Runnable() {
+
+              @Override
+              public void run() {
+                findViewById(R.id.mediapipe_stop_card).setVisibility(View.VISIBLE);
+                findViewById(R.id.mediapipe_continue_button).setClickable(true);
+                findViewById(R.id.mediapipe_finish_button).setClickable(true);
+              }
+            }
+    );
+    stopTimeCounter();
+    noPause = false;
   }
-  ;
+
+  @Override
+  public void onBackPressed()
+  {
+    showPauseCard();
+  }
+
+  public void tts(String text){
+    tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+      public void onInit(int status) {
+        if (status != TextToSpeech.ERROR) {
+          tts.setLanguage(Locale.UK);
+          if (!tts.isSpeaking());
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "1");
+        }
+    }});
+  }
+
 }
