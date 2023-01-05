@@ -10,14 +10,6 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.sg2022.we_got_the_moves.db.entity.daos.ConstraintDao;
-import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseDao;
-import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseStateDao;
-import com.sg2022.we_got_the_moves.db.entity.daos.FinishedExerciseDao;
-import com.sg2022.we_got_the_moves.db.entity.daos.FinishedWorkoutDao;
-import com.sg2022.we_got_the_moves.db.entity.daos.UserDao;
-import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutDao;
-import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutExerciseDao;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
@@ -26,6 +18,14 @@ import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
+import com.sg2022.we_got_the_moves.db.entity.daos.ConstraintDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseStateDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.FinishedExerciseDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.FinishedWorkoutDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.UserDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutExerciseDao;
 import com.sg2022.we_got_the_moves.utils.DataGenerator;
 
 // TODO: Add entity classes here

@@ -7,8 +7,8 @@ import androidx.lifecycle.LiveData;
 
 import com.sg2022.we_got_the_moves.AppDatabase;
 import com.sg2022.we_got_the_moves.AppExecutors;
-import com.sg2022.we_got_the_moves.db.entity.daos.UserDao;
 import com.sg2022.we_got_the_moves.db.entity.User;
+import com.sg2022.we_got_the_moves.db.entity.daos.UserDao;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.SingleObserver;

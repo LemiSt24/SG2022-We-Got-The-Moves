@@ -5,8 +5,6 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 
-import javax.annotation.Nullable;
-
 @Entity(
     tableName = "FinishedExercise",
     primaryKeys = {"finishedWorkoutId", "exerciseId"},
@@ -31,7 +29,6 @@ import javax.annotation.Nullable;
       @Index(value = {"exerciseId"})
     })
 public class FinishedExercise {
-
 
   @ColumnInfo(name = "finishedWorkoutId")
   public long finishedWorkoutId;

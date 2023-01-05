@@ -6,12 +6,11 @@ import androidx.annotation.NonNull;
 
 import com.sg2022.we_got_the_moves.AppDatabase;
 import com.sg2022.we_got_the_moves.AppExecutors;
-import com.sg2022.we_got_the_moves.db.entity.Exercise;
+import com.sg2022.we_got_the_moves.db.entity.Constraint;
+import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.daos.ConstraintDao;
 import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseDao;
 import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseStateDao;
-import com.sg2022.we_got_the_moves.db.entity.Constraint;
-import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseStateAndConstraints;
 
 import java.util.List;
@@ -67,21 +66,21 @@ public class ConstraintRepository {
     this.executors.getPoolThread().execute(() -> this.constraintDao.insert(l));
   }
 
-  public void getAllExerciseStates(int exerciseId, SingleObserver<List<ExerciseState.STATE>> observer) {
+  public void getAllExerciseStates(
+      int exerciseId, SingleObserver<List<ExerciseState.STATE>> observer) {
     this.exerciseStateDao
-            .getAllStatesSingle(exerciseId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(observer);
+        .getAllStatesSingle(exerciseId)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
   }
 
-  public Single<List<ExerciseState.STATE>> getAllStatesSingle(int exerciseId)
-  {
+  public Single<List<ExerciseState.STATE>> getAllStatesSingle(int exerciseId) {
     return this.exerciseStateDao.getAllStatesSingle(exerciseId);
   }
 
-  public Single<List<ExerciseStateAndConstraints>> getStateAndConstraintsSingle(int exerciseId, ExerciseState.STATE state)
-  {
+  public Single<List<ExerciseStateAndConstraints>> getStateAndConstraintsSingle(
+      int exerciseId, ExerciseState.STATE state) {
     return this.exerciseStateDao.getStateAndConstraintsSingle(exerciseId, state);
   }
 }
