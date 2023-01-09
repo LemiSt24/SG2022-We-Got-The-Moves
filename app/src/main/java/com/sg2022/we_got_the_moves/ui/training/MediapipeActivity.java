@@ -6,6 +6,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -360,15 +362,24 @@ public class MediapipeActivity extends AppCompatActivity {
                           currentExercise.name.toLowerCase())) {
                 if (lastStateWasTop) {
                   countRepUp();
+             //     Log.println(Log.DEBUG, TAG, "Reps: "+ String.valueOf(Reps));
+             //     Log.println(Log.DEBUG, TAG, "Amount" + String.valueOf(exerciseIdToAmount.get(currentExercise.id)));
                   if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
                     // TODO next Exercise
                     countableEndTime = SystemClock.elapsedRealtime();
                     finishedExercises.add(createFinishedExercise(currentExercise, true));
                     ExercisePointer++;
-
+                 //   Log.println(Log.DEBUG, TAG, "exercisePointer: "+ String.valueOf(ExercisePointer));
+                 //   Log.println(Log.DEBUG, TAG, "exercises.size()"+ String.valueOf(ExercisePointer));
                     if (ExercisePointer >= exercises.size()) {
-                      Log.println(Log.DEBUG, TAG, "workout finished");
-                      showEndScreenAndSave();
+                      noPause = false;
+                      Handler handler = new Handler(Looper.getMainLooper());
+                      handler.post(new Runnable() {
+                        public void run() {
+                          showEndScreenAndSave();
+                        }
+                      });
+
                     } else {
                       currentExercise = exercises.get(ExercisePointer);
                       loadConstraintsForExercise((int) currentExercise.id);
@@ -587,10 +598,15 @@ public class MediapipeActivity extends AppCompatActivity {
                     if (base < SystemClock.elapsedRealtime()) {
                       finishedExercises.add(createFinishedExercise(currentExercise, true));
                       ExercisePointer++;
-
                       if (ExercisePointer >= exercises.size()) {
                         Log.println(Log.DEBUG, TAG, "workout finished");
-                        showEndScreenAndSave();
+                        noPause = false;
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                          public void run() {
+                            showEndScreenAndSave();
+                          }
+                        });
                         time_counter.stop();
                       } else {
                         currentExercise = exercises.get(ExercisePointer);
@@ -778,6 +794,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
     Duration timeSpent = Duration.of(endTime - startTime.getTime(), ChronoUnit.MILLIS);
     FinishedWorkout training = new FinishedWorkout(startTime, workoutId, timeSpent);
+
     FinishedWorkoutRepository finishedWorkoutRepository =
         FinishedWorkoutRepository.getInstance(getApplication());
     finishedWorkoutRepository.insert(training);
