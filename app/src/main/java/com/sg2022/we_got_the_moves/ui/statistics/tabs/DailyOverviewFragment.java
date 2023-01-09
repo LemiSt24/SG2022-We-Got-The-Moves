@@ -100,7 +100,7 @@ public class DailyOverviewFragment extends Fragment {
                         finishedWorkoutAndFinishedExercises) {
                       for (FinishedExerciseAndExercise fee : fwfe.finishedExerciseAndExercises) {
                         burnedCalories +=
-                            fee.exercise.getCalories(weight, fee.finishedExercise.duration);
+                            fee.exercise.getKCal(weight, fee.finishedExercise.duration);
                       }
                     }
                     PieDataSet pieDataSet = new PieDataSet(new ArrayList<>(), "Data");

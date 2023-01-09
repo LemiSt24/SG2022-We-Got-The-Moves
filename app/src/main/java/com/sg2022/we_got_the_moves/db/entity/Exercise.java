@@ -34,7 +34,7 @@ public class Exercise {
   public Exercise.UNIT unit;
 
   @ColumnInfo(name = "met")
-  public float met;
+  public float met; // (1 MET = 3.5 ml·kg^-1·min^-1 = 1 kcal·kg^-1·hour^-1)
 
   public Exercise(
       long id,
@@ -50,7 +50,7 @@ public class Exercise {
     this.youtubeId = youtubeId;
     this.imageId = imageId;
     this.unit = unit;
-    this.met = met; // (1 MET = 3.5 ml·kg^-1·min^-1)
+    this.met = met;
   }
 
   @Ignore
@@ -67,12 +67,12 @@ public class Exercise {
     return this.unit == UNIT.REPETITION;
   }
 
-  public float getCalories(
+  public float getKCal(
       float weight, // [kg]
       float duration) // [secs]
       {
 
-    return duration / 60 * (this.met * 3.5f) * (weight / 200);
+    return this.met * duration / 3600 * weight;
   }
 
   @Override
