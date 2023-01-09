@@ -120,7 +120,7 @@ public class WorkoutListAdapter
               Workout copy = new Workout(w.name);
               this.model.repository.insertWorkout(
                   copy,
-                  new SingleObserver<Long>() {
+                  new SingleObserver<>() {
 
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {}
@@ -129,7 +129,7 @@ public class WorkoutListAdapter
                     public void onSuccess(@NonNull Long aLong) {
                       model.repository.getAllWorkoutExerciseSingle(
                           w.id,
-                          new SingleObserver<List<WorkoutExercise>>() {
+                          new SingleObserver<>() {
 
                             @Override
                             public void onSubscribe(@NonNull Disposable d) {}
@@ -185,7 +185,7 @@ public class WorkoutListAdapter
   private void showAddDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
     this.model.repository.getAllExercises(
-        new SingleObserver<List<Exercise>>() {
+        new SingleObserver<>() {
 
           @Override
           public void onSubscribe(@NonNull Disposable d) {}
@@ -203,7 +203,7 @@ public class WorkoutListAdapter
             } else {
               model.repository.getAllWorkoutExerciseAndExerciseSingle(
                   w.id,
-                  new SingleObserver<List<WorkoutExerciseAndExercise>>() {
+                  new SingleObserver<>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {}
 

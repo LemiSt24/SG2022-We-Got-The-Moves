@@ -26,8 +26,11 @@ Project-)Praktikum.
 
 ## Demo
 
-You can download the demo apk for Android [here](https://github.com/LemiSt24/SG2022-We-Got-The-Moves/releases/tag/v.1.0-alpha).
-This app can run on phones with Android 9.0 or newer installed and is not running on emulators in Android Studio due to problems with OpenGL. Currently when you start a training, the camera sometimes doesn't automatically start. If this happens simply rotate your device or restart the training.
+You can download the demo apk for
+Android [here](https://github.com/LemiSt24/SG2022-We-Got-The-Moves/releases/tag/v.1.0-alpha). This
+app can run on phones with Android 9.0 or newer installed and is not running on emulators in Android
+Studio due to problems with OpenGL. Currently when you start a training, the camera sometimes
+doesn't automatically start. If this happens simply rotate your device or restart the training.
 
 ## Github repository
 

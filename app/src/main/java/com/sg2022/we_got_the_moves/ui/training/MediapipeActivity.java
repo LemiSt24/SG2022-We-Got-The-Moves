@@ -317,7 +317,7 @@ public class MediapipeActivity extends AppCompatActivity {
                 Log.v(TAG, constraint.message);
                 // setExerciseX(constraint.message); // TODO crasht, weil wir angeblich nicht im UI
                 // Thread sind?
-                //tts(constraint.message);
+                // tts(constraint.message);
               }
             }
 
@@ -362,23 +362,27 @@ public class MediapipeActivity extends AppCompatActivity {
                           currentExercise.name.toLowerCase())) {
                 if (lastStateWasTop) {
                   countRepUp();
-             //     Log.println(Log.DEBUG, TAG, "Reps: "+ String.valueOf(Reps));
-             //     Log.println(Log.DEBUG, TAG, "Amount" + String.valueOf(exerciseIdToAmount.get(currentExercise.id)));
+                  //     Log.println(Log.DEBUG, TAG, "Reps: "+ String.valueOf(Reps));
+                  //     Log.println(Log.DEBUG, TAG, "Amount" +
+                  // String.valueOf(exerciseIdToAmount.get(currentExercise.id)));
                   if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
                     // TODO next Exercise
                     countableEndTime = SystemClock.elapsedRealtime();
                     finishedExercises.add(createFinishedExercise(currentExercise, true));
                     ExercisePointer++;
-                 //   Log.println(Log.DEBUG, TAG, "exercisePointer: "+ String.valueOf(ExercisePointer));
-                 //   Log.println(Log.DEBUG, TAG, "exercises.size()"+ String.valueOf(ExercisePointer));
+                    //   Log.println(Log.DEBUG, TAG, "exercisePointer: "+
+                    // String.valueOf(ExercisePointer));
+                    //   Log.println(Log.DEBUG, TAG, "exercises.size()"+
+                    // String.valueOf(ExercisePointer));
                     if (ExercisePointer >= exercises.size()) {
                       noPause = false;
                       Handler handler = new Handler(Looper.getMainLooper());
-                      handler.post(new Runnable() {
-                        public void run() {
-                          showEndScreenAndSave();
-                        }
-                      });
+                      handler.post(
+                          new Runnable() {
+                            public void run() {
+                              showEndScreenAndSave();
+                            }
+                          });
 
                     } else {
                       currentExercise = exercises.get(ExercisePointer);
@@ -602,11 +606,12 @@ public class MediapipeActivity extends AppCompatActivity {
                         Log.println(Log.DEBUG, TAG, "workout finished");
                         noPause = false;
                         Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(new Runnable() {
-                          public void run() {
-                            showEndScreenAndSave();
-                          }
-                        });
+                        handler.post(
+                            new Runnable() {
+                              public void run() {
+                                showEndScreenAndSave();
+                              }
+                            });
                         time_counter.stop();
                       } else {
                         currentExercise = exercises.get(ExercisePointer);
