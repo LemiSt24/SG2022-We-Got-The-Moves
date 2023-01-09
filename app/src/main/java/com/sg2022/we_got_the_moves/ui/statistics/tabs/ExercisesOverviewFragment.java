@@ -1,5 +1,7 @@
 package com.sg2022.we_got_the_moves.ui.statistics.tabs;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -10,16 +12,28 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsExercisesBinding;
+import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseAndFinishedExercises;
 import com.sg2022.we_got_the_moves.ui.statistics.StatisticsViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -29,7 +43,6 @@ public class ExercisesOverviewFragment extends Fragment {
 
   private FragmentStatisticsExercisesBinding binding;
   private StatisticsViewModel model;
-  private MutableLiveData<BarDataSet> barDataSet;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,30 +52,112 @@ public class ExercisesOverviewFragment extends Fragment {
             this.requireActivity().getApplication(), this.requireActivity());
     this.model =
         new ViewModelProvider(this.requireActivity(), factory).get(StatisticsViewModel.class);
-    this.barDataSet = new MutableLiveData<>(new BarDataSet(new ArrayList<>(), "Data"));
   }
 
   public View onCreateView(
       @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     this.binding = FragmentStatisticsExercisesBinding.inflate(inflater, container, false);
-    DisplayMetrics displayMetrics = new DisplayMetrics();
-    this.requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-    int minScreenSize =
-        (int) (Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels) * 0.8);
-    this.binding.barChartExercisesStatistics.setMinimumWidth(minScreenSize);
-    this.binding.barChartExercisesStatistics.setMinimumHeight(minScreenSize);
-    return binding.getRoot();
+    this.loadData();
+    return this.binding.getRoot();
   }
 
   private void loadData() {
-
     this.model.workoutsRepository.getAllExerciseAndFinishedExercisesSingle(
         new SingleObserver<>() {
           @Override
           public void onSubscribe(@NonNull Disposable d) {}
 
           @Override
-          public void onSuccess(@NonNull List<ExerciseAndFinishedExercises> list) {}
+          public void onSuccess(@NonNull List<ExerciseAndFinishedExercises> list) {
+            List<BarEntry> entriesAmount =
+                IntStream.range(0, list.size())
+                    .mapToObj(
+                        idx -> {
+                          ExerciseAndFinishedExercises efe = list.get(idx);
+                          return new BarEntry(
+                              idx,
+                              efe.finishedExercises.stream()
+                                  .reduce(0, (result, fe) -> result + fe.amount, Integer::sum),
+                              efe.exercise);
+                        })
+                    .collect(Collectors.toList());
+
+            List<BarEntry> entriesDuration =
+                IntStream.range(0, list.size())
+                    .mapToObj(
+                        idx -> {
+                          ExerciseAndFinishedExercises efe = list.get(idx);
+                          return new BarEntry(
+                              idx,
+                              efe.finishedExercises.stream()
+                                  .reduce(0, (result, fe) -> result + fe.duration, Integer::sum),
+                              efe.exercise);
+                        })
+                    .collect(Collectors.toList());
+
+            List<BarEntry> entriesAverage =
+                IntStream.range(0, list.size())
+                    .mapToObj(
+                        idx ->
+                            new BarEntry(
+                                idx,
+                                entriesDuration.get(idx).getY() / entriesAmount.get(idx).getY(),
+                                entriesDuration.get(idx).getData()))
+                    .collect(Collectors.toList());
+
+            BarDataSet barDataSetAmount =
+                new BarDataSet(entriesAmount, getString(R.string.total_number_reps));
+            barDataSetAmount.setColor(Color.BLUE);
+            barDataSetAmount.setValueFormatter(
+                new ValueFormatter() {
+                  @Override
+                  public String getFormattedValue(float value) {
+                    return String.format(Locale.US, "%.0f", value);
+                  }
+                });
+
+            BarDataSet barDataSetDuration =
+                new BarDataSet(entriesDuration, getString(R.string.total_duration_hours));
+            barDataSetDuration.setColor(Color.GREEN);
+            barDataSetDuration.setValueFormatter(
+                new ValueFormatter() {
+                  @Override
+                  public String getFormattedValue(float value) {
+                    return String.format(Locale.US, "%.2f", value / 3600);
+                  }
+                });
+
+            BarDataSet barDataSetAverage =
+                new BarDataSet(entriesAverage, getString(R.string.average_secs_repetition));
+            barDataSetAverage.setColor(Color.CYAN);
+            barDataSetAverage.setValueFormatter(
+                new ValueFormatter() {
+                  @Override
+                  public String getFormattedValue(float value) {
+                    return String.format(Locale.US, "%.2f", value);
+                  }
+                });
+
+            BarData barData = new BarData(barDataSetAmount, barDataSetDuration, barDataSetAverage);
+            barData.setBarWidth(0.2f);
+            barData.groupBars(-0.5f, 0.4f, 0f);
+            barData.setValueTextSize(14f);
+            barData.setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+            HorizontalBarChart hbc = binding.barChartExercisesStatistics;
+            hbc.setData(barData);
+
+            XAxis xAxis = hbc.getXAxis();
+            xAxis.setValueFormatter(
+                new IndexAxisValueFormatter(
+                    entriesAmount.stream()
+                        .map(e -> ((Exercise) e.getData()).name)
+                        .collect(Collectors.toList())));
+            // hbc.setFitBars(true);
+
+            setupBarChart();
+            hbc.invalidate();
+          }
 
           @Override
           public void onError(@NonNull Throwable e) {
@@ -72,49 +167,57 @@ public class ExercisesOverviewFragment extends Fragment {
   }
 
   private void setupBarChart() {
-    /*    this.binding.barChartWeeklyStatistics.getLegend().setEnabled(false);
-    this.binding.barChartWeeklyStatistics.getDescription().setEnabled(false);
-    this.binding.barChartWeeklyStatistics.setEnabled(true);
-    this.binding.barChartWeeklyStatistics.setDrawGridBackground(false);
-    this.binding.barChartWeeklyStatistics.setExtraTopOffset(20f);
-    this.binding.barChartWeeklyStatistics.setExtraLeftOffset(20f);
-    this.binding.barChartWeeklyStatistics.getAxisRight().setEnabled(false);
-    this.binding
-        .barChartWeeklyStatistics
-        .getXAxis()
-        .setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-    this.binding.barChartWeeklyStatistics.getXAxis().setTextSize(16);
-    this.binding
-        .barChartWeeklyStatistics
-        .getXAxis()
-        .setValueFormatter(
-            new IndexAxisValueFormatter(
-                EnumSet.allOf(TimeFormatUtil.DAY.class).stream()
-                    .map(Enum::name)
-                    .collect(Collectors.toList())));
-    this.binding.barChartWeeklyStatistics.setTouchEnabled(false);
-    this.binding.barChartWeeklyStatistics.setVerticalScrollBarEnabled(true);*/
-  }
+    DisplayMetrics displayMetrics = new DisplayMetrics();
+    this.requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+    int minScreenSize = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
 
-  /*  private String formatValue(int progress, float value) {
-    float result, hours, mins, secs;
-    switch (progress) {
-      case 0:
-        return String.format(Locale.US, "%.0f", value);
-      case 1:
-        mins = TimeFormatUtil.secsToHhmmss((int) value).getSecond().floatValue();
-        secs = TimeFormatUtil.secsToHhmmss((int) value).getThird().floatValue() / 60;
-        result = mins + secs;
-        break;
-      default:
-        hours = TimeFormatUtil.secsToHhmmss((int) value).getFirst().floatValue();
-        mins = TimeFormatUtil.secsToHhmmss((int) value).getSecond().floatValue() / 60;
-        secs = TimeFormatUtil.secsToHhmmss((int) value).getThird().floatValue() / 3600;
-        result = hours + mins + secs;
-        break;
-    }
-    return String.format(Locale.US, "%.2f", result);
-  }*/
+    HorizontalBarChart hbc = this.binding.barChartExercisesStatistics;
+    hbc.setMinimumHeight((int) (minScreenSize * 1.5));
+    hbc.setMinimumWidth(minScreenSize);
+
+    hbc.setEnabled(true);
+    hbc.setDrawGridBackground(false);
+    hbc.setTouchEnabled(false);
+    hbc.setDrawValueAboveBar(true);
+    hbc.setExtraOffsets(0f, 0f, 35f, 30f);
+
+    XAxis xAxis = hbc.getXAxis();
+    xAxis.setDrawGridLines(false);
+    xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+    xAxis.setDrawLabels(true);
+    xAxis.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+    xAxis.setTextSize(14f);
+    xAxis.setGranularity(1f);
+    xAxis.setSpaceMin(0.5f);
+    xAxis.setSpaceMax(0.5f);
+    xAxis.setAvoidFirstLastClipping(true);
+
+    YAxis yAxisR = hbc.getAxisRight();
+    yAxisR.setEnabled(false);
+    yAxisR.setDrawLabels(false);
+    yAxisR.setDrawGridLines(false);
+    yAxisR.setAxisMinimum(0f);
+
+    YAxis yAxisL = hbc.getAxisLeft();
+    yAxisL.setEnabled(false);
+    yAxisL.setDrawLabels(false);
+    yAxisL.setDrawGridLines(false);
+    yAxisL.setAxisMinimum(0f);
+
+    Legend legend = hbc.getLegend();
+    legend.setEnabled(true);
+    legend.setDrawInside(false);
+    legend.setTextSize(14f);
+    legend.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+    legend.setOrientation(Legend.LegendOrientation.VERTICAL);
+    legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+    legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+    legend.setForm(Legend.LegendForm.CIRCLE);
+    legend.setYOffset(20f);
+
+    Description description = hbc.getDescription();
+    description.setEnabled(false);
+  }
 
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -124,13 +227,5 @@ public class ExercisesOverviewFragment extends Fragment {
   @Override
   public void onResume() {
     super.onResume();
-  }
-
-  @Override
-  public void onDestroy() {
-    this.binding = null;
-    this.model = null;
-    this.barDataSet = null;
-    super.onDestroy();
   }
 }

@@ -62,14 +62,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/name"
                     android:textAlignment="center"
                     android:textSize="20sp"
                     android:textStyle="bold|italic"
                     app:layout_constraintBottom_toBottomOf="@+id/textview_unit_header_exercise_item"
-                    app:layout_constraintEnd_toEndOf="@+id/textview_name_exercise_item"
-                    app:layout_constraintStart_toStartOf="@+id/textview_name_exercise_item"
+                    app:layout_constraintEnd_toStartOf="@+id/imagebutton_info_exercise_item"
+                    app:layout_constraintStart_toEndOf="@+id/textview_unit_header_exercise_item"
                     app:layout_constraintTop_toTopOf="@+id/textview_unit_header_exercise_item" />
 
                 <Button
@@ -93,8 +94,7 @@
                     android:id="@+id/textview_name_exercise_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="8dp"
                     android:autoSizeTextType="uniform"
                     android:autofillHints="@string/untitled"
                     android:gravity="center|center_vertical"
@@ -102,7 +102,7 @@
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="@+id/button_amount_exercise_item"
                     app:layout_constraintEnd_toStartOf="@+id/imagebutton_info_exercise_item"
-                    app:layout_constraintStart_toEndOf="@+id/button_amount_exercise_item"
+                    app:layout_constraintStart_toEndOf="@+id/textview_unit_header_exercise_item"
                     app:layout_constraintTop_toTopOf="@+id/button_amount_exercise_item" />
 
                 <ImageButton

@@ -16,6 +16,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -63,19 +68,12 @@ public class WeeklyOverviewFragment extends Fragment {
   public View onCreateView(
       @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     this.binding = FragmentStatisticsWeeklyBinding.inflate(inflater, container, false);
-    DisplayMetrics displayMetrics = new DisplayMetrics();
-    this.requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-    int minScreenSize =
-        (int) (Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels) * 0.8);
-    this.binding.barChartWeeklyStatistics.setMinimumWidth(minScreenSize);
-    this.binding.barChartWeeklyStatistics.setMinimumHeight(minScreenSize);
     this.binding.imagebtnCalenderRightWeeklyStatistics.setOnClickListener(
         v -> currentDate.setValue(TimeFormatUtil.dateAdjustedByWeeks(currentDate.getValue(), 1)));
 
     this.binding.imagebtnCalenderLeftWeeklyStatistics.setOnClickListener(
         v -> currentDate.setValue(TimeFormatUtil.dateAdjustedByWeeks(currentDate.getValue(), -1)));
 
-    this.setupBarChart();
     this.setupSeekbar();
     this.setTotalTime();
     this.currentDate.observe(
@@ -85,7 +83,126 @@ public class WeeklyOverviewFragment extends Fragment {
           setupCW(currentDate.getValue());
           loadData(currentDate.getValue());
         });
-    return binding.getRoot();
+    return this.binding.getRoot();
+  }
+
+  private void loadData(Date date) {
+    final List<Pair<DayOfWeek, Pair<Date, Date>>> intervals =
+        TimeFormatUtil.weekOfDayIntervals(date);
+    final int weekDay = TimeFormatUtil.dateToWeekDay(date);
+    final Date startDayOfWeekBegin = intervals.get(0).getSecond().getFirst();
+    final Date finalDayOfWeekEnd = intervals.get(6).getSecond().getSecond();
+    Pair<Integer, Integer> cwDate = TimeFormatUtil.dateToYearAndCalendarWeek(date);
+    Pair<Integer, Integer> cwNow = TimeFormatUtil.dateToYearAndCalendarWeek(new Date());
+    boolean isCurrentCw =
+        Objects.equals(cwDate.getFirst(), cwNow.getFirst())
+            && Objects.equals(cwDate.getSecond(), cwNow.getSecond());
+
+    this.model.finishedWorkoutRepository.getMaxDurationSingle(
+        new SingleObserver<>() {
+          @Override
+          public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+
+          @Override
+          public void onSuccess(@NonNull Duration maxDuration) {
+
+            model.finishedWorkoutRepository.getAllFinishedWorkoutsByDateRangeSingle(
+                startDayOfWeekBegin,
+                finalDayOfWeekEnd,
+                new SingleObserver<>() {
+                  @Override
+                  public void onSubscribe(@NonNull Disposable d) {}
+
+                  @Override
+                  public void onSuccess(@NonNull List<FinishedWorkoutAndFinishedExercises> list) {
+                    List<Pair<DayOfWeek, Long>> totalWorkoutDurationOnWeekdays =
+                        intervals.stream()
+                            .map(
+                                triple ->
+                                    new Pair<>(
+                                        triple.getFirst(),
+                                        list.stream()
+                                            .reduce(
+                                                0L,
+                                                (result, e) -> {
+                                                  if (e.finishedWorkout.date.before(
+                                                          triple.getSecond().getFirst())
+                                                      || e.finishedWorkout.date.after(
+                                                          triple.getSecond().getSecond()))
+                                                    return result;
+                                                  return result
+                                                      + e.finishedWorkout.duration.getSeconds();
+                                                },
+                                                Long::sum)))
+                            .collect(Collectors.toList());
+                    //noinspection ConstantConditions
+                    barDataSet.getValue().clear();
+                    barDataSet.getValue().resetColors();
+                    ArrayList<Integer> colors = new ArrayList<>();
+                    totalWorkoutDurationOnWeekdays.forEach(
+                        p -> {
+                          barDataSet
+                              .getValue()
+                              .addEntry(
+                                  new BarEntry(
+                                      p.getFirst().getValue() - 1, p.getSecond().floatValue()));
+                          if (weekDay == p.getFirst().getValue() && isCurrentCw) {
+                            barDataSet.getValue().addColor(Color.GREEN);
+                            colors.add(Color.GREEN);
+                          } else if (weekDay < p.getFirst().getValue() && isCurrentCw) {
+                            barDataSet.getValue().addColor(Color.RED);
+                            colors.add(Color.RED);
+                          } else {
+                            barDataSet.getValue().addColor(Color.BLUE);
+                            colors.add(Color.BLUE);
+                          }
+                        });
+                    barDataSet.getValue().setValueTextColors(colors);
+                    barDataSet.getValue().setValueTextSize(14f);
+                    barDataSet
+                        .getValue()
+                        .setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+                    long totalWeektime =
+                        totalWorkoutDurationOnWeekdays.stream()
+                            .reduce(0L, (result, e) -> result + e.getSecond(), Long::sum);
+                    long avgWeektime = totalWeektime / weekDay;
+
+                    binding.textviewAverageValueWeeklyStatistics.setText(
+                        TimeFormatUtil.formatTime(avgWeektime));
+
+                    BarData barData = new BarData(barDataSet.getValue());
+                    if (barData.getEntryCount() == 0) barData.calcMinMaxY(0f, 3600f);
+                    barData.setValueFormatter(
+                        new ValueFormatter() {
+                          @Override
+                          public String getBarLabel(BarEntry barEntry) {
+                            return formatValue(
+                                binding.seekbarYaxisWeeklyStatistics.getProgress(),
+                                barEntry.getY(),
+                                false);
+                          }
+                        });
+                    BarChart bc = binding.barChartWeeklyStatistics;
+                    bc.setData(barData);
+                    YAxis yAxisL = bc.getAxisLeft();
+                    yAxisL.setAxisMaximum(Math.max(3600f, maxDuration.getSeconds()));
+                    setupBarChart();
+                    bc.invalidate();
+                  }
+
+                  @Override
+                  public void onError(@NonNull Throwable e) {
+                    Log.e(TAG, e.toString());
+                  }
+                });
+          }
+
+          @Override
+          public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+            Log.e(TAG, e.toString());
+          }
+        });
   }
 
   private void disableRightBtnCheck(Date date) {
@@ -115,109 +232,7 @@ public class WeeklyOverviewFragment extends Fragment {
 
           @Override
           public void onStopTrackingTouch(SeekBar seekBar) {
-            binding
-                .barChartWeeklyStatistics
-                .getAxisLeft()
-                .setValueFormatter(
-                    new ValueFormatter() {
-                      @Override
-                      public String getFormattedValue(float value) {
-                        return formatValue(seekBar.getProgress(), value);
-                      }
-                    });
-            binding
-                .barChartWeeklyStatistics
-                .getBarData()
-                .setValueFormatter(
-                    new ValueFormatter() {
-                      @Override
-                      public String getBarLabel(BarEntry barEntry) {
-                        return formatValue(seekBar.getProgress(), barEntry.getY());
-                      }
-                    });
             binding.barChartWeeklyStatistics.postInvalidate();
-          }
-        });
-  }
-
-  private void loadData(Date date) {
-
-    final List<Pair<DayOfWeek, Pair<Date, Date>>> intervals =
-        TimeFormatUtil.weekOfDayIntervals(date);
-    final int weekDay = TimeFormatUtil.dateToWeekDay(date);
-    final Date startDayOfWeekBegin = intervals.get(0).getSecond().getFirst();
-    final Date finalDayOfWeekEnd = intervals.get(6).getSecond().getSecond();
-    Pair<Integer, Integer> cwDate = TimeFormatUtil.dateToYearAndCalendarWeek(date);
-    Pair<Integer, Integer> cwNow = TimeFormatUtil.dateToYearAndCalendarWeek(new Date());
-    boolean isCurrentCw =
-        Objects.equals(cwDate.getFirst(), cwNow.getFirst())
-            && Objects.equals(cwDate.getSecond(), cwNow.getSecond());
-
-    this.model.finishedWorkoutRepository.getAllFinishedWorkoutsByDateRangeSingle(
-        startDayOfWeekBegin,
-        finalDayOfWeekEnd,
-        new SingleObserver<>() {
-          @Override
-          public void onSubscribe(@NonNull Disposable d) {}
-
-          @Override
-          public void onSuccess(@NonNull List<FinishedWorkoutAndFinishedExercises> list) {
-            List<Pair<DayOfWeek, Long>> totalWorkoutDurationOnWeekdays =
-                intervals.stream()
-                    .map(
-                        triple ->
-                            new Pair<>(
-                                triple.getFirst(),
-                                list.stream()
-                                    .reduce(
-                                        0L,
-                                        (result, e) -> {
-                                          if (e.finishedWorkout.date.before(
-                                                  triple.getSecond().getFirst())
-                                              || e.finishedWorkout.date.after(
-                                                  triple.getSecond().getSecond())) return result;
-                                          return result + e.finishedWorkout.duration.getSeconds();
-                                        },
-                                        Long::sum)))
-                    .collect(Collectors.toList());
-            //noinspection ConstantConditions
-            barDataSet.getValue().clear();
-            barDataSet.getValue().resetColors();
-            ArrayList<Integer> textColors = new ArrayList<>();
-            totalWorkoutDurationOnWeekdays.forEach(
-                p -> {
-                  barDataSet
-                      .getValue()
-                      .addEntry(
-                          new BarEntry(p.getFirst().getValue() - 1, p.getSecond().floatValue()));
-                  if (weekDay == p.getFirst().getValue() && isCurrentCw) {
-                    barDataSet.getValue().addColor(Color.GREEN);
-                    textColors.add(Color.GREEN);
-                  } else if (weekDay < p.getFirst().getValue() && isCurrentCw) {
-                    barDataSet.getValue().addColor(Color.RED);
-                    textColors.add(Color.RED);
-                  } else {
-                    barDataSet.getValue().addColor(Color.BLUE);
-                    textColors.add(Color.BLUE);
-                  }
-                });
-            barDataSet.getValue().setValueTextColors(textColors);
-            barDataSet.getValue().setValueTextSize(16);
-            barDataSet.getValue().setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-            long totalWeektime =
-                totalWorkoutDurationOnWeekdays.stream()
-                    .reduce(0L, (result, e) -> result + e.getSecond(), Long::sum);
-            long avgWeektime = totalWeektime / weekDay;
-            binding.textviewAverageValueWeeklyStatistics.setText(
-                TimeFormatUtil.formatTime(avgWeektime));
-            binding.barChartWeeklyStatistics.setData(new BarData(barDataSet.getValue()));
-            setupBarChart();
-            binding.barChartWeeklyStatistics.invalidate();
-          }
-
-          @Override
-          public void onError(@NonNull Throwable e) {
-            Log.e(TAG, e.toString());
           }
         });
   }
@@ -250,35 +265,58 @@ public class WeeklyOverviewFragment extends Fragment {
   }
 
   private void setupBarChart() {
-    this.binding.barChartWeeklyStatistics.getLegend().setEnabled(false);
-    this.binding.barChartWeeklyStatistics.getDescription().setEnabled(false);
-    this.binding.barChartWeeklyStatistics.setEnabled(true);
-    this.binding.barChartWeeklyStatistics.setDrawGridBackground(false);
-    this.binding.barChartWeeklyStatistics.setExtraTopOffset(20f);
-    this.binding.barChartWeeklyStatistics.setExtraLeftOffset(20f);
-    this.binding.barChartWeeklyStatistics.getAxisRight().setEnabled(false);
-    this.binding
-        .barChartWeeklyStatistics
-        .getXAxis()
-        .setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-    this.binding.barChartWeeklyStatistics.getXAxis().setTextSize(16);
-    this.binding
-        .barChartWeeklyStatistics
-        .getXAxis()
-        .setValueFormatter(
-            new IndexAxisValueFormatter(
-                EnumSet.allOf(TimeFormatUtil.DAY.class).stream()
-                    .map(Enum::name)
-                    .collect(Collectors.toList())));
-    this.binding.barChartWeeklyStatistics.setTouchEnabled(false);
-    this.binding.barChartWeeklyStatistics.setVerticalScrollBarEnabled(true);
+    DisplayMetrics displayMetrics = new DisplayMetrics();
+    requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+    int minScreenSize = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
+
+    BarChart bc = binding.barChartWeeklyStatistics;
+    bc.setMinimumWidth(minScreenSize);
+    bc.setMinimumHeight(minScreenSize);
+    bc.setEnabled(true);
+    bc.setDrawGridBackground(false);
+    bc.setExtraTopOffset(20f);
+    bc.setExtraLeftOffset(20f);
+    bc.setTouchEnabled(false);
+    bc.setVerticalScrollBarEnabled(true);
+
+    YAxis yAxisR = bc.getAxisRight();
+    yAxisR.setEnabled(false);
+
+    XAxis xAxis = bc.getXAxis();
+    xAxis.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+    xAxis.setTextSize(14f);
+    xAxis.setSpaceMax(1f);
+    xAxis.setValueFormatter(
+        new IndexAxisValueFormatter(
+            EnumSet.allOf(TimeFormatUtil.DAY.class).stream()
+                .map(Enum::name)
+                .collect(Collectors.toList())));
+
+    YAxis yAxisL = bc.getAxisLeft();
+    yAxisL.setAxisMinimum(0f);
+    yAxisL.setGranularityEnabled(true);
+    yAxisL.setLabelCount(4);
+    yAxisL.setValueFormatter(
+        new ValueFormatter() {
+          @Override
+          public String getFormattedValue(float value) {
+            return formatValue(binding.seekbarYaxisWeeklyStatistics.getProgress(), value, true);
+          }
+        });
+
+    Legend legend = bc.getLegend();
+    legend.setEnabled(false);
+
+    Description description = bc.getDescription();
+    description.setEnabled(false);
   }
 
-  private String formatValue(int progress, float value) {
+  private String formatValue(int progress, float value, boolean isYAxis) {
     float result, hours, mins, secs;
     switch (progress) {
       case 0:
-        return String.format(Locale.US, "%.0f", value);
+        result = value;
+        break;
       case 1:
         mins = TimeFormatUtil.secsToHhmmss((int) value).getSecond().floatValue();
         secs = TimeFormatUtil.secsToHhmmss((int) value).getThird().floatValue() / 60;
@@ -291,7 +329,7 @@ public class WeeklyOverviewFragment extends Fragment {
         result = hours + mins + secs;
         break;
     }
-    return String.format(Locale.US, "%.2f", result);
+    return String.format(Locale.US, result != 0f ? "%.0f" : isYAxis ? "0" : "", result);
   }
 
   @Override

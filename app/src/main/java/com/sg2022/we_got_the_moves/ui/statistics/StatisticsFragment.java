@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsBinding;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.DailyOverviewFragment;
+import com.sg2022.we_got_the_moves.ui.statistics.tabs.ExercisesOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.WeeklyOverviewFragment;
 
 import java.util.Arrays;
@@ -37,12 +38,17 @@ public class StatisticsFragment extends Fragment {
     com.sg2022.we_got_the_moves.databinding.FragmentStatisticsBinding binding =
         FragmentStatisticsBinding.inflate(inflater, container, false);
     List<Class<? extends Fragment>> tabFragments =
-        Arrays.asList(DailyOverviewFragment.class, WeeklyOverviewFragment.class);
+        Arrays.asList(
+            DailyOverviewFragment.class,
+            WeeklyOverviewFragment.class,
+            ExercisesOverviewFragment.class);
+    List<String> fragmentName =
+        Arrays.asList("Calories Overview", "Training Overview", "Exercise Overview");
     binding.viewPagerStatistics.setAdapter(new CustomFragmentStateAdapter(this, tabFragments));
     new TabLayoutMediator(
             binding.tabLayoutStatistics,
             binding.viewPagerStatistics,
-            (tab, position) -> tab.setText(tabFragments.get(position).getSimpleName()))
+            (tab, position) -> tab.setText(fragmentName.get(position)))
         .attach();
     return binding.getRoot();
   }

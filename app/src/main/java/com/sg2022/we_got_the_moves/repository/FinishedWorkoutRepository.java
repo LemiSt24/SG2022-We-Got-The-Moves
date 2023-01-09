@@ -137,6 +137,14 @@ public class FinishedWorkoutRepository {
         .subscribe(observer);
   }
 
+  public void getMaxDurationSingle(SingleObserver<Duration> observer) {
+    this.finishedWorkoutDao
+        .getMaxDuration()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
+  }
+
   public void getAvgDurationByRangeSingle(Date begin, Date end, SingleObserver<Duration> observer) {
     this.finishedWorkoutDao
         .getAvgDurationByRange(begin, end)

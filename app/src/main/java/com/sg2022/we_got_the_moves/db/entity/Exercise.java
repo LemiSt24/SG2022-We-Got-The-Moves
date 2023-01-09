@@ -33,14 +33,8 @@ public class Exercise {
   @ColumnInfo(name = "unit")
   public Exercise.UNIT unit;
 
-  @ColumnInfo(name = "totalAmount", defaultValue = "0")
-  public int totalAmount;
-
-  @ColumnInfo(name = "totalTime", defaultValue = "0")
-  public int totalTime;
-
   @ColumnInfo(name = "met")
-  public double met;
+  public float met;
 
   public Exercise(
       long id,
@@ -49,28 +43,19 @@ public class Exercise {
       String youtubeId,
       int imageId,
       Exercise.UNIT unit,
-      int totalAmount,
-      int totalTime,
-      double met) {
+      float met) {
     this.id = id;
     this.name = name;
     this.instruction = instruction;
     this.youtubeId = youtubeId;
     this.imageId = imageId;
     this.unit = unit;
-    this.totalAmount = totalAmount;
-    this.totalTime = totalTime;
     this.met = met; // (1 MET = 3.5 ml·kg^-1·min^-1)
   }
 
   @Ignore
   public Exercise(
-      String name,
-      String instruction,
-      String youtubeId,
-      String imageId,
-      Exercise.UNIT unit,
-      double met) {
+      String name, String instruction, String youtubeId, Exercise.UNIT unit, float met) {
     this.name = name;
     this.instruction = instruction;
     this.youtubeId = youtubeId;
@@ -82,9 +67,9 @@ public class Exercise {
     return this.unit == UNIT.REPETITION;
   }
 
-  public double getCalories(
-      double weight, // weight [kg]
-      double duration) // [secs]
+  public float getCalories(
+      float weight, // [kg]
+      float duration) // [secs]
       {
 
     return duration / 60 * (this.met * 3.5f) * (weight / 200);
@@ -98,6 +83,6 @@ public class Exercise {
 
   public enum UNIT {
     REPETITION,
-    DURATION // [secs]
+    DURATION
   }
 }

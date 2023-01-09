@@ -11,7 +11,7 @@
 
         <ScrollView
             android:id="@+id/scrollview_weekly_statistics"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:contentDescription="@string/enter_text"
             android:fillViewport="true"
@@ -124,7 +124,7 @@
 
                 <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/bar_chart_weekly_statistics"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
                     android:background="@color/white"

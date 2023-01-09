@@ -88,14 +88,14 @@ public class DataGenerator {
     Exercise.UNIT.REPETITION
   };
 
-  public static double[] metScores = {
-    5.5d, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
-    5.0d, // https://fitnessvolt.com/side-planks-calculator
-    8.0d, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
-    3.8d, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
-    8.0d, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
-    5.0d, // https://fitnessvolt.com/side-planks-calculator
-    5.0d // estimated (moderate-intensive training between [3.9, 5.9])
+  public static float[] metScores = {
+    5.5f, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
+    5.0f, // https://fitnessvolt.com/side-planks-calculator
+    8.0f, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
+    3.8f, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
+    8.0f, // https://middleeasy.com/sports/push-ups/#:~:text=For%20the%20calorie%20burn%20calculation,activity%20you%20performed%20in%20minutes.
+    5.0f, // https://fitnessvolt.com/side-planks-calculator
+    5.0f // estimated (moderate-intensive training between [3.9, 5.9])
   };
 
   public static String[] workoutNames = {
@@ -118,8 +118,6 @@ public class DataGenerator {
                 youtubeIds[i],
                 imageIds[i],
                 isCountable[i],
-                0,
-                0,
                 metScores[i]));
       }
     }
@@ -162,7 +160,12 @@ public class DataGenerator {
       List<WorkoutExercise> result =
           we.stream().filter(e -> e.workoutId == w.workoutId).collect(Collectors.toList());
       for (int j = 0; j < result.size(); j++) {
-        fe.add(new FinishedExercise(fw.get(i).workoutId, result.get(j).exerciseId, 30, 0));
+        fe.add(
+            new FinishedExercise(
+                fw.get(i).workoutId,
+                result.get(j).exerciseId,
+                30,
+                (int) (Math.floor(Math.random() * 100))));
       }
     }
     return fe;

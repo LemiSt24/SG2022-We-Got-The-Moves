@@ -9,7 +9,7 @@
 
     <ScrollView
         android:id="@+id/scrollview_daily_statistics"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:contentDescription="@string/enter_text"
         android:fillViewport="true"
@@ -71,14 +71,16 @@
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pie_chart_daily_statistics"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="48dp"
                 android:isScrollContainer="false"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textview_calories_value_daily_statistics"
-                app:layout_constraintWidth="match_parent" />
+                app:layout_constraintWidth="match_parent">
+
+            </com.github.mikephil.charting.charts.PieChart>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

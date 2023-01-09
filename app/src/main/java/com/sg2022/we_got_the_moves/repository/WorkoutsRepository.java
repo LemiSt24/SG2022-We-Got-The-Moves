@@ -116,14 +116,6 @@ public class WorkoutsRepository {
     return this.workoutExerciseDao.getAllWorkoutExerciseAndExercise(workoutId);
   }
 
-  public void getAllNotContainedExercise(int workoutId, SingleObserver<List<Exercise>> observer) {
-    this.exerciseDao
-        .getAllNotContainedExercisesSingle(workoutId)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(observer);
-  }
-
   public void getAllWorkoutExerciseSingle(
       long workoutId, SingleObserver<List<WorkoutExercise>> observer) {
     this.workoutExerciseDao

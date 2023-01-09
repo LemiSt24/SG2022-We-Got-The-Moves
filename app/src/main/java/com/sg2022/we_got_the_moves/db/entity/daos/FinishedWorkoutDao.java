@@ -60,7 +60,11 @@ public interface FinishedWorkoutDao {
       Date begin, Date end);
 
   @Transaction
-  @Query("Select SUM(FinishedWorkout.duration) From FinishedWorkout")
+  @Query("Select MAX(FinishedWorkout.duration) From FinishedWorkout")
+  Single<Duration> getMaxDuration();
+
+  @Transaction
+  @Query("Select MAX(FinishedWorkout.duration) From FinishedWorkout")
   Single<Duration> getTotalDuration();
 
   @Transaction

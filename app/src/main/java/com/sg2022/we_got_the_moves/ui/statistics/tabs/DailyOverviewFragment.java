@@ -1,7 +1,10 @@
 package com.sg2022.we_got_the_moves.ui.statistics.tabs;
 
+import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -11,13 +14,20 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.github.mikephil.charting.animation.ChartAnimator;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.renderer.PieChartRenderer;
+import com.github.mikephil.charting.utils.MPPointF;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsDailyBinding;
 import com.sg2022.we_got_the_moves.db.entity.User;
@@ -38,7 +48,6 @@ public class DailyOverviewFragment extends Fragment {
 
   private FragmentStatisticsDailyBinding binding;
   private StatisticsViewModel model;
-  private MutableLiveData<PieDataSet> pieDataSet;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,19 +57,11 @@ public class DailyOverviewFragment extends Fragment {
             this.requireActivity().getApplication(), this.requireActivity());
     this.model =
         new ViewModelProvider(this.requireActivity(), factory).get(StatisticsViewModel.class);
-    this.pieDataSet = new MutableLiveData<>(new PieDataSet(new ArrayList<>(), "Data"));
   }
 
   public View onCreateView(
       @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    binding = FragmentStatisticsDailyBinding.inflate(inflater, container, false);
-    DisplayMetrics displayMetrics = new DisplayMetrics();
-    this.requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-    int minScreenSize =
-        (int) (Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels) * 0.9);
-    binding.pieChartDailyStatistics.setMinimumWidth(minScreenSize);
-    binding.pieChartDailyStatistics.setMinimumHeight(minScreenSize);
-    setupPieChart();
+    this.binding = FragmentStatisticsDailyBinding.inflate(inflater, container, false);
     loadData();
     return binding.getRoot();
   }
@@ -93,6 +94,7 @@ public class DailyOverviewFragment extends Fragment {
                       @NonNull
                           List<FinishedWorkoutAndFinishedExercises>
                               finishedWorkoutAndFinishedExercises) {
+
                     double burnedCalories = 0.0f;
                     for (FinishedWorkoutAndFinishedExercises fwfe :
                         finishedWorkoutAndFinishedExercises) {
@@ -101,21 +103,20 @@ public class DailyOverviewFragment extends Fragment {
                             fee.exercise.getCalories(weight, fee.finishedExercise.duration);
                       }
                     }
-                    //noinspection ConstantConditions
-                    pieDataSet.getValue().resetColors();
-                    pieDataSet.getValue().clear();
-                    pieDataSet.getValue().addEntry(new PieEntry((int) burnedCalories, "Burned"));
-                    pieDataSet
-                        .getValue()
-                        .addEntry(
-                            new PieEntry(((int) (avgDailyCalories - burnedCalories)), "Remaining"));
-                    pieDataSet.getValue().setColors(Color.RED, Color.GREEN);
-                    pieDataSet.getValue().setValueTextSize(16);
-                    pieDataSet
-                        .getValue()
-                        .setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                    binding.pieChartDailyStatistics.setData(new PieData(pieDataSet.getValue()));
-                    binding.pieChartDailyStatistics.invalidate();
+                    PieDataSet pieDataSet = new PieDataSet(new ArrayList<>(), "Data");
+                    pieDataSet.addEntry(new PieEntry((int) burnedCalories, "Burned"));
+                    pieDataSet.addEntry(
+                        new PieEntry(((int) (avgDailyCalories - burnedCalories)), "Remaining"));
+                    pieDataSet.setColors(Color.RED, Color.GREEN);
+                    pieDataSet.setValueTextSize(16f);
+                    pieDataSet.setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+                    PieChart pc = binding.pieChartDailyStatistics;
+                    pc.setData(new PieData(pieDataSet));
+                    pc.setRenderer(new CustomPieChartRenderer(binding.pieChartDailyStatistics));
+
+                    setupPieChart();
+                    pc.invalidate();
                   }
 
                   @Override
@@ -133,18 +134,25 @@ public class DailyOverviewFragment extends Fragment {
   }
 
   private void setupPieChart() {
-    binding.pieChartDailyStatistics.setEntryLabelTextSize(16);
-    binding.pieChartDailyStatistics.setEntryLabelTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+    DisplayMetrics displayMetrics = new DisplayMetrics();
+    requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+    int minScreenSize = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
+    PieChart pc = binding.pieChartDailyStatistics;
+    pc.setMinimumWidth(minScreenSize);
+    pc.setMinimumHeight(minScreenSize);
+    pc.setEntryLabelTextSize(16);
+    pc.setEntryLabelTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+    pc.setDrawHoleEnabled(true);
+    pc.setHoleColor(this.requireContext().getColor(R.color.transparent));
+    pc.setTouchEnabled(false);
+    pc.setVerticalScrollBarEnabled(true);
+    pc.setEnabled(true);
 
-    binding.pieChartDailyStatistics.getLegend().setEnabled(false);
-    binding.pieChartDailyStatistics.getDescription().setEnabled(false);
-    binding.pieChartDailyStatistics.setEnabled(true);
+    Legend legend = pc.getLegend();
+    legend.setEnabled(false);
 
-    binding.pieChartDailyStatistics.setDrawHoleEnabled(true);
-    binding.pieChartDailyStatistics.setHoleColor(
-        this.requireContext().getColor(R.color.transparent));
-    binding.pieChartDailyStatistics.setTouchEnabled(false);
-    binding.pieChartDailyStatistics.setVerticalScrollBarEnabled(true);
+    Description description = pc.getDescription();
+    description.setEnabled(false);
   }
 
   @Override
@@ -155,5 +163,45 @@ public class DailyOverviewFragment extends Fragment {
   @Override
   public void onResume() {
     super.onResume();
+  }
+
+  public static class CustomPieChartRenderer extends PieChartRenderer {
+    private final Context context;
+
+    public CustomPieChartRenderer(PieChart chart) {
+      this(chart, chart.getAnimator(), chart.getViewPortHandler());
+    }
+
+    public CustomPieChartRenderer(
+        PieChart chart, ChartAnimator animator, ViewPortHandler viewPortHandler) {
+      super(chart, animator, viewPortHandler);
+      context = chart.getContext();
+    }
+
+    @Override
+    public void drawExtras(Canvas c) {
+      super.drawExtras(c);
+      drawImage(c);
+    }
+
+    private void drawImage(Canvas c) {
+      MPPointF center = mChart.getCenterCircleBox();
+
+      Drawable d =
+          ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_flame_black_24dp, null);
+
+      if (d != null) {
+        d.setTint(Color.RED);
+        float halfWidth = mChart.getHoleRadius() / 100 * mChart.getRadius() / 2;
+        float halfHeight = mChart.getHoleRadius() / 100 * mChart.getRadius() / 2;
+
+        d.setBounds(
+            (int) (center.x - halfWidth),
+            (int) (center.y - halfHeight),
+            (int) (center.x + halfWidth),
+            (int) (center.y + halfHeight));
+        d.draw(c);
+      }
+    }
   }
 }

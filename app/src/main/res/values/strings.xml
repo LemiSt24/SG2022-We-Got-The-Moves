@@ -51,4 +51,7 @@
     <string name="right">right</string>
     <string name="left">left</string>
     <string name="exercise_analysis">Exercise Analysis</string>
+    <string name="total_duration_hours">Total duration [hours]</string>
+    <string name="total_number_reps">Total # of repetitions</string>
+    <string name="average_secs_repetition">Ø-time per repetition [secs/#]</string>
 </resources>

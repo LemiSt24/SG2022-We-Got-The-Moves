@@ -26,6 +26,8 @@
             android:layout_marginBottom="4dp"
             android:outlineProvider="background"
             app:cardBackgroundColor="@color/sg_design_green"
+            app:cardElevation="4dp"
+            app:cardMaxElevation="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
