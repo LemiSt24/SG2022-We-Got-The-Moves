@@ -315,7 +315,7 @@ public class MediapipeActivity extends AppCompatActivity {
                 Log.v(TAG, constraint.message);
                 // setExerciseX(constraint.message); // TODO crasht, weil wir angeblich nicht im UI
                 // Thread sind?
-                tts(constraint.message);
+                //tts(constraint.message);
               }
             }
 
@@ -751,6 +751,10 @@ public class MediapipeActivity extends AppCompatActivity {
             else text += " s ";
             text += e.name;
             amountView.setText(text);
+
+            String filename = e.name.toLowerCase() + ".csv";
+            Log.println(Log.DEBUG, "Test", filename);
+            classifier = new PoseClassifier(getApplicationContext(), 20, 10, filename);
 
             pause_countdown.setOnChronometerTickListener(
                 new Chronometer.OnChronometerTickListener() {
