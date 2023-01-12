@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -74,7 +73,6 @@ public class WeeklyOverviewFragment extends Fragment {
     this.binding.imagebtnCalenderLeftWeeklyStatistics.setOnClickListener(
         v -> currentDate.setValue(TimeFormatUtil.dateAdjustedByWeeks(currentDate.getValue(), -1)));
 
-    this.setupSeekbar();
     this.setTotalTime();
     this.currentDate.observe(
         this.requireActivity(),
@@ -82,6 +80,7 @@ public class WeeklyOverviewFragment extends Fragment {
           disableRightBtnCheck(currentDate.getValue());
           setupCW(currentDate.getValue());
           loadData(currentDate.getValue());
+          setTotalTime();
         });
     return this.binding.getRoot();
   }
@@ -139,6 +138,7 @@ public class WeeklyOverviewFragment extends Fragment {
                     barDataSet.getValue().clear();
                     barDataSet.getValue().resetColors();
                     ArrayList<Integer> colors = new ArrayList<>();
+                    MutableLiveData<Float> maxDuration = new MutableLiveData<>(0f);
                     totalWorkoutDurationOnWeekdays.forEach(
                         p -> {
                           barDataSet
@@ -156,6 +156,9 @@ public class WeeklyOverviewFragment extends Fragment {
                             barDataSet.getValue().addColor(Color.BLUE);
                             colors.add(Color.BLUE);
                           }
+                          //noinspection ConstantConditions
+                          maxDuration.setValue(
+                              Math.max(p.getSecond().floatValue(), maxDuration.getValue()));
                         });
                     barDataSet.getValue().setValueTextColors(colors);
                     barDataSet.getValue().setValueTextSize(14f);
@@ -168,25 +171,30 @@ public class WeeklyOverviewFragment extends Fragment {
                             .reduce(0L, (result, e) -> result + e.getSecond(), Long::sum);
                     long avgWeektime = totalWeektime / weekDay;
 
-                    binding.textviewAverageValueWeeklyStatistics.setText(
-                        TimeFormatUtil.formatTime(avgWeektime));
+                    binding.textviewValueTotalWeekWeeklyStatistics.setText(
+                        TimeFormatUtil.formatTimeDdhhmmss((int) totalWeektime));
+                    binding.textviewValueAverageWeeklyStatistics.setText(
+                        TimeFormatUtil.formatTimeHhmmss((int) avgWeektime));
 
                     BarData barData = new BarData(barDataSet.getValue());
-                    if (barData.getEntryCount() == 0) barData.calcMinMaxY(0f, 3600f);
+                    // if (barData.getEntryCount() == 0) barData.calcMinMaxY(0f, 3600f);
                     barData.setValueFormatter(
                         new ValueFormatter() {
                           @Override
                           public String getBarLabel(BarEntry barEntry) {
-                            return formatValue(
-                                binding.seekbarYaxisWeeklyStatistics.getProgress(),
-                                barEntry.getY(),
-                                false);
+                            return barEntry.getY() == 0f
+                                ? ""
+                                : TimeFormatUtil.formatTimeHhmmss((int) barEntry.getY());
                           }
                         });
                     BarChart bc = binding.barChartWeeklyStatistics;
                     bc.setData(barData);
                     YAxis yAxisL = bc.getAxisLeft();
-                    yAxisL.setAxisMaximum(Math.max(3600f, maxDuration.getSeconds()));
+                    yAxisL.setAxisMinimum(0f);
+                    //noinspection ConstantConditions
+                    yAxisL.setAxisMaximum(
+                        Math.max(
+                            3600f, maxDuration.getValue() + 3600f - maxDuration.getValue() % 3600));
                     setupBarChart();
                     bc.invalidate();
                   }
@@ -221,22 +229,6 @@ public class WeeklyOverviewFragment extends Fragment {
         String.format(Locale.US, "%04d CW%02d", p.getFirst(), p.getSecond()));
   }
 
-  private void setupSeekbar() {
-    this.binding.seekbarYaxisWeeklyStatistics.setOnSeekBarChangeListener(
-        new SeekBar.OnSeekBarChangeListener() {
-          @Override
-          public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
-
-          @Override
-          public void onStartTrackingTouch(SeekBar seekBar) {}
-
-          @Override
-          public void onStopTrackingTouch(SeekBar seekBar) {
-            binding.barChartWeeklyStatistics.postInvalidate();
-          }
-        });
-  }
-
   private void setTotalTime() {
     this.model.finishedWorkoutRepository.getTotalDurationSingle(
         new SingleObserver<>() {
@@ -246,15 +238,7 @@ public class WeeklyOverviewFragment extends Fragment {
           @Override
           public void onSuccess(@NonNull Duration duration) {
             binding.textviewValueTotalStatistics.setText(
-                String.format(
-                    Locale.US,
-                    "%02d:%02d:%02d:%02d:%02d:%02d",
-                    duration.toDays() / 360,
-                    duration.toDays() / 30,
-                    duration.toDays() % 30,
-                    duration.toHours() % 24,
-                    duration.toMinutes() % 60,
-                    duration.getSeconds() % 60));
+                TimeFormatUtil.formatTimeYyMMddhhmmss((int) duration.getSeconds()));
           }
 
           @Override
@@ -293,43 +277,20 @@ public class WeeklyOverviewFragment extends Fragment {
                 .collect(Collectors.toList())));
 
     YAxis yAxisL = bc.getAxisLeft();
-    yAxisL.setAxisMinimum(0f);
-    yAxisL.setGranularityEnabled(true);
-    yAxisL.setLabelCount(4);
     yAxisL.setValueFormatter(
         new ValueFormatter() {
           @Override
           public String getFormattedValue(float value) {
-            return formatValue(binding.seekbarYaxisWeeklyStatistics.getProgress(), value, true);
+            return TimeFormatUtil.formatTimeHhmmss((int) value);
           }
         });
+    yAxisL.setLabelCount(5, true);
 
     Legend legend = bc.getLegend();
     legend.setEnabled(false);
 
     Description description = bc.getDescription();
     description.setEnabled(false);
-  }
-
-  private String formatValue(int progress, float value, boolean isYAxis) {
-    float result, hours, mins, secs;
-    switch (progress) {
-      case 0:
-        result = value;
-        break;
-      case 1:
-        mins = TimeFormatUtil.secsToHhmmss((int) value).getSecond().floatValue();
-        secs = TimeFormatUtil.secsToHhmmss((int) value).getThird().floatValue() / 60;
-        result = mins + secs;
-        break;
-      default:
-        hours = TimeFormatUtil.secsToHhmmss((int) value).getFirst().floatValue();
-        mins = TimeFormatUtil.secsToHhmmss((int) value).getSecond().floatValue() / 60;
-        secs = TimeFormatUtil.secsToHhmmss((int) value).getThird().floatValue() / 3600;
-        result = hours + mins + secs;
-        break;
-    }
-    return String.format(Locale.US, result != 0f ? "%.0f" : isYAxis ? "0" : "", result);
   }
 
   @Override

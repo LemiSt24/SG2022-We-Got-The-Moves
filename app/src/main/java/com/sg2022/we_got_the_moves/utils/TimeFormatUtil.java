@@ -1,5 +1,9 @@
 package com.sg2022.we_got_the_moves.utils;
 
+import org.javatuples.Quartet;
+import org.javatuples.Quintet;
+import org.javatuples.Sextet;
+
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,25 +19,75 @@ import kotlin.Triple;
 
 public class TimeFormatUtil {
 
+  public static final Integer DAYS_PER_MONTH = 30;
+  public static final Integer DAYS_PER_YEAR = 360;
+
   public static Triple<Integer, Integer, Integer> secsToHhmmss(int totalSecs) {
     int hours = totalSecs / 3600;
-    int minutes = (totalSecs % 3600) / 60;
+    int minutes = (totalSecs / 60) % 60;
     int seconds = totalSecs % 60;
     return new Triple<>(hours, minutes, seconds);
+  }
+
+  public static Quartet<Integer, Integer, Integer, Integer> secsToDdhhmmss(int secs) {
+    Triple<Integer, Integer, Integer> t = secsToHhmmss(secs);
+    return new Quartet<>(t.getFirst() / 24, t.getFirst() % 24, t.getSecond(), t.getThird());
+  }
+
+  public static Quintet<Integer, Integer, Integer, Integer, Integer> secsToMMddhhmmss(int secs) {
+    Quartet<Integer, Integer, Integer, Integer> q = secsToDdhhmmss(secs);
+    return new Quintet<>(
+        q.getValue0() / DAYS_PER_MONTH,
+        q.getValue0() % DAYS_PER_MONTH,
+        q.getValue1(),
+        q.getValue2(),
+        q.getValue3());
+  }
+
+  public static Sextet<Integer, Integer, Integer, Integer, Integer, Integer> secsToYyMMhhddhhmmss(
+      int secs) {
+    Quintet<Integer, Integer, Integer, Integer, Integer> q = secsToMMddhhmmss(secs);
+    return new Sextet<>(
+        q.getValue0() / DAYS_PER_YEAR,
+        q.getValue0() % DAYS_PER_YEAR,
+        q.getValue1(),
+        q.getValue2(),
+        q.getValue3(),
+        q.getValue4());
   }
 
   public static int hhmmssToSecs(Triple<Integer, Integer, Integer> triple) {
     return triple.getFirst() * 3600 + triple.getSecond() * 60 + triple.getThird();
   }
 
-  public static String formatTime(int totalSecs) {
+  public static String formatTimeHhmmss(int totalSecs) {
     Triple<Integer, Integer, Integer> t = secsToHhmmss(totalSecs);
     return String.format(Locale.US, "%02d:%02d:%02d", t.getFirst(), t.getSecond(), t.getThird());
   }
 
-  public static String formatTime(long totalSecs) {
-    Triple<Integer, Integer, Integer> t = secsToHhmmss((int) totalSecs);
-    return String.format(Locale.US, "%02d:%02d:%02d", t.getFirst(), t.getSecond(), t.getThird());
+  public static String formatTimeDdhhmmss(int totalSecs) {
+    Quartet<Integer, Integer, Integer, Integer> q = secsToDdhhmmss(totalSecs);
+    return String.format(
+        Locale.US,
+        "%02d:%02d:%02d:%02d",
+        q.getValue0(),
+        q.getValue1(),
+        q.getValue2(),
+        q.getValue3());
+  }
+
+  public static String formatTimeYyMMddhhmmss(int totalSecs) {
+    Sextet<Integer, Integer, Integer, Integer, Integer, Integer> s =
+        secsToYyMMhhddhhmmss(totalSecs);
+    return String.format(
+        Locale.US,
+        "%02d:%02d:%02d:%02d:%02d:%02d",
+        s.getValue0(),
+        s.getValue1(),
+        s.getValue2(),
+        s.getValue3(),
+        s.getValue4(),
+        s.getValue5());
   }
 
   private static LocalDateTime dateToLocalDateTime(Date date) {

@@ -83,7 +83,7 @@
                     android:gravity="center"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
-                    android:text="@{wee.exercise.unit == unit.REPETITION? Integer.toString(wee.workoutExercise.amount) : util.formatTime(wee.workoutExercise.amount)}"
+                    android:text="@{wee.exercise.unit == unit.REPETITION? Integer.toString(wee.workoutExercise.amount) : util.formatTimeHhmmss(wee.workoutExercise.amount)}"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"

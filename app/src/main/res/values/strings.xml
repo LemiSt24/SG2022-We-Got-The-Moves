@@ -35,8 +35,8 @@
     <string name="unit">Unit</string>
     <string name="repetitions">Repetitions</string>
     <string name="duration">Duration\n[hh:mm:ss]</string>
-    <string name="hhmmss">[hh:mm:ss]</string>
-    <string name="yymmddhhmmss">[yy:MM:dd:hh:mm:ss]</string>
+    <string name="hh_mm_ss">[hh:mm:ss]</string>
+    <string name="yy_mm_dd_hh_mm_ss">[yy:MM:dd:hh:mm:ss]</string>
     <string name="hours">Hours</string>
     <string name="minutes">Minutes</string>
     <string name="seconds">Seconds</string>
@@ -54,4 +54,7 @@
     <string name="total_duration_hours">Total duration [hours]</string>
     <string name="total_number_reps">Total # of repetitions</string>
     <string name="average_secs_repetition">Ø-time per repetition [secs/#]</string>
+    <string name="weekly_total_time">Weekly total time:</string>
+    <string name="dd_hh_mm_ss">[dd:hh:mm:ss]</string>
+    <string name="total_week_time">00:00:00:00</string>
 </resources>
