@@ -11,7 +11,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.sg2022.we_got_the_moves.databinding.ActivityMainBinding;
-import com.sg2022.we_got_the_moves.ui.settings.UserDataChangeActivity;
 import com.sg2022.we_got_the_moves.ui.training.MediapipeActivity;
 
 import java.lang.ref.WeakReference;
@@ -48,11 +47,6 @@ public class MainActivity extends AppCompatActivity {
     NavigationUI.setupWithNavController(binding.bottomNavBarMain, navController);
 
     weakMainActivity = new WeakReference<>(MainActivity.this);
-  }
-
-  public void openUserDataChangeActivity() {
-    Intent intent = new Intent(this, UserDataChangeActivity.class);
-    startActivity(intent);
   }
 
   public void openMediapipeActivity(long id) {

@@ -57,4 +57,17 @@
     <string name="weekly_total_time">Weekly total time:</string>
     <string name="dd_hh_mm_ss">[dd:hh:mm:ss]</string>
     <string name="total_week_time">00:00:00:00</string>
+    <string name="profil_settings">Profil settings</string>
+    <string name="enter_username_here">Enter username here</string>
+    <string name="save">Save</string>
+    <string name="enter_age_here">Enter age here</string>
+    <string name="enter_weight_here">Enter weight in [kg] here</string>
+    <string name="enter_height_here">Enter height in [meter] here</string>
+    <string name="enter_daily_calories_goal">Enter daily calories goal</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
+    <string name="height">Height [m]</string>
+    <string name="weight">Weight [kg]</string>
+    <string name="age">Age</string>
+    <string name="calorie_goal">Calorie goal [kcal]</string>
 </resources>

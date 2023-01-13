@@ -95,7 +95,12 @@ public abstract class AppDatabase extends RoomDatabase {
                               .UserDao()
                               .insert(
                                   new User(
-                                      "Simon Westermann", (float) 1.77, 50, User.SEX.MALE, 22));
+                                      "Simon Westermann",
+                                      (float) 1.77,
+                                      50,
+                                      User.SEX.MALE,
+                                      22,
+                                      500));
                           getInstance(appContext)
                               .FinishedWorkoutDao()
                               .insert(DataGenerator.getDummyFinsishedWorkouts());

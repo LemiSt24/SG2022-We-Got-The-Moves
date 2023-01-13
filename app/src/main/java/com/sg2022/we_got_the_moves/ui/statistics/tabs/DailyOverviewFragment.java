@@ -75,9 +75,8 @@ public class DailyOverviewFragment extends Fragment {
           @Override
           public void onSuccess(@NonNull User user) {
             final float weight = user.weight;
-            final int avgDailyCalories = user.sex == User.SEX.MALE ? 2600 : 2200;
             binding.textviewCaloriesValueDailyStatistics.setText(
-                String.format("%s", avgDailyCalories));
+                String.format("%s kcal", user.calories));
 
             final Date today_begin = TimeFormatUtil.atStartOfDay(new Date());
             final Date today_end = TimeFormatUtil.atEndOfDay(new Date());
@@ -106,7 +105,7 @@ public class DailyOverviewFragment extends Fragment {
                     PieDataSet pieDataSet = new PieDataSet(new ArrayList<>(), "Data");
                     pieDataSet.addEntry(new PieEntry((int) burnedCalories, "Burned"));
                     pieDataSet.addEntry(
-                        new PieEntry(((int) (avgDailyCalories - burnedCalories)), "Remaining"));
+                        new PieEntry(((int) (user.calories - burnedCalories)), "Remaining"));
                     pieDataSet.setColors(Color.RED, Color.GREEN);
                     pieDataSet.setValueTextSize(16f);
                     pieDataSet.setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));

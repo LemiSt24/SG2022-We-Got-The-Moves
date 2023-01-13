@@ -1,90 +1,324 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constraint_layout_settings"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sg2022.we_got_the_moves.ui.settings.SettingsFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageButton
-        android:id="@+id/edit_btn_user_data_change"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:contentDescription="@string/edit"
-        android:minHeight="48dp"
-        android:src="@drawable/ic_edit_black_24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/text_settings"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_settings"
-        tools:ignore="ImageContrastCheck" />
+    <data>
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_settings"
-        app:layout_constraintVertical_bias="0.046"
-        tools:visibility="visible">
+        <import
+            alias="SEX"
+            type="com.sg2022.we_got_the_moves.db.entity.User.SEX" />
+
+        <variable
+            name="user"
+            type="com.sg2022.we_got_the_moves.db.entity.User" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
 
         <TextView
-            android:id="@+id/textView_name"
-            android:layout_width="match_parent"
+            android:id="@+id/textview_title_user_profile_settings"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Name" />
+            android:layout_marginTop="24dp"
+            android:text="@string/profil_settings"
+            android:textAlignment="textStart"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView_age"
-            android:layout_width="match_parent"
+            android:id="@+id/textview_user_name_header_settings"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Age" />
+            android:layout_marginStart="8dp"
+            android:text="@string/name"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/edittext_user_name_settings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/edittext_user_name_settings" />
 
         <TextView
-            android:id="@+id/textView_gender"
-            android:layout_width="match_parent"
+            android:id="@+id/textview_user_height_header_settings"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Gender" />
+            android:layout_marginStart="8dp"
+            android:text="@string/height"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/edittext_user_height_settings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/edittext_user_height_settings"
+            app:layout_constraintVertical_bias="1.0" />
 
         <TextView
-            android:id="@+id/textView_height"
-            android:layout_width="match_parent"
+            android:id="@+id/textview_user_weight_header_settings"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Height" />
+            android:layout_marginStart="8dp"
+            android:text="@string/weight"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/edittext_user_weight_settings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/edittext_user_weight_settings"
+            app:layout_constraintVertical_bias="1.0" />
 
         <TextView
-            android:id="@+id/textView_weightInKg"
-            android:layout_width="match_parent"
+            android:id="@+id/textview_user_age_header_settings"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Weight" />
-    </LinearLayout>
+            android:layout_marginStart="8dp"
+            android:text="@string/age"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/edittext_user_age_settings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/edittext_user_age_settings"
+            app:layout_constraintVertical_bias="1.0" />
 
-    <TextView
-        android:id="@+id/textView_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/title_settings"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.138" />
+        <TextView
+            android:id="@+id/textview_user_calorie_header_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/calorie_goal"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/edittext_user_calories_settings"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/edittext_user_calories_settings"
+            app:layout_constraintVertical_bias="1.0" />
 
-    <TextView
-        android:id="@+id/text_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Your Profile"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <EditText
+            android:id="@+id/edittext_user_name_settings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:hint="@string/enter_username_here"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:singleLine="true"
+            android:text="@{user.name, default=@string/enter_username_here}"
+            android:textAlignment="center"
+            android:textColorHint="#78909C"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/textview_user_height_header_settings"
+            app:layout_constraintTop_toBottomOf="@+id/textview_title_user_profile_settings" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <EditText
+            android:id="@+id/edittext_user_height_settings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:hint="@string/enter_height_here"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp"
+            android:singleLine="true"
+            android:text="@{Float.toString(user.height), default=@string/enter_height_here}"
+            android:textAlignment="center"
+            android:textColorHint="#78909C"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.996"
+            app:layout_constraintStart_toEndOf="@+id/textview_user_height_header_settings"
+            app:layout_constraintStart_toStartOf="@+id/edittext_user_name_settings"
+            app:layout_constraintTop_toBottomOf="@+id/edittext_user_name_settings"
+            tools:ignore="DuplicateSpeakableTextCheck" />
+
+        <EditText
+            android:id="@+id/edittext_user_weight_settings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:hint="@string/enter_weight_here"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp"
+            android:singleLine="true"
+            android:text="@{Float.toString(user.weight), default=@string/enter_weight_here}"
+            android:textAlignment="center"
+            android:textColorHint="#78909C"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textview_user_weight_header_settings"
+            app:layout_constraintStart_toStartOf="@+id/edittext_user_height_settings"
+            app:layout_constraintTop_toBottomOf="@+id/edittext_user_height_settings" />
+
+        <EditText
+            android:id="@+id/edittext_user_age_settings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:hint="@string/enter_age_here"
+            android:inputType="numberSigned"
+            android:minHeight="48dp"
+            android:singleLine="true"
+            android:text="@{Integer.toString(user.age), default=@string/enter_age_here}"
+            android:textAlignment="center"
+            android:textColorHint="#78909C"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textview_user_age_header_settings"
+            app:layout_constraintStart_toStartOf="@+id/edittext_user_weight_settings"
+            app:layout_constraintTop_toBottomOf="@+id/edittext_user_weight_settings" />
+
+        <EditText
+            android:id="@+id/edittext_user_calories_settings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:hint="@string/enter_age_here"
+            android:inputType="numberSigned"
+            android:minHeight="48dp"
+            android:singleLine="true"
+            android:text="@{Integer.toString(user.calories) ,default=@string/enter_daily_calories_goal}"
+            android:textAlignment="center"
+            android:textColorHint="#78909C"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textview_user_calorie_header_settings"
+            app:layout_constraintTop_toBottomOf="@+id/radiogroup_sex_settings" />
+
+        <RadioGroup
+            android:id="@+id/radiogroup_sex_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edittext_user_age_settings">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_layout_radiogroup_settings"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RadioButton
+                    android:id="@+id/radiobtn_male_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/sg_design_green"
+                    android:backgroundTint="@color/sg_design_green"
+                    android:buttonTint="@color/white"
+                    android:checked="@{user.sex==SEX.MALE, default=false}"
+                    android:drawableTint="@color/sg_design_green"
+                    android:ems="6"
+                    android:text="@string/male"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioButton
+                    android:id="@+id/radiobtn_female_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@color/sg_design_green"
+                    android:backgroundTint="@color/sg_design_green"
+                    android:buttonTint="@color/white"
+                    android:checked="@{user.sex==SEX.FEMALE, default=false}"
+                    android:drawableTint="@color/sg_design_green"
+                    android:ems="6"
+                    android:text="@string/female"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/radiobtn_male_settings"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RadioGroup>
+
+        <ImageButton
+            android:id="@+id/imagebtn_user_profile_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@color/sg_design_green"
+            android:backgroundTint="@color/sg_design_green"
+            android:contentDescription="@string/empty_string"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textview_title_user_profile_settings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textview_title_user_profile_settings"
+            app:srcCompat="@drawable/ic_edit_black_24dp"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edittext_user_calories_settings">
+
+            <Button
+                android:id="@+id/btn_user_profile_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/sg_design_green"
+                android:backgroundTint="@color/sg_design_green"
+                android:text="@string/save"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextContrastCheck" />
+
+            <Button
+                android:id="@+id/btn_user_profile_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@color/sg_design_green"
+                android:backgroundTint="@color/sg_design_green"
+                android:text="@string/cancel"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toEndOf="@+id/btn_user_profile_save"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextContrastCheck" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

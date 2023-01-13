@@ -26,13 +26,17 @@ public class User {
   @ColumnInfo(name = "age")
   public int age;
 
-  public User(String name, float height, float weight, SEX sex, int age) {
+  @ColumnInfo(name = "calories")
+  public int calories;
+
+  public User(String name, float height, float weight, SEX sex, int age, int calories) {
     this.id = 1;
     this.name = name;
     this.height = height;
     this.weight = weight;
     this.sex = sex;
     this.age = age;
+    this.calories = calories;
   }
 
   public double getBMI() {
