@@ -40,6 +40,7 @@ public interface ExerciseStateDao {
   @Query("SELECT * FROM Exercise WHERE Exercise.id == :exerciseId")
   Single<List<ExerciseAndExerciseStates>> getAllSingle(int exerciseId);
 
+  /*
   @Transaction
   @Query(
       "SELECT DISTINCT ExerciseState.exerciseState FROM ExerciseState WHERE ExerciseState.exerciseId == :exerciseId")
@@ -55,5 +56,5 @@ public interface ExerciseStateDao {
   @Query(
       "SELECT * FROM ExerciseState WHERE ExerciseState.exerciseId == :exerciseId AND ExerciseState.exerciseState == :exerciseState AND ExerciseState.constraintId ==:constraintId")
   Single<List<ExerciseStateAndConstraints>> getStateAndConstraintSingle(
-      int exerciseId, ExerciseState.STATE exerciseState, int constraintId);
+      int exerciseId, ExerciseState.STATE exerciseState, int constraintId); */
 }

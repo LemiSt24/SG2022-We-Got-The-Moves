@@ -11,6 +11,6 @@ import java.util.List;
 public class ExerciseStateAndConstraints {
   @Embedded public ExerciseState exerciseState;
 
-  @Relation(entity = Constraint.class, parentColumn = "constraintId", entityColumn = "id")
+  @Relation(entity = Constraint.class, parentColumn = "constraintIds", entityColumn = "id")
   public List<Constraint> constraints;
 }

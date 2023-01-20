@@ -2,8 +2,14 @@ package com.sg2022.we_got_the_moves.db.converter;
 
 import androidx.room.TypeConverter;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
+
+import java.lang.reflect.Type;
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 
 public class TypeConverters {
 
@@ -25,5 +31,49 @@ public class TypeConverters {
   @TypeConverter
   public static long duratioToLong(Duration duration) {
     return duration == null ? null : duration.getSeconds();
+  }
+
+  @TypeConverter
+  public String fromExerciseStatesList(List<ExerciseState> ExerciseStates) {
+    if (ExerciseStates == null) {
+      return (null);
+    }
+    Gson gson = new Gson();
+    Type type = new TypeToken<List<ExerciseState>>() {}.getType();
+    String json = gson.toJson(ExerciseStates, type);
+    return json;
+  }
+
+  @TypeConverter
+  public List<ExerciseState> toExerciseStatesList(String ExerciseStateString) {
+    if (ExerciseStateString == null) {
+      return (null);
+    }
+    Gson gson = new Gson();
+    Type type = new TypeToken<List<ExerciseState>>() {}.getType();
+    List<ExerciseState> ExerciseStates = gson.fromJson(ExerciseStateString, type);
+    return ExerciseStates;
+  }
+
+  @TypeConverter
+  public String fromConstraintIdsList(List<Long> ConstraintIds) {
+    if (ConstraintIds == null) {
+      return (null);
+    }
+    Gson gson = new Gson();
+    Type type = new TypeToken<List<Long>>() {}.getType();
+    String json = gson.toJson(ConstraintIds, type);
+    return json;
+  }
+
+  @TypeConverter
+  public List<Long> toConstraintIdsList(String ConstraintIdsString) {
+    if (ConstraintIdsString == null) {
+      return (null);
+    }
+    Gson gson = new Gson();
+    Type type = new TypeToken<List<Long>>() {}.getType();
+    List<Long> ConstraintIds = gson.fromJson(ConstraintIdsString, type);
+    return ConstraintIds;
   }
 }

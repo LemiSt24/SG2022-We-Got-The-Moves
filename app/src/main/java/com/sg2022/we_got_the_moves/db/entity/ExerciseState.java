@@ -5,9 +5,11 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 
+import java.util.List;
+
 @Entity(
     tableName = "ExerciseState",
-    primaryKeys = {"exerciseId", "exerciseState", "constraintId"},
+    primaryKeys = {"exerciseId"},
     foreignKeys = {
       @ForeignKey(
           entity = Exercise.class,
@@ -15,34 +17,18 @@ import androidx.room.ForeignKey;
           childColumns = "exerciseId",
           onDelete = ForeignKey.CASCADE,
           onUpdate = ForeignKey.CASCADE),
-      @ForeignKey(
-          entity = Constraint.class,
-          parentColumns = "id",
-          childColumns = "constraintId",
-          onDelete = ForeignKey.CASCADE,
-          onUpdate = ForeignKey.CASCADE)
     })
 public class ExerciseState {
 
   @ColumnInfo(name = "exerciseId", index = true)
   public long exerciseId;
 
-  @ColumnInfo(name = "exerciseState", index = true)
-  @NonNull
-  public STATE exerciseState;
+  @ColumnInfo(name = "constraintIds", index = true)
+  public List<Long> constraintIds;
 
-  @ColumnInfo(name = "constraintId", index = true)
-  public long constraintId;
-
-  public ExerciseState(long exerciseId, @NonNull STATE exerciseState, long constraintId) {
+  public ExerciseState(long exerciseId, List<Long> constraintIds) {
     this.exerciseId = exerciseId;
-    this.exerciseState = exerciseState;
-    this.constraintId = constraintId;
+    this.constraintIds = constraintIds;
   }
 
-  public enum STATE {
-    GLOBAL,
-    BOTTOM,
-    TOP
-  }
 }

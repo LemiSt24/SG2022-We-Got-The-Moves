@@ -110,6 +110,11 @@ public class DataGenerator {
         //noinspection UnnecessaryContinue
         continue;
       else {
+        List<ExerciseState> plankState = new ArrayList<ExerciseState>();
+        List<Long> constraintIds = new ArrayList<Long>();
+        constraintIds.add(0L);
+        constraintIds.add(1L);
+        plankState.add(new ExerciseState(i+1, constraintIds));
         e.add(
             new Exercise(
                 i + 1,
@@ -118,7 +123,8 @@ public class DataGenerator {
                 youtubeIds[i],
                 imageIds[i],
                 isCountable[i],
-                metScores[i]));
+                metScores[i],
+                plankState));
       }
     }
     return e;
@@ -171,13 +177,13 @@ public class DataGenerator {
     return fe;
   }
 
+  /*
   public static Pair<List<ExerciseState>, List<Constraint>> getDummyExerciseStatesAndConstraints() {
     List<Constraint> constraints = new ArrayList<>();
     List<ExerciseState> exerciseStates = new ArrayList<>();
     List<Exercise> exs = getDummyExercises();
     long count = 1;
     for (int i = 0; i < exs.size(); ++i) {
-      for (int j = 0; j < ExerciseState.STATE.values().length; j++) {
         for (int k = 0; k < NormalizedLandmark.landmark_names.size(); k++) {
           String from1 = NormalizedLandmark.landmark_names.get(k);
           String to1 =
@@ -198,11 +204,17 @@ public class DataGenerator {
           ++count;
           constraints.add(c);
           ExerciseState es =
-              new ExerciseState(exs.get(i).id, ExerciseState.STATE.values()[j], c.id);
+              new ExerciseState(exs.get(i).id, c.id);
           exerciseStates.add(es);
         }
-      }
     }
     return new Pair<>(exerciseStates, constraints);
+  } */
+
+  public static List<Constraint> giveMeDummyConstraints(){
+    List<Constraint> constraints = new ArrayList<Constraint>();
+    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_foot", "right_foot", 0.5));
+    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_foot", "right_foot", 0.1));
+    return constraints;
   }
 }

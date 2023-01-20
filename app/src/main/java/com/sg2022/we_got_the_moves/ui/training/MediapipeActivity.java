@@ -174,6 +174,7 @@ public class MediapipeActivity extends AppCompatActivity {
     bottom_constraints = new ArrayList<>();
     top_constraints = new ArrayList<>();
 
+    /*
     constraintRepository
         .getAllStatesSingle((int) currentExercise.id)
         .subscribeOn(Schedulers.io())
@@ -201,7 +202,7 @@ public class MediapipeActivity extends AppCompatActivity {
                           }
                         });
               }
-            });
+            }); */
   }
 
   @Override

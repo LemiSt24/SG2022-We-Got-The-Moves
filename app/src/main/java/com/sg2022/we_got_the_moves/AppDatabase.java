@@ -109,10 +109,14 @@ public abstract class AppDatabase extends RoomDatabase {
                               .insert(DataGenerator.getDummyFinsishedExercise());
                           getInstance(appContext)
                               .ConstraintDao()
+                              .insert(DataGenerator.giveMeDummyConstraints());
+                          /*
+                          getInstance(appContext)
+                              .ConstraintDao()
                               .insert(DataGenerator.getDummyExerciseStatesAndConstraints().second);
                           getInstance(appContext)
                               .ExerciseStateDao()
-                              .insert(DataGenerator.getDummyExerciseStatesAndConstraints().first);
+                              .insert(DataGenerator.getDummyExerciseStatesAndConstraints().first);*/
                         });
               }
             })

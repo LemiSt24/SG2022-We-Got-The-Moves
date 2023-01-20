@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey;
 
 import com.sg2022.we_got_the_moves.R;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -36,6 +37,9 @@ public class Exercise {
   @ColumnInfo(name = "met")
   public float met; // (1 MET = 3.5 ml·kg^-1·min^-1 = 1 kcal·kg^-1·hour^-1)
 
+  @ColumnInfo(name = "exerciseStates")
+  public List<ExerciseState> exerciseStates;
+
   public Exercise(
       long id,
       String name,
@@ -43,7 +47,8 @@ public class Exercise {
       String youtubeId,
       int imageId,
       Exercise.UNIT unit,
-      float met) {
+      float met,
+      List<ExerciseState> exerciseStates) {
     this.id = id;
     this.name = name;
     this.instruction = instruction;
@@ -51,16 +56,18 @@ public class Exercise {
     this.imageId = imageId;
     this.unit = unit;
     this.met = met;
+    this.exerciseStates = exerciseStates;
   }
 
   @Ignore
   public Exercise(
-      String name, String instruction, String youtubeId, Exercise.UNIT unit, float met) {
+      String name, String instruction, String youtubeId, Exercise.UNIT unit, float met, List<ExerciseState> exerciseStates) {
     this.name = name;
     this.instruction = instruction;
     this.youtubeId = youtubeId;
     this.unit = unit;
     this.met = met;
+    this.exerciseStates = exerciseStates;
   }
 
   public boolean isCountable() {
