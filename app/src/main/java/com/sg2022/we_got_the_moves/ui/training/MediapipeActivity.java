@@ -51,6 +51,7 @@ import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
+import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseDao;
 import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseStateAndConstraints;
 import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
@@ -121,9 +122,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private boolean lastStateWasTop = true;
   private int Reps = 0;
   private Exercise currentExercise;
-  private List<Constraint> global_constraints;
-  private List<Constraint> bottom_constraints;
-  private List<Constraint> top_constraints;
+  private HashMap<ExerciseState,List<Constraint>> currentConstraints;
   private boolean timerSet = false;
 
   private Date startTime;
@@ -166,13 +165,26 @@ public class MediapipeActivity extends AppCompatActivity {
 
   // loads all constraints from db which are related to the supplied exercise and saves them in
   // class variables
-  private void loadConstraintsForExercise(int exerciseId) {
+  private void loadConstraintsForExercise() {
     ConstraintRepository constraintRepository =
         ConstraintRepository.getInstance(this.getApplication());
 
-    global_constraints = new ArrayList<>();
-    bottom_constraints = new ArrayList<>();
-    top_constraints = new ArrayList<>();
+    currentConstraints = new HashMap<ExerciseState, List<Constraint>>();
+
+    for (ExerciseState state: currentExercise.exerciseStates){
+      List<Constraint> tmpConstraints = new ArrayList<Constraint>();
+      for (Long constraintId : state.constraintIds){
+        Log.println(Log.DEBUG, TAG, constraintId.toString());
+        constraintRepository.getConstraint(constraintId)
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        constraint -> {
+                          tmpConstraints.add(constraint);
+                        }
+                );
+      }
+      currentConstraints.put(state, tmpConstraints);
+    }
 
     /*
     constraintRepository
@@ -265,7 +277,6 @@ public class MediapipeActivity extends AppCompatActivity {
               currentExercise = e.get(0);
               setExcerciseName(currentExercise.name);
               if (currentExercise.isCountable()) setRepetition("0");
-              loadConstraintsForExercise((int) currentExercise.id);
 
               for (int i = 0; i < exercises.size(); i++) {
                 workoutsRepository
@@ -313,15 +324,16 @@ public class MediapipeActivity extends AppCompatActivity {
             // weitere Untersuchungen weiterverwenden
             classifier.classify(landmarks);
 
-            for (Constraint constraint : global_constraints) {
-              if (!classifier.judge_constraint(constraint)) {
-                Log.v(TAG, constraint.message);
-                // setExerciseX(constraint.message); // TODO crasht, weil wir angeblich nicht im UI
-                // Thread sind?
-                // tts(constraint.message);
+            if (noPause) {
+              for (Constraint constraint : currentConstraints.get(currentExercise.exerciseStates.get(0))) { //TODO Current State statt 0
+                if (!classifier.judge_constraint(constraint)) {
+                  Log.v(TAG, constraint.message);
+                  // setExerciseX(constraint.message);
+                  // Thread sind?
+                  // tts(constraint.message);
+                }
               }
             }
-
             // Beispielhafte Analyse von Rahmenbedingungen
             /*Log.v(
             TAG,
@@ -616,9 +628,9 @@ public class MediapipeActivity extends AppCompatActivity {
                       } else {
                         currentExercise = exercises.get(ExercisePointer);
                         setExcerciseName(currentExercise.name);
+                        noPause = false;
                         showNextExerciseDialog(
                             currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
-                        noPause = false;
                         timerSet = false;
                         Reps = 0;
                         setRepetition(String.valueOf(0));
@@ -776,7 +788,7 @@ public class MediapipeActivity extends AppCompatActivity {
             String filename = e.name.toLowerCase() + ".csv";
             Log.println(Log.DEBUG, "Test", filename);
             classifier = new PoseClassifier(getApplicationContext(), 20, 10, filename);
-            loadConstraintsForExercise((int) currentExercise.id);
+            loadConstraintsForExercise();
 
             pause_countdown.setOnChronometerTickListener(
                 new Chronometer.OnChronometerTickListener() {

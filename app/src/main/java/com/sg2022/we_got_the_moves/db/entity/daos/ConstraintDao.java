@@ -33,5 +33,5 @@ public interface ConstraintDao {
   Single<List<Constraint>> getAllSingle();
 
   @Query("SELECT * FROM [Constraint] WHERE [Constraint].id == :constraintId")
-  Single<Constraint> getSingle(int constraintId);
+  Single<Constraint> getSingle(Long constraintId);
 }

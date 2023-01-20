@@ -66,6 +66,10 @@ public class ConstraintRepository {
     this.executors.getPoolThread().execute(() -> this.constraintDao.insert(l));
   }
 
+  public Single<Constraint> getConstraint(Long id){
+     return this.constraintDao.getSingle(id);
+  }
+
   /*
   public void getAllExerciseStates(
       int exerciseId, SingleObserver<List<ExerciseState.STATE>> observer) {

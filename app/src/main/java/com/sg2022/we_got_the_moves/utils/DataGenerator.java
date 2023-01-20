@@ -112,8 +112,8 @@ public class DataGenerator {
       else {
         List<ExerciseState> plankState = new ArrayList<ExerciseState>();
         List<Long> constraintIds = new ArrayList<Long>();
-        constraintIds.add(0L);
         constraintIds.add(1L);
+        constraintIds.add(2L);
         plankState.add(new ExerciseState(i+1, constraintIds));
         e.add(
             new Exercise(
@@ -213,8 +213,8 @@ public class DataGenerator {
 
   public static List<Constraint> giveMeDummyConstraints(){
     List<Constraint> constraints = new ArrayList<Constraint>();
-    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_foot", "right_foot", 0.5));
-    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_foot", "right_foot", 0.1));
+    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_foot_index", "right_foot_index", 0.5, "Constraint 1"));
+    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_foot_index", "right_foot_index", 0.1, "Constraint 2"));
     return constraints;
   }
 }
