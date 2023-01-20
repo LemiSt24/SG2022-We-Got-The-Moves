@@ -386,7 +386,6 @@ public class MediapipeActivity extends AppCompatActivity {
 
                     } else {
                       currentExercise = exercises.get(ExercisePointer);
-                      loadConstraintsForExercise((int) currentExercise.id);
                       noPause = false;
                       showNextExerciseDialog(
                           currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
@@ -776,6 +775,7 @@ public class MediapipeActivity extends AppCompatActivity {
             String filename = e.name.toLowerCase() + ".csv";
             Log.println(Log.DEBUG, "Test", filename);
             classifier = new PoseClassifier(getApplicationContext(), 20, 10, filename);
+            loadConstraintsForExercise((int) currentExercise.id);
 
             pause_countdown.setOnChronometerTickListener(
                 new Chronometer.OnChronometerTickListener() {
