@@ -65,6 +65,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -76,7 +77,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private static final String OUTPUT_VIDEO_STREAM_NAME = "output_video";
   private static final String OUTPUT_LANDMARKS_STREAM_NAME = "pose_landmarks";
 
-  private static final int STATE_CHANGE_VALUE = 3;
+  private static final int STATE_CHANGE_VALUE = 7;
 
   // private static final CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
   private static final CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
@@ -137,6 +138,8 @@ public class MediapipeActivity extends AppCompatActivity {
   private long countableStartTime;
   private long countableEndTime;
   private String finishedExerciseSummary = "";
+
+  private boolean timeUp;
 
   private TextToSpeech tts;
 
@@ -328,16 +331,6 @@ public class MediapipeActivity extends AppCompatActivity {
             // weitere Untersuchungen weiterverwenden
             classifier.classify(landmarks);
 
-            if (noPause) {
-              for (Constraint constraint : currentConstraints.get(currentExercise.exerciseStates.get(0))) { //TODO Current State statt 0
-                if (!classifier.judge_constraint(constraint)) {
-                  Log.v(TAG, constraint.message);
-                  // setExerciseX(constraint.message);
-                  // Thread sind?
-                  // tts(constraint.message);
-                }
-              }
-            }
             // Beispielhafte Analyse von Rahmenbedingungen
             /*Log.v(
             TAG,
@@ -366,6 +359,28 @@ public class MediapipeActivity extends AppCompatActivity {
                 if (!timerSet) {
                   setTimeCounter(exerciseIdToAmount.get(currentExercise.id));
                   timerSet = true;
+                  timeUp = false;
+                  while (!timeUp){
+                    boolean changed = false;
+                    for (Constraint constraint:
+                            currentConstraints.get(currentExercise.exerciseStates.get(lastState))){
+                      if (!classifier.judge_constraint(constraint)){
+                        setExerciseX(constraint.message);
+                        tts(constraint.message);
+                        changed = true;
+                        break;
+                      }
+                    }
+                    if (!changed) {
+                      setExerciseCheck();
+                    }
+                    try {
+                      TimeUnit.SECONDS.sleep(5L);
+                    } catch (InterruptedException e){
+                      Log.println(Log.DEBUG, TAG, e.getMessage());
+                    }
+
+                  }
                 }
 
               }
@@ -375,7 +390,22 @@ public class MediapipeActivity extends AppCompatActivity {
                 int nextState = checkExerciseState(classifier.get_result(),
                         lastState);
 
-                if (nextState == lastState + 1) lastState = nextState;
+                if (nextState == lastState + 1) {
+                  lastState = nextState;
+                  boolean changed = false;
+                  for (Constraint constraint:
+                          currentConstraints.get(currentExercise.exerciseStates.get(lastState))){
+                      if (!classifier.judge_constraint(constraint)){
+                        setExerciseX(constraint.message);
+                        tts(constraint.message);
+                        changed = true;
+                        break;
+                      }
+                  }
+                  if (!changed) {
+                    setExerciseCheck();
+                  }
+                }
                 else if (nextState == 0 && lastState != 0) {
                   countRepUp();
                   lastState = nextState;
@@ -625,6 +655,7 @@ public class MediapipeActivity extends AppCompatActivity {
                       if (ExercisePointer >= exercises.size()) {
                         Log.println(Log.DEBUG, TAG, "workout finished");
                         noPause = false;
+                        timeUp = true;
                         Handler handler = new Handler(Looper.getMainLooper());
                         handler.post(
                             new Runnable() {
@@ -643,6 +674,7 @@ public class MediapipeActivity extends AppCompatActivity {
                         Reps = 0;
                         setRepetition(String.valueOf(0));
                         time_counter.stop();
+                        timeUp = true;
                       }
                     }
                   }
