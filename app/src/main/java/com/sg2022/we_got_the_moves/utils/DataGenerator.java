@@ -115,6 +115,7 @@ public class DataGenerator {
         constraintIds.add(1L);
         constraintIds.add(2L);
         plankState.add(new ExerciseState(i+1, constraintIds));
+        plankState.add(new ExerciseState(i+1, constraintIds));
         e.add(
             new Exercise(
                 i + 1,

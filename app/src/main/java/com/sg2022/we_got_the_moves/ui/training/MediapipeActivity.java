@@ -76,6 +76,8 @@ public class MediapipeActivity extends AppCompatActivity {
   private static final String OUTPUT_VIDEO_STREAM_NAME = "output_video";
   private static final String OUTPUT_LANDMARKS_STREAM_NAME = "pose_landmarks";
 
+  private static final int STATE_CHANGE_VALUE = 3;
+
   // private static final CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
   private static final CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
   // Flips the camera-preview frames vertically before sending them into FrameProcessor to be
@@ -120,6 +122,8 @@ public class MediapipeActivity extends AppCompatActivity {
   private Map<Long, Integer> exerciseIdToAmount;
   private int ExercisePointer = 0;
   private boolean lastStateWasTop = true;
+
+  private int lastState = 0;
   private int Reps = 0;
   private Exercise currentExercise;
   private HashMap<ExerciseState,List<Constraint>> currentConstraints;
@@ -367,14 +371,14 @@ public class MediapipeActivity extends AppCompatActivity {
               }
 
               // exercises rep based
-              else if (noPause
-                  && lastStateWasTop
-                      != onTopExercise(
-                          classifier.get_result(),
-                          lastStateWasTop,
-                          currentExercise.name.toLowerCase())) {
-                if (lastStateWasTop) {
+              else if (noPause){
+                int nextState = checkExerciseState(classifier.get_result(),
+                        lastState);
+
+                if (nextState == lastState + 1) lastState = nextState;
+                else if (nextState == 0 && lastState != 0) {
                   countRepUp();
+                  lastState = nextState;
                   //     Log.println(Log.DEBUG, TAG, "Reps: "+ String.valueOf(Reps));
                   //     Log.println(Log.DEBUG, TAG, "Amount" +
                   // String.valueOf(exerciseIdToAmount.get(currentExercise.id)));
@@ -391,24 +395,23 @@ public class MediapipeActivity extends AppCompatActivity {
                       noPause = false;
                       Handler handler = new Handler(Looper.getMainLooper());
                       handler.post(
-                          new Runnable() {
-                            public void run() {
-                              showEndScreenAndSave();
-                            }
-                          });
+                              new Runnable() {
+                                public void run() {
+                                  showEndScreenAndSave();
+                                }
+                              });
 
                     } else {
                       currentExercise = exercises.get(ExercisePointer);
                       noPause = false;
                       showNextExerciseDialog(
-                          currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
+                              currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
                       setExcerciseName(currentExercise.name);
                       Reps = 0;
                       setRepetition(String.valueOf(0));
                     }
                   }
                 }
-                lastStateWasTop = !lastStateWasTop;
               }
             }
 
@@ -547,16 +550,21 @@ public class MediapipeActivity extends AppCompatActivity {
             });
   }
 
-  public Boolean onTopExercise(
-      Map<String, Integer> classifierOutput, Boolean lastStateWasTop, String exerciseName) {
+  public int checkExerciseState(
+      Map<String, Integer> classifierOutput, int lastState) {
     Log.println(Log.DEBUG, "classifier", classifierOutput.toString());
     if (classifierOutput != null) {
-      if (classifierOutput.containsKey(exerciseName + "_top")
-          && classifierOutput.get(exerciseName + "_top") >= 3) return true;
-      if (classifierOutput.containsKey(exerciseName + "_bottom")
-          && classifierOutput.get(exerciseName + "_bottom") >= 3) return false;
+      int nextState = lastState + 1;
+      if (nextState >= currentExercise.exerciseStates.size()){
+        nextState = 0;
+      } 
+      if (classifierOutput.containsKey(currentExercise.name.toLowerCase() + "_" + nextState)
+              && classifierOutput.get(currentExercise.name.toLowerCase() + "_" + nextState)
+              >= STATE_CHANGE_VALUE) {
+        return nextState;
+      }
     }
-    return lastStateWasTop;
+    return lastState;
   }
 
   public void setExerciseCheck() {
