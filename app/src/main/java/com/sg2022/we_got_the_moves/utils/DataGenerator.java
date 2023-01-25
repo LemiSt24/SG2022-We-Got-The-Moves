@@ -214,8 +214,20 @@ public class DataGenerator {
 
   public static List<Constraint> giveMeDummyConstraints(){
     List<Constraint> constraints = new ArrayList<Constraint>();
-    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_foot_index", "right_foot_index", 0.5, "Constraint 1"));
-    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_foot_index", "right_foot_index", 0.1, "Constraint 2"));
+    // Füße schulterbreit (squat-global, plank-global, bicep_curl-global, push_up-global)
+    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_ankle", "right_ankle", 0.1, "Keep your feet at shoulder width."));
+    // Knie hinter den Fußspitzen (squat-bottom)
+    constraints.add(new Constraint( "left_foot_index,right_foot_index", "left_knee,right_knee", "left_heel", "left_hip,left_knee", 0.1, "Keep knees behind your toe tips."));
+    // Körper gerade (squat-top, side_plank-global, mountain_climbers-top, push_up-global, plank-global)
+    constraints.add(new Constraint( "left_shoulder,left_ankle", "left_hip", "left_foot_index", "left_foot_index", 0.1, "Straighten your body.")); // left_foot_index - left_foot_index sollte 0 sein
+    // Hände ca. schulterbreit (mountain_climbers-global, push_up-global, plank-global)
+    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_wrist", "right_wrist", 0.1, "Keep your hands a little wider than shoulder width."));
+    // Hände auf Schulterhöhe (push_up-global)
+    constraints.add(new Constraint( "left_wrist,right_wrist", "left_hip,right_hip", "left_shoulder,right_shoulder", "left_hip,right_hip", 0.1, "Keep your hands at shoulder height."));
+    // Füße auf Boden / Knie angewinkelt (sit_up-global)
+    constraints.add(new Constraint( "left_hip,right_hip", "left_ankle,right_ankle", "left_knee,right_knee", "left_ankle,right_ankle", 0.1, "Keep your feet flat on the ground."));
+    // Ellenbogen am Körper (bicep_curl-global)
+    constraints.add(new Constraint( "left_shoulder,left_hip", "right_shoulder,right_hip", "left_elbow", "right_elbow", 0.1, "Keep your elbows close to your body."));
     return constraints;
   }
 }
