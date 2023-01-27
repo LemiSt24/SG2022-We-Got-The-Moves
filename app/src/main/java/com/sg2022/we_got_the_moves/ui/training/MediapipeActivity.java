@@ -352,7 +352,7 @@ public class MediapipeActivity extends AppCompatActivity {
                     setExerciseCheck();
                   }
                 }
-                else if (lastState == 0) {
+                if (lastState == 0) {
 
                   //-> next Exercise
                   if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
