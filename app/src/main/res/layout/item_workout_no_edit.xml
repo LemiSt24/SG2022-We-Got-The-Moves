@@ -25,7 +25,7 @@
             android:contentDescription="@string/name"
             android:gravity="center_horizontal"
             android:text="@string/edit"
-            android:textSize="15dp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
