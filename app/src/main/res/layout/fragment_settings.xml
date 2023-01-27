@@ -18,443 +18,449 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/textview_title_user_profile_settings"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint_layout_header_settings"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/profil_settings"
-            android:textAlignment="textStart"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <ImageButton
-            android:id="@+id/imagebtn_user_profile_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:background="@color/sg_design_green"
-            android:backgroundTint="@color/sg_design_green"
-            android:contentDescription="@string/empty_string"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            app:layout_constraintBottom_toBottomOf="@+id/textview_title_user_profile_settings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textview_title_user_profile_settings"
-            app:srcCompat="@drawable/ic_edit_black_24dp"
-            tools:ignore="SpeakableTextPresentCheck" />
+            <TextView
+                android:id="@+id/textview_title_user_profile_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/profil_settings"
+                android:textAlignment="textStart"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/imagebtn_user_profile_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@color/sg_design_green"
+                android:backgroundTint="@color/sg_design_green"
+                android:contentDescription="@string/empty_string"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textview_title_user_profile_settings"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textview_title_user_profile_settings"
+                app:srcCompat="@drawable/ic_edit_black_24dp"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ScrollView
             android:id="@+id/scrollview_trainings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textview_title_user_profile_settings">
+            app:layout_constraintTop_toBottomOf="@id/constraint_layout_header_settings">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/textview_user_name_header_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/name"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/edittext_user_name_settings"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/edittext_user_name_settings" />
-
-        <TextView
-            android:id="@+id/textview_user_height_header_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/height"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/edittext_user_height_settings"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/edittext_user_height_settings" />
-
-        <TextView
-            android:id="@+id/textview_user_weight_header_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/weight"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/edittext_user_weight_settings"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/edittext_user_weight_settings" />
-
-        <TextView
-            android:id="@+id/textview_user_age_header_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/age"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/edittext_user_age_settings"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/edittext_user_age_settings" />
-
-        <TextView
-            android:id="@+id/textview_user_calorie_header_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/calorie_goal"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/edittext_user_calories_settings"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/edittext_user_calories_settings" />
-
-        <TextView
-            android:id="@+id/textview_gender_header_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Gender"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/radiogroup_sex_settings"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/radiogroup_sex_settings" />
-
-        <TextView
-            android:id="@+id/textview_camera_boolean_header_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Camera"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/radiogroup_camera_settings"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/radiogroup_camera_settings" />
-
-        <TextView
-            android:id="@+id/textview_tts_boolean_header_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="Voice Feedback"
-            android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/radiogroup_tts_settings"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/radiogroup_tts_settings" />
-
-        <EditText
-            android:id="@+id/edittext_user_name_settings"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            android:autofillHints=""
-            android:ems="10"
-            android:hint="@string/enter_username_here"
-            android:inputType="textPersonName"
-            android:minHeight="48dp"
-            android:singleLine="true"
-            android:text="@{user.name, default=@string/enter_username_here}"
-            android:textAlignment="center"
-            android:textColorHint="#78909C"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/textview_user_height_header_settings"
-            app:layout_constraintTop_toBottomOf="@+id/textview_title_user_profile_settings" />
-
-
-        <EditText
-            android:id="@+id/edittext_user_height_settings"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:autofillHints=""
-            android:ems="10"
-            android:hint="@string/enter_height_here"
-            android:inputType="numberDecimal"
-            android:minHeight="48dp"
-            android:singleLine="true"
-            android:text="@{Float.toString(user.height), default=@string/enter_height_here}"
-            android:textAlignment="center"
-            android:textColorHint="#78909C"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.996"
-            app:layout_constraintStart_toEndOf="@+id/textview_user_height_header_settings"
-            app:layout_constraintStart_toStartOf="@+id/edittext_user_name_settings"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_user_name_settings"
-            tools:ignore="DuplicateSpeakableTextCheck" />
-
-        <EditText
-            android:id="@+id/edittext_user_weight_settings"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:autofillHints=""
-            android:ems="10"
-            android:hint="@string/enter_weight_here"
-            android:inputType="numberDecimal"
-            android:minHeight="48dp"
-            android:singleLine="true"
-            android:text="@{Float.toString(user.weight), default=@string/enter_weight_here}"
-            android:textAlignment="center"
-            android:textColorHint="#78909C"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textview_user_weight_header_settings"
-            app:layout_constraintStart_toStartOf="@+id/edittext_user_height_settings"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_user_height_settings" />
-
-        <EditText
-            android:id="@+id/edittext_user_age_settings"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:autofillHints=""
-            android:ems="10"
-            android:hint="@string/enter_age_here"
-            android:inputType="numberSigned"
-            android:minHeight="48dp"
-            android:singleLine="true"
-            android:text="@{Integer.toString(user.age), default=@string/enter_age_here}"
-            android:textAlignment="center"
-            android:textColorHint="#78909C"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textview_user_age_header_settings"
-            app:layout_constraintStart_toStartOf="@+id/edittext_user_weight_settings"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_user_weight_settings" />
-
-        <EditText
-            android:id="@+id/edittext_user_calories_settings"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:autofillHints=""
-            android:ems="10"
-            android:hint="@string/enter_age_here"
-            android:inputType="numberSigned"
-            android:minHeight="48dp"
-            android:singleLine="true"
-            android:text="@{Integer.toString(user.calories) ,default=@string/enter_daily_calories_goal}"
-            android:textAlignment="center"
-            android:textColorHint="#78909C"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textview_user_calorie_header_settings"
-            app:layout_constraintTop_toBottomOf="@+id/radiogroup_sex_settings" />
-
-
-        <RadioGroup
-            android:id="@+id/radiogroup_sex_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_user_age_settings"
-            app:layout_constraintStart_toEndOf="@id/textview_gender_header_settings"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_layout_radiogroup_settings"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <RadioButton
-                    android:id="@+id/radiobtn_male_settings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="@{user.sex==SEX.MALE, default=false}"
-                    android:ems="5"
-                    android:text="@string/male"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <RadioButton
-                    android:id="@+id/radiobtn_female_settings"
+                <TextView
+                    android:id="@+id/textview_user_name_header_settings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:checked="@{user.sex==SEX.FEMALE, default=false}"
-                    android:ems="5"
-                    android:text="@string/female"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:text="@string/name"
+                    android:textAlignment="textStart"
+                    android:textSize="20sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/radiobtn_male_settings"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </RadioGroup>
-
-        <RadioGroup
-            android:id="@+id/radiogroup_camera_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_user_calories_settings"
-            app:layout_constraintStart_toEndOf="@id/textview_camera_boolean_header_settings"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_layout_cameragroup_settings"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <RadioButton
-                    android:id="@+id/radiobtn_frontcamera_settings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="@{user.frontCamera, default=false}"
-                    android:ems="5"
-                    android:text="Front"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/edittext_user_name_settings"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/edittext_user_name_settings" />
 
-                <RadioButton
-                    android:id="@+id/radiobtn_backcamera_settings"
+                <TextView
+                    android:id="@+id/textview_user_height_header_settings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:checked="@{!user.frontCamera, default=false}"
-                    android:ems="5"
-                    android:text="Back"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:text="@string/height"
+                    android:textAlignment="textStart"
+                    android:textSize="20sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/radiobtn_frontcamera_settings"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </RadioGroup>
-
-        <RadioGroup
-            android:id="@+id/radiogroup_tts_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/radiogroup_camera_settings"
-            app:layout_constraintStart_toEndOf="@id/textview_tts_boolean_header_settings"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_layout_ttsgroup_settings"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <RadioButton
-                    android:id="@+id/radiobtn_ttsOn_settings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="@{user.tts, default=false}"
-                    android:ems="5"
-                    android:text="On"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/edittext_user_height_settings"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/edittext_user_height_settings" />
 
-                <RadioButton
-                    android:id="@+id/radiobtn_ttsOff_settings"
+                <TextView
+                    android:id="@+id/textview_user_weight_header_settings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:checked="@{!user.tts, default=false}"
-                    android:ems="5"
-                    android:text="Off"
-                    android:textColor="@color/black"
+                    android:text="@string/weight"
+                    android:textAlignment="textStart"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/edittext_user_weight_settings"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/edittext_user_weight_settings" />
+
+                <TextView
+                    android:id="@+id/textview_user_age_header_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/age"
+                    android:textAlignment="textStart"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/edittext_user_age_settings"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/edittext_user_age_settings" />
+
+                <TextView
+                    android:id="@+id/textview_user_calorie_header_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/calorie_goal"
+                    android:textAlignment="textStart"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/edittext_user_calories_settings"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/edittext_user_calories_settings" />
+
+                <TextView
+                    android:id="@+id/textview_gender_header_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Gender"
+                    android:textAlignment="textStart"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/radiogroup_sex_settings"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/radiogroup_sex_settings" />
+
+                <TextView
+                    android:id="@+id/textview_camera_boolean_header_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Camera"
+                    android:textAlignment="textStart"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/radiogroup_camera_settings"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/radiogroup_camera_settings" />
+
+                <TextView
+                    android:id="@+id/textview_tts_boolean_header_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Voice Feedback"
+                    android:textAlignment="textStart"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/radiogroup_tts_settings"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/radiogroup_tts_settings" />
+
+                <EditText
+                    android:id="@+id/edittext_user_name_settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:hint="@string/enter_username_here"
+                    android:inputType="textPersonName"
+                    android:minHeight="48dp"
+                    android:singleLine="true"
+                    android:text="@{user.name, default=@string/enter_username_here}"
+                    android:textAlignment="center"
+                    android:textColorHint="#78909C"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/radiobtn_ttsOn_settings"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/textview_user_height_header_settings"
                     app:layout_constraintTop_toTopOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </RadioGroup>
+                <EditText
+                    android:id="@+id/edittext_user_height_settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:hint="@string/enter_height_here"
+                    android:inputType="numberDecimal"
+                    android:minHeight="48dp"
+                    android:singleLine="true"
+                    android:text="@{Float.toString(user.height), default=@string/enter_height_here}"
+                    android:textAlignment="center"
+                    android:textColorHint="#78909C"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.996"
+                    app:layout_constraintStart_toEndOf="@+id/textview_user_height_header_settings"
+                    app:layout_constraintStart_toStartOf="@+id/edittext_user_name_settings"
+                    app:layout_constraintTop_toBottomOf="@+id/edittext_user_name_settings"
+                    tools:ignore="DuplicateSpeakableTextCheck" />
+
+                <EditText
+                    android:id="@+id/edittext_user_weight_settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:hint="@string/enter_weight_here"
+                    android:inputType="numberDecimal"
+                    android:minHeight="48dp"
+                    android:singleLine="true"
+                    android:text="@{Float.toString(user.weight), default=@string/enter_weight_here}"
+                    android:textAlignment="center"
+                    android:textColorHint="#78909C"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textview_user_weight_header_settings"
+                    app:layout_constraintStart_toStartOf="@+id/edittext_user_height_settings"
+                    app:layout_constraintTop_toBottomOf="@+id/edittext_user_height_settings" />
+
+                <EditText
+                    android:id="@+id/edittext_user_age_settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:hint="@string/enter_age_here"
+                    android:inputType="numberSigned"
+                    android:minHeight="48dp"
+                    android:singleLine="true"
+                    android:text="@{Integer.toString(user.age), default=@string/enter_age_here}"
+                    android:textAlignment="center"
+                    android:textColorHint="#78909C"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textview_user_age_header_settings"
+                    app:layout_constraintStart_toStartOf="@+id/edittext_user_weight_settings"
+                    app:layout_constraintTop_toBottomOf="@+id/edittext_user_weight_settings" />
+
+                <EditText
+                    android:id="@+id/edittext_user_calories_settings"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:hint="@string/enter_age_here"
+                    android:inputType="numberSigned"
+                    android:minHeight="48dp"
+                    android:singleLine="true"
+                    android:text="@{Integer.toString(user.calories) ,default=@string/enter_daily_calories_goal}"
+                    android:textAlignment="center"
+                    android:textColorHint="#78909C"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textview_user_calorie_header_settings"
+                    app:layout_constraintTop_toBottomOf="@+id/radiogroup_sex_settings" />
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_tts_boolean_header_settings">
+                <RadioGroup
+                    android:id="@+id/radiogroup_sex_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_gender_header_settings"
+                    app:layout_constraintTop_toBottomOf="@+id/edittext_user_age_settings">
 
-            <Button
-                android:id="@+id/btn_user_profile_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/sg_design_green"
-                android:backgroundTint="@color/sg_design_green"
-                android:text="@string/save"
-                android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="TextContrastCheck" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_layout_radiogroup_settings"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/btn_user_profile_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@color/sg_design_green"
-                android:backgroundTint="@color/sg_design_green"
-                android:text="@string/cancel"
-                android:textColor="@color/black"
-                app:layout_constraintStart_toEndOf="@+id/btn_user_profile_save"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="TextContrastCheck" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                        <RadioButton
+                            android:id="@+id/radiobtn_male_settings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="@{user.sex==SEX.MALE, default=false}"
+                            android:ems="5"
+                            android:text="@string/male"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <RadioButton
+                            android:id="@+id/radiobtn_female_settings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:checked="@{user.sex==SEX.FEMALE, default=false}"
+                            android:ems="5"
+                            android:text="@string/female"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/radiobtn_male_settings"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </RadioGroup>
+
+                <RadioGroup
+                    android:id="@+id/radiogroup_camera_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_camera_boolean_header_settings"
+                    app:layout_constraintTop_toBottomOf="@+id/edittext_user_calories_settings">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_layout_cameragroup_settings"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <RadioButton
+                            android:id="@+id/radiobtn_frontcamera_settings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="@{user.frontCamera, default=false}"
+                            android:ems="5"
+                            android:text="Front"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <RadioButton
+                            android:id="@+id/radiobtn_backcamera_settings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:checked="@{!user.frontCamera, default=false}"
+                            android:ems="5"
+                            android:text="Back"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/radiobtn_frontcamera_settings"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </RadioGroup>
+
+                <RadioGroup
+                    android:id="@+id/radiogroup_tts_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/textview_tts_boolean_header_settings"
+                    app:layout_constraintTop_toBottomOf="@+id/radiogroup_camera_settings">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraint_layout_ttsgroup_settings"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <RadioButton
+                            android:id="@+id/radiobtn_ttsOn_settings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="@{user.tts, default=false}"
+                            android:ems="5"
+                            android:text="On"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <RadioButton
+                            android:id="@+id/radiobtn_ttsOff_settings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:checked="@{!user.tts, default=false}"
+                            android:ems="5"
+                            android:text="Off"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toEndOf="@+id/radiobtn_ttsOn_settings"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </RadioGroup>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="120dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_tts_boolean_header_settings">
+
+                    <Button
+                        android:id="@+id/btn_user_profile_save"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/sg_design_green"
+                        android:backgroundTint="@color/sg_design_green"
+                        android:text="@string/save"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TextContrastCheck" />
+
+                    <Button
+                        android:id="@+id/btn_user_profile_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@color/sg_design_green"
+                        android:backgroundTint="@color/sg_design_green"
+                        android:text="@string/cancel"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toEndOf="@+id/btn_user_profile_save"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TextContrastCheck" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
