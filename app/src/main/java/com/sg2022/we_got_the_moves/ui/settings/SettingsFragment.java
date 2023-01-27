@@ -57,6 +57,10 @@ public class SettingsFragment extends Fragment {
               binding.imagebtnUserProfileSettings.setEnabled(true);
               binding.btnUserProfileSave.setEnabled(false);
               binding.btnUserProfileCancel.setEnabled(false);
+              binding.radiobtnBackcameraSettings.setEnabled((false));
+              binding.radiobtnFrontcameraSettings.setEnabled(false);
+              binding.radiobtnTtsOnSettings.setEnabled(false);
+              binding.radiobtnTtsOffSettings.setEnabled(false);
 
               binding.edittextUserNameSettings.addTextChangedListener(
                   new TextWatcher() {
@@ -142,6 +146,26 @@ public class SettingsFragment extends Fragment {
                       binding.getUser().calories = Integer.parseInt(s.toString());
                     }
                   });
+              binding.radiobtnFrontcameraSettings.setOnClickListener(
+                  v -> {
+                      binding.radiobtnBackcameraSettings.setChecked(false);
+                      binding.getUser().frontCamera = true;
+                  });
+              binding.radiobtnBackcameraSettings.setOnClickListener(
+                  v -> {
+                      binding.radiobtnFrontcameraSettings.setChecked(false);
+                      binding.getUser().frontCamera = false;
+                  });
+              binding.radiobtnTtsOnSettings.setOnClickListener(
+                  v -> {
+                      binding.radiobtnTtsOffSettings.setChecked(false);
+                      binding.getUser().tts = true;
+                  });
+              binding.radiobtnTtsOffSettings.setOnClickListener(
+                  v -> {
+                      binding.radiobtnTtsOnSettings.setChecked(false);
+                      binding.getUser().tts = false;
+                  });
             });
 
     binding.imagebtnUserProfileSettings.setOnClickListener(
@@ -157,6 +181,10 @@ public class SettingsFragment extends Fragment {
           binding.edittextUserNameSettings.setEnabled(true);
           binding.btnUserProfileSave.setEnabled(true);
           binding.btnUserProfileCancel.setEnabled(true);
+          binding.radiobtnBackcameraSettings.setEnabled((true));
+          binding.radiobtnFrontcameraSettings.setEnabled(true);
+          binding.radiobtnTtsOnSettings.setEnabled(true);
+          binding.radiobtnTtsOffSettings.setEnabled(true);
         });
 
     binding.btnUserProfileSave.setOnClickListener(
@@ -182,6 +210,10 @@ public class SettingsFragment extends Fragment {
                     binding.imagebtnUserProfileSettings.setEnabled(true);
                     binding.btnUserProfileSave.setEnabled(false);
                     binding.btnUserProfileCancel.setEnabled(false);
+                    binding.radiobtnBackcameraSettings.setEnabled((false));
+                    binding.radiobtnFrontcameraSettings.setEnabled(false);
+                    binding.radiobtnTtsOnSettings.setEnabled(false);
+                    binding.radiobtnTtsOffSettings.setEnabled(false);
                   }
 
                   @Override
