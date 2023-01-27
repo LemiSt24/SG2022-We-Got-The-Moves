@@ -70,4 +70,11 @@
     <string name="weight">Weight [kg]</string>
     <string name="age">Age</string>
     <string name="calorie_goal">Calorie goal [kcal]</string>
+    <string name="gender">Gender</string>
+    <string name="camera">Camera</string>
+    <string name="tts">Voice Feedback</string>
+    <string name="front">Front</string>
+    <string name="back">Back</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 </resources>
