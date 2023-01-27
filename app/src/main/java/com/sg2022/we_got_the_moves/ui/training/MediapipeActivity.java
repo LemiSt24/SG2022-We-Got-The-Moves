@@ -3,7 +3,6 @@ package com.sg2022.we_got_the_moves.ui.training;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,8 +50,6 @@ import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
-import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseDao;
-import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseStateAndConstraints;
 import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
@@ -81,8 +78,6 @@ public class MediapipeActivity extends AppCompatActivity {
   private static final String OUTPUT_LANDMARKS_STREAM_NAME = "pose_landmarks";
 
   private static final int STATE_CHANGE_VALUE = 7;
-
-  // private static final CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
   private static CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
   // Flips the camera-preview frames vertically before sending them into FrameProcessor to be
   // processed in a MediaPipe graph, and flips the processed frames back when they are displayed.
@@ -147,33 +142,6 @@ public class MediapipeActivity extends AppCompatActivity {
   private TextToSpeech tts;
   private boolean ttsBoolean = true;
 
-  private static String getClassificationDebugString(Map<String, Integer> classification) {
-    String classificationString = "";
-    for (Map.Entry<String, Integer> entry : classification.entrySet()) {
-      classificationString += entry.getKey() + ": " + entry.getValue() + "\n";
-    }
-    return classificationString;
-  }
-
-  private static String getLandmarksDebugString(LandmarkProto.NormalizedLandmarkList landmarks) {
-    int landmarkIndex = 0;
-    String landmarksString = "";
-    for (LandmarkProto.NormalizedLandmark landmark : landmarks.getLandmarkList()) {
-      landmarksString +=
-          "\t\tLandmark["
-              + landmarkIndex
-              + "]: ("
-              + landmark.getX()
-              + ", "
-              + landmark.getY()
-              + ", "
-              + landmark.getZ()
-              + ")\n";
-      ++landmarkIndex;
-    }
-    return landmarksString;
-  }
-
   // loads all constraints from db which are related to the supplied exercise and saves them in
   // class variables
   private void loadConstraintsForExercise() {
@@ -196,36 +164,6 @@ public class MediapipeActivity extends AppCompatActivity {
       }
       currentConstraints.put(state, tmpConstraints);
     }
-
-    /*
-    constraintRepository
-        .getAllStatesSingle((int) currentExercise.id)
-        .subscribeOn(Schedulers.io())
-        .subscribe(
-            states -> {
-              for (ExerciseState.STATE state : states) {
-                Log.println(Log.DEBUG, "constraintFrom", "moinsen");
-                constraintRepository
-                    .getStateAndConstraintsSingle((int) currentExercise.id, state)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                        state_and_constraints -> {
-                          for (ExerciseStateAndConstraints stateAndConstraints :
-                              state_and_constraints) {
-                            if (stateAndConstraints.exerciseState.exerciseState
-                                == ExerciseState.STATE.BOTTOM) {
-                              bottom_constraints.addAll(stateAndConstraints.constraints);
-                            } else if (stateAndConstraints.exerciseState.exerciseState
-                                == ExerciseState.STATE.TOP) {
-                              top_constraints.addAll(stateAndConstraints.constraints);
-                            } else if (stateAndConstraints.exerciseState.exerciseState
-                                == ExerciseState.STATE.GLOBAL) {
-                              global_constraints.addAll(stateAndConstraints.constraints);
-                            }
-                          }
-                        });
-              }
-            }); */
   }
 
   @Override
@@ -259,13 +197,14 @@ public class MediapipeActivity extends AppCompatActivity {
 
     startTime = new Date(System.currentTimeMillis());
 
+    /*
     // wird für nichts benutzt?, keine metadata in manifest?
     try {
       applicationInfo =
           getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
     } catch (PackageManager.NameNotFoundException e) {
       Log.e(TAG, "Cannot find application info: " + e);
-    }
+    }*/
 
     classifier = new PoseClassifier(getApplicationContext(), 20, 10, "dataset.csv");
 
@@ -292,8 +231,8 @@ public class MediapipeActivity extends AppCompatActivity {
 
     Log.println(Log.DEBUG, "workoutID", String.valueOf(workoutId));
 
+    //loading of the workout form db, with exercises and amounts
     WorkoutsRepository workoutsRepository = WorkoutsRepository.getInstance(this.getApplication());
-
     finishedExercises = new ArrayList<FinishedExercise>();
     exercises = new ArrayList<Exercise>();
     exerciseIdToAmount = new HashMap<>();
@@ -303,13 +242,8 @@ public class MediapipeActivity extends AppCompatActivity {
             this,
             e -> {
               exercises = e;
-              // Log.println(Log.DEBUG,"workoutID", String.valueOf(exercises.get(0).name));
-              // Exercise firstE = exercises.get(0);
-              // rep or time
-              // classifier(e.get(i))
-              //
               currentExercise = e.get(0);
-              setExcerciseName(currentExercise.name);
+              setExerciseName(currentExercise.name);
               if (currentExercise.isCountable()) setRepetition("0");
 
               for (int i = 0; i < exercises.size(); i++) {
@@ -341,9 +275,6 @@ public class MediapipeActivity extends AppCompatActivity {
     processor.addPacketCallback(
         OUTPUT_LANDMARKS_STREAM_NAME,
         (packet) -> {
-          /*    Log.println(Log.DEBUG,"test", "drüber");
-          Log.println(Log.DEBUG,"test", packet.toString());
-          Log.println(Log.DEBUG,"test", "Received multi-hand landmarks packet.");*/
           byte[] landmarksRaw = PacketGetter.getProtoBytes(packet);
           try {
             LandmarkProto.NormalizedLandmarkList landmarks =
@@ -358,14 +289,6 @@ public class MediapipeActivity extends AppCompatActivity {
             // weitere Untersuchungen weiterverwenden
             classifier.classify(landmarks);
 
-            // Beispielhafte Analyse von Rahmenbedingungen
-            /*Log.v(
-            TAG,
-            "Schultern: "
-                + classifier.get_distance("left_shoulder", "right_shoulder")
-                + ", Füße: "
-                + classifier.get_distance("left_ankle", "right_ankle")); */
-            // Note: If eye_presence is false, these landmarks are useless.
             Log.v(
                 TAG,
                 "[TS:"
@@ -414,11 +337,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
               // exercises rep based
               else if (noPause){
-                int nextState = checkExerciseState(classifier.get_result(),
-                        lastState);
-
-                if (nextState == lastState + 1) {
-                  lastState = nextState;
+                if (checkExerciseState(classifier.get_result())) {
                   boolean changed = false;
                   for (Constraint constraint:
                           currentConstraints.get(currentExercise.exerciseStates.get(lastState))){
@@ -433,21 +352,15 @@ public class MediapipeActivity extends AppCompatActivity {
                     setExerciseCheck();
                   }
                 }
-                else if (nextState == 0 && lastState != 0) {
-                  countRepUp();
-                  lastState = nextState;
-                  //     Log.println(Log.DEBUG, TAG, "Reps: "+ String.valueOf(Reps));
-                  //     Log.println(Log.DEBUG, TAG, "Amount" +
-                  // String.valueOf(exerciseIdToAmount.get(currentExercise.id)));
+                else if (lastState == 0) {
+
+                  //-> next Exercise
                   if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
-                    // TODO next Exercise
                     countableEndTime = SystemClock.elapsedRealtime();
                     finishedExercises.add(createFinishedExercise(currentExercise, true));
                     ExercisePointer++;
-                    //   Log.println(Log.DEBUG, TAG, "exercisePointer: "+
-                    // String.valueOf(ExercisePointer));
-                    //   Log.println(Log.DEBUG, TAG, "exercises.size()"+
-                    // String.valueOf(ExercisePointer));
+
+                    //-> training finished
                     if (ExercisePointer >= exercises.size()) {
                       noPause = false;
                       Handler handler = new Handler(Looper.getMainLooper());
@@ -457,13 +370,15 @@ public class MediapipeActivity extends AppCompatActivity {
                                   showEndScreenAndSave();
                                 }
                               });
+                    }
 
-                    } else {
+                    //next exercise is loaded
+                    else {
                       currentExercise = exercises.get(ExercisePointer);
                       noPause = false;
                       showNextExerciseDialog(
                               currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
-                      setExcerciseName(currentExercise.name);
+                      setExerciseName(currentExercise.name);
                       Reps = 0;
                       setRepetition(String.valueOf(0));
                     }
@@ -607,8 +522,13 @@ public class MediapipeActivity extends AppCompatActivity {
             });
   }
 
-  public int checkExerciseState(
-      Map<String, Integer> classifierOutput, int lastState) {
+  /**
+   * checks if the state of the user has changes to the expected next state
+   * @param classifierOutput output of the classifier that gets checked
+   * @return true if the next (expected) state is recognised, otherwise false
+   */
+  public boolean checkExerciseState(
+      Map<String, Integer> classifierOutput) {
     Log.println(Log.DEBUG, "classifier", classifierOutput.toString());
     if (classifierOutput != null) {
       int nextState = lastState + 1;
@@ -618,38 +538,45 @@ public class MediapipeActivity extends AppCompatActivity {
       if (classifierOutput.containsKey(currentExercise.name.toLowerCase() + "_" + nextState)
               && classifierOutput.get(currentExercise.name.toLowerCase() + "_" + nextState)
               >= STATE_CHANGE_VALUE) {
-        return nextState;
+        lastState = nextState;
+        if (lastState == 0) countRepUp();
+        return true;
       }
     }
-    return lastState;
+    return false;
   }
 
+  /** Sets the check mark in the Constraints card-view
+   * -> is called when the user is doing everything right
+   * running on separate UIThread
+   */
   public void setExerciseCheck() {
     ImageView check_x_mark = findViewById(R.id.mediapipe_check_x_mark);
     TextView evaluation_text = findViewById(R.id.mediapipe_evaluation_text);
 
     runOnUiThread(
         new Runnable() {
-
           @Override
           public void run() {
-
             check_x_mark.setImageResource(R.drawable.ic_check_green_24dp);
             evaluation_text.setText("all correct");
           }
         });
   }
 
+  /** Sets a cross in the Constraints card-view
+   * -> user is doing something wrong
+   *  running on separate UIThread
+   * @param reason the text that describes what the user should change
+   */
   public void setExerciseX(String reason) {
     ImageView check_x_mark = findViewById(R.id.mediapipe_check_x_mark);
     TextView evaluation_text = findViewById(R.id.mediapipe_evaluation_text);
 
     runOnUiThread(
         new Runnable() {
-
           @Override
           public void run() {
-
             check_x_mark.setImageResource(R.drawable.ic_x_red_24dp);
             evaluation_text.setText(reason);
           }
@@ -663,7 +590,6 @@ public class MediapipeActivity extends AppCompatActivity {
 
     runOnUiThread(
         new Runnable() {
-
           @Override
           public void run() {
 
@@ -693,7 +619,7 @@ public class MediapipeActivity extends AppCompatActivity {
                         time_counter.stop();
                       } else {
                         currentExercise = exercises.get(ExercisePointer);
-                        setExcerciseName(currentExercise.name);
+                        setExerciseName(currentExercise.name);
                         noPause = false;
                         showNextExerciseDialog(
                             currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
@@ -728,28 +654,30 @@ public class MediapipeActivity extends AppCompatActivity {
     }
   }
 
-  public void setExcerciseName(String name) {
+  /** Sets the exercise-name in the card-view
+   * @param name the name to be shown
+   */
+  public void setExerciseName(String name) {
     TextView exerciseText = findViewById(R.id.mediapipe_exercise_name);
     runOnUiThread(
         new Runnable() {
-
           @Override
           public void run() {
-
             exerciseText.setText(name);
           }
         });
   }
 
+  /** Sets the rep-counter to a specified value
+   * @param Rep the count to be set
+   */
   public void setRepetition(String Rep) {
     TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
     Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
     runOnUiThread(
         new Runnable() {
-
           @Override
           public void run() {
-
             repetition_counter.setVisibility(View.VISIBLE);
             time_counter.setVisibility(View.GONE);
             repetition_counter.setText(Rep);
@@ -757,66 +685,43 @@ public class MediapipeActivity extends AppCompatActivity {
         });
   }
 
+  /** Increments the rep-counter by one
+   * running on separate UIThread
+   */
   public void countRepUp() {
     TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
     Reps = Reps + 1;
     runOnUiThread(
         new Runnable() {
-
           @Override
           public void run() {
-
             repetition_counter.setText(String.valueOf(Reps));
           }
         });
   }
 
-  public String exerciseToString(Exercise e, boolean finished) {
-    String exerciseString = "";
-    int amount;
-    if (finished) {
-      amount = exerciseIdToAmount.get(e.id);
-    } else {
-      if (e.isCountable()) {
-        amount = Reps;
-      } else {
-        Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
-        amount =
-            exerciseIdToAmount.get(e.id)
-                - ((int) ((time_counter.getBase() + SystemClock.elapsedRealtime()) / 1000));
-        // time_counter.getBase() + SystemClock.elapsedRealtime() - time_counter_time
-      }
-    }
-    if (amount == 0) return "";
-
-    if (e.isCountable()) {
-      exerciseString = amount + " x " + e.name;
-    } else {
-      exerciseString = amount + " s " + e.name;
-    }
-    return exerciseString;
-  }
-
-  public FinishedExercise createFinishedExercise(Exercise e, boolean finished) {
-    String exerciseString = "";
-    int duration = 0;
+  /** Creates and returns a finishedExercise-Object
+   * @param exercise the exercise that should get saved
+   * @param finished bool for time based exercises, if they have finished (for correct duration time)
+   * @return the finishedExercise
+   */
+  public FinishedExercise createFinishedExercise(Exercise exercise, boolean finished) {
+    int duration;
     int amount = 0;
-    if (e.isCountable()) {
+    if (exercise.isCountable()) {
       amount = Reps;
       duration = (int) ((countableEndTime - countableStartTime) / 1000);
     } else {
       if (finished) {
-        duration = exerciseIdToAmount.get(e.id);
+        duration = exerciseIdToAmount.get(exercise.id);
       } else {
         Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
         duration =
-            exerciseIdToAmount.get(e.id)
-                - ((int) ((time_counter.getBase() - time_counter_time) / 1000));
+            exerciseIdToAmount.get(exercise.id)
+                    - ((int) ((time_counter.getBase() - time_counter_time) / 1000));
       }
     }
-
-    FinishedExercise finishedExercise = new FinishedExercise(0, e.id, duration, amount);
-    return finishedExercise;
+    return new FinishedExercise(0, exercise.id, duration, amount);
   }
 
   private void showNextExerciseDialog(
@@ -824,7 +729,6 @@ public class MediapipeActivity extends AppCompatActivity {
     tts("Next Exercise " + amount + e.name);
     runOnUiThread(
         new Runnable() {
-
           @Override
           public void run() {
             AlertDialog.Builder builder = new AlertDialog.Builder(MediapipeActivity.this);
@@ -973,7 +877,6 @@ public class MediapipeActivity extends AppCompatActivity {
     tts("Pause");
     runOnUiThread(
         new Runnable() {
-
           @Override
           public void run() {
             findViewById(R.id.mediapipe_stop_card).setVisibility(View.VISIBLE);
@@ -990,6 +893,11 @@ public class MediapipeActivity extends AppCompatActivity {
     showPauseCard();
   }
 
+  /**
+   * Function for calling the Text-To-Speech model
+   * if user has turned off tts this method returns immediately after calling
+   * @param text the text that gets read out
+   */
   public void tts(String text) {
     if (!ttsBoolean) return;
     tts =
@@ -1005,5 +913,32 @@ public class MediapipeActivity extends AppCompatActivity {
                 }
               }
             });
+  }
+
+  private static String getClassificationDebugString(Map<String, Integer> classification) {
+    String classificationString = "";
+    for (Map.Entry<String, Integer> entry : classification.entrySet()) {
+      classificationString += entry.getKey() + ": " + entry.getValue() + "\n";
+    }
+    return classificationString;
+  }
+
+  private static String getLandmarksDebugString(LandmarkProto.NormalizedLandmarkList landmarks) {
+    int landmarkIndex = 0;
+    String landmarksString = "";
+    for (LandmarkProto.NormalizedLandmark landmark : landmarks.getLandmarkList()) {
+      landmarksString +=
+              "\t\tLandmark["
+                      + landmarkIndex
+                      + "]: ("
+                      + landmark.getX()
+                      + ", "
+                      + landmark.getY()
+                      + ", "
+                      + landmark.getZ()
+                      + ")\n";
+      ++landmarkIndex;
+    }
+    return landmarksString;
   }
 }
