@@ -26,4 +26,7 @@ public interface UserDao {
 
   @Query("Select * From User LIMIT 1")
   Single<User> getUserSingle();
+
+  @Query("Select frontCamera From User LIMIT 1")
+  Single<Boolean> getCameraBoolean();
 }

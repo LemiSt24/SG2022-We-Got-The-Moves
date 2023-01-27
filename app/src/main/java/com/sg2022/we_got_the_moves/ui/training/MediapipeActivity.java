@@ -56,6 +56,7 @@ import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseStateAndConstraint
 import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
+import com.sg2022.we_got_the_moves.repository.UserRepository;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -67,6 +68,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MediapipeActivity extends AppCompatActivity {
@@ -80,7 +83,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private static final int STATE_CHANGE_VALUE = 7;
 
   // private static final CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
-  private static final CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
+  private static CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
   // Flips the camera-preview frames vertically before sending them into FrameProcessor to be
   // processed in a MediaPipe graph, and flips the processed frames back when they are displayed.
   // This is needed because OpenGL represents images assuming the image origin is at the bottom-left
@@ -227,6 +230,18 @@ public class MediapipeActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    UserRepository userRepository = UserRepository.getInstance(this.getApplication());
+    userRepository.getCameraBoolean(new SingleObserver<Boolean>() {
+      @Override
+      public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+      @Override
+      public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
+        if (!aBoolean){CAMERA_FACING = CameraHelper.CameraFacing.BACK;}
+      }
+      @Override
+      public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
+      }
+    );
     tts("");
     setContentView(getContentViewLayoutResId());
 

@@ -29,7 +29,10 @@ public class User {
   @ColumnInfo(name = "calories")
   public int calories;
 
-  public User(String name, float height, float weight, SEX sex, int age, int calories) {
+  @ColumnInfo(name = "frontCamera")
+  public boolean frontCamera;
+
+  public User(String name, float height, float weight, SEX sex, int age, int calories, boolean frontCamera) {
     this.id = 1;
     this.name = name;
     this.height = height;
@@ -37,6 +40,7 @@ public class User {
     this.sex = sex;
     this.age = age;
     this.calories = calories;
+    this.frontCamera = frontCamera;
   }
 
   public double getBMI() {

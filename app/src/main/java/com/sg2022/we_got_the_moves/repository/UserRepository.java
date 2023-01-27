@@ -58,4 +58,12 @@ public class UserRepository {
   public void update(User u) {
     this.executors.getPoolThread().execute(() -> this.userDao.update(u));
   }
+
+  public void getCameraBoolean(SingleObserver<Boolean> observer) {
+    this.userDao
+            .getCameraBoolean()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
+  }
 }
