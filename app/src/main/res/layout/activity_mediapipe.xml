@@ -29,8 +29,10 @@
 
     <ImageButton
         android:id="@+id/mediapipe_stop_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="15sp"
+        android:layout_marginLeft="15sp"
         android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -138,17 +140,18 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/mediapipe_counter_card"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:visibility="visible"
-        app:cardBackgroundColor="#40FFFFFF"
         app:cardCornerRadius="16dp"
+        android:layout_marginRight="15sp"
+        android:layout_marginTop="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraint_layout_mediapipe_counter_card"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
             <TextView
@@ -156,6 +159,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="exercise"
+                android:paddingLeft="20sp"
+                android:paddingRight="20sp"
+                android:textSize="25sp"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -167,21 +173,23 @@
                 android:layout_height="wrap_content"
                 android:countDown="true"
                 android:visibility="gone"
+                android:textSize="25sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/mediapipe_exercise_name" />
+                app:layout_constraintTop_toBottomOf="@id/mediapipe_exercise_name" />
 
             <TextView
                 android:id="@+id/mediapipe_repetition_counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0 / X"
+                android:textSize="25sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/mediapipe_exercise_name" />
+                app:layout_constraintTop_toBottomOf="@id/mediapipe_exercise_name" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
