@@ -66,4 +66,12 @@ public class UserRepository {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(observer);
   }
+  public void getTTSBoolean(SingleObserver<Boolean> observer) {
+    this.userDao
+            .getTTSBoolean()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
+  }
+
 }

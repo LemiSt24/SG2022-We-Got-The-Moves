@@ -145,6 +145,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private boolean timeUp;
 
   private TextToSpeech tts;
+  private boolean ttsBoolean = true;
 
   private static String getClassificationDebugString(Map<String, Integer> classification) {
     String classificationString = "";
@@ -242,6 +243,17 @@ public class MediapipeActivity extends AppCompatActivity {
       public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
       }
     );
+
+    userRepository.getTTSBoolean(new SingleObserver<Boolean>() {
+      @Override
+      public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+      @Override
+      public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
+        ttsBoolean = aBoolean;
+      }
+      @Override
+      public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
+    });
     tts("");
     setContentView(getContentViewLayoutResId());
 
@@ -979,6 +991,7 @@ public class MediapipeActivity extends AppCompatActivity {
   }
 
   public void tts(String text) {
+    if (!ttsBoolean) return;
     tts =
         new TextToSpeech(
             getApplicationContext(),

@@ -101,7 +101,8 @@ public abstract class AppDatabase extends RoomDatabase {
                                       User.SEX.MALE,
                                       22,
                                       500,
-                                      true));
+                                      true,
+                                    true));
                           getInstance(appContext)
                               .FinishedWorkoutDao()
                               .insert(DataGenerator.getDummyFinsishedWorkouts());
