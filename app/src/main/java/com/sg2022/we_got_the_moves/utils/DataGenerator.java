@@ -16,6 +16,7 @@ import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,20 +103,45 @@ public class DataGenerator {
     "Power", "Basic", "Relaxing", "Heavy", "Endurance", "Strength", "Agility", "Training"
   };
 
+
+  public static ExerciseState[] states = {
+    //"Squat", "Side-planks", "Mountain-climbers", "Pushup", "Sit-up", "Plank", "Biceps-curl"
+          //Squats
+          new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 3L))), //top
+          new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 2L))), //bottom
+          //Side-planks
+          new ExerciseState(2, new ArrayList<Long>(Arrays.asList())),
+          //Mountain-climbers
+          new ExerciseState(3, new ArrayList<Long>(Arrays.asList())),
+          new ExerciseState(3, new ArrayList<Long>(Arrays.asList())),
+          //Push-Up
+          new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L, 5L))), //top
+          new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L))), //bottom
+          //Sit-Up
+          new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L))), //bottom
+          new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L))), //top
+          //Plank
+          new ExerciseState(6, new ArrayList<Long>(Arrays.asList(3L))),
+          //Biceps-Curl
+          new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L))), //bottom
+          new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L))), //top
+  };
+
   public static List<Exercise> getDummyExercises() {
     List<Exercise> e = new ArrayList<>();
+
 
     for (int i = 0; i < exerciseNames.length; ++i) {
       if (i == 1 || i == 2)
         //noinspection UnnecessaryContinue
         continue;
       else {
-        List<ExerciseState> plankState = new ArrayList<ExerciseState>();
-        List<Long> constraintIds = new ArrayList<Long>();
-        constraintIds.add(1L);
-        constraintIds.add(2L);
-        plankState.add(new ExerciseState(i+1, constraintIds));
-        plankState.add(new ExerciseState(i+1, constraintIds));
+        List<ExerciseState> exerciseStates = new ArrayList<>();
+        for (ExerciseState state : states){
+          if (state.exerciseId == i+1){
+            exerciseStates.add(state);
+          }
+        }
         e.add(
             new Exercise(
                 i + 1,
@@ -125,7 +151,7 @@ public class DataGenerator {
                 imageIds[i],
                 isCountable[i],
                 metScores[i],
-                plankState));
+                exerciseStates));
       }
     }
     return e;
