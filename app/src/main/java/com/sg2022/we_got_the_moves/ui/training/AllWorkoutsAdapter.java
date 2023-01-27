@@ -1,7 +1,10 @@
 package com.sg2022.we_got_the_moves.ui.training;
 
+import android.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -10,8 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg2022.we_got_the_moves.MainActivity;
 import com.sg2022.we_got_the_moves.R;
+import com.sg2022.we_got_the_moves.databinding.DialogFinishedTrainingScreenBinding;
+import com.sg2022.we_got_the_moves.databinding.DialogStartWorkoutBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemWorkoutNoEditBinding;
+import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
+import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 import java.util.List;
 
@@ -23,6 +30,7 @@ public class AllWorkoutsAdapter
   private final TrainingViewModel model;
   private List<Workout> workoutList;
   private ItemWorkoutNoEditBinding binding;
+  private String exercisesString;
 
   public AllWorkoutsAdapter(@NonNull LifecycleOwner owner, @NonNull TrainingViewModel model) {
     this.owner = owner;
@@ -56,7 +64,42 @@ public class AllWorkoutsAdapter
     holder.binding.setWorkout(w);
     holder.binding.workoutName.setText(w.name);
     holder.binding.workoutName.setOnClickListener(
-        v -> MainActivity.getInstanceActivity().openMediapipeActivity(w.id));
+        v -> showWorkoutDialog(w));
+  }
+
+  private void showWorkoutDialog(@NonNull Workout w) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstanceActivity());
+    DialogStartWorkoutBinding binding =
+            DataBindingUtil.inflate(
+                    LayoutInflater.from(MainActivity.getInstanceActivity()),
+                    R.layout.dialog_start_workout,
+                    null,
+                    false);
+    builder
+            .setView(binding.getRoot())
+            .setPositiveButton(
+                    "Start",
+                    (dialog, id) -> {
+                      MainActivity.getInstanceActivity().openMediapipeActivity(w.id);
+                      dialog.dismiss();
+                    })
+            .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+            .create()
+            .show();
+    binding.textviewStartWorkoutWorkout.setText(w.name);
+    exercisesString = "";
+    model.workoutsRepository
+            .getAllExercises(w.id)
+            .observe(
+                    owner,
+                    exercises -> {
+                      for (Exercise e : exercises){
+                        exercisesString += e.name + "\n";
+                      }
+                      binding.textviewStartWorkoutExercises.setText(exercisesString);
+                      notifyDataSetChanged();
+                    }
+            );
   }
 
   @Override

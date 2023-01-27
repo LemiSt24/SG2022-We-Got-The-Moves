@@ -64,3 +64,5 @@ public class TrainingFragment extends Fragment {
     super.onDestroyView();
   }
 }
+
+
