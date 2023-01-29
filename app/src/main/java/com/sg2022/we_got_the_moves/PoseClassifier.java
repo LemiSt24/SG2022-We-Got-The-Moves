@@ -3,8 +3,11 @@ package com.sg2022.we_got_the_moves;
 import static java.lang.Double.max;
 import static java.lang.Double.min;
 import static java.lang.Math.abs;
+import static java.lang.Math.atan2;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.util.Log;
 
 import com.google.mediapipe.formats.proto.LandmarkProto;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
@@ -19,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 class PoseSample {
   public double[] embedding;
@@ -226,13 +230,101 @@ public class PoseClassifier {
     return lmfrom.getDistance(lmto);
   }
 
+  public NormalizedLandmark normalizeLandmark(String landMark){
+    NormalizedLandmark[] landmarks =
+            classification_history.get(classification_history.size() - 1).landmarks;
+    NormalizedLandmark normLandmark;
+    // mehrere Landmarks in "from"
+    if (landMark.contains(",")) {
+      String[] spl = landMark.split(",");
+      normLandmark = NormalizedLandmark.getAverageByNames(landmarks, spl[0], spl[1]);
+    } else {
+      normLandmark = landmarks[NormalizedLandmark.landmark_names.indexOf(landMark)];
+    }
+    return normLandmark;
+  }
+
+  public double calcAngleDegrees(double x, double y) {
+    double angle = atan2(y, x) * 180 / Math.PI;
+    return angle;
+  }
+
   public boolean judge_constraint(Constraint constraint) {
-    double dist_1 = get_distance(constraint.from1, constraint.to1);
-    double dist_2 = get_distance(constraint.from2, constraint.to2);
-    double rel = dist_1 / dist_2;
-    if (rel < 1.0 - constraint.maxDiff || rel > 1.0 + constraint.maxDiff) {
-      return false;
+
+    NormalizedLandmark normFrom1 = normalizeLandmark(constraint.from1);
+    NormalizedLandmark normTo1 = normalizeLandmark(constraint.to1);
+    NormalizedLandmark normFrom2 = normalizeLandmark(constraint.from2);
+    NormalizedLandmark normTo2 = normalizeLandmark(constraint.to2);
+
+    if (constraint.type == Constraint.TYPE.ANGLE){
+      double angle;
+
+      if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.X) {
+        angle = calcAngleDegrees(normFrom2.z - normTo1.z, normFrom2.y - normTo1.y)-
+                calcAngleDegrees(normFrom1.z - normTo1.z, normFrom1.y - normTo1.y);
+      }
+      else if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.Y) {
+        angle = calcAngleDegrees(normFrom2.x - normTo1.x, normFrom2.z - normTo1.z)-
+                calcAngleDegrees(normFrom1.x - normTo1.x, normFrom1.z - normTo1.z);
+      }
+      else if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.Z) {
+        angle = calcAngleDegrees(normFrom2.y - normTo1.y, normFrom2.x - normTo1.x)-
+                calcAngleDegrees(normFrom1.y - normTo1.y, normFrom1.x - normTo1.x);
+      }
+      else{
+        //throw error angle geht nicht mit 3 dimensionen
+        throw new IllegalArgumentException("only 2 dimensions for angles supported");
+      }
+
+      angle = abs(angle);
+
+      double compareAngle = (double) constraint.compareAngle;
+
+      if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
+        if (angle < compareAngle + constraint.maxDiff) return false;
+      } else if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.GREATER) {
+        if (angle > compareAngle - constraint.maxDiff) return false;
+      } else {
+        if (angle < compareAngle + constraint.maxDiff || angle > compareAngle - constraint.maxDiff) return false;
+      }
+    }
+    else {
+
+     /* alter code
+       double dist_1 = get_distance(constraint.from1, constraint.to1);
+       double dist_2 = get_distance(constraint.from2, constraint.to2);*/
+
+      if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.X) {
+        normFrom1.x = 0;
+        normTo1.x = 0;
+        normFrom2.x = 0;
+        normTo2.x = 0;
+      } else if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.Y) {
+        normFrom1.y = 0;
+        normTo1.y = 0;
+        normFrom2.y = 0;
+        normTo2.y = 0;
+      } else if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.Z) {
+        normFrom1.z = 0;
+        normTo1.z = 0;
+        normFrom2.z = 0;
+        normTo2.z = 0;
+      }
+
+      double dist1 = normFrom1.getDistance(normTo1);
+      double dist2 = normFrom2.getDistance(normTo2);
+      double rel = dist1 / dist2; //kann Problem mit durch 0 teilen hervorrufen
+
+      if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
+        if (dist1 < dist2 * (1 - constraint.maxDiff)) return false;
+      } else if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.GREATER) {
+        if (dist1 > dist2 * (1 + constraint.maxDiff)) return false;
+      } else {
+        if (dist1 < dist2 * (1 - constraint.maxDiff) || dist1 > dist2 * (1 + constraint.maxDiff)) return false;
+        //if (rel < 1.0 - constraint.maxDiff || rel > 1.0 + constraint.maxDiff) return false;
+      }
     }
     return true;
   }
 }
+

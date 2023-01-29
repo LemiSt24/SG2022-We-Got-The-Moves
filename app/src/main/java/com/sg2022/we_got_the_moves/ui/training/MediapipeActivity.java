@@ -314,6 +314,7 @@ public class MediapipeActivity extends AppCompatActivity {
                     boolean changed = false;
                     for (Constraint constraint:
                             currentConstraints.get(currentExercise.exerciseStates.get(lastState))){
+                      Log.println(Log.DEBUG, "test", String.valueOf(classifier.judge_constraint(constraint)));
                       if (!classifier.judge_constraint(constraint)){
                         setExerciseX(constraint.message);
                         tts(constraint.message);
