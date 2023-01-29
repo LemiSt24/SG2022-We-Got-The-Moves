@@ -29,8 +29,8 @@
 
     <ImageButton
         android:id="@+id/mediapipe_stop_button"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginTop="15sp"
         android:layout_marginLeft="15sp"
         android:background="@null"
