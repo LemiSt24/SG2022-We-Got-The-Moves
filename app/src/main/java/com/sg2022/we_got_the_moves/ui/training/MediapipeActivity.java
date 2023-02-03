@@ -58,6 +58,7 @@ import com.sg2022.we_got_the_moves.repository.UserRepository;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -77,12 +78,49 @@ public class MediapipeActivity extends AppCompatActivity {
   private static final String OUTPUT_VIDEO_STREAM_NAME = "output_video";
   private static final String OUTPUT_LANDMARKS_STREAM_NAME = "pose_landmarks";
 
-  private static final int STATE_CHANGE_VALUE = 7;
+  private static final int STATE_CHANGE_VALUE = 10;
   private static CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
   // Flips the camera-preview frames vertically before sending them into FrameProcessor to be
   // processed in a MediaPipe graph, and flips the processed frames back when they are displayed.
   // This is needed because OpenGL represents images assuming the image origin is at the bottom-left
   // corner, whereas MediaPipe in general assumes the image origin is at top-left.
+
+  public static final List<String> landmark_names =
+          Arrays.asList(
+                  "nose",
+                  "left_eye_inner",
+                  "left_eye",
+                  "left_eye_outer",
+                  "right_eye_inner",
+                  "right_eye",
+                  "right_eye_outer",
+                  "left_ear",
+                  "right_ear",
+                  "mouth_left",
+                  "mouth_right",
+                  "left_shoulder",
+                  "right_shoulder",
+                  "left_elbow",
+                  "right_elbow",
+                  "left_wrist",
+                  "right_wrist",
+                  "left_pinky_1",
+                  "right_pinky_1",
+                  "left_index_1",
+                  "right_index_1",
+                  "left_thumb_2",
+                  "right_thumb_2",
+                  "left_hip",
+                  "right_hip",
+                  "left_knee",
+                  "right_knee",
+                  "left_ankle",
+                  "right_ankle",
+                  "left_heel",
+                  "right_heel",
+                  "left_foot_index",
+                  "right_foot_index");
+
   private static final boolean FLIP_FRAMES_VERTICALLY = true;
 
   static {
@@ -280,8 +318,18 @@ public class MediapipeActivity extends AppCompatActivity {
             LandmarkProto.NormalizedLandmarkList landmarks =
                 LandmarkProto.NormalizedLandmarkList.parseFrom(landmarksRaw);
             if (landmarks == null) {
-              Log.v(TAG, "[TS:" + packet.getTimestamp() + "] No iris landmarks.");
+              Log.v(TAG, "[TS:" + packet.getTimestamp() + "] No landmarks.");
               return;
+            }
+            List<LandmarkProto.NormalizedLandmark> landmarkList = landmarks.getLandmarkList();
+            for (int i = 0; i < landmarkList.size(); i++) {
+              if (landmarkList.get(i).getPresence() < 0.8){
+                Log.v(
+                        TAG,
+                        "landmark not visible: " + landmark_names.get(i) +" "
+                                + landmarkList.get(i));
+                return;
+              }
             }
 
             // Klassifizierung durchführen.
@@ -289,20 +337,15 @@ public class MediapipeActivity extends AppCompatActivity {
             // weitere Untersuchungen weiterverwenden
             classifier.classify(landmarks);
 
-            Log.v(
-                TAG,
-                "[TS:"
-                    + packet.getTimestamp()
-                    + "] #Landmarks for iris: "
-                    + landmarks.getLandmarkCount());
-            // Log.v(TAG, getLandmarksDebugString(landmarks));
-            //      Log.println(Log.DEBUG,"test", String.valueOf(exercises.size()));
+         /*  print all landmarks with name
+            for (int i = 0; i < landmarkList.size(); i++) {
+              Log.v(
+                      TAG,
+                      "name: " + landmark_names.get(i) +" "
+                      + landmarkList.get(i));
+            }*/
+
             if (exercises.size() != 0) {
-              /*         Log.println(Log.DEBUG,"test", classification.toString());
-
-
-              Log.println(Log.DEBUG, TAG, "Exercises there " + exercises.get(0).name);
-              Log.println(Log.DEBUG, TAG, exterciseIDToAmount.get(exercises.get(0).id).toString());*/
 
               // exercises time based
               if (noPause && !currentExercise.isCountable()) {
