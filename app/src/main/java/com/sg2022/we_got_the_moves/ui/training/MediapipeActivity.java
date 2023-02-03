@@ -79,7 +79,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private static final String OUTPUT_LANDMARKS_STREAM_NAME = "pose_landmarks";
 
   private static final int STATE_CHANGE_VALUE = 10;
-  private static CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
+  private static CameraHelper.CameraFacing CAMERA_FACING;
   // Flips the camera-preview frames vertically before sending them into FrameProcessor to be
   // processed in a MediaPipe graph, and flips the processed frames back when they are displayed.
   // This is needed because OpenGL represents images assuming the image origin is at the bottom-left
@@ -144,7 +144,7 @@ public class MediapipeActivity extends AppCompatActivity {
   // ApplicationInfo for retrieving metadata defined in the manifest.
   private ApplicationInfo applicationInfo;
   // Handles camera access via the {@link CameraX} Jetpack support library.
-  private CameraXPreviewHelper cameraHelper;
+  private Camera2Helper cameraHelper;
 
   // Saves the current time in counter at stopTimeCounter to use this at startTimeCounter
   private long time_counter_time = 0;
@@ -213,7 +213,9 @@ public class MediapipeActivity extends AppCompatActivity {
       public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
       @Override
       public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
-        if (!aBoolean){CAMERA_FACING = CameraHelper.CameraFacing.BACK;}
+        if (aBoolean) CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
+        else CAMERA_FACING = CameraHelper.CameraFacing.BACK;
+        Log.println(Log.DEBUG, "test", "boolean now: " +  aBoolean);
       }
       @Override
       public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
@@ -494,26 +496,30 @@ public class MediapipeActivity extends AppCompatActivity {
     PermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
 
-  protected void onCameraStarted(SurfaceTexture surfaceTexture) {
+ /* protected void onCameraStarted(SurfaceTexture surfaceTexture) {
     previewFrameTexture = surfaceTexture;
     // Make the display view visible to start showing the preview. This triggers the
     // SurfaceHolder.Callback added to (the holder of) previewDisplayView.
     previewDisplayView.setVisibility(View.VISIBLE);
-  }
+  }*/
 
   protected Size cameraTargetResolution() {
     return null; // No preference and let the camera (helper) decide.
   }
 
   public void startCamera() {
-    cameraHelper = new CameraXPreviewHelper();
+    int textureName = 65;
+    cameraHelper = new Camera2Helper(this, new CustomSurfaceTexture(textureName));
     cameraHelper.setOnCameraStartedListener(
         surfaceTexture -> {
-          onCameraStarted(surfaceTexture);
+          previewFrameTexture = surfaceTexture;
+          // Make the display view visible to start showing the preview. This triggers the
+          // SurfaceHolder.Callback added to (the holder of) previewDisplayView.
+          previewDisplayView.setVisibility(View.VISIBLE);
         });
-    CameraHelper.CameraFacing cameraFacing = CAMERA_FACING;
+   // CameraHelper.CameraFacing cameraFacing = CAMERA_FACING;
     cameraHelper.startCamera(
-        this, cameraFacing, /*unusedSurfaceTexture=*/ null, cameraTargetResolution());
+        this, CAMERA_FACING, /*unusedSurfaceTexture=*/ null);
   }
 
   protected Size computeViewSize(int width, int height) {
