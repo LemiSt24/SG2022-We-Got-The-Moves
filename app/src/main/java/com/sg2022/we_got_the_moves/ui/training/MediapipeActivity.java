@@ -41,6 +41,7 @@ import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.sg2022.we_got_the_moves.MainActivity;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.DialogBetweenExerciseScreenBinding;
@@ -55,6 +56,7 @@ import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 import com.sg2022.we_got_the_moves.repository.UserRepository;
 
+import java.lang.ref.WeakReference;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -180,6 +182,12 @@ public class MediapipeActivity extends AppCompatActivity {
   private TextToSpeech tts;
   private boolean ttsBoolean = true;
 
+  private static WeakReference<MediapipeActivity> weakMediapipeActivity;
+
+  public static MediapipeActivity getInstanceActivity() {
+    return weakMediapipeActivity.get();
+  }
+
   // loads all constraints from db which are related to the supplied exercise and saves them in
   // class variables
   private void loadConstraintsForExercise() {
@@ -207,6 +215,9 @@ public class MediapipeActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    weakMediapipeActivity = new WeakReference<>(MediapipeActivity.this);
+
     UserRepository userRepository = UserRepository.getInstance(this.getApplication());
     userRepository.getCameraBoolean(new SingleObserver<Boolean>() {
       @Override
@@ -534,14 +545,15 @@ public class MediapipeActivity extends AppCompatActivity {
     Size viewSize = computeViewSize(width, height);
     Size displaySize = cameraHelper.computeDisplaySizeFromViewSize(viewSize);
     boolean isCameraRotated = cameraHelper.isCameraRotated();
+    Log.println(Log.DEBUG, "test", "cameraroatation" + String.valueOf(isCameraRotated));
 
     // Connect the converter to the camera-preview frames as its input (via
     // previewFrameTexture), and configure the output width and height as the computed
     // display size.
     converter.setSurfaceTextureAndAttachToGLContext(
         previewFrameTexture,
-        isCameraRotated ? displaySize.getHeight() : displaySize.getWidth(),
-        isCameraRotated ? displaySize.getWidth() : displaySize.getHeight());
+        !isCameraRotated ? displaySize.getHeight() : displaySize.getWidth(),
+        !isCameraRotated ? displaySize.getWidth() : displaySize.getHeight());
     Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
     converter.setRotation(display.getRotation());
   }

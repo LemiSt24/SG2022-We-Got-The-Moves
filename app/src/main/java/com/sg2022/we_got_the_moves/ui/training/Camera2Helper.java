@@ -1,9 +1,12 @@
 package com.sg2022.we_got_the_moves.ui.training;
 
+import static android.content.Context.WINDOW_SERVICE;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Camera;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -19,18 +22,26 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.util.Size;
+import android.util.SparseIntArray;
+import android.view.Display;
 import android.view.Surface;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.UseCase;
 import androidx.core.app.ActivityCompat;
 
 import com.google.mediapipe.components.CameraHelper;
+import com.sg2022.we_got_the_moves.repository.UserRepository;
 
 import java.io.File;
 import java.util.Arrays;
+
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 public class Camera2Helper extends CameraHelper {
     public static final String TAG="Camera2Helper";
@@ -41,7 +52,7 @@ public class Camera2Helper extends CameraHelper {
     protected CaptureRequest.Builder captureRequestBuilder;
     private Size imageDimension;
     private ImageReader imageReader;
-    private static final int REQUEST_CAMERA_PERMISSION = 200;
+    private static final int REQUEST_CAMERA_PERMISSION = 0;
 
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
@@ -104,7 +115,9 @@ public class Camera2Helper extends CameraHelper {
 
     @Override
     public boolean isCameraRotated() {
-        return false;
+        Display display = ((WindowManager) MediapipeActivity.getInstanceActivity().getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        this.frameRotation = display.getRotation();
+        return this.frameRotation % 2 == 1;
     }
 
     final CameraCaptureSession.CaptureCallback captureCallbackListener = new CameraCaptureSession.CaptureCallback() {
@@ -138,35 +151,64 @@ public class Camera2Helper extends CameraHelper {
     private void openCamera() {
         CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         try {
-            if(cameraId == null){
-                cameraId = manager.getCameraIdList()[1];
-            }
+
             Log.d(TAG,"CameraListSiize "+manager.getCameraIdList().length);
-            //CameraSelector cameraSelector = cameraFacing == CameraFacing.FRONT ? CameraSelector.DEFAULT_FRONT_CAMERA : CameraSelector.DEFAULT_BACK_CAMERA;
-            if(cameraFacing==CameraFacing.BACK ){
-                cameraId = manager.getCameraIdList()[0];
-                new_cam_id = manager.getCameraIdList()[0];
-                //CameraCharacteristics.LENS_FACING_BACK+"";
-                Log.d(TAG,"Opening front cameraa.............................");
+
+            for (String cameraId : manager.getCameraIdList()) {
+
+                CameraCharacteristics cameraCharacteristics = manager.getCameraCharacteristics(cameraId);
+                Log.println(Log.DEBUG,TAG, "Camera #" + cameraId + " ===> " + Arrays.toString(cameraCharacteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES)));
+                Log.println(Log.DEBUG,TAG,cameraCharacteristics.get(cameraCharacteristics.LENS_FACING).toString());
+            /*    if (CameraCharacteristics.isCameraFacingBack(cameraCharacteristics) && backCameraId == null) {
+                    backCameraId = cameraId;
+                } else if (isCameraFacingFront(cameraCharacteristics) && frontCameraId == null) {
+                    frontCameraId = cameraId;
+                }*/
             }
-            else{
-                cameraId = manager.getCameraIdList()[1];//CameraCharacteristics.LENS_FACING_BACK+"";
-                Log.d(TAG,"Opening back cameraa.............................");
-                new_cam_id = manager.getCameraIdList()[1];
-            }
-            Log.e(TAG, "is camera open at 93 ");
-            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-            StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-            assert map != null;
-            imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
-            // Add permission for camera and let user grant the permission
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
-                Log.d(TAG,"Permission issue");
-                return;
-            }
-            Log.d(TAG,"Opening camera from manager "+cameraId);
-            manager.openCamera(cameraId, stateCallback, null);
+
+            //    CameraSelector cameraSelector = cameraFacing == CameraFacing.FRONT ? CameraSelector.DEFAULT_FRONT_CAMERA : CameraSelector.DEFAULT_BACK_CAMERA;
+           // Camera camera = this.cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, new UseCase[]{this.preview, this.imageCapture});
+            UserRepository userRepository = UserRepository.getInstance(MediapipeActivity.getInstanceActivity().getApplication());
+            userRepository.getCameraBoolean(new SingleObserver<Boolean>() {
+                @Override
+                public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+                @Override
+                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
+                    try{
+                        if (aBoolean) {
+                            cameraId = manager.getCameraIdList()[1];
+                            Log.d(TAG,"Opening front camera");
+                        }
+                        else {
+                            cameraId = manager.getCameraIdList()[0];
+                            Log.d(TAG,"Opening back camera");
+                        }
+                        Log.e(TAG, "camera is open");
+
+                        CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+                        StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                        assert map != null;
+                        imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
+                        // Add permission for camera and let user grant the permission
+                        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CAMERA_PERMISSION);
+                            Log.d(TAG,"Permission issue");
+                            return;
+                        }
+                        Log.d(TAG,"Opening camera from manager "+cameraId);
+                        manager.openCamera(cameraId, stateCallback, null);
+                        Log.println(Log.DEBUG, "test", "boolean now: " +  aBoolean);
+
+                    }catch (CameraAccessException e) {
+                        e.printStackTrace();
+                        Log.d(TAG,e.toString());
+                    }
+                }
+                @Override
+                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
+            });
+
+
             //fetchFrame();
             /*if(previewDisplayView!=null){
                 previewDisplayView.setVisibility(View.VISIBLE);
@@ -253,11 +295,22 @@ public class Camera2Helper extends CameraHelper {
         }
     }
 
+    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+
+    static {
+        ORIENTATIONS.append(Surface.ROTATION_0, 90);
+        ORIENTATIONS.append(Surface.ROTATION_90, 0);
+        ORIENTATIONS.append(Surface.ROTATION_180, 270);
+        ORIENTATIONS.append(Surface.ROTATION_270, 180);
+    }
+
     protected void updatePreview() {
         if (null == cameraDevice) {
             Log.e(TAG, "updatePreview error, return");
         }
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
+        //captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(frameRotation));
+
         try {
             cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(), null, mBackgroundHandler);
         } catch (CameraAccessException e) {
