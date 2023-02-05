@@ -129,7 +129,7 @@ public class Camera2Helper extends CameraHelper {
         }
     };
 
-    private void closeCamera() {
+    public void closeCamera() {
         try{
             stopBackgroundThread();
             Log.d(TAG,"Closing camera ");
@@ -176,11 +176,23 @@ public class Camera2Helper extends CameraHelper {
                 public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
                     try{
                         if (aBoolean) {
-                            cameraId = manager.getCameraIdList()[1];
+                            for (String cameraIdListElement :  manager.getCameraIdList()){
+                                CameraCharacteristics cameraCharacteristics = manager.getCameraCharacteristics(cameraIdListElement);
+                                if (cameraCharacteristics.get(cameraCharacteristics.LENS_FACING) == 0) {
+                                    cameraId = cameraIdListElement;
+                                    break;
+                                }
+                            }
                             Log.d(TAG,"Opening front camera");
                         }
                         else {
-                            cameraId = manager.getCameraIdList()[0];
+                            for (String cameraIdListElement :  manager.getCameraIdList()){
+                                CameraCharacteristics cameraCharacteristics = manager.getCameraCharacteristics(cameraIdListElement);
+                                if (cameraCharacteristics.get(cameraCharacteristics.LENS_FACING) == 1) {
+                                    cameraId = cameraIdListElement;
+                                    break;
+                                }
+                            }
                             Log.d(TAG,"Opening back camera");
                         }
                         Log.e(TAG, "camera is open");

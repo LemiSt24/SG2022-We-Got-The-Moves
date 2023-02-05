@@ -877,6 +877,7 @@ public class MediapipeActivity extends AppCompatActivity {
                   "Finish",
                   (dialog, id) -> {
                     tts("Training finished");
+                    cameraHelper.closeCamera();
                     finish();
                     dialog.dismiss();
                   });
