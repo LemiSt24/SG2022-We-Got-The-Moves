@@ -41,6 +41,7 @@ import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.sg2022.we_got_the_moves.MainActivity;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.DialogBetweenExerciseScreenBinding;
@@ -55,6 +56,7 @@ import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 import com.sg2022.we_got_the_moves.repository.UserRepository;
 
+import java.lang.ref.WeakReference;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -79,7 +81,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private static final String OUTPUT_LANDMARKS_STREAM_NAME = "pose_landmarks";
 
   private static final int STATE_CHANGE_VALUE = 10;
-  private static CameraHelper.CameraFacing CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
+  private static CameraHelper.CameraFacing CAMERA_FACING;
   // Flips the camera-preview frames vertically before sending them into FrameProcessor to be
   // processed in a MediaPipe graph, and flips the processed frames back when they are displayed.
   // This is needed because OpenGL represents images assuming the image origin is at the bottom-left
@@ -144,7 +146,7 @@ public class MediapipeActivity extends AppCompatActivity {
   // ApplicationInfo for retrieving metadata defined in the manifest.
   private ApplicationInfo applicationInfo;
   // Handles camera access via the {@link CameraX} Jetpack support library.
-  private CameraXPreviewHelper cameraHelper;
+  private Camera2Helper cameraHelper;
 
   // Saves the current time in counter at stopTimeCounter to use this at startTimeCounter
   private long time_counter_time = 0;
@@ -180,6 +182,12 @@ public class MediapipeActivity extends AppCompatActivity {
   private TextToSpeech tts;
   private boolean ttsBoolean = true;
 
+  private static WeakReference<MediapipeActivity> weakMediapipeActivity;
+
+  public static MediapipeActivity getInstanceActivity() {
+    return weakMediapipeActivity.get();
+  }
+
   // loads all constraints from db which are related to the supplied exercise and saves them in
   // class variables
   private void loadConstraintsForExercise() {
@@ -207,13 +215,18 @@ public class MediapipeActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    weakMediapipeActivity = new WeakReference<>(MediapipeActivity.this);
+
     UserRepository userRepository = UserRepository.getInstance(this.getApplication());
     userRepository.getCameraBoolean(new SingleObserver<Boolean>() {
       @Override
       public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
       @Override
       public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
-        if (!aBoolean){CAMERA_FACING = CameraHelper.CameraFacing.BACK;}
+        if (aBoolean) CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
+        else CAMERA_FACING = CameraHelper.CameraFacing.BACK;
+        Log.println(Log.DEBUG, "test", "boolean now: " +  aBoolean);
       }
       @Override
       public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
@@ -494,26 +507,30 @@ public class MediapipeActivity extends AppCompatActivity {
     PermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
 
-  protected void onCameraStarted(SurfaceTexture surfaceTexture) {
+ /* protected void onCameraStarted(SurfaceTexture surfaceTexture) {
     previewFrameTexture = surfaceTexture;
     // Make the display view visible to start showing the preview. This triggers the
     // SurfaceHolder.Callback added to (the holder of) previewDisplayView.
     previewDisplayView.setVisibility(View.VISIBLE);
-  }
+  }*/
 
   protected Size cameraTargetResolution() {
     return null; // No preference and let the camera (helper) decide.
   }
 
   public void startCamera() {
-    cameraHelper = new CameraXPreviewHelper();
+    int textureName = 65;
+    cameraHelper = new Camera2Helper(this, new CustomSurfaceTexture(textureName));
     cameraHelper.setOnCameraStartedListener(
         surfaceTexture -> {
-          onCameraStarted(surfaceTexture);
+          previewFrameTexture = surfaceTexture;
+          // Make the display view visible to start showing the preview. This triggers the
+          // SurfaceHolder.Callback added to (the holder of) previewDisplayView.
+          previewDisplayView.setVisibility(View.VISIBLE);
         });
-    CameraHelper.CameraFacing cameraFacing = CAMERA_FACING;
+   // CameraHelper.CameraFacing cameraFacing = CAMERA_FACING;
     cameraHelper.startCamera(
-        this, cameraFacing, /*unusedSurfaceTexture=*/ null, cameraTargetResolution());
+        this, CAMERA_FACING, /*unusedSurfaceTexture=*/ null);
   }
 
   protected Size computeViewSize(int width, int height) {
@@ -528,14 +545,15 @@ public class MediapipeActivity extends AppCompatActivity {
     Size viewSize = computeViewSize(width, height);
     Size displaySize = cameraHelper.computeDisplaySizeFromViewSize(viewSize);
     boolean isCameraRotated = cameraHelper.isCameraRotated();
+    Log.println(Log.DEBUG, "test", "cameraroatation" + String.valueOf(isCameraRotated));
 
     // Connect the converter to the camera-preview frames as its input (via
     // previewFrameTexture), and configure the output width and height as the computed
     // display size.
     converter.setSurfaceTextureAndAttachToGLContext(
         previewFrameTexture,
-        isCameraRotated ? displaySize.getHeight() : displaySize.getWidth(),
-        isCameraRotated ? displaySize.getWidth() : displaySize.getHeight());
+        !isCameraRotated ? displaySize.getHeight() : displaySize.getWidth(),
+        !isCameraRotated ? displaySize.getWidth() : displaySize.getHeight());
     Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
     converter.setRotation(display.getRotation());
   }
@@ -859,6 +877,7 @@ public class MediapipeActivity extends AppCompatActivity {
                   "Finish",
                   (dialog, id) -> {
                     tts("Training finished");
+                    cameraHelper.closeCamera();
                     finish();
                     dialog.dismiss();
                   });
