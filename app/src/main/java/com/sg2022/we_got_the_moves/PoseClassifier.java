@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.google.mediapipe.formats.proto.LandmarkProto;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
+import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -260,15 +261,15 @@ public class PoseClassifier {
       double angle;
 
       if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.X) {
-        angle = calcAngleDegrees(normFrom2.z - normTo1.z, normFrom2.y - normTo1.y)-
+        angle = calcAngleDegrees(normFrom2.z - normTo2.z, normFrom2.y - normTo2.y)-
                 calcAngleDegrees(normFrom1.z - normTo1.z, normFrom1.y - normTo1.y);
       }
       else if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.Y) {
-        angle = calcAngleDegrees(normFrom2.x - normTo1.x, normFrom2.z - normTo1.z)-
+        angle = calcAngleDegrees(normFrom2.x - normTo2.x, normFrom2.z - normTo2.z)-
                 calcAngleDegrees(normFrom1.x - normTo1.x, normFrom1.z - normTo1.z);
       }
       else if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.Z) {
-        angle = calcAngleDegrees(normFrom2.y - normTo1.y, normFrom2.x - normTo1.x)-
+        angle = calcAngleDegrees(normFrom2.y - normTo2.y, normFrom2.x - normTo2.x)-
                 calcAngleDegrees(normFrom1.y - normTo1.y, normFrom1.x - normTo1.x);
       }
       else{
@@ -325,6 +326,34 @@ public class PoseClassifier {
       }
     }
     return true;
+  }
+
+  public boolean judgeEnterState(ExerciseState exerciseState) {
+
+    NormalizedLandmark start = normalizeLandmark(exerciseState.enterStateLandmarkStart);
+    NormalizedLandmark mid = normalizeLandmark(exerciseState.enterStateLandmarkMid);
+    NormalizedLandmark end = normalizeLandmark(exerciseState.enterStateLandmarkEnd);
+
+    double angle;
+
+    if (exerciseState.insignificantDimension == ExerciseState.INSIGNIFICANT_DIMENSION.X) {
+      angle = calcAngleDegrees(end.z - mid.z, end.y - mid.y) -
+              calcAngleDegrees(start.z - mid.z, start.y - mid.y);
+    } else if (exerciseState.insignificantDimension == ExerciseState.INSIGNIFICANT_DIMENSION.Y) {
+      angle = calcAngleDegrees(end.x - mid.x, end.z - mid.z) -
+              calcAngleDegrees(start.x - mid.x, start.z - mid.z);
+    } else {
+      angle = calcAngleDegrees(end.y - mid.y, end.x - mid.x) -
+              calcAngleDegrees(start.y - mid.y, start.x - mid.x);
+    }
+    angle = abs(angle);
+
+    if (exerciseState.comparator == ExerciseState.COMPARATOR.LESS) {
+      if (angle < exerciseState.compareAngle) return true;
+    } else if (exerciseState.comparator == ExerciseState.COMPARATOR.GREATER) {
+      if (angle > exerciseState.compareAngle) return true;
+    }
+    return false;
   }
 }
 

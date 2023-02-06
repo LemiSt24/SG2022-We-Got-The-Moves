@@ -107,24 +107,56 @@ public class DataGenerator {
   public static ExerciseState[] states = {
     //"Squat", "Side-planks", "Mountain-climbers", "Pushup", "Sit-up", "Plank", "Biceps-curl"
           //Squats
-          new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 3L))), //top
-          new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 2L))), //bottom
+          new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 3L)),
+                  "left_ankle", "left_knee",
+                  "left_hip", ExerciseState.COMPARATOR.GREATER,
+                  160, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
+          new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 2L)),
+                  "left_ankle", "left_knee",
+                  "left_hip", ExerciseState.COMPARATOR.LESS,
+                  120, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
           //Side-planks
-          new ExerciseState(2, new ArrayList<Long>(Arrays.asList())),
+          new ExerciseState(2, new ArrayList<Long>(Arrays.asList()),
+                  "", "", "", null,
+                  0, null),
           //Mountain-climbers
-          new ExerciseState(3, new ArrayList<Long>(Arrays.asList())),
-          new ExerciseState(3, new ArrayList<Long>(Arrays.asList())),
+          new ExerciseState(3, new ArrayList<Long>(Arrays.asList()),
+                  "", "", "", null,
+                  0, null),
+          new ExerciseState(3, new ArrayList<Long>(Arrays.asList()),
+                  "", "", "", null,
+                  0, null),
           //Push-Up
-          new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L, 5L))), //top
-          new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L))), //bottom
+          new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L, 5L)),
+                  "left_wrist", "left_elbow",
+                  "left_shoulder", ExerciseState.COMPARATOR.GREATER,
+                  160, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
+          new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L)),
+                  "left_wrist", "left_elbow",
+                  "left_shoulder", ExerciseState.COMPARATOR.LESS,
+                  100, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
           //Sit-Up
-          new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L))), //bottom
-          new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L))), //top
+          new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L)),
+                  "left_shoulder", "left_hip",
+                  "left_heel", ExerciseState.COMPARATOR.GREATER,
+                  160, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
+          new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L)),
+                  "left_shoulder", "left_hip",
+                  "left_heel", ExerciseState.COMPARATOR.LESS,
+                  110, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
           //Plank
-          new ExerciseState(6, new ArrayList<Long>(Arrays.asList(3L))),
+          new ExerciseState(6, new ArrayList<Long>(Arrays.asList(3L)),
+                  "", "", "", null,
+                  0, null),
           //Biceps-Curl
-          new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L))), //bottom
-          new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L))), //top
+          new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L)),
+                  "left_wrist", "left_elbow",
+                  "left_shoulder", ExerciseState.COMPARATOR.GREATER,
+                  150, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
+          new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L)),
+                  "left_wrist", "left_elbow",
+                  "left_shoulder", ExerciseState.COMPARATOR.LESS,
+                  90, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
   };
 
   public static List<Exercise> getDummyExercises() {
