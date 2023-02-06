@@ -1,10 +1,8 @@
 package com.sg2022.we_got_the_moves.ui.training;
 
 import android.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -13,12 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg2022.we_got_the_moves.MainActivity;
 import com.sg2022.we_got_the_moves.R;
-import com.sg2022.we_got_the_moves.databinding.DialogFinishedTrainingScreenBinding;
 import com.sg2022.we_got_the_moves.databinding.DialogStartWorkoutBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemWorkoutNoEditBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
-import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 import java.util.List;
 

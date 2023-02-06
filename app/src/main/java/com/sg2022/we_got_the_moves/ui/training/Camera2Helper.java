@@ -6,7 +6,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -30,8 +29,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.camera.core.CameraSelector;
-import androidx.camera.core.UseCase;
 import androidx.core.app.ActivityCompat;
 
 import com.google.mediapipe.components.CameraHelper;

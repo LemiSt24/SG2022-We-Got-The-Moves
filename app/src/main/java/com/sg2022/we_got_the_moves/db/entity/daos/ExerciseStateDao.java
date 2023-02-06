@@ -11,7 +11,6 @@ import androidx.room.Update;
 
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseAndExerciseStates;
-import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseStateAndConstraints;
 
 import java.util.List;
 

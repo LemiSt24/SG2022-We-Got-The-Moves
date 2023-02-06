@@ -30,7 +30,6 @@ import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.mediapipe.components.CameraHelper;
-import com.google.mediapipe.components.CameraXPreviewHelper;
 import com.google.mediapipe.components.ExternalTextureConverter;
 import com.google.mediapipe.components.FrameProcessor;
 import com.google.mediapipe.components.PermissionHelper;
@@ -41,7 +40,6 @@ import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.sg2022.we_got_the_moves.MainActivity;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.DialogBetweenExerciseScreenBinding;
@@ -53,8 +51,8 @@ import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
-import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 import com.sg2022.we_got_the_moves.repository.UserRepository;
+import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
 
 import java.lang.ref.WeakReference;
 import java.time.Duration;

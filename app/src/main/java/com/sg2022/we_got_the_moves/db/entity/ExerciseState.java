@@ -1,6 +1,5 @@
 package com.sg2022.we_got_the_moves.db.entity;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;

@@ -6,8 +6,6 @@ import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
 
 import android.content.Context;
-import android.graphics.Point;
-import android.util.Log;
 
 import com.google.mediapipe.formats.proto.LandmarkProto;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
@@ -22,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 class PoseSample {
   public double[] embedding;

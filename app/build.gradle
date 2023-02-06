@@ -69,14 +69,14 @@ dependencies {
     //noinspection GradleDependency
     implementation "com.google.protobuf:protobuf-java:$protobufVersion"
 
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-ui:2.5.3'
-    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.javatuples:javatuples:1.2'
     implementation 'androidx.annotation:annotation:1.5.0'
     testImplementation 'junit:junit:4.13.2'
@@ -84,17 +84,17 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     // CameraX core library
-    implementation "androidx.camera:camera-core:1.2.0"
-    implementation "androidx.camera:camera-camera2:1.2.0"
-    implementation "androidx.camera:camera-lifecycle:1.2.0"
+    implementation "androidx.camera:camera-core:1.2.1"
+    implementation "androidx.camera:camera-camera2:1.2.1"
+    implementation "androidx.camera:camera-lifecycle:1.2.1"
 
     // Android Room + RxJava for database purposes
-    implementation "androidx.room:room-runtime:2.4.3"
-    implementation "androidx.room:room-rxjava3:2.4.3"
+    implementation "androidx.room:room-runtime:2.5.0"
+    implementation "androidx.room:room-rxjava3:2.5.0"
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.5'
-    annotationProcessor "androidx.room:room-compiler:2.4.3"
-    androidTestImplementation "androidx.room:room-testing:2.4.3"
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.6'
+    annotationProcessor "androidx.room:room-compiler:2.5.0"
+    androidTestImplementation "androidx.room:room-testing:2.5.0"
 
     //Glide lib for image purposes
     implementation 'com.github.bumptech.glide:glide:4.14.2'
@@ -105,6 +105,4 @@ dependencies {
 
     //Youtube Player
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0'
-
-
 }
