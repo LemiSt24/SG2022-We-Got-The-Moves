@@ -1,9 +1,5 @@
 package com.sg2022.we_got_the_moves.utils;
 
-import android.annotation.SuppressLint;
-import android.util.Pair;
-
-import com.sg2022.we_got_the_moves.NormalizedLandmark;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
@@ -103,28 +99,27 @@ public class DataGenerator {
     "Power", "Basic", "Relaxing", "Heavy", "Endurance", "Strength", "Agility", "Training"
   };
 
-
   public static ExerciseState[] states = {
-    //"Squat", "Side-planks", "Mountain-climbers", "Pushup", "Sit-up", "Plank", "Biceps-curl"
-          //Squats
-          new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 3L))), //top
-          new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 2L))), //bottom
-          //Side-planks
-          new ExerciseState(2, new ArrayList<Long>(Arrays.asList())),
-          //Mountain-climbers
-          new ExerciseState(3, new ArrayList<Long>(Arrays.asList())),
-          new ExerciseState(3, new ArrayList<Long>(Arrays.asList())),
-          //Push-Up
-          new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L, 5L))), //top
-          new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L))), //bottom
-          //Sit-Up
-          new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L))), //bottom
-          new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L))), //top
-          //Plank
-          new ExerciseState(6, new ArrayList<Long>(Arrays.asList(3L))),
-          //Biceps-Curl
-          new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L))), //bottom
-          new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L))), //top
+    // "Squat", "Side-planks", "Mountain-climbers", "Pushup", "Sit-up", "Plank", "Biceps-curl"
+    // Squats
+    new ExerciseState(1, new ArrayList<>(Arrays.asList(1L, 3L))), // top
+    new ExerciseState(1, new ArrayList<>(Arrays.asList(1L, 2L))), // bottom
+    // Side-planks
+    new ExerciseState(2, new ArrayList<>(Arrays.asList())),
+    // Mountain-climbers
+    new ExerciseState(3, new ArrayList<>(Arrays.asList())),
+    new ExerciseState(3, new ArrayList<>(Arrays.asList())),
+    // Push-Up
+    new ExerciseState(4, new ArrayList<>(Arrays.asList(4L, 5L))), // top
+    new ExerciseState(4, new ArrayList<>(Arrays.asList(4L))), // bottom
+    // Sit-Up
+    new ExerciseState(5, new ArrayList<>(Arrays.asList(6L))), // bottom
+    new ExerciseState(5, new ArrayList<>(Arrays.asList(6L))), // top
+    // Plank
+    new ExerciseState(6, new ArrayList<>(Arrays.asList(3L))),
+    // Biceps-Curl
+    new ExerciseState(7, new ArrayList<>(Arrays.asList(1L, 7L, 3L))), // bottom
+    new ExerciseState(7, new ArrayList<>(Arrays.asList(1L, 7L, 3L))), // top
   };
 
   public static List<Exercise> getDummyExercises() {
@@ -204,42 +199,8 @@ public class DataGenerator {
     return fe;
   }
 
-  /*
-  public static Pair<List<ExerciseState>, List<Constraint>> getDummyExerciseStatesAndConstraints() {
-    List<Constraint> constraints = new ArrayList<>();
-    List<ExerciseState> exerciseStates = new ArrayList<>();
-    List<Exercise> exs = getDummyExercises();
-    long count = 1;
-    for (int i = 0; i < exs.size(); ++i) {
-        for (int k = 0; k < NormalizedLandmark.landmark_names.size(); k++) {
-          String from1 = NormalizedLandmark.landmark_names.get(k);
-          String to1 =
-              NormalizedLandmark.landmark_names.get(
-                  (k + 1) % NormalizedLandmark.landmark_names.size());
-          String from2 =
-              NormalizedLandmark.landmark_names.get(
-                  (k + 2) % NormalizedLandmark.landmark_names.size());
-          String to2 =
-              NormalizedLandmark.landmark_names.get(
-                  (k + 3) % NormalizedLandmark.landmark_names.size());
-          double max_diff = 1.0;
-          String template =
-              "Message for constraint [from1: %s, to1: %s, from2: %s, to2: %s, max_diff: %f]";
-          @SuppressLint("DefaultLocale")
-          String msg = String.format(template, from1, to1, from2, to2, max_diff);
-          Constraint c = new Constraint(count, from1, to1, from2, to2, max_diff, msg);
-          ++count;
-          constraints.add(c);
-          ExerciseState es =
-              new ExerciseState(exs.get(i).id, c.id);
-          exerciseStates.add(es);
-        }
-    }
-    return new Pair<>(exerciseStates, constraints);
-  } */
-
   public static List<Constraint> giveMeDummyConstraints(){
-    List<Constraint> constraints = new ArrayList<Constraint>();
+    List<Constraint> constraints = new ArrayList<>();
     // Füße schulterbreit (squat-global, plank-global, bicep_curl-global, push_up-global)
     constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_ankle", "right_ankle", 0.1, "Keep your feet at shoulder width.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
     // Knie hinter den Fußspitzen (squat-bottom)

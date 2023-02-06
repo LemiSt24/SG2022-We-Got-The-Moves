@@ -98,11 +98,12 @@ public class ExercisesOverviewFragment extends Fragment {
             List<BarEntry> entriesAverage =
                 IntStream.range(0, list.size())
                     .mapToObj(
-                        idx ->
-                            new BarEntry(
-                                idx,
-                                entriesDuration.get(idx).getY() / entriesAmount.get(idx).getY(),
-                                entriesDuration.get(idx).getData()))
+                        idx -> {
+                          float amount = entriesAmount.get(idx).getY();
+                          float value =
+                              entriesDuration.get(idx).getY() / (amount == 0f ? 1 : amount);
+                          return new BarEntry(idx, value, value);
+                        })
                     .collect(Collectors.toList());
 
             BarDataSet barDataSetAmount =
