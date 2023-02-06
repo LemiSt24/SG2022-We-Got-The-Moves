@@ -206,7 +206,7 @@ public class PoseClassifier {
   // Bewertet die zuletzt übermittelte Pose bezüglich Einschränkungen wie Abstand der Füße etc
   // Rückgabewert ist eine Distanz (z.B. der Unterschied zwischen Fußabstand und Schulterabstand)
   // erwartet (eine Liste von) Strings pro Argument, falls zwei genannt: Landmarks werden gemittelt
-  public double get_distance(String from, String to) {
+/*  public double get_distance(String from, String to) {
     NormalizedLandmark[] landmarks =
         classification_history.get(classification_history.size() - 1).landmarks;
 
@@ -229,7 +229,7 @@ public class PoseClassifier {
     }
 
     return lmfrom.getDistance(lmto);
-  }
+  }*/
 
   public NormalizedLandmark normalizeLandmark(String landMark){
     NormalizedLandmark[] landmarks =
@@ -282,18 +282,14 @@ public class PoseClassifier {
       double compareAngle = (double) constraint.compareAngle;
 
       if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
-        if (angle < compareAngle + constraint.maxDiff) return false;
+        if (angle < compareAngle - constraint.maxDiff) return false;
       } else if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.GREATER) {
-        if (angle > compareAngle - constraint.maxDiff) return false;
+        if (angle > compareAngle + constraint.maxDiff) return false;
       } else {
-        if (angle < compareAngle + constraint.maxDiff || angle > compareAngle - constraint.maxDiff) return false;
+        if (angle < compareAngle - constraint.maxDiff || angle > compareAngle + constraint.maxDiff) return false;
       }
     }
     else {
-
-     /* alter code
-       double dist_1 = get_distance(constraint.from1, constraint.to1);
-       double dist_2 = get_distance(constraint.from2, constraint.to2);*/
 
       if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.X) {
         normFrom1.x = 0;
@@ -314,7 +310,8 @@ public class PoseClassifier {
 
       double dist1 = normFrom1.getDistance(normTo1);
       double dist2 = normFrom2.getDistance(normTo2);
-      double rel = dist1 / dist2; //kann Problem mit durch 0 teilen hervorrufen
+      Log.println(Log.DEBUG, "test3", "dist1 " + String.valueOf(dist1));
+      Log.println(Log.DEBUG, "test3", "dist2 " + String.valueOf(dist2));
 
       if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
         if (dist1 < dist2 * (1 - constraint.maxDiff)) return false;

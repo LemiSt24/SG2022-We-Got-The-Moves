@@ -178,6 +178,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private String finishedExerciseSummary = "";
 
   private boolean timeUp;
+  private Long timeLastCheck = SystemClock.elapsedRealtime();
 
   private TextToSpeech tts;
   private boolean ttsBoolean = true;
@@ -217,6 +218,7 @@ public class MediapipeActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
 
     weakMediapipeActivity = new WeakReference<>(MediapipeActivity.this);
+    timeLastCheck = SystemClock.elapsedRealtime();
 
     UserRepository userRepository = UserRepository.getInstance(this.getApplication());
     userRepository.getCameraBoolean(new SingleObserver<Boolean>() {
@@ -364,34 +366,31 @@ public class MediapipeActivity extends AppCompatActivity {
 
               // exercises time based
               if (noPause && !currentExercise.isCountable()) {
+
                 if (!timerSet) {
                   setTimeCounter(exerciseIdToAmount.get(currentExercise.id));
                   timerSet = true;
                   timeUp = false;
-                  while (!timeUp){
-                    boolean changed = false;
-                    for (Constraint constraint:
-                            currentConstraints.get(currentExercise.exerciseStates.get(lastState))){
-                      Log.println(Log.DEBUG, "test", String.valueOf(classifier.judge_constraint(constraint)));
-                      if (!classifier.judge_constraint(constraint)){
-                        setExerciseX(constraint.message);
-                        tts(constraint.message);
-                        changed = true;
-                        break;
-                      }
-                    }
-                    if (!changed) {
-                      setExerciseCheck();
-                    }
-                    try {
-                      TimeUnit.SECONDS.sleep(5L);
-                    } catch (InterruptedException e){
-                      Log.println(Log.DEBUG, TAG, e.getMessage());
-                    }
-
-                  }
                 }
 
+                if (SystemClock.elapsedRealtime() - timeLastCheck > 5000L){
+                  boolean changed = false;
+
+                  for (Constraint constraint:
+                          currentConstraints.get(currentExercise.exerciseStates.get(lastState))){
+                  //Log.println(Log.DEBUG, "test", String.valueOf(classifier.judge_constraint(constraint)));
+                    if (!classifier.judge_constraint(constraint)){
+                      setExerciseX(constraint.message);
+                      tts(constraint.message);
+                      changed = true;
+                      break;
+                    }
+                  }
+                  if (!changed) {
+                    setExerciseCheck();
+                  }
+                  timeLastCheck = SystemClock.elapsedRealtime();
+                }
               }
 
               // exercises rep based
