@@ -335,7 +335,7 @@ public class MediapipeActivity extends AppCompatActivity {
               return;
             }
             List<LandmarkProto.NormalizedLandmark> landmarkList = landmarks.getLandmarkList();
-            for (int i = 0; i < landmarkList.size(); i++) {
+            for (int i = 11; i < landmarkList.size(); i++) {
               if (landmarkList.get(i).getPresence() < 0.8){
                 Log.v(
                         TAG,
@@ -344,6 +344,8 @@ public class MediapipeActivity extends AppCompatActivity {
                 return;
               }
             }
+
+            Log.println(Log.DEBUG, "test", landmarkList.get(13).toString()); //rechte elbow
 
             // Klassifizierung durchführen.
             // Der Classifier speichert das Ergebnis, es lässt sich aus get_result abrufen und für

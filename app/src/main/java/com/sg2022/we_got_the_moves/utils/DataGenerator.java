@@ -238,6 +238,18 @@ public class DataGenerator {
     return new Pair<>(exerciseStates, constraints);
   } */
 
+//"Squat", "Side-planks", "Mountain-climbers", "Pushup", "Sit-up", "Plank", "Biceps-curl"
+  //time of motion, range of motion
+  /*  Squat       Top:Füße schulterbreit
+                  Bottom:Füße schulterbreit, Knie hinter Fußspitze, Hüfte bis unter die Knie, keine nach innen fallende knie, Gewichtsverlagerung nach vorne, Angehobene Fersen, Rundrücken
+                  Quelle: #https://www.freeletics.com/de/blog/posts/fehler-beim-squatten/#gsc.tab=0
+      Sit-Up:     Bottom:Knie rechter Winkel, Rücken gerade,
+                  Top:Knie rechter Winkel, Nacken und Schulter bleiben gerade,
+                  https://praxistipps.focus.de/sit-ups-richtig-machen-so-gehts_127841
+      Bicep_Curl: Bottom: Füße schulterbreit, Ellenbogen am Körper, Hohlkreuz,Handgelenke abknicken,Ungerade Halswirbelsäule,Mitschwingen
+                  Top: Füße schulterbreit,Ellenbogen am Körper, Hohlkreuz, Handgelenke abknicken, Ungerade Halswirbelsäule, Mitschwingen
+                  https://upfit.de/coach/bizeps-curl/#:~:text=Richtige%20Ausf%C3%BChrung%20von%20Bizeps%20Curls,-Nehme%20die%20Kurzhanteln&text=Rolle%20deine%20Schultern%20nach%20hinten,dieser%20Bewegung%20in%20ihrer%20Position.
+  */
   public static List<Constraint> giveMeDummyConstraints(){
     List<Constraint> constraints = new ArrayList<Constraint>();
     // Füße schulterbreit (squat-global, plank-global, bicep_curl-global, push_up-global)
