@@ -108,12 +108,12 @@ public class DataGenerator {
     //"Squat", "Side-planks", "Mountain-climbers", "Pushup", "Sit-up", "Plank", "Biceps-curl"
           //Squats
           new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 3L)),
-                  "left_ankle", "left_knee",
-                  "left_hip", ExerciseState.COMPARATOR.GREATER,
+                  "left_ankle,right_ankle", "left_knee,right_knee",
+                  "left_hip,right_hip", ExerciseState.COMPARATOR.GREATER,
                   160, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
           new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 2L)),
-                  "left_ankle", "left_knee",
-                  "left_hip", ExerciseState.COMPARATOR.LESS,
+                  "left_ankle,right_ankle", "left_knee,right_knee",
+                  "left_hip_right_hip", ExerciseState.COMPARATOR.LESS,
                   120, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
           //Side-planks
           new ExerciseState(2, new ArrayList<Long>(Arrays.asList()),
@@ -128,21 +128,21 @@ public class DataGenerator {
                   0, null),
           //Push-Up
           new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L, 5L)),
-                  "left_wrist", "left_elbow",
-                  "left_shoulder", ExerciseState.COMPARATOR.GREATER,
+                  "left_wrist,right_wrist", "left_elbow,right_elbow",
+                  "left_shoulder,right_shoulder", ExerciseState.COMPARATOR.GREATER,
                   160, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
           new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L)),
-                  "left_wrist", "left_elbow",
-                  "left_shoulder", ExerciseState.COMPARATOR.LESS,
+                  "left_wrist,right_wrist", "left_elbow,right_elbow",
+                  "left_shoulder,right_shoulder", ExerciseState.COMPARATOR.LESS,
                   100, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
           //Sit-Up
           new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L)),
-                  "left_shoulder", "left_hip",
-                  "left_heel", ExerciseState.COMPARATOR.GREATER,
+                  "left_shoulder,right_shoulder", "left_hip,right_hip",
+                  "left_heel,right_heel", ExerciseState.COMPARATOR.GREATER,
                   160, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
           new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L)),
-                  "left_shoulder", "left_hip",
-                  "left_heel", ExerciseState.COMPARATOR.LESS,
+                  "left_shoulder,right_shoulder", "left_hip,right_hip",
+                  "left_heel,right_heel", ExerciseState.COMPARATOR.LESS,
                   110, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
           //Plank
           new ExerciseState(6, new ArrayList<Long>(Arrays.asList(3L)),
@@ -150,12 +150,12 @@ public class DataGenerator {
                   0, null),
           //Biceps-Curl
           new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L)),
-                  "left_wrist", "left_elbow",
-                  "left_shoulder", ExerciseState.COMPARATOR.GREATER,
+                  "left_wrist,right_wrist", "left_elbow,right_elbow",
+                  "left_shoulder,right_shoulder", ExerciseState.COMPARATOR.GREATER,
                   150, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
           new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L)),
-                  "left_wrist", "left_elbow",
-                  "left_shoulder", ExerciseState.COMPARATOR.LESS,
+                  "left_wrist,right_wrist", "left_elbow,right_elbow",
+                  "left_shoulder,right_shoulder", ExerciseState.COMPARATOR.LESS,
                   90, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
   };
 

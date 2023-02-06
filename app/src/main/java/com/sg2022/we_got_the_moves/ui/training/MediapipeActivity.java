@@ -396,7 +396,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
               // exercises rep based
               else if (noPause){
-                if (checkExerciseState(classifier.get_result())) {
+                if (checkExerciseState()) { //TODO Change for toggleable Classifier
                   boolean changed = false;
                   for (Constraint constraint:
                           currentConstraints.get(currentExercise.exerciseStates.get(lastState))){
@@ -607,6 +607,19 @@ public class MediapipeActivity extends AppCompatActivity {
         return true;
       }
     }
+    return false;
+  }
+
+  public boolean checkExerciseState() {
+      int nextState = lastState + 1;
+      if (nextState >= currentExercise.exerciseStates.size()){
+        nextState = 0;
+      }
+      if (classifier.judgeEnterState(currentExercise.exerciseStates.get(nextState))) {
+        lastState = nextState;
+        if (lastState == 0) countRepUp();
+        return true;
+      }
     return false;
   }
 
