@@ -113,7 +113,7 @@ public class DataGenerator {
                   160, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
           new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 2L)),
                   "left_ankle,right_ankle", "left_knee,right_knee",
-                  "left_hip_right_hip", ExerciseState.COMPARATOR.LESS,
+                  "left_hip,right_hip", ExerciseState.COMPARATOR.LESS,
                   120, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
           //Side-planks
           new ExerciseState(2, new ArrayList<Long>(Arrays.asList()),
@@ -138,12 +138,12 @@ public class DataGenerator {
           //Sit-Up
           new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L)),
                   "left_shoulder,right_shoulder", "left_hip,right_hip",
-                  "left_heel,right_heel", ExerciseState.COMPARATOR.GREATER,
-                  160, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
+                  "left_ankle,right_ankle", ExerciseState.COMPARATOR.LESS,
+                  190, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
           new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L)),
                   "left_shoulder,right_shoulder", "left_hip,right_hip",
-                  "left_heel,right_heel", ExerciseState.COMPARATOR.LESS,
-                  110, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
+                  "left_ankle,right_ankle", ExerciseState.COMPARATOR.GREATER,
+                  250, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
           //Plank
           new ExerciseState(6, new ArrayList<Long>(Arrays.asList(3L)),
                   "", "", "", null,

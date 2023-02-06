@@ -336,16 +336,16 @@ public class MediapipeActivity extends AppCompatActivity {
             }
             List<LandmarkProto.NormalizedLandmark> landmarkList = landmarks.getLandmarkList();
             for (int i = 11; i < landmarkList.size(); i++) {
-              if (landmarkList.get(i).getPresence() < 0.8){
+              if (landmarkList.get(i).getPresence() < 0.5){
                 Log.v(
                         TAG,
                         "landmark not visible: " + landmark_names.get(i) +" "
                                 + landmarkList.get(i));
+                setExerciseX(landmark_names.get(i) + " is not visible");
                 return;
               }
             }
 
-            Log.println(Log.DEBUG, "test", landmarkList.get(13).toString()); //rechte elbow
 
             // Klassifizierung durchführen.
             // Der Classifier speichert das Ergebnis, es lässt sich aus get_result abrufen und für
