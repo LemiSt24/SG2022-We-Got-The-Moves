@@ -245,11 +245,11 @@ public class DataGenerator {
     // Knie hinter den Fußspitzen (squat-bottom)
     constraints.add(new Constraint( "left_foot_index,right_foot_index", "left_knee,right_knee", "left_heel", "left_hip,left_knee", 0.1, "Keep knees behind your toe tips.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
     // Körper gerade (squat-top, side_plank-global, mountain_climbers-top, push_up-global, plank-global)
-    constraints.add(new Constraint( "left_shoulder,left_ankle", "left_hip", "left_foot_index", "left_foot_index", 0.1, "Straighten your body.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null)); // left_foot_index - left_foot_index sollte 0 sein
+    constraints.add(new Constraint( "right_shoulder,left_shoulder", "right_hip,left_hip", "right_ankle,left_ankle", "right_hip,left_hip", 0.1, "Straighten your body.", Constraint.TYPE.ANGLE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.Z, 180)); // left_foot_index - left_foot_index sollte 0 sein
     // Hände ca. schulterbreit (mountain_climbers-global, push_up-global, plank-global)
     constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_wrist", "right_wrist", 0.1, "Keep your hands a little wider than shoulder width.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
-    // Hände auf Schulterhöhe (push_up-global)
-    constraints.add(new Constraint( "left_wrist,right_wrist", "left_hip,right_hip", "left_shoulder,right_shoulder", "left_hip,right_hip", 0.1, "Keep your hands at shoulder height.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
+    // Hände auf Schulterhöhe (push_up-top)
+    constraints.add(new Constraint( "left_wrist,right_wrist", "left_shoulder,right_shoulder", "left_hip,right_hip", "left_shoulder,right_shoulder", 0.1, "Keep your hands at shoulder height.", Constraint.TYPE.ANGLE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.Z, 70));
     // Füße auf Boden / Knie angewinkelt (sit_up-global)
     constraints.add(new Constraint( "left_hip,right_hip", "left_ankle,right_ankle", "left_knee,right_knee", "left_ankle,right_ankle", 0.1, "Keep your feet flat on the ground.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
     // Ellenbogen am Körper (bicep_curl-global)
