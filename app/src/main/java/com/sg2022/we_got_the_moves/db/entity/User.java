@@ -35,8 +35,15 @@ public class User {
   @ColumnInfo(name = "tts")
   public boolean tts;
 
-  public User(String name, float height, float weight, SEX sex, int age, int calories,
-              boolean frontCamera, boolean tts) {
+  public User(
+      String name,
+      float height,
+      float weight,
+      SEX sex,
+      int age,
+      int calories,
+      boolean frontCamera,
+      boolean tts) {
     this.id = 1;
     this.name = name;
     this.height = height;

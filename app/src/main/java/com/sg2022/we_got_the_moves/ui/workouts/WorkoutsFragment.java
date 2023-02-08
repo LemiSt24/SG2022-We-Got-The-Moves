@@ -14,14 +14,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.sg2022.we_got_the_moves.R;
+import com.sg2022.we_got_the_moves.databinding.DialogTextInputBinding;
 import com.sg2022.we_got_the_moves.databinding.FragmentWorkoutsBinding;
-import com.sg2022.we_got_the_moves.databinding.InputDialogTextBinding;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 
 public class WorkoutsFragment extends Fragment {
 
   private static final String TAG = "WorkoutListFragment";
-
   private WorkoutListAdapter adapter;
   private WorkoutsViewModel model;
 
@@ -29,8 +28,7 @@ public class WorkoutsFragment extends Fragment {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     WorkoutsViewModel.Factory factory =
-        new WorkoutsViewModel.Factory(
-            this.requireActivity().getApplication(), this.requireActivity());
+        new WorkoutsViewModel.Factory(this.requireActivity().getApplication());
     this.model =
         new ViewModelProvider(this.requireActivity(), factory).get(WorkoutsViewModel.class);
     this.adapter = new WorkoutListAdapter(this, this.model);
@@ -55,9 +53,9 @@ public class WorkoutsFragment extends Fragment {
 
   private void showNewDialog() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-    InputDialogTextBinding binding =
+    DialogTextInputBinding binding =
         DataBindingUtil.inflate(
-            LayoutInflater.from(this.getContext()), R.layout.input_dialog_text, null, false);
+            LayoutInflater.from(this.getContext()), R.layout.dialog_text_input, null, false);
     Workout newItem = new Workout(0, getString(R.string.untitled));
     binding.setText(newItem.name);
     builder
@@ -66,7 +64,7 @@ public class WorkoutsFragment extends Fragment {
         .setPositiveButton(
             R.string.yes,
             (dialog, id) -> {
-              String text = binding.textViewTextDialog.getText().toString();
+              String text = binding.textviewTextDialog.getText().toString();
               if (!text.isEmpty()) {
                 newItem.name = text;
                 this.model.repository.insertWorkout(newItem);
@@ -76,10 +74,5 @@ public class WorkoutsFragment extends Fragment {
         .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
         .create()
         .show();
-  }
-
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
   }
 }

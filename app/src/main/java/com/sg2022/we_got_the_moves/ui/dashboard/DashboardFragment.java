@@ -25,8 +25,7 @@ public class DashboardFragment extends Fragment {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     DashboardViewModel.Factory factory =
-        new DashboardViewModel.Factory(
-            this.requireActivity().getApplication(), this.requireActivity());
+        new DashboardViewModel.Factory(this.requireActivity().getApplication());
     DashboardViewModel model =
         new ViewModelProvider(this.requireActivity(), factory).get(DashboardViewModel.class);
     this.adapter = new InstructionListAdapter(this, model);

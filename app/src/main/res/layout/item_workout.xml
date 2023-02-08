@@ -42,7 +42,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/text_title_workout_item"
+                    android:id="@+id/textview_title_workout_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autoSizeMaxTextSize="24sp"
@@ -71,7 +71,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_title_workout_item">
+                    app:layout_constraintTop_toBottomOf="@+id/textview_title_workout_item">
 
                     <ImageButton
                         android:id="@+id/expand_btn_workout_item"

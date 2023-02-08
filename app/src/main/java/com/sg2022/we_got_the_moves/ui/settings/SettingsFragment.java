@@ -148,23 +148,23 @@ public class SettingsFragment extends Fragment {
                   });
               binding.radiobtnFrontcameraSettings.setOnClickListener(
                   v -> {
-                      binding.radiobtnBackcameraSettings.setChecked(false);
-                      binding.getUser().frontCamera = true;
+                    binding.radiobtnBackcameraSettings.setChecked(false);
+                    binding.getUser().frontCamera = true;
                   });
               binding.radiobtnBackcameraSettings.setOnClickListener(
                   v -> {
-                      binding.radiobtnFrontcameraSettings.setChecked(false);
-                      binding.getUser().frontCamera = false;
+                    binding.radiobtnFrontcameraSettings.setChecked(false);
+                    binding.getUser().frontCamera = false;
                   });
               binding.radiobtnTtsOnSettings.setOnClickListener(
                   v -> {
-                      binding.radiobtnTtsOffSettings.setChecked(false);
-                      binding.getUser().tts = true;
+                    binding.radiobtnTtsOffSettings.setChecked(false);
+                    binding.getUser().tts = true;
                   });
               binding.radiobtnTtsOffSettings.setOnClickListener(
                   v -> {
-                      binding.radiobtnTtsOnSettings.setChecked(false);
-                      binding.getUser().tts = false;
+                    binding.radiobtnTtsOnSettings.setChecked(false);
+                    binding.getUser().tts = false;
                   });
             });
 
@@ -223,10 +223,5 @@ public class SettingsFragment extends Fragment {
                 }));
 
     return binding.getRoot();
-  }
-
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
   }
 }

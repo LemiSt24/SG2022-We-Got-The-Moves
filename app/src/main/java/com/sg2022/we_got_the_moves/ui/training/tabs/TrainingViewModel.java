@@ -1,14 +1,12 @@
-package com.sg2022.we_got_the_moves.ui.training;
+package com.sg2022.we_got_the_moves.ui.training.tabs;
 
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.sg2022.we_got_the_moves.BasicApp;
 import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
@@ -18,19 +16,16 @@ public class TrainingViewModel extends AndroidViewModel {
   public final FinishedWorkoutRepository finishedWorkoutRepository;
   public final WorkoutsRepository workoutsRepository;
   public final ConstraintRepository constraintRepository;
-  public final LifecycleOwner owner;
 
   public TrainingViewModel(
       @NonNull final Application app,
       @NonNull final FinishedWorkoutRepository finishedWorkoutRepository,
       @NonNull final WorkoutsRepository workoutsRepository,
-      @NonNull final ConstraintRepository constraintRepository,
-      @NonNull LifecycleOwner owner) {
+      @NonNull final ConstraintRepository constraintRepository) {
     super(app);
     this.finishedWorkoutRepository = finishedWorkoutRepository;
     this.workoutsRepository = workoutsRepository;
     this.constraintRepository = constraintRepository;
-    this.owner = owner;
   }
 
   public static class Factory implements ViewModelProvider.Factory {
@@ -39,14 +34,12 @@ public class TrainingViewModel extends AndroidViewModel {
     private final FinishedWorkoutRepository finishedWorkoutRepository;
     private final WorkoutsRepository workoutsRepository;
     private final ConstraintRepository constraintRepository;
-    private final LifecycleOwner owner;
 
-    public Factory(@NonNull final Application app, @NonNull LifecycleOwner owner) {
+    public Factory(@NonNull final Application app) {
       this.app = app;
-      this.finishedWorkoutRepository = ((BasicApp) app).getFinishedTrainingRepository();
-      this.workoutsRepository = ((BasicApp) app).getWorkoutsRepository();
-      this.constraintRepository = ((BasicApp) app).getConstraintRepository();
-      this.owner = owner;
+      this.finishedWorkoutRepository = FinishedWorkoutRepository.getInstance(app);
+      this.workoutsRepository = WorkoutsRepository.getInstance(app);
+      this.constraintRepository = ConstraintRepository.getInstance(app);
     }
 
     @SuppressWarnings("unchecked")
@@ -55,7 +48,7 @@ public class TrainingViewModel extends AndroidViewModel {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
       return (T)
           new TrainingViewModel(
-              app, finishedWorkoutRepository, workoutsRepository, constraintRepository, owner);
+              app, finishedWorkoutRepository, workoutsRepository, constraintRepository);
     }
   }
 }

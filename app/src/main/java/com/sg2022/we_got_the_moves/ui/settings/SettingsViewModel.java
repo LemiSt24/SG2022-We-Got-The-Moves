@@ -10,7 +10,7 @@ import com.sg2022.we_got_the_moves.repository.UserRepository;
 
 public class SettingsViewModel extends ViewModel {
 
-  public UserRepository userRepository;
+  public final UserRepository userRepository;
 
   public SettingsViewModel(@NonNull final Application app, @NonNull UserRepository repository) {
     this.userRepository = repository;

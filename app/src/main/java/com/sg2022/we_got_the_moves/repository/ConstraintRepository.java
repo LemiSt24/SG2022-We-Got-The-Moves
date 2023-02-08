@@ -35,7 +35,7 @@ public class ConstraintRepository {
     if (INSTANCE == null) {
       synchronized (ConstraintRepository.class) {
         if (INSTANCE == null) {
-          AppDatabase db = AppDatabase.getInstance(app.getApplicationContext());
+          AppDatabase db = AppDatabase.getInstance(app);
           INSTANCE = new ConstraintRepository(db);
         }
       }
@@ -59,7 +59,7 @@ public class ConstraintRepository {
     this.executors.getPoolThread().execute(() -> this.constraintDao.insert(l));
   }
 
-  public Single<Constraint> getConstraint(Long id){
-     return this.constraintDao.getSingle(id);
+  public Single<Constraint> getConstraint(Long id) {
+    return this.constraintDao.getSingle(id);
   }
 }

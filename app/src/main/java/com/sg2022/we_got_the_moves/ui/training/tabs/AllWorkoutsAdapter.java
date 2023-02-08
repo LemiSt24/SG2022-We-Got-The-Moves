@@ -1,4 +1,4 @@
-package com.sg2022.we_got_the_moves.ui.training;
+package com.sg2022.we_got_the_moves.ui.training.tabs;
 
 import android.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LifecycleOwner;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg2022.we_got_the_moves.MainActivity;
@@ -22,21 +22,20 @@ public class AllWorkoutsAdapter
     extends RecyclerView.Adapter<AllWorkoutsAdapter.AllWorkoutsListViewHolder> {
 
   private static final String TAG = "AllWorkoutAdapter";
-  private final LifecycleOwner owner;
+  private final Fragment fragment;
   private final TrainingViewModel model;
   private List<Workout> workoutList;
-  private ItemWorkoutNoEditBinding binding;
   private String exercisesString;
 
-  public AllWorkoutsAdapter(@NonNull LifecycleOwner owner, @NonNull TrainingViewModel model) {
-    this.owner = owner;
+  public AllWorkoutsAdapter(@NonNull Fragment fragment, @NonNull TrainingViewModel model) {
+    this.fragment = fragment;
     this.model = model;
 
     this.model
         .workoutsRepository
         .getAllWorkouts()
         .observe(
-            owner,
+            fragment,
             workouts -> {
               if (workouts == null || workouts.isEmpty()) workoutList.clear();
               else workoutList = workouts;
@@ -47,10 +46,10 @@ public class AllWorkoutsAdapter
   @NonNull
   @Override
   public AllWorkoutsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    this.binding =
+    com.sg2022.we_got_the_moves.databinding.ItemWorkoutNoEditBinding binding =
         DataBindingUtil.inflate(
             LayoutInflater.from(parent.getContext()), R.layout.item_workout_no_edit, parent, false);
-    binding.setLifecycleOwner(this.owner);
+    binding.setLifecycleOwner(this.fragment);
     return new AllWorkoutsListViewHolder(binding);
   }
 
@@ -59,43 +58,42 @@ public class AllWorkoutsAdapter
     Workout w = this.workoutList.get(position);
     holder.binding.setWorkout(w);
     holder.binding.workoutName.setText(w.name);
-    holder.binding.workoutName.setOnClickListener(
-        v -> showWorkoutDialog(w));
+    holder.binding.workoutName.setOnClickListener(v -> showWorkoutDialog(w));
   }
 
   private void showWorkoutDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstanceActivity());
     DialogStartWorkoutBinding binding =
-            DataBindingUtil.inflate(
-                    LayoutInflater.from(MainActivity.getInstanceActivity()),
-                    R.layout.dialog_start_workout,
-                    null,
-                    false);
+        DataBindingUtil.inflate(
+            LayoutInflater.from(MainActivity.getInstanceActivity()),
+            R.layout.dialog_start_workout,
+            null,
+            false);
     builder
-            .setView(binding.getRoot())
-            .setPositiveButton(
-                    "Start",
-                    (dialog, id) -> {
-                      MainActivity.getInstanceActivity().openMediapipeActivity(w.id);
-                      dialog.dismiss();
-                    })
-            .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
-            .create()
-            .show();
+        .setView(binding.getRoot())
+        .setPositiveButton(
+            "Start",
+            (dialog, id) -> {
+              MainActivity.getInstanceActivity().openMediapipeActivity(w.id);
+              dialog.dismiss();
+            })
+        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+        .create()
+        .show();
     binding.textviewStartWorkoutWorkout.setText(w.name);
     exercisesString = "";
-    model.workoutsRepository
-            .getAllExercises(w.id)
-            .observe(
-                    owner,
-                    exercises -> {
-                      for (Exercise e : exercises){
-                        exercisesString += e.name + "\n";
-                      }
-                      binding.textviewStartWorkoutExercises.setText(exercisesString);
-                      notifyDataSetChanged();
-                    }
-            );
+    model
+        .workoutsRepository
+        .getAllExercises(w.id)
+        .observe(
+            fragment,
+            exercises -> {
+              for (Exercise e : exercises) {
+                exercisesString += e.name + "\n";
+              }
+              binding.textviewStartWorkoutExercises.setText(exercisesString);
+              notifyDataSetChanged();
+            });
   }
 
   @Override
@@ -110,7 +108,7 @@ public class AllWorkoutsAdapter
   }
 
   protected static class AllWorkoutsListViewHolder extends RecyclerView.ViewHolder {
-    public ItemWorkoutNoEditBinding binding;
+    public final ItemWorkoutNoEditBinding binding;
 
     AllWorkoutsListViewHolder(ItemWorkoutNoEditBinding binding) {
       super(binding.getRoot());

@@ -47,7 +47,7 @@ public class WorkoutsRepository {
     if (INSTANCE == null) {
       synchronized (WorkoutsRepository.class) {
         if (INSTANCE == null) {
-          AppDatabase db = AppDatabase.getInstance(app.getApplicationContext());
+          AppDatabase db = AppDatabase.getInstance(app);
           INSTANCE = new WorkoutsRepository(db);
         }
       }

@@ -1,4 +1,4 @@
-package com.sg2022.we_got_the_moves.utils;
+package com.sg2022.we_got_the_moves.ui;
 
 import org.javatuples.Quartet;
 import org.javatuples.Quintet;
@@ -19,6 +19,7 @@ import kotlin.Triple;
 
 public class TimeFormatUtil {
 
+  public static final String TAG = "TimeFormatUtil";
   public static final Integer DAYS_PER_MONTH = 30;
   public static final Integer DAYS_PER_YEAR = 360;
 
@@ -128,11 +129,6 @@ public class TimeFormatUtil {
   public static int dateToWeekDay(Date date) {
     LocalDateTime localDateTime = dateToLocalDateTime(date);
     return localDateTime.getDayOfWeek().getValue();
-  }
-
-  public static DAY dateToWeekDayEnum(Date date) {
-    LocalDateTime localDateTime = dateToLocalDateTime(date);
-    return DAY.values()[localDateTime.getDayOfWeek().getValue() - 1];
   }
 
   public static Date dateAdjustedByWeeks(Date date, long weeks) {

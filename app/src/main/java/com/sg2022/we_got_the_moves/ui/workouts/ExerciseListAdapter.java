@@ -15,13 +15,13 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstan
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.sg2022.we_got_the_moves.R;
-import com.sg2022.we_got_the_moves.databinding.InputDialogInstructionBinding;
-import com.sg2022.we_got_the_moves.databinding.InputDialogNumberBinding;
-import com.sg2022.we_got_the_moves.databinding.InputDialogTimeBinding;
+import com.sg2022.we_got_the_moves.databinding.DialogInstructionBinding;
+import com.sg2022.we_got_the_moves.databinding.DialogNumberInputBinding;
+import com.sg2022.we_got_the_moves.databinding.DialogTimeInputBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemExerciseBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
-import com.sg2022.we_got_the_moves.utils.TimeFormatUtil;
+import com.sg2022.we_got_the_moves.ui.TimeFormatUtil;
 
 import java.util.List;
 
@@ -32,15 +32,15 @@ public class ExerciseListAdapter
 
   private static final String TAG = "ExerciseListAdapter";
 
-  private final Fragment owner;
+  private final Fragment fragment;
   private final WorkoutsViewModel model;
   private final List<WorkoutExerciseAndExercise> list;
 
   public ExerciseListAdapter(
-      @NonNull Fragment owner,
+      @NonNull Fragment fragment,
       @NonNull WorkoutsViewModel model,
       @NonNull List<WorkoutExerciseAndExercise> list) {
-    this.owner = owner;
+    this.fragment = fragment;
     this.model = model;
     this.list = list;
   }
@@ -69,17 +69,17 @@ public class ExerciseListAdapter
   }
 
   private void showAmountDialog(WorkoutExerciseAndExercise ewe) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.fragment.getContext());
     ViewDataBinding binding =
         DataBindingUtil.inflate(
-            LayoutInflater.from(this.owner.getContext()),
+            LayoutInflater.from(this.fragment.getContext()),
             ewe.exercise.unit == Exercise.UNIT.REPETITION
-                ? R.layout.input_dialog_number
-                : R.layout.input_dialog_time,
+                ? R.layout.dialog_number_input
+                : R.layout.dialog_time_input,
             null,
             false);
-    if (binding instanceof InputDialogNumberBinding) {
-      InputDialogNumberBinding b = (InputDialogNumberBinding) binding;
+    if (binding instanceof DialogNumberInputBinding) {
+      DialogNumberInputBinding b = (DialogNumberInputBinding) binding;
       b.numberPickerNumberDialog.setMinValue(0);
       b.numberPickerNumberDialog.setMaxValue(100);
       b.numberPickerNumberDialog.setWrapSelectorWheel(true);
@@ -87,7 +87,8 @@ public class ExerciseListAdapter
       builder
           .setView(binding.getRoot())
           .setTitle(
-              String.format(this.owner.getString(R.string.set_exercise_amount), ewe.exercise.name))
+              String.format(
+                  this.fragment.getString(R.string.set_exercise_amount), ewe.exercise.name))
           .setPositiveButton(
               R.string.yes,
               (dialog, id) -> {
@@ -105,7 +106,7 @@ public class ExerciseListAdapter
           .create()
           .show();
     } else {
-      InputDialogTimeBinding b = (InputDialogTimeBinding) binding;
+      DialogTimeInputBinding b = (DialogTimeInputBinding) binding;
       Triple<Integer, Integer, Integer> triple =
           TimeFormatUtil.secsToHhmmss(ewe.workoutExercise.amount);
       b.numberPickerHoursDialog.setMinValue(0);
@@ -125,7 +126,8 @@ public class ExerciseListAdapter
       builder
           .setView(binding.getRoot())
           .setTitle(
-              String.format(this.owner.getString(R.string.set_exercise_amount), ewe.exercise.name))
+              String.format(
+                  this.fragment.getString(R.string.set_exercise_amount), ewe.exercise.name))
           .setPositiveButton(
               R.string.yes,
               (dialog, id) -> {
@@ -151,15 +153,15 @@ public class ExerciseListAdapter
   }
 
   private void showInstructionDialog(@NonNull Exercise e) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
-    InputDialogInstructionBinding binding =
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.fragment.getContext());
+    DialogInstructionBinding binding =
         DataBindingUtil.inflate(
-            LayoutInflater.from(this.owner.requireContext()),
-            R.layout.input_dialog_instruction,
+            LayoutInflater.from(this.fragment.requireContext()),
+            R.layout.dialog_instruction,
             null,
             false);
     binding.setExercise(e);
-    this.owner.getLifecycle().addObserver(binding.youtubePlayerViewInstructionDialog);
+    this.fragment.getLifecycle().addObserver(binding.youtubePlayerViewInstructionDialog);
     binding.youtubePlayerViewInstructionDialog.addYouTubePlayerListener(
         new AbstractYouTubePlayerListener() {
           @Override
@@ -178,7 +180,7 @@ public class ExerciseListAdapter
     builder
         .setOnDismissListener(dialog -> binding.youtubePlayerViewInstructionDialog.release())
         .setView(binding.getRoot())
-        .setTitle(String.format(this.owner.getString(R.string.instruction_title), e.name))
+        .setTitle(String.format(this.fragment.getString(R.string.instruction_title), e.name))
         .setNeutralButton(R.string.ok, (dialog, id) -> dialog.dismiss())
         .create()
         .show();
@@ -186,7 +188,7 @@ public class ExerciseListAdapter
 
   public static class ExerciseItemViewHolder extends RecyclerView.ViewHolder {
 
-    public ItemExerciseBinding binding;
+    public final ItemExerciseBinding binding;
 
     public ExerciseItemViewHolder(@NonNull ItemExerciseBinding binding) {
       super(binding.getRoot());

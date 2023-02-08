@@ -33,8 +33,8 @@ import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsDailyBinding;
 import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedExerciseAndExercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedWorkoutAndFinishedExercises;
+import com.sg2022.we_got_the_moves.ui.TimeFormatUtil;
 import com.sg2022.we_got_the_moves.ui.statistics.StatisticsViewModel;
-import com.sg2022.we_got_the_moves.utils.TimeFormatUtil;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,7 +45,6 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class DailyOverviewFragment extends Fragment {
   private final String TAG = "DailyOverviewFragment";
-
   private FragmentStatisticsDailyBinding binding;
   private StatisticsViewModel model;
 
@@ -53,8 +52,7 @@ public class DailyOverviewFragment extends Fragment {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     StatisticsViewModel.Factory factory =
-        new StatisticsViewModel.Factory(
-            this.requireActivity().getApplication(), this.requireActivity());
+        new StatisticsViewModel.Factory(this.requireActivity().getApplication());
     this.model =
         new ViewModelProvider(this.requireActivity(), factory).get(StatisticsViewModel.class);
   }
@@ -110,9 +108,9 @@ public class DailyOverviewFragment extends Fragment {
                     pieDataSet.setValueTextSize(16f);
                     pieDataSet.setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
-                    PieChart pc = binding.pieChartDailyStatistics;
+                    PieChart pc = binding.piechartStatisticsDaily;
                     pc.setData(new PieData(pieDataSet));
-                    pc.setRenderer(new CustomPieChartRenderer(binding.pieChartDailyStatistics));
+                    pc.setRenderer(new CustomPieChartRenderer(binding.piechartStatisticsDaily));
 
                     setupPieChart();
                     pc.invalidate();
@@ -136,7 +134,7 @@ public class DailyOverviewFragment extends Fragment {
     DisplayMetrics displayMetrics = new DisplayMetrics();
     requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     int minScreenSize = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
-    PieChart pc = binding.pieChartDailyStatistics;
+    PieChart pc = binding.piechartStatisticsDaily;
     pc.setMinimumWidth(minScreenSize);
     pc.setMinimumHeight(minScreenSize);
     pc.setEntryLabelTextSize(16);

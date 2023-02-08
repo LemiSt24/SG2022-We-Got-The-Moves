@@ -1,4 +1,4 @@
-package com.sg2022.we_got_the_moves.ui.statistics;
+package com.sg2022.we_got_the_moves.ui;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -8,6 +8,7 @@ import java.util.List;
 
 public class CustomFragmentStateAdapter extends FragmentStateAdapter {
 
+  public static final String TAG = "CustomFragmentStateAdapter";
   private final List<Class<? extends Fragment>> fragments;
 
   public CustomFragmentStateAdapter(

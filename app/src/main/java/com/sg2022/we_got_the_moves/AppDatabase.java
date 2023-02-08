@@ -1,6 +1,6 @@
 package com.sg2022.we_got_the_moves;
 
-import android.content.Context;
+import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -26,7 +26,6 @@ import com.sg2022.we_got_the_moves.db.entity.daos.FinishedWorkoutDao;
 import com.sg2022.we_got_the_moves.db.entity.daos.UserDao;
 import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutDao;
 import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutExerciseDao;
-import com.sg2022.we_got_the_moves.utils.DataGenerator;
 
 // TODO: Add entity classes here
 @Database(
@@ -44,33 +43,31 @@ import com.sg2022.we_got_the_moves.utils.DataGenerator;
     exportSchema = false)
 @TypeConverters({com.sg2022.we_got_the_moves.db.converter.TypeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
-
   public static final String DB_NAME = "SGWeGotTheMovesDB";
   private static final String TAG = "AppDatabase";
   private static volatile AppDatabase INSTANCE;
 
-  public static AppDatabase getInstance(final Context context) {
+  public static AppDatabase getInstance(@NonNull final Application app) {
     if (INSTANCE == null) {
       synchronized (AppDatabase.class) {
         if (INSTANCE == null) {
-          Context c = context.getApplicationContext();
           AppExecutors e = AppExecutors.getInstance();
-          INSTANCE = buildDatabase(c, e);
+          INSTANCE = buildDatabase(app, e);
         }
       }
     }
     return INSTANCE;
   }
 
-  private static AppDatabase buildDatabase(final Context appContext, final AppExecutors executors) {
-    return Room.databaseBuilder(appContext.getApplicationContext(), AppDatabase.class, DB_NAME)
+  private static AppDatabase buildDatabase(
+      @NonNull final Application app, final AppExecutors executors) {
+    return Room.databaseBuilder(app.getApplicationContext(), AppDatabase.class, DB_NAME)
         .fallbackToDestructiveMigration()
         .addCallback(
             new Callback() {
               @Override
               public void onOpen(@NonNull SupportSQLiteDatabase db) {
                 super.onOpen(db);
-                Log.d(TAG, "DB opened");
               }
 
               @Override
@@ -82,16 +79,14 @@ public abstract class AppDatabase extends RoomDatabase {
                     .execute(
                         () -> {
                           // TODO: Init DB with Dummy Data only at creation time
-                          getInstance(appContext)
+                          getInstance(app)
                               .ExerciseDao()
                               .insertAll(DataGenerator.getDummyExercises());
-                          getInstance(appContext)
-                              .WorkoutDao()
-                              .insertAll(DataGenerator.getDummyWorkouts());
-                          getInstance(appContext)
+                          getInstance(app).WorkoutDao().insertAll(DataGenerator.getDummyWorkouts());
+                          getInstance(app)
                               .WorkoutExerciseDao()
                               .insertAll(DataGenerator.getDummyWorkoutExercises());
-                          getInstance(appContext)
+                          getInstance(app)
                               .UserDao()
                               .insert(
                                   new User(
@@ -102,14 +97,14 @@ public abstract class AppDatabase extends RoomDatabase {
                                       22,
                                       500,
                                       true,
-                                    true));
-                          getInstance(appContext)
+                                      true));
+                          getInstance(app)
                               .FinishedWorkoutDao()
                               .insert(DataGenerator.getDummyFinsishedWorkouts());
-                          getInstance(appContext)
+                          getInstance(app)
                               .FinishedExerciseDao()
                               .insert(DataGenerator.getDummyFinsishedExercise());
-                          getInstance(appContext)
+                          getInstance(app)
                               .ConstraintDao()
                               .insert(DataGenerator.giveMeDummyConstraints());
                         });

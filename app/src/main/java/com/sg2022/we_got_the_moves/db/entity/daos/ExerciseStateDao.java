@@ -38,22 +38,4 @@ public interface ExerciseStateDao {
   @Transaction
   @Query("SELECT * FROM Exercise WHERE Exercise.id == :exerciseId")
   Single<List<ExerciseAndExerciseStates>> getAllSingle(int exerciseId);
-
-  /*
-  @Transaction
-  @Query(
-      "SELECT DISTINCT ExerciseState.exerciseState FROM ExerciseState WHERE ExerciseState.exerciseId == :exerciseId")
-  Single<List<ExerciseState.STATE>> getAllStatesSingle(int exerciseId);
-
-  @Transaction
-  @Query(
-      "SELECT * FROM ExerciseState WHERE ExerciseState.exerciseId == :exerciseId AND ExerciseState.exerciseState == :exerciseState")
-  Single<List<ExerciseStateAndConstraints>> getStateAndConstraintsSingle(
-      int exerciseId, ExerciseState.STATE exerciseState);
-
-  @Transaction
-  @Query(
-      "SELECT * FROM ExerciseState WHERE ExerciseState.exerciseId == :exerciseId AND ExerciseState.exerciseState == :exerciseState AND ExerciseState.constraintId ==:constraintId")
-  Single<List<ExerciseStateAndConstraints>> getStateAndConstraintSingle(
-      int exerciseId, ExerciseState.STATE exerciseState, int constraintId); */
 }

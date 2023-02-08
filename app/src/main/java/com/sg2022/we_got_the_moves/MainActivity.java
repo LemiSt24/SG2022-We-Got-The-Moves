@@ -54,9 +54,4 @@ public class MainActivity extends AppCompatActivity {
     intent.putExtra("WORKOUT_ID", id);
     startActivity(intent);
   }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-  }
 }

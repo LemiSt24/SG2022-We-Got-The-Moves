@@ -1,6 +1,5 @@
-package com.sg2022.we_got_the_moves.utils;
+package com.sg2022.we_got_the_moves;
 
-import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
@@ -125,15 +124,14 @@ public class DataGenerator {
   public static List<Exercise> getDummyExercises() {
     List<Exercise> e = new ArrayList<>();
 
-
     for (int i = 0; i < exerciseNames.length; ++i) {
       if (i == 1 || i == 2)
         //noinspection UnnecessaryContinue
         continue;
       else {
         List<ExerciseState> exerciseStates = new ArrayList<>();
-        for (ExerciseState state : states){
-          if (state.exerciseId == i+1){
+        for (ExerciseState state : states) {
+          if (state.exerciseId == i + 1) {
             exerciseStates.add(state);
           }
         }
@@ -199,22 +197,100 @@ public class DataGenerator {
     return fe;
   }
 
-  public static List<Constraint> giveMeDummyConstraints(){
+  public static List<Constraint> giveMeDummyConstraints() {
     List<Constraint> constraints = new ArrayList<>();
     // Füße schulterbreit (squat-global, plank-global, bicep_curl-global, push_up-global)
-    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_ankle", "right_ankle", 0.1, "Keep your feet at shoulder width.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
+    constraints.add(
+        new Constraint(
+            "left_shoulder",
+            "right_shoulder",
+            "left_ankle",
+            "right_ankle",
+            0.1,
+            "Keep your feet at shoulder width.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null));
     // Knie hinter den Fußspitzen (squat-bottom)
-    constraints.add(new Constraint( "left_foot_index,right_foot_index", "left_knee,right_knee", "left_heel", "left_hip,left_knee", 0.1, "Keep knees behind your toe tips.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
-    // Körper gerade (squat-top, side_plank-global, mountain_climbers-top, push_up-global, plank-global)
-    constraints.add(new Constraint( "left_shoulder,left_ankle", "left_hip", "left_foot_index", "left_foot_index", 0.1, "Straighten your body.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null)); // left_foot_index - left_foot_index sollte 0 sein
+    constraints.add(
+        new Constraint(
+            "left_foot_index,right_foot_index",
+            "left_knee,right_knee",
+            "left_heel",
+            "left_hip,left_knee",
+            0.1,
+            "Keep knees behind your toe tips.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null));
+    // Körper gerade (squat-top, side_plank-global, mountain_climbers-top, push_up-global,
+    // plank-global)
+    constraints.add(
+        new Constraint(
+            "left_shoulder,left_ankle",
+            "left_hip",
+            "left_foot_index",
+            "left_foot_index",
+            0.1,
+            "Straighten your body.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null)); // left_foot_index - left_foot_index sollte 0 sein
     // Hände ca. schulterbreit (mountain_climbers-global, push_up-global, plank-global)
-    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_wrist", "right_wrist", 0.1, "Keep your hands a little wider than shoulder width.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
+    constraints.add(
+        new Constraint(
+            "left_shoulder",
+            "right_shoulder",
+            "left_wrist",
+            "right_wrist",
+            0.1,
+            "Keep your hands a little wider than shoulder width.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null));
     // Hände auf Schulterhöhe (push_up-global)
-    constraints.add(new Constraint( "left_wrist,right_wrist", "left_hip,right_hip", "left_shoulder,right_shoulder", "left_hip,right_hip", 0.1, "Keep your hands at shoulder height.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
+    constraints.add(
+        new Constraint(
+            "left_wrist,right_wrist",
+            "left_hip,right_hip",
+            "left_shoulder,right_shoulder",
+            "left_hip,right_hip",
+            0.1,
+            "Keep your hands at shoulder height.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null));
     // Füße auf Boden / Knie angewinkelt (sit_up-global)
-    constraints.add(new Constraint( "left_hip,right_hip", "left_ankle,right_ankle", "left_knee,right_knee", "left_ankle,right_ankle", 0.1, "Keep your feet flat on the ground.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
+    constraints.add(
+        new Constraint(
+            "left_hip,right_hip",
+            "left_ankle,right_ankle",
+            "left_knee,right_knee",
+            "left_ankle,right_ankle",
+            0.1,
+            "Keep your feet flat on the ground.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null));
     // Ellenbogen am Körper (bicep_curl-global)
-    constraints.add(new Constraint( "left_shoulder,left_hip", "right_shoulder,right_hip", "left_elbow", "right_elbow", 0.1, "Keep your elbows close to your body.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
+    constraints.add(
+        new Constraint(
+            "left_shoulder,left_hip",
+            "right_shoulder,right_hip",
+            "left_elbow",
+            "right_elbow",
+            0.1,
+            "Keep your elbows close to your body.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null));
     return constraints;
   }
 }

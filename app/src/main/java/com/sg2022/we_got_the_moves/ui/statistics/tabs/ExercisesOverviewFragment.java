@@ -40,7 +40,6 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class ExercisesOverviewFragment extends Fragment {
   private final String TAG = "ExercisesOverviewFragment";
-
   private FragmentStatisticsExercisesBinding binding;
   private StatisticsViewModel model;
 
@@ -48,8 +47,7 @@ public class ExercisesOverviewFragment extends Fragment {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     StatisticsViewModel.Factory factory =
-        new StatisticsViewModel.Factory(
-            this.requireActivity().getApplication(), this.requireActivity());
+        new StatisticsViewModel.Factory(this.requireActivity().getApplication());
     this.model =
         new ViewModelProvider(this.requireActivity(), factory).get(StatisticsViewModel.class);
   }
@@ -145,7 +143,7 @@ public class ExercisesOverviewFragment extends Fragment {
             barData.setValueTextSize(14f);
             barData.setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
-            HorizontalBarChart hbc = binding.barChartExercisesStatistics;
+            HorizontalBarChart hbc = binding.barChartStatisticsExercises;
             hbc.setData(barData);
 
             XAxis xAxis = hbc.getXAxis();
@@ -172,7 +170,7 @@ public class ExercisesOverviewFragment extends Fragment {
     this.requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     int minScreenSize = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
 
-    HorizontalBarChart hbc = this.binding.barChartExercisesStatistics;
+    HorizontalBarChart hbc = this.binding.barChartStatisticsExercises;
     hbc.setMinimumHeight((int) (minScreenSize * 1.5));
     hbc.setMinimumWidth(minScreenSize);
 

@@ -1,4 +1,4 @@
-package com.sg2022.we_got_the_moves.ui.training;
+package com.sg2022.we_got_the_moves.ui.training.tabs;
 
 import android.app.AlertDialog;
 import android.util.Log;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.LifecycleOwner;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sg2022.we_got_the_moves.MainActivity;
@@ -25,16 +25,15 @@ public class LastWorkoutsAdapter
     extends RecyclerView.Adapter<LastWorkoutsAdapter.LastWorkoutsListViewHolder> {
 
   private static final String TAG = "LastWorkoutAdapter";
-  private final LifecycleOwner owner;
+  private final Fragment fragment;
   private final TrainingViewModel model;
   private List<Workout> workoutList;
-  private ItemWorkoutNoEditBinding binding;
   private List<Long> workoutIds;
   private List<FinishedWorkout> finishedWorkouts;
   private String exercisesString;
 
-  public LastWorkoutsAdapter(@NonNull LifecycleOwner owner, @NonNull TrainingViewModel model) {
-    this.owner = owner;
+  public LastWorkoutsAdapter(@NonNull Fragment fragment, @NonNull TrainingViewModel model) {
+    this.fragment = fragment;
     this.model = model;
 
     finishedWorkouts = new ArrayList<>();
@@ -43,7 +42,7 @@ public class LastWorkoutsAdapter
         .finishedWorkoutRepository
         .getOrderedFinishedWorkouts()
         .observe(
-            owner,
+            fragment,
             finishedTraining -> {
               workoutIds = new ArrayList<>();
               workoutList = new ArrayList<>();
@@ -59,7 +58,7 @@ public class LastWorkoutsAdapter
                   .workoutsRepository
                   .getAllWorkouts()
                   .observe(
-                      owner,
+                      fragment,
                       workout -> {
                         for (int i = 0; i < workoutIds.size(); i++) {
                           for (int j = 0; j < workout.size(); j++) {
@@ -79,11 +78,10 @@ public class LastWorkoutsAdapter
   @NonNull
   @Override
   public LastWorkoutsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    Log.println(Log.DEBUG, TAG, "on Create Viewholder");
-    this.binding =
+    com.sg2022.we_got_the_moves.databinding.ItemWorkoutNoEditBinding binding =
         DataBindingUtil.inflate(
             LayoutInflater.from(parent.getContext()), R.layout.item_workout_no_edit, parent, false);
-    binding.setLifecycleOwner(this.owner);
+    binding.setLifecycleOwner(this.fragment);
     return new LastWorkoutsListViewHolder(binding);
   }
 
@@ -92,43 +90,42 @@ public class LastWorkoutsAdapter
     Workout w = this.workoutList.get(position);
     holder.binding.setWorkout(w);
     holder.binding.workoutName.setText(w.name);
-    holder.binding.workoutName.setOnClickListener(
-        v -> showWorkoutDialog(w));
+    holder.binding.workoutName.setOnClickListener(v -> showWorkoutDialog(w));
   }
 
   private void showWorkoutDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstanceActivity());
     DialogStartWorkoutBinding binding =
-            DataBindingUtil.inflate(
-                    LayoutInflater.from(MainActivity.getInstanceActivity()),
-                    R.layout.dialog_start_workout,
-                    null,
-                    false);
+        DataBindingUtil.inflate(
+            LayoutInflater.from(MainActivity.getInstanceActivity()),
+            R.layout.dialog_start_workout,
+            null,
+            false);
     builder
-            .setView(binding.getRoot())
-            .setPositiveButton(
-                    "Start",
-                    (dialog, id) -> {
-                      MainActivity.getInstanceActivity().openMediapipeActivity(w.id);
-                      dialog.dismiss();
-                    })
-            .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
-            .create()
-            .show();
+        .setView(binding.getRoot())
+        .setPositiveButton(
+            "Start",
+            (dialog, id) -> {
+              MainActivity.getInstanceActivity().openMediapipeActivity(w.id);
+              dialog.dismiss();
+            })
+        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+        .create()
+        .show();
     binding.textviewStartWorkoutWorkout.setText(w.name);
     exercisesString = "";
-    model.workoutsRepository
-            .getAllExercises(w.id)
-            .observe(
-                    owner,
-                    exercises -> {
-                      for (Exercise e : exercises){
-                        exercisesString += e.name + "\n";
-                      }
-                      binding.textviewStartWorkoutExercises.setText(exercisesString);
-                      notifyDataSetChanged();
-                    }
-            );
+    model
+        .workoutsRepository
+        .getAllExercises(w.id)
+        .observe(
+            fragment,
+            exercises -> {
+              for (Exercise e : exercises) {
+                exercisesString += e.name + "\n";
+              }
+              binding.textviewStartWorkoutExercises.setText(exercisesString);
+              notifyDataSetChanged();
+            });
   }
 
   @Override

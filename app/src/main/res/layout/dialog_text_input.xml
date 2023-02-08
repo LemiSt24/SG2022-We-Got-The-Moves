@@ -16,7 +16,7 @@
         android:layout_height="match_parent">
 
         <EditText
-            android:id="@+id/text_view_text_dialog"
+            android:id="@+id/textview_text_dialog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

@@ -29,5 +29,4 @@ public class ExerciseState {
     this.exerciseId = exerciseId;
     this.constraintIds = constraintIds;
   }
-
 }

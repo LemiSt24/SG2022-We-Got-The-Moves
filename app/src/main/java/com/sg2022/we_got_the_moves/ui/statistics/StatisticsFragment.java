@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsBinding;
+import com.sg2022.we_got_the_moves.ui.CustomFragmentStateAdapter;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.DailyOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.ExercisesOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.WeeklyOverviewFragment;
@@ -22,33 +22,29 @@ import java.util.List;
 public class StatisticsFragment extends Fragment {
 
   private final String TAG = "StatisticsFragment";
+  private List<Class<? extends Fragment>> tabFragments;
+  private List<String> tabLabels;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    StatisticsViewModel.Factory factory =
-        new StatisticsViewModel.Factory(
-            this.requireActivity().getApplication(), this.requireActivity());
-    StatisticsViewModel model =
-        new ViewModelProvider(this.requireActivity(), factory).get(StatisticsViewModel.class);
-  }
-
-  public View onCreateView(
-      @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    com.sg2022.we_got_the_moves.databinding.FragmentStatisticsBinding binding =
-        FragmentStatisticsBinding.inflate(inflater, container, false);
-    List<Class<? extends Fragment>> tabFragments =
+    this.tabFragments =
         Arrays.asList(
             DailyOverviewFragment.class,
             WeeklyOverviewFragment.class,
             ExercisesOverviewFragment.class);
-    List<String> fragmentName =
-        Arrays.asList("Calories Overview", "Training Overview", "Exercise Overview");
-    binding.viewPagerStatistics.setAdapter(new CustomFragmentStateAdapter(this, tabFragments));
+    this.tabLabels = Arrays.asList("Calories", "Weekly Overview", "Exercise Analysis");
+  }
+
+  public View onCreateView(
+      @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    FragmentStatisticsBinding binding =
+        FragmentStatisticsBinding.inflate(inflater, container, false);
+    binding.viewPagerStatistics.setAdapter(new CustomFragmentStateAdapter(this, this.tabFragments));
     new TabLayoutMediator(
             binding.tabLayoutStatistics,
             binding.viewPagerStatistics,
-            (tab, position) -> tab.setText(fragmentName.get(position)))
+            (tab, position) -> tab.setText(this.tabLabels.get(position)))
         .attach();
     return binding.getRoot();
   }

@@ -65,16 +65,8 @@ public class AppExecutors {
     return INSTANCE;
   }
 
-  public Executor getSingleThread() {
-    return singleThread;
-  }
-
   public Executor getPoolThread() {
     return PoolThread;
-  }
-
-  public Executor getMainThread() {
-    return mainThread;
   }
 
   private static class mainThreadExecutor implements Executor {

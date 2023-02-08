@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.primitives.Booleans;
 import com.sg2022.we_got_the_moves.R;
-import com.sg2022.we_got_the_moves.databinding.InputDialogTextBinding;
+import com.sg2022.we_got_the_moves.databinding.DialogTextInputBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemWorkoutBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
@@ -33,30 +33,29 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 public class WorkoutListAdapter
     extends RecyclerView.Adapter<WorkoutListAdapter.WorkoutItemViewHolder> {
-
   private static final String TAG = "WorkoutListAdapter";
-
-  private final Fragment owner;
+  private final Fragment fragment;
   private final WorkoutsViewModel model;
   private List<WorkoutAndWorkoutExercises> list;
 
-  public WorkoutListAdapter(@NonNull Fragment owner, @NonNull WorkoutsViewModel model) {
-    this.owner = owner;
+  public WorkoutListAdapter(@NonNull Fragment fragment, @NonNull WorkoutsViewModel model) {
+    this.fragment = fragment;
     this.model = model;
     this.list = new ArrayList<>();
-    this.model.data.observe(
-        owner,
-        list -> {
-          if (list == null) {
-            list = new ArrayList<>();
-          }
-          if (this.list == list) return;
-
-          WorkoutListDiffUtil workoutDiff = new WorkoutListDiffUtil(this.list, list);
-          DiffUtil.DiffResult diff = DiffUtil.calculateDiff(workoutDiff);
-          this.list = list;
-          diff.dispatchUpdatesTo(this);
-        });
+    this.model
+        .repository
+        .getAllWorkoutsWithExerciseAndWorkoutExercise()
+        .observe(
+            fragment,
+            items -> {
+              WorkoutListDiffUtil workoutDiff =
+                  items == null
+                      ? new WorkoutListDiffUtil(list, new ArrayList<>())
+                      : new WorkoutListDiffUtil(list, items);
+              DiffUtil.DiffResult diff = DiffUtil.calculateDiff(workoutDiff);
+              list = items;
+              diff.dispatchUpdatesTo(WorkoutListAdapter.this);
+            });
   }
 
   @NonNull
@@ -84,7 +83,7 @@ public class WorkoutListAdapter
     holder.binding.deleteBtnWorkoutItem.setOnClickListener(v -> showDeleteDialog(w));
     holder.binding.expandBtnWorkoutItem.setOnClickListener(
         v -> holder.binding.setVisible(!holder.binding.getVisible()));
-    ExerciseListAdapter adapter = new ExerciseListAdapter(this.owner, this.model, we);
+    ExerciseListAdapter adapter = new ExerciseListAdapter(this.fragment, this.model, we);
     holder.binding.recyclerviewExercises.setAdapter(adapter);
   }
 
@@ -94,9 +93,9 @@ public class WorkoutListAdapter
   }
 
   private void showDeleteDialog(@NonNull Workout w) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.fragment.getContext());
     builder
-        .setTitle(String.format(this.owner.getString(R.string.delete_workout_titel), w.name))
+        .setTitle(String.format(this.fragment.getString(R.string.delete_workout_title), w.name))
         .setMessage(R.string.delete_workout_message)
         .setPositiveButton(
             R.string.yes,
@@ -110,9 +109,9 @@ public class WorkoutListAdapter
   }
 
   private void showCopyDialog(@NonNull Workout w) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.fragment.getContext());
     builder
-        .setTitle(String.format(this.owner.getString(R.string.copy_workout_titel), w.name))
+        .setTitle(String.format(this.fragment.getString(R.string.copy_workout_title), w.name))
         .setMessage(R.string.copy_workout_message)
         .setPositiveButton(
             R.string.yes,
@@ -159,18 +158,21 @@ public class WorkoutListAdapter
   }
 
   private void showEditDialog(@NonNull Workout w) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
-    InputDialogTextBinding binding =
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.fragment.getContext());
+    DialogTextInputBinding binding =
         DataBindingUtil.inflate(
-            LayoutInflater.from(this.owner.getContext()), R.layout.input_dialog_text, null, false);
+            LayoutInflater.from(this.fragment.getContext()),
+            R.layout.dialog_text_input,
+            null,
+            false);
     binding.setText(w.name);
     builder
         .setView(binding.getRoot())
-        .setTitle(String.format(this.owner.getString(R.string.set_workout_title), w.name))
+        .setTitle(String.format(this.fragment.getString(R.string.set_workout_title), w.name))
         .setPositiveButton(
             R.string.yes,
             (dialog, id) -> {
-              String text = binding.textViewTextDialog.getText().toString();
+              String text = binding.textviewTextDialog.getText().toString();
               if (!text.equals(w.name) && !text.isEmpty()) {
                 w.name = text;
                 this.model.repository.updateWorkout(w);
@@ -183,7 +185,7 @@ public class WorkoutListAdapter
   }
 
   private void showAddDialog(@NonNull Workout w) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.fragment.getContext());
     this.model.repository.getAllExercises(
         new SingleObserver<>() {
 
@@ -194,7 +196,7 @@ public class WorkoutListAdapter
           public void onSuccess(@NonNull List<Exercise> total) {
             if (total.isEmpty()) {
               builder
-                  .setTitle(String.format(owner.getString(R.string.select_exercises), w.name))
+                  .setTitle(String.format(fragment.getString(R.string.select_exercises), w.name))
                   .setMessage(R.string.no_items)
                   .setPositiveButton(R.string.yes, (dialog, id) -> dialog.dismiss())
                   .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
@@ -221,7 +223,7 @@ public class WorkoutListAdapter
                               checkedList,
                               (dialog, which, isChecked) -> checkedList[which] = isChecked)
                           .setTitle(
-                              String.format(owner.getString(R.string.select_exercises), w.name))
+                              String.format(fragment.getString(R.string.select_exercises), w.name))
                           .setPositiveButton(
                               R.string.yes,
                               (dialog, id) -> {
@@ -308,7 +310,7 @@ public class WorkoutListAdapter
 
   public static class WorkoutItemViewHolder extends RecyclerView.ViewHolder {
 
-    public ItemWorkoutBinding binding;
+    public final ItemWorkoutBinding binding;
 
     public WorkoutItemViewHolder(@NonNull ItemWorkoutBinding binding) {
       super(binding.getRoot());

@@ -53,13 +53,13 @@
                     android:text="@string/description"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/text_view_instruction_dialog"
+                    app:layout_constraintBottom_toTopOf="@+id/textview_instruction_dialog"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/youtube_player_view_instruction_dialog" />
 
                 <TextView
-                    android:id="@+id/text_view_instruction_dialog"
+                    android:id="@+id/textview_instruction_dialog"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"

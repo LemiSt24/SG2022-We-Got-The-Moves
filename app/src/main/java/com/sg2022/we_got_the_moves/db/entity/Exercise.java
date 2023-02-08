@@ -25,10 +25,10 @@ public class Exercise {
   @ColumnInfo(name = "instruction")
   public String instruction;
 
-  @ColumnInfo(name = "youtubeId", defaultValue = "" + R.string.test_video)
+  @ColumnInfo(name = "youtubeId", defaultValue = "" + R.string.youtube_video_placeholder)
   public String youtubeId;
 
-  @ColumnInfo(name = "imageId", defaultValue = "" + R.drawable.no_image)
+  @ColumnInfo(name = "imageId", defaultValue = "" + R.drawable.exercise_placeholder)
   public int imageId;
 
   @ColumnInfo(name = "unit")
@@ -61,7 +61,12 @@ public class Exercise {
 
   @Ignore
   public Exercise(
-      String name, String instruction, String youtubeId, Exercise.UNIT unit, float met, List<ExerciseState> exerciseStates) {
+      String name,
+      String instruction,
+      String youtubeId,
+      Exercise.UNIT unit,
+      float met,
+      List<ExerciseState> exerciseStates) {
     this.name = name;
     this.instruction = instruction;
     this.youtubeId = youtubeId;
@@ -78,7 +83,6 @@ public class Exercise {
       float weight, // [kg]
       float duration) // [secs]
       {
-
     return this.met * duration / 3600 * weight;
   }
 

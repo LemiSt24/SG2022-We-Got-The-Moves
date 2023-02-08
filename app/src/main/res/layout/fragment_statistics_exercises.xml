@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_layout_exercises_statistics"
+        android:id="@+id/constraint_layout_statistics_exercises"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.sg2022.we_got_the_moves.ui.statistics.StatisticsFragment">
 
         <ScrollView
-            android:id="@+id/scrollview_exercises_statistics"
+            android:id="@+id/scrollview_statistics_exercises"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/enter_text"
@@ -21,13 +21,13 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_layout_scrollview_exercises_statistics"
+                android:id="@+id/constraint_layout_scrollview_statistics_exercises"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textview_title_exercises_statistics"
+                    android:id="@+id/textview_title_statistics_exercises"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -40,7 +40,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.github.mikephil.charting.charts.HorizontalBarChart
-                    android:id="@+id/bar_chart_exercises_statistics"
+                    android:id="@+id/bar_chart_statistics_exercises"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginTop="16dp"
@@ -48,7 +48,7 @@
                     android:layoutMode="opticalBounds"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_title_exercises_statistics"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_title_statistics_exercises"
                     app:layout_constraintWidth="match_parent">
 
                 </com.github.mikephil.charting.charts.HorizontalBarChart>

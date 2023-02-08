@@ -31,7 +31,7 @@ public class UserRepository {
     if (INSTANCE == null) {
       synchronized (WorkoutsRepository.class) {
         if (INSTANCE == null) {
-          AppDatabase db = AppDatabase.getInstance(app.getApplicationContext());
+          AppDatabase db = AppDatabase.getInstance(app);
           INSTANCE = new UserRepository(db);
         }
       }
@@ -61,17 +61,17 @@ public class UserRepository {
 
   public void getCameraBoolean(SingleObserver<Boolean> observer) {
     this.userDao
-            .getCameraBoolean()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(observer);
-  }
-  public void getTTSBoolean(SingleObserver<Boolean> observer) {
-    this.userDao
-            .getTTSBoolean()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(observer);
+        .getCameraBoolean()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
   }
 
+  public void getTTSBoolean(SingleObserver<Boolean> observer) {
+    this.userDao
+        .getTTSBoolean()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
+  }
 }

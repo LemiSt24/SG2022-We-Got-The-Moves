@@ -27,8 +27,8 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsWeeklyBinding;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedWorkoutAndFinishedExercises;
+import com.sg2022.we_got_the_moves.ui.TimeFormatUtil;
 import com.sg2022.we_got_the_moves.ui.statistics.StatisticsViewModel;
-import com.sg2022.we_got_the_moves.utils.TimeFormatUtil;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
@@ -56,8 +56,7 @@ public class WeeklyOverviewFragment extends Fragment {
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     StatisticsViewModel.Factory factory =
-        new StatisticsViewModel.Factory(
-            this.requireActivity().getApplication(), this.requireActivity());
+        new StatisticsViewModel.Factory(this.requireActivity().getApplication());
     this.model =
         new ViewModelProvider(this.requireActivity(), factory).get(StatisticsViewModel.class);
     this.barDataSet = new MutableLiveData<>(new BarDataSet(new ArrayList<>(), "Data"));
@@ -67,10 +66,10 @@ public class WeeklyOverviewFragment extends Fragment {
   public View onCreateView(
       @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     this.binding = FragmentStatisticsWeeklyBinding.inflate(inflater, container, false);
-    this.binding.imagebtnCalenderRightWeeklyStatistics.setOnClickListener(
+    this.binding.imagebtnCalenderRightStatisticsWeekly.setOnClickListener(
         v -> currentDate.setValue(TimeFormatUtil.dateAdjustedByWeeks(currentDate.getValue(), 1)));
 
-    this.binding.imagebtnCalenderLeftWeeklyStatistics.setOnClickListener(
+    this.binding.imagebtnCalenderLeftStatisticsWeekly.setOnClickListener(
         v -> currentDate.setValue(TimeFormatUtil.dateAdjustedByWeeks(currentDate.getValue(), -1)));
 
     this.setTotalTime();
@@ -171,13 +170,12 @@ public class WeeklyOverviewFragment extends Fragment {
                             .reduce(0L, (result, e) -> result + e.getSecond(), Long::sum);
                     long avgWeektime = totalWeektime / weekDay;
 
-                    binding.textviewValueTotalWeekWeeklyStatistics.setText(
+                    binding.textviewValueTotalWeekStatisticsWeekly.setText(
                         TimeFormatUtil.formatTimeDdhhmmss((int) totalWeektime));
-                    binding.textviewValueAverageWeeklyStatistics.setText(
+                    binding.textviewValueAverageStatisticsWeekly.setText(
                         TimeFormatUtil.formatTimeHhmmss((int) avgWeektime));
 
                     BarData barData = new BarData(barDataSet.getValue());
-                    // if (barData.getEntryCount() == 0) barData.calcMinMaxY(0f, 3600f);
                     barData.setValueFormatter(
                         new ValueFormatter() {
                           @Override
@@ -187,7 +185,7 @@ public class WeeklyOverviewFragment extends Fragment {
                                 : TimeFormatUtil.formatTimeHhmmss((int) barEntry.getY());
                           }
                         });
-                    BarChart bc = binding.barChartWeeklyStatistics;
+                    BarChart bc = binding.barChartStatisticsWeekly;
                     bc.setData(barData);
                     YAxis yAxisL = bc.getAxisLeft();
                     yAxisL.setAxisMinimum(0f);
@@ -214,18 +212,18 @@ public class WeeklyOverviewFragment extends Fragment {
   }
 
   private void disableRightBtnCheck(Date date) {
-    this.binding.imagebtnCalenderRightWeeklyStatistics.setEnabled(
+    this.binding.imagebtnCalenderRightStatisticsWeekly.setEnabled(
         !TimeFormatUtil.getDayInterval(date).equals(TimeFormatUtil.getDayInterval(new Date())));
-    if (!this.binding.imagebtnCalenderRightWeeklyStatistics.isEnabled()) {
-      this.binding.imagebtnCalenderRightWeeklyStatistics.setVisibility(View.INVISIBLE);
+    if (!this.binding.imagebtnCalenderRightStatisticsWeekly.isEnabled()) {
+      this.binding.imagebtnCalenderRightStatisticsWeekly.setVisibility(View.INVISIBLE);
     } else {
-      this.binding.imagebtnCalenderRightWeeklyStatistics.setVisibility(View.VISIBLE);
+      this.binding.imagebtnCalenderRightStatisticsWeekly.setVisibility(View.VISIBLE);
     }
   }
 
   private void setupCW(Date date) {
     Pair<Integer, Integer> p = TimeFormatUtil.dateToYearAndCalendarWeek(date);
-    this.binding.textviewCalenderWeeklyStatistics.setText(
+    this.binding.textviewCalenderStatisticsWeekly.setText(
         String.format(Locale.US, "%04d CW%02d", p.getFirst(), p.getSecond()));
   }
 
@@ -253,7 +251,7 @@ public class WeeklyOverviewFragment extends Fragment {
     requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     int minScreenSize = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
 
-    BarChart bc = binding.barChartWeeklyStatistics;
+    BarChart bc = binding.barChartStatisticsWeekly;
     bc.setMinimumWidth(minScreenSize);
     bc.setMinimumHeight(minScreenSize);
     bc.setEnabled(true);

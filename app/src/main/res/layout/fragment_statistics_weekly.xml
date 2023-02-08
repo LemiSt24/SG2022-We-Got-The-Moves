@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_layout_weekly_statistics"
+        android:id="@+id/constraint_layout_statistics_weekly"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.sg2022.we_got_the_moves.ui.statistics.StatisticsFragment">
 
         <ScrollView
-            android:id="@+id/scrollview_weekly_statistics"
+            android:id="@+id/scrollview_statistics_weekly"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:contentDescription="@string/enter_text"
@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraint_layout_scrollview_weekly_statistics"
+                android:id="@+id/constraint_layout_scrollview_statistics_weekly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -34,7 +34,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@+id/textview_value_total_statistics"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_title_weekly_statistics" />
+                    app:layout_constraintTop_toBottomOf="@+id/textview_title_statistics_weekly" />
 
                 <TextView
                     android:id="@+id/textview_header_total_week_statistics"
@@ -44,19 +44,19 @@
                     android:text="@string/dd_hh_mm_ss"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/textview_value_total_week_weekly_statistics"
+                    app:layout_constraintEnd_toEndOf="@+id/textview_value_total_week_statistics_weekly"
                     app:layout_constraintTop_toBottomOf="@+id/textview_value_total_statistics" />
 
                 <TextView
-                    android:id="@+id/textview_header_average_weekly_statistics"
+                    android:id="@+id/textview_header_average_statistics_weekly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/hh_mm_ss"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/textview_value_average_weekly_statistics"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_value_total_week_weekly_statistics" />
+                    app:layout_constraintEnd_toEndOf="@+id/textview_value_average_statistics_weekly"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_value_total_week_statistics_weekly" />
 
                 <TextView
                     android:id="@+id/textview_value_total_statistics"
@@ -79,7 +79,7 @@
                     tools:ignore="SpeakableTextPresentCheck" />
 
                 <TextView
-                    android:id="@+id/textview_value_total_week_weekly_statistics"
+                    android:id="@+id/textview_value_total_week_statistics_weekly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -112,7 +112,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textview_header_total_statistics" />
 
                 <TextView
-                    android:id="@+id/textview_text_average_weekly_statistics"
+                    android:id="@+id/textview_text_average_statistics_weekly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -121,10 +121,10 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_header_average_weekly_statistics" />
+                    app:layout_constraintTop_toBottomOf="@+id/textview_header_average_statistics_weekly" />
 
                 <TextView
-                    android:id="@+id/textview_text_total_week_weekly_statistics"
+                    android:id="@+id/textview_text_total_week_statistics_weekly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -136,7 +136,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/textview_header_total_week_statistics" />
 
                 <TextView
-                    android:id="@+id/textview_value_average_weekly_statistics"
+                    android:id="@+id/textview_value_average_statistics_weekly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -150,11 +150,11 @@
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_header_average_weekly_statistics"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_header_average_statistics_weekly"
                     tools:ignore="SpeakableTextPresentCheck" />
 
                 <TextView
-                    android:id="@+id/textview_title_weekly_statistics"
+                    android:id="@+id/textview_title_statistics_weekly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -167,7 +167,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/bar_chart_weekly_statistics"
+                    android:id="@+id/bar_chart_statistics_weekly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
@@ -176,13 +176,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_value_average_weekly_statistics"
+                    app:layout_constraintTop_toBottomOf="@+id/textview_value_average_statistics_weekly"
                     app:layout_constraintWidth="match_parent">
 
                 </com.github.mikephil.charting.charts.BarChart>
 
                 <TextView
-                    android:id="@+id/textview_calender_weekly_statistics"
+                    android:id="@+id/textview_calender_statistics_weekly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
@@ -194,10 +194,10 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/bar_chart_weekly_statistics" />
+                    app:layout_constraintTop_toBottomOf="@+id/bar_chart_statistics_weekly" />
 
                 <ImageButton
-                    android:id="@+id/imagebtn_calender_right_weekly_statistics"
+                    android:id="@+id/imagebtn_calender_right_statistics_weekly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -206,13 +206,13 @@
                     android:contentDescription="@string/right"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/textview_calender_weekly_statistics"
-                    app:layout_constraintStart_toEndOf="@+id/textview_calender_weekly_statistics"
-                    app:layout_constraintTop_toTopOf="@+id/textview_calender_weekly_statistics"
+                    app:layout_constraintBottom_toBottomOf="@+id/textview_calender_statistics_weekly"
+                    app:layout_constraintStart_toEndOf="@+id/textview_calender_statistics_weekly"
+                    app:layout_constraintTop_toTopOf="@+id/textview_calender_statistics_weekly"
                     tools:ignore="SpeakableTextPresentCheck" />
 
                 <ImageButton
-                    android:id="@+id/imagebtn_calender_left_weekly_statistics"
+                    android:id="@+id/imagebtn_calender_left_statistics_weekly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -221,9 +221,9 @@
                     android:contentDescription="@string/left"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/textview_calender_weekly_statistics"
-                    app:layout_constraintEnd_toStartOf="@+id/textview_calender_weekly_statistics"
-                    app:layout_constraintTop_toTopOf="@+id/textview_calender_weekly_statistics"
+                    app:layout_constraintBottom_toBottomOf="@+id/textview_calender_statistics_weekly"
+                    app:layout_constraintEnd_toStartOf="@+id/textview_calender_statistics_weekly"
+                    app:layout_constraintTop_toTopOf="@+id/textview_calender_statistics_weekly"
                     tools:ignore="SpeakableTextPresentCheck" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

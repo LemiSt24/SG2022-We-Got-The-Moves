@@ -16,7 +16,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstan
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.sg2022.we_got_the_moves.R;
-import com.sg2022.we_got_the_moves.databinding.InputDialogInstructionBinding;
+import com.sg2022.we_got_the_moves.databinding.DialogInstructionBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemInstructionBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 
@@ -27,27 +27,27 @@ public class InstructionListAdapter
     extends RecyclerView.Adapter<InstructionListAdapter.ExerciseInstructionListViewHolder> {
 
   private static final String TAG = "InstructionListAdapter";
-  private final Fragment owner;
-  private final List<Exercise> list;
+  private final Fragment fragment;
+  private List<Exercise> list;
 
-  public InstructionListAdapter(@NonNull Fragment owner, @NonNull DashboardViewModel model) {
+  public InstructionListAdapter(@NonNull Fragment fragment, @NonNull DashboardViewModel model) {
     this.list = new ArrayList<>();
-    this.owner = owner;
-    model.data.observe(
-        owner,
-        list -> {
-          if (list == null) {
-            list = new ArrayList<>();
-          }
-          if (this.list == list) return;
-
-          InstructionListAdapter.InstructionListDiffUtil instructionDiff =
-              new InstructionListAdapter.InstructionListDiffUtil(this.list, list);
-          DiffUtil.DiffResult diff = DiffUtil.calculateDiff(instructionDiff);
-          this.list.clear();
-          this.list.addAll(list);
-          diff.dispatchUpdatesTo(this);
-        });
+    this.fragment = fragment;
+    this.list = new ArrayList<>();
+    model
+        .repository
+        .getAllExercises()
+        .observe(
+            this.fragment,
+            items -> {
+              InstructionListDiffUtil instructionDiff =
+                  items == null
+                      ? new InstructionListDiffUtil(list, new ArrayList<>())
+                      : new InstructionListDiffUtil(list, items);
+              DiffUtil.DiffResult diff = DiffUtil.calculateDiff(instructionDiff);
+              list = items;
+              diff.dispatchUpdatesTo(InstructionListAdapter.this);
+            });
   }
 
   @NonNull
@@ -57,7 +57,7 @@ public class InstructionListAdapter
     ItemInstructionBinding binding =
         DataBindingUtil.inflate(
             LayoutInflater.from(parent.getContext()), R.layout.item_instruction, parent, false);
-    binding.setLifecycleOwner(this.owner);
+    binding.setLifecycleOwner(this.fragment);
     return new ExerciseInstructionListViewHolder(binding);
   }
 
@@ -65,11 +65,11 @@ public class InstructionListAdapter
   public void onBindViewHolder(@NonNull ExerciseInstructionListViewHolder holder, int position) {
     Exercise e = this.list.get(position);
     holder.binding.setExercise(e);
-    Glide.with(this.owner.requireContext())
+    Glide.with(this.fragment)
         .load(e.imageId)
-        .placeholder(R.drawable.no_image)
-        .into(holder.binding.imageViewExerciseInstructionItem);
-    holder.binding.imageViewExerciseInstructionItem.setOnClickListener(
+        .placeholder(R.drawable.exercise_placeholder)
+        .into(holder.binding.imageviewExerciseInstructionItem);
+    holder.binding.imageviewExerciseInstructionItem.setOnClickListener(
         v -> showInstructionDialog(e));
   }
 
@@ -84,15 +84,15 @@ public class InstructionListAdapter
   }
 
   private void showInstructionDialog(@NonNull Exercise e) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this.owner.getContext());
-    InputDialogInstructionBinding binding =
+    AlertDialog.Builder builder = new AlertDialog.Builder(this.fragment.getContext());
+    DialogInstructionBinding binding =
         DataBindingUtil.inflate(
-            LayoutInflater.from(this.owner.requireContext()),
-            R.layout.input_dialog_instruction,
+            LayoutInflater.from(this.fragment.requireContext()),
+            R.layout.dialog_instruction,
             null,
             false);
     binding.setExercise(e);
-    this.owner.getLifecycle().addObserver(binding.youtubePlayerViewInstructionDialog);
+    this.fragment.getLifecycle().addObserver(binding.youtubePlayerViewInstructionDialog);
     binding.youtubePlayerViewInstructionDialog.addYouTubePlayerListener(
         new AbstractYouTubePlayerListener() {
           @Override
@@ -111,7 +111,7 @@ public class InstructionListAdapter
     builder
         .setOnDismissListener(dialog -> binding.youtubePlayerViewInstructionDialog.release())
         .setView(binding.getRoot())
-        .setTitle(String.format(this.owner.getString(R.string.instruction_title), e.name))
+        .setTitle(String.format(this.fragment.getString(R.string.instruction_title), e.name))
         .setNeutralButton(R.string.ok, (dialog, id) -> dialog.dismiss())
         .create()
         .show();
@@ -151,7 +151,7 @@ public class InstructionListAdapter
 
   protected static class ExerciseInstructionListViewHolder extends RecyclerView.ViewHolder {
 
-    public ItemInstructionBinding binding;
+    public final ItemInstructionBinding binding;
 
     ExerciseInstructionListViewHolder(ItemInstructionBinding binding) {
       super(binding.getRoot());
