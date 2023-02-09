@@ -6,7 +6,6 @@ import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.util.Log;
 
 import com.google.mediapipe.formats.proto.LandmarkProto;
@@ -23,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 class PoseSample {
   public double[] embedding;
@@ -154,7 +152,7 @@ public class PoseClassifier {
       max_dist_heap.add(
           new EmbeddingDistance(index++, min(dist_to_embedding, dist_to_flipped_embedding)));
     }
-    Collections.sort(max_dist_heap, new EmbeddingDistanceComparator());
+    max_dist_heap.sort(new EmbeddingDistanceComparator());
 
     while (max_dist_heap.size() > top_n_by_max_distance) {
       max_dist_heap.remove(max_dist_heap.size() - 1);
@@ -206,7 +204,7 @@ public class PoseClassifier {
   // Bewertet die zuletzt übermittelte Pose bezüglich Einschränkungen wie Abstand der Füße etc
   // Rückgabewert ist eine Distanz (z.B. der Unterschied zwischen Fußabstand und Schulterabstand)
   // erwartet (eine Liste von) Strings pro Argument, falls zwei genannt: Landmarks werden gemittelt
-/*  public double get_distance(String from, String to) {
+  /*  public double get_distance(String from, String to) {
     NormalizedLandmark[] landmarks =
         classification_history.get(classification_history.size() - 1).landmarks;
 
@@ -231,9 +229,9 @@ public class PoseClassifier {
     return lmfrom.getDistance(lmto);
   }*/
 
-  public NormalizedLandmark normalizeLandmark(String landMark){
+  public NormalizedLandmark normalizeLandmark(String landMark) {
     NormalizedLandmark[] landmarks =
-            classification_history.get(classification_history.size() - 1).landmarks;
+        classification_history.get(classification_history.size() - 1).landmarks;
     NormalizedLandmark normLandmark;
     // mehrere Landmarks in "from"
     if (landMark.contains(",")) {
@@ -257,23 +255,23 @@ public class PoseClassifier {
     NormalizedLandmark normFrom2 = normalizeLandmark(constraint.from2);
     NormalizedLandmark normTo2 = normalizeLandmark(constraint.to2);
 
-    if (constraint.type == Constraint.TYPE.ANGLE){
+    if (constraint.type == Constraint.TYPE.ANGLE) {
       double angle;
 
       if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.X) {
-        angle = calcAngleDegrees(normFrom2.z - normTo2.z, normFrom2.y - normTo2.y)-
-                calcAngleDegrees(normFrom1.z - normTo1.z, normFrom1.y - normTo1.y);
-      }
-      else if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.Y) {
-        angle = calcAngleDegrees(normFrom2.x - normTo2.x, normFrom2.z - normTo2.z)-
-                calcAngleDegrees(normFrom1.x - normTo1.x, normFrom1.z - normTo1.z);
-      }
-      else if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.Z) {
-        angle = calcAngleDegrees(normFrom2.y - normTo2.y, normFrom2.x - normTo2.x)-
-                calcAngleDegrees(normFrom1.y - normTo1.y, normFrom1.x - normTo1.x);
-      }
-      else{
-        //throw error angle geht nicht mit 3 dimensionen
+        angle =
+            calcAngleDegrees(normFrom2.z - normTo2.z, normFrom2.y - normTo2.y)
+                - calcAngleDegrees(normFrom1.z - normTo1.z, normFrom1.y - normTo1.y);
+      } else if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.Y) {
+        angle =
+            calcAngleDegrees(normFrom2.x - normTo2.x, normFrom2.z - normTo2.z)
+                - calcAngleDegrees(normFrom1.x - normTo1.x, normFrom1.z - normTo1.z);
+      } else if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.Z) {
+        angle =
+            calcAngleDegrees(normFrom2.y - normTo2.y, normFrom2.x - normTo2.x)
+                - calcAngleDegrees(normFrom1.y - normTo1.y, normFrom1.x - normTo1.x);
+      } else {
+        // throw error angle geht nicht mit 3 dimensionen
         throw new IllegalArgumentException("only 2 dimensions for angles supported");
       }
 
@@ -286,10 +284,10 @@ public class PoseClassifier {
       } else if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.GREATER) {
         if (angle > compareAngle + constraint.maxDiff) return false;
       } else {
-        if (angle < compareAngle - constraint.maxDiff || angle > compareAngle + constraint.maxDiff) return false;
+        if (angle < compareAngle - constraint.maxDiff || angle > compareAngle + constraint.maxDiff)
+          return false;
       }
-    }
-    else {
+    } else {
 
       if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.X) {
         normFrom1.x = 0;
@@ -318,8 +316,9 @@ public class PoseClassifier {
       } else if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.GREATER) {
         if (dist1 > dist2 * (1 + constraint.maxDiff)) return false;
       } else {
-        if (dist1 < dist2 * (1 - constraint.maxDiff) || dist1 > dist2 * (1 + constraint.maxDiff)) return false;
-        //if (rel < 1.0 - constraint.maxDiff || rel > 1.0 + constraint.maxDiff) return false;
+        if (dist1 < dist2 * (1 - constraint.maxDiff) || dist1 > dist2 * (1 + constraint.maxDiff))
+          return false;
+        // if (rel < 1.0 - constraint.maxDiff || rel > 1.0 + constraint.maxDiff) return false;
       }
     }
     return true;
@@ -334,14 +333,17 @@ public class PoseClassifier {
     double angle;
 
     if (exerciseState.insignificantDimension == ExerciseState.INSIGNIFICANT_DIMENSION.X) {
-      angle = calcAngleDegrees(end.z - mid.z, end.y - mid.y) -
-              calcAngleDegrees(start.z - mid.z, start.y - mid.y);
+      angle =
+          calcAngleDegrees(end.z - mid.z, end.y - mid.y)
+              - calcAngleDegrees(start.z - mid.z, start.y - mid.y);
     } else if (exerciseState.insignificantDimension == ExerciseState.INSIGNIFICANT_DIMENSION.Y) {
-      angle = calcAngleDegrees(end.x - mid.x, end.z - mid.z) -
-              calcAngleDegrees(start.x - mid.x, start.z - mid.z);
+      angle =
+          calcAngleDegrees(end.x - mid.x, end.z - mid.z)
+              - calcAngleDegrees(start.x - mid.x, start.z - mid.z);
     } else {
-      angle = calcAngleDegrees(end.y - mid.y, end.x - mid.x) -
-              calcAngleDegrees(start.y - mid.y, start.x - mid.x);
+      angle =
+          calcAngleDegrees(end.y - mid.y, end.x - mid.x)
+              - calcAngleDegrees(start.y - mid.y, start.x - mid.x);
     }
     angle = abs(angle);
 
@@ -353,4 +355,3 @@ public class PoseClassifier {
     return false;
   }
 }
-

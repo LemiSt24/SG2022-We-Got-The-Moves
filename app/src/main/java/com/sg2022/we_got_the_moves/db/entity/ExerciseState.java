@@ -33,30 +33,22 @@ public class ExerciseState {
 
   @ColumnInfo(name = "enterStateLandmarkEnd")
   public String enterStateLandmarkEnd;
-
-  public enum COMPARATOR {
-    LESS,
-    GREATER
-  }
-
   @ColumnInfo(name = "comparator")
   public ExerciseState.COMPARATOR comparator;
-
   @ColumnInfo(name = "compareAngle")
   public int compareAngle;
-
-  public enum INSIGNIFICANT_DIMENSION {
-    X,
-    Y,
-    Z
-  }
   @ColumnInfo(name = "insignificantDimension")
   public ExerciseState.INSIGNIFICANT_DIMENSION insignificantDimension;
 
-  public ExerciseState(long exerciseId, List<Long> constraintIds, String enterStateLandmarkStart,
-                       String enterStateLandmarkMid, String enterStateLandmarkEnd,
-                       ExerciseState.COMPARATOR comparator,int compareAngle,
-                       ExerciseState.INSIGNIFICANT_DIMENSION insignificantDimension) {
+  public ExerciseState(
+      long exerciseId,
+      List<Long> constraintIds,
+      String enterStateLandmarkStart,
+      String enterStateLandmarkMid,
+      String enterStateLandmarkEnd,
+      ExerciseState.COMPARATOR comparator,
+      int compareAngle,
+      ExerciseState.INSIGNIFICANT_DIMENSION insignificantDimension) {
     this.exerciseId = exerciseId;
     this.constraintIds = constraintIds;
     this.enterStateLandmarkStart = enterStateLandmarkStart;
@@ -65,5 +57,16 @@ public class ExerciseState {
     this.comparator = comparator;
     this.compareAngle = compareAngle;
     this.insignificantDimension = insignificantDimension;
+  }
+
+  public enum COMPARATOR {
+    LESS,
+    GREATER
+  }
+
+  public enum INSIGNIFICANT_DIMENSION {
+    X,
+    Y,
+    Z
   }
 }

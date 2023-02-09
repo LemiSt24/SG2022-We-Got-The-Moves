@@ -98,60 +98,91 @@ public class DataGenerator {
     "Power", "Basic", "Relaxing", "Heavy", "Endurance", "Strength", "Agility", "Training"
   };
 
-
   public static ExerciseState[] states = {
-    //"Squat", "Side-planks", "Mountain-climbers", "Pushup", "Sit-up", "Plank", "Biceps-curl"
-          //Squats
-          new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 3L)),
-                  "left_ankle,right_ankle", "left_knee,right_knee",
-                  "left_hip,right_hip", ExerciseState.COMPARATOR.GREATER,
-                  160, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
-          new ExerciseState(1, new ArrayList<Long>(Arrays.asList(1L, 2L)),
-                  "left_ankle,right_ankle", "left_knee,right_knee",
-                  "left_hip,right_hip", ExerciseState.COMPARATOR.LESS,
-                  120, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
-          //Side-planks
-          new ExerciseState(2, new ArrayList<Long>(Arrays.asList()),
-                  "", "", "", null,
-                  0, null),
-          //Mountain-climbers
-          new ExerciseState(3, new ArrayList<Long>(Arrays.asList()),
-                  "", "", "", null,
-                  0, null),
-          new ExerciseState(3, new ArrayList<Long>(Arrays.asList()),
-                  "", "", "", null,
-                  0, null),
-          //Push-Up
-          new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L, 5L)),
-                  "left_wrist,right_wrist", "left_elbow,right_elbow",
-                  "left_shoulder,right_shoulder", ExerciseState.COMPARATOR.GREATER,
-                  160, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
-          new ExerciseState(4, new ArrayList<Long>(Arrays.asList(4L)),
-                  "left_wrist,right_wrist", "left_elbow,right_elbow",
-                  "left_shoulder,right_shoulder", ExerciseState.COMPARATOR.LESS,
-                  100, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
-          //Sit-Up
-          new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L)),
-                  "left_shoulder,right_shoulder", "left_hip,right_hip",
-                  "left_ankle,right_ankle", ExerciseState.COMPARATOR.LESS,
-                  190, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
-          new ExerciseState(5, new ArrayList<Long>(Arrays.asList(6L)),
-                  "left_shoulder,right_shoulder", "left_hip,right_hip",
-                  "left_ankle,right_ankle", ExerciseState.COMPARATOR.GREATER,
-                  250, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
-          //Plank
-          new ExerciseState(6, new ArrayList<Long>(Arrays.asList(3L)),
-                  "", "", "", null,
-                  0, null),
-          //Biceps-Curl
-          new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L)),
-                  "left_wrist,right_wrist", "left_elbow,right_elbow",
-                  "left_shoulder,right_shoulder", ExerciseState.COMPARATOR.GREATER,
-                  150, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //bottom
-          new ExerciseState(7, new ArrayList<Long>(Arrays.asList(1L, 7L, 3L)),
-                  "left_wrist,right_wrist", "left_elbow,right_elbow",
-                  "left_shoulder,right_shoulder", ExerciseState.COMPARATOR.LESS,
-                  90, ExerciseState.INSIGNIFICANT_DIMENSION.Z), //top
+    // "Squat", "Side-planks", "Mountain-climbers", "Pushup", "Sit-up", "Plank", "Biceps-curl"
+    // Squats
+    new ExerciseState(
+        1,
+        new ArrayList<>(Arrays.asList(1L, 3L)),
+        "left_ankle,right_ankle",
+        "left_knee,right_knee",
+        "left_hip,right_hip",
+        ExerciseState.COMPARATOR.GREATER,
+        160,
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // top
+    new ExerciseState(
+        1,
+        new ArrayList<>(Arrays.asList(1L, 2L)),
+        "left_ankle,right_ankle",
+        "left_knee,right_knee",
+        "left_hip,right_hip",
+        ExerciseState.COMPARATOR.LESS,
+        120,
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // bottom
+    // Side-planks
+    new ExerciseState(2, new ArrayList<>(List.of()), "", "", "", null, 0, null),
+    // Mountain-climbers
+    new ExerciseState(3, new ArrayList<>(List.of()), "", "", "", null, 0, null),
+    new ExerciseState(3, new ArrayList<>(List.of()), "", "", "", null, 0, null),
+    // Push-Up
+    new ExerciseState(
+        4,
+        new ArrayList<>(Arrays.asList(4L, 5L)),
+        "left_wrist,right_wrist",
+        "left_elbow,right_elbow",
+        "left_shoulder,right_shoulder",
+        ExerciseState.COMPARATOR.GREATER,
+        160,
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // top
+    new ExerciseState(
+        4,
+        new ArrayList<>(List.of(4L)),
+        "left_wrist,right_wrist",
+        "left_elbow,right_elbow",
+        "left_shoulder,right_shoulder",
+        ExerciseState.COMPARATOR.LESS,
+        100,
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // bottom
+    // Sit-Up
+    new ExerciseState(
+        5,
+        new ArrayList<>(List.of(6L)),
+        "left_shoulder,right_shoulder",
+        "left_hip,right_hip",
+        "left_ankle,right_ankle",
+        ExerciseState.COMPARATOR.LESS,
+        190,
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // bottom
+    new ExerciseState(
+        5,
+        new ArrayList<>(List.of(6L)),
+        "left_shoulder,right_shoulder",
+        "left_hip,right_hip",
+        "left_ankle,right_ankle",
+        ExerciseState.COMPARATOR.GREATER,
+        250,
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // top
+    // Plank
+    new ExerciseState(6, new ArrayList<>(List.of(3L)), "", "", "", null, 0, null),
+    // Biceps-Curl
+    new ExerciseState(
+        7,
+        new ArrayList<>(Arrays.asList(1L, 7L, 3L)),
+        "left_wrist,right_wrist",
+        "left_elbow,right_elbow",
+        "left_shoulder,right_shoulder",
+        ExerciseState.COMPARATOR.GREATER,
+        150,
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // bottom
+    new ExerciseState(
+        7,
+        new ArrayList<>(Arrays.asList(1L, 7L, 3L)),
+        "left_wrist,right_wrist",
+        "left_elbow,right_elbow",
+        "left_shoulder,right_shoulder",
+        ExerciseState.COMPARATOR.LESS,
+        90,
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // top
   };
 
   public static List<Exercise> getDummyExercises() {
@@ -230,68 +261,100 @@ public class DataGenerator {
     return fe;
   }
 
-  /*
-  public static Pair<List<ExerciseState>, List<Constraint>> getDummyExerciseStatesAndConstraints() {
+  public static List<Constraint> giveMeDummyConstraints() {
     List<Constraint> constraints = new ArrayList<>();
-    List<ExerciseState> exerciseStates = new ArrayList<>();
-    List<Exercise> exs = getDummyExercises();
-    long count = 1;
-    for (int i = 0; i < exs.size(); ++i) {
-        for (int k = 0; k < NormalizedLandmark.landmark_names.size(); k++) {
-          String from1 = NormalizedLandmark.landmark_names.get(k);
-          String to1 =
-              NormalizedLandmark.landmark_names.get(
-                  (k + 1) % NormalizedLandmark.landmark_names.size());
-          String from2 =
-              NormalizedLandmark.landmark_names.get(
-                  (k + 2) % NormalizedLandmark.landmark_names.size());
-          String to2 =
-              NormalizedLandmark.landmark_names.get(
-                  (k + 3) % NormalizedLandmark.landmark_names.size());
-          double max_diff = 1.0;
-          String template =
-              "Message for constraint [from1: %s, to1: %s, from2: %s, to2: %s, max_diff: %f]";
-          @SuppressLint("DefaultLocale")
-          String msg = String.format(template, from1, to1, from2, to2, max_diff);
-          Constraint c = new Constraint(count, from1, to1, from2, to2, max_diff, msg);
-          ++count;
-          constraints.add(c);
-          ExerciseState es =
-              new ExerciseState(exs.get(i).id, c.id);
-          exerciseStates.add(es);
-        }
-    }
-    return new Pair<>(exerciseStates, constraints);
-  } */
-
-//"Squat", "Side-planks", "Mountain-climbers", "Pushup", "Sit-up", "Plank", "Biceps-curl"
-  //time of motion, range of motion
-  /*  Squat       Top:Füße schulterbreit
-                  Bottom:Füße schulterbreit, Knie hinter Fußspitze, Hüfte bis unter die Knie, keine nach innen fallende knie, Gewichtsverlagerung nach vorne, Angehobene Fersen, Rundrücken
-                  Quelle: #https://www.freeletics.com/de/blog/posts/fehler-beim-squatten/#gsc.tab=0
-      Sit-Up:     Bottom:Knie rechter Winkel, Rücken gerade,
-                  Top:Knie rechter Winkel, Nacken und Schulter bleiben gerade,
-                  https://praxistipps.focus.de/sit-ups-richtig-machen-so-gehts_127841
-      Bicep_Curl: Bottom: Füße schulterbreit, Ellenbogen am Körper, Hohlkreuz,Handgelenke abknicken,Ungerade Halswirbelsäule,Mitschwingen
-                  Top: Füße schulterbreit,Ellenbogen am Körper, Hohlkreuz, Handgelenke abknicken, Ungerade Halswirbelsäule, Mitschwingen
-                  https://upfit.de/coach/bizeps-curl/#:~:text=Richtige%20Ausf%C3%BChrung%20von%20Bizeps%20Curls,-Nehme%20die%20Kurzhanteln&text=Rolle%20deine%20Schultern%20nach%20hinten,dieser%20Bewegung%20in%20ihrer%20Position.
-  */
-  public static List<Constraint> giveMeDummyConstraints(){
-    List<Constraint> constraints = new ArrayList<Constraint>();
     // Füße schulterbreit (squat-global, plank-global, bicep_curl-global, push_up-global)
-    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_ankle", "right_ankle", 0.1, "Keep your feet at shoulder width.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
+    constraints.add(
+        new Constraint(
+            "left_shoulder",
+            "right_shoulder",
+            "left_ankle",
+            "right_ankle",
+            0.1,
+            "Keep your feet at shoulder width.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null));
     // Knie hinter den Fußspitzen (squat-bottom)
-    constraints.add(new Constraint( "left_foot_index,right_foot_index", "left_knee,right_knee", "left_heel", "left_hip,left_knee", 0.1, "Keep knees behind your toe tips.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
-    // Körper gerade (squat-top, side_plank-global, mountain_climbers-top, push_up-global, plank-global)
-    constraints.add(new Constraint( "right_shoulder,left_shoulder", "right_hip,left_hip", "right_ankle,left_ankle", "right_hip,left_hip", 10, "Straighten your body.", Constraint.TYPE.ANGLE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.Z, 180));
+    constraints.add(
+        new Constraint(
+            "left_foot_index,right_foot_index",
+            "left_knee,right_knee",
+            "left_heel",
+            "left_hip,left_knee",
+            0.1,
+            "Keep knees behind your toe tips.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null));
+    // Körper gerade (squat-top, side_plank-global, mountain_climbers-top, push_up-global,
+    // plank-global)
+    constraints.add(
+        new Constraint(
+            "right_shoulder,left_shoulder",
+            "right_hip,left_hip",
+            "right_ankle,left_ankle",
+            "right_hip,left_hip",
+            10,
+            "Straighten your body.",
+            Constraint.TYPE.ANGLE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.Z,
+            180));
     // Hände ca. schulterbreit (mountain_climbers-global, push_up-global, plank-global)
-    constraints.add(new Constraint( "left_shoulder", "right_shoulder", "left_wrist", "right_wrist", 0.1, "Keep your hands a little wider than shoulder width.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
+    constraints.add(
+        new Constraint(
+            "left_shoulder",
+            "right_shoulder",
+            "left_wrist",
+            "right_wrist",
+            0.1,
+            "Keep your hands a little wider than shoulder width.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null));
     // Hände auf Schulterhöhe (push_up-top)
-    constraints.add(new Constraint( "left_wrist,right_wrist", "left_shoulder,right_shoulder", "left_hip,right_hip", "left_shoulder,right_shoulder", 0.1, "Keep your hands at shoulder height.", Constraint.TYPE.ANGLE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.Z, 70));
+    constraints.add(
+        new Constraint(
+            "left_wrist,right_wrist",
+            "left_shoulder,right_shoulder",
+            "left_hip,right_hip",
+            "left_shoulder,right_shoulder",
+            0.1,
+            "Keep your hands at shoulder height.",
+            Constraint.TYPE.ANGLE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.Z,
+            70));
     // Füße auf Boden / Knie angewinkelt (sit_up-global)
-    constraints.add(new Constraint( "left_hip,right_hip", "left_ankle,right_ankle", "left_knee,right_knee", "left_ankle,right_ankle", 0.1, "Keep your feet flat on the ground.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
+    constraints.add(
+        new Constraint(
+            "left_hip,right_hip",
+            "left_ankle,right_ankle",
+            "left_knee,right_knee",
+            "left_ankle,right_ankle",
+            0.1,
+            "Keep your feet flat on the ground.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null));
     // Ellenbogen am Körper (bicep_curl-global)
-    constraints.add(new Constraint( "left_shoulder,left_hip", "right_shoulder,right_hip", "left_elbow", "right_elbow", 0.1, "Keep your elbows close to your body.", Constraint.TYPE.DISTANCE, Constraint.INEQUALITY_TYPE.EQUAL, Constraint.INSIGNIFICANT_DIMENSION.NONE, null));
+    constraints.add(
+        new Constraint(
+            "left_shoulder,left_hip",
+            "right_shoulder,right_hip",
+            "left_elbow",
+            "right_elbow",
+            0.1,
+            "Keep your elbows close to your body.",
+            Constraint.TYPE.DISTANCE,
+            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null));
     return constraints;
   }
 }
