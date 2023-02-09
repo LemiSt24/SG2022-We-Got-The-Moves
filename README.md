@@ -11,18 +11,18 @@ Project-)Praktikum.
 
 - Alexander Hartmann
 - Jan-Luca Barthel
-- Lanmiao Liu
 - Lennard Michael Strohmeyer
 - Simon Westermann
 
 ## Features
 
-- Camera tracking of movements, poses and
-  exercises ([Google's mediapipe](https://google.github.io/mediapipe/))
-- Quality measurement of movements during training
-- User statistics and feedback
-- Tutorials for exercises ([darebee](https://darebee.com/))
+- Camera tracking of movements (via [Google's mediapipe](https://google.github.io/mediapipe/))
+- Quality measurement for exercises during workout sessions
+- Statistics for user and exercises
+- Profile settings
+- Tutorials for exercises (e.g.[darebee](https://darebee.com/))
 - Workout planner
+- Video playback recording
 
 ## Demo
 
