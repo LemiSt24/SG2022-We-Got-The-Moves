@@ -427,35 +427,9 @@ public class MediapipeActivity extends AppCompatActivity {
                   }
                 }
                 if (lastState == 0) {
-
                   // -> next Exercise
                   if (Reps >= exerciseIdToAmount.get(currentExercise.id)) {
-                    countableEndTime = SystemClock.elapsedRealtime();
-                    finishedExercises.add(createFinishedExercise(currentExercise, true));
-                    ExercisePointer++;
-
-                    // -> training finished
-                    if (ExercisePointer >= exercises.size()) {
-                      noPause = false;
-                      Handler handler = new Handler(Looper.getMainLooper());
-                      handler.post(
-                          new Runnable() {
-                            public void run() {
-                              showEndScreenAndSave();
-                            }
-                          });
-                    }
-
-                    // next exercise is loaded
-                    else {
-                      currentExercise = exercises.get(ExercisePointer);
-                      noPause = false;
-                      showNextExerciseDialog(
-                          currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
-                      setExerciseName(currentExercise.name);
-                      Reps = 0;
-                      setRepetition(String.valueOf(0));
-                    }
+                    nextExercise(true);
                   }
                 }
               }
@@ -470,6 +444,7 @@ public class MediapipeActivity extends AppCompatActivity {
     ImageButton stop_but = findViewById(R.id.mediapipe_stop_button);
     CardView stop_card = findViewById(R.id.mediapipe_stop_card);
     Button continue_but = findViewById(R.id.mediapipe_continue_button);
+    Button skip_but = findViewById(R.id.mediapipe_skip_exercise_button);
     Button finish_but = findViewById(R.id.mediapipe_finish_button);
     stop_but.setOnClickListener(
         v -> {
@@ -480,10 +455,22 @@ public class MediapipeActivity extends AppCompatActivity {
           tts("continue");
           stop_card.setVisibility(View.GONE);
           continue_but.setClickable(false);
+          skip_but.setClickable(false);
           finish_but.setClickable(false);
           startTimeCounter();
           noPause = true;
         });
+    skip_but.setOnClickListener(
+        v -> {
+          nextExercise(false);
+          stop_card.setVisibility(View.GONE);
+          continue_but.setClickable(false);
+          skip_but.setClickable(false);
+          finish_but.setClickable(false);
+          startTimeCounter();
+          noPause = true;
+        }
+    );
     finish_but.setOnClickListener(
         v -> {
           finishedExercises.add(createFinishedExercise(currentExercise, false));
@@ -533,6 +520,84 @@ public class MediapipeActivity extends AppCompatActivity {
 
   protected Size cameraTargetResolution() {
     return null; // No preference and let the camera (helper) decide.
+  }
+
+  /**
+   * Always called when an exercise is finished (all reps done, time up)
+   * or when the skip button is pressed
+   * @param finishedNormal <br>
+   * - true if all proposed reps done / time completely up <br>
+   * - false if called before exercise is regular finished (e.g. skip button pressed)
+   */
+  public void nextExercise(boolean finishedNormal){
+    //current is cont based
+    if (currentExercise.isCountable()) {
+      countableEndTime = SystemClock.elapsedRealtime();
+      finishedExercises.add(createFinishedExercise(currentExercise, finishedNormal));
+      ExercisePointer++;
+
+      // -> training finished
+      if (ExercisePointer >= exercises.size()) {
+        noPause = false;
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(
+          new Runnable() {
+            public void run() {
+              showEndScreenAndSave();
+            }
+          });
+      }
+
+      // next exercise is loaded
+      else {
+        currentExercise = exercises.get(ExercisePointer);
+        noPause = false;
+        showNextExerciseDialog(
+                currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
+        setExerciseName(currentExercise.name);
+        Reps = 0;
+        setRepetition(String.valueOf(0));
+      }
+    }
+    //current is time based
+    else {
+      Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
+      runOnUiThread(
+        new Runnable() {
+          @Override
+          public void run() {
+            finishedExercises.add(createFinishedExercise(currentExercise, finishedNormal));
+            ExercisePointer++;
+            //no more exercises
+            if (ExercisePointer >= exercises.size()) {
+              Log.println(Log.DEBUG, TAG, "workout finished");
+              noPause = false;
+              timeUp = true;
+              Handler handler = new Handler(Looper.getMainLooper());
+              handler.post(
+                      new Runnable() {
+                        public void run() {
+                          showEndScreenAndSave();
+                        }
+                      });
+              time_counter.stop();
+            }
+            //load new exercise
+            else {
+              currentExercise = exercises.get(ExercisePointer);
+              setExerciseName(currentExercise.name);
+              noPause = false;
+              showNextExerciseDialog(
+                      currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
+              timerSet = false;
+              Reps = 0;
+              setRepetition(String.valueOf(0));
+              time_counter.stop();
+              timeUp = true;
+            }
+          }
+        });
+    }
   }
 
   public void startCamera() {
@@ -695,32 +760,7 @@ public class MediapipeActivity extends AppCompatActivity {
                   public void onChronometerTick(Chronometer chronometer) {
                     long base = time_counter.getBase();
                     if (base < SystemClock.elapsedRealtime()) {
-                      finishedExercises.add(createFinishedExercise(currentExercise, true));
-                      ExercisePointer++;
-                      if (ExercisePointer >= exercises.size()) {
-                        Log.println(Log.DEBUG, TAG, "workout finished");
-                        noPause = false;
-                        timeUp = true;
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(
-                            new Runnable() {
-                              public void run() {
-                                showEndScreenAndSave();
-                              }
-                            });
-                        time_counter.stop();
-                      } else {
-                        currentExercise = exercises.get(ExercisePointer);
-                        setExerciseName(currentExercise.name);
-                        noPause = false;
-                        showNextExerciseDialog(
-                            currentExercise, exerciseIdToAmount.get(currentExercise.id), 5);
-                        timerSet = false;
-                        Reps = 0;
-                        setRepetition(String.valueOf(0));
-                        time_counter.stop();
-                        timeUp = true;
-                      }
+                      nextExercise(true);
                     }
                   }
                 });
@@ -979,6 +1019,7 @@ public class MediapipeActivity extends AppCompatActivity {
           public void run() {
             findViewById(R.id.mediapipe_stop_card).setVisibility(View.VISIBLE);
             findViewById(R.id.mediapipe_continue_button).setClickable(true);
+            findViewById(R.id.mediapipe_skip_exercise_button).setClickable(true);
             findViewById(R.id.mediapipe_finish_button).setClickable(true);
           }
         });
