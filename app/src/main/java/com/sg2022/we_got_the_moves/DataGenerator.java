@@ -214,24 +214,24 @@ public class DataGenerator {
     return e;
   }
 
-  public static List<Workout> getDummyWorkouts() {
-    List<Workout> w = new ArrayList<>();
-    for (int i = 0; i < workoutNames.length; ++i) {
-      w.add(new Workout(i + 1, workoutNames[i]));
-    }
-    return w;
-  }
-
   public static List<WorkoutExercise> getDummyWorkoutExercises() {
-    List<Workout> DummyWorkouts = getDummyWorkouts();
     List<Exercise> DummyExercises = getDummyExercises();
     List<WorkoutExercise> we = new ArrayList<>();
-    for (int i = 0; i < DummyWorkouts.size(); ++i) {
-      for (int j = 0; j < DummyExercises.size(); ++j) {
-        we.add(new WorkoutExercise(DummyWorkouts.get(i).id, DummyExercises.get(j).id, 5));
+    for (int i = 0; i < DummyExercises.size(); ++i) {
+      for (int j = 0; j < workoutNames.length; ++j) {
+        we.add(j, new WorkoutExercise(j, DummyExercises.get(i).id, 5));
       }
     }
     return we;
+  }
+
+  public static List<Workout> getDummyWorkouts() {
+    List<Workout> w = new ArrayList<>();
+    List<WorkoutExercise> we = getDummyWorkoutExercises();
+    for (int i = 0; i < workoutNames.length; ++i) {
+        w.add(new Workout(i + 1, workoutNames[i], we));
+    }
+    return w;
   }
 
   public static List<FinishedWorkout> getDummyFinsishedWorkouts() {
@@ -242,18 +242,20 @@ public class DataGenerator {
   }
 
   public static List<FinishedExercise> getDummyFinsishedExercise() {
-    List<WorkoutExercise> we = getDummyWorkoutExercises();
+    //List<WorkoutExercise> we = getDummyWorkoutExercises();
+    Workout w = getDummyWorkouts().get(0);
     List<FinishedWorkout> fw = getDummyFinsishedWorkouts();
     List<FinishedExercise> fe = new ArrayList<>();
     for (int i = 0; i < fw.size(); i++) {
-      final FinishedWorkout w = fw.get(i);
+   /*   final FinishedWorkout w = fw.get(i);
       List<WorkoutExercise> result =
-          we.stream().filter(e -> e.workoutId == w.workoutId).collect(Collectors.toList());
-      for (int j = 0; j < result.size(); j++) {
+          we.stream().filter(e -> e.workoutId == w.workoutId).collect(Collectors.toList());*/
+
+      for (int j = 0; j < w.workoutExercises.size(); j++) {
         fe.add(
             new FinishedExercise(
                 fw.get(i).workoutId,
-                result.get(j).exerciseId,
+                w.workoutExercises.get(j).exerciseId,
                 30,
                 (int) (Math.floor(Math.random() * 100))));
       }

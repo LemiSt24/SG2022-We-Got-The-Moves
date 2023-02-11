@@ -5,6 +5,7 @@ import androidx.room.TypeConverter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
+import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 
 import java.lang.reflect.Type;
 import java.time.Duration;
@@ -75,5 +76,27 @@ public class TypeConverters {
     Type type = new TypeToken<List<Long>>() {}.getType();
     List<Long> ConstraintIds = gson.fromJson(ConstraintIdsString, type);
     return ConstraintIds;
+  }
+
+  @TypeConverter
+  public String fromWorkoutExerciseList(List<WorkoutExercise> workoutExercises) {
+    if (workoutExercises == null) {
+      return (null);
+    }
+    Gson gson = new Gson();
+    Type type = new TypeToken<List<WorkoutExercise>>() {}.getType();
+    String json = gson.toJson(workoutExercises, type);
+    return json;
+  }
+
+  @TypeConverter
+  public List<WorkoutExercise> toWorkoutExerciseList(String workoutExercisesString) {
+    if (workoutExercisesString == null) {
+      return (null);
+    }
+    Gson gson = new Gson();
+    Type type = new TypeToken<List<WorkoutExercise>>() {}.getType();
+    List<WorkoutExercise> workoutExercises = gson.fromJson(workoutExercisesString, type);
+    return workoutExercises;
   }
 }

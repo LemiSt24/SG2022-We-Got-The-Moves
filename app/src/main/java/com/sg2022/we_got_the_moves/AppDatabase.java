@@ -84,9 +84,6 @@ public abstract class AppDatabase extends RoomDatabase {
                               .insertAll(DataGenerator.getDummyExercises());
                           getInstance(app).WorkoutDao().insertAll(DataGenerator.getDummyWorkouts());
                           getInstance(app)
-                              .WorkoutExerciseDao()
-                              .insertAll(DataGenerator.getDummyWorkoutExercises());
-                          getInstance(app)
                               .UserDao()
                               .insert(
                                   new User(

@@ -56,7 +56,7 @@ public class WorkoutsFragment extends Fragment {
     DialogTextInputBinding binding =
         DataBindingUtil.inflate(
             LayoutInflater.from(this.getContext()), R.layout.dialog_text_input, null, false);
-    Workout newItem = new Workout(0, getString(R.string.untitled));
+    Workout newItem = new Workout(0, getString(R.string.untitled), null);
     binding.setText(newItem.name);
     builder
         .setView(binding.getRoot())

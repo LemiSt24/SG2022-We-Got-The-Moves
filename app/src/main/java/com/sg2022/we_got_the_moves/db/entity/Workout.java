@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.List;
+
 @Entity(tableName = "Workout")
 public class Workout {
 
@@ -15,9 +17,13 @@ public class Workout {
   @ColumnInfo(name = "name")
   public String name;
 
-  public Workout(long id, String name) {
+  @ColumnInfo(name = "workoutExercises")
+  public List<WorkoutExercise> workoutExercises;
+
+  public Workout(long id, String name, List<WorkoutExercise> workoutExercises) {
     this.id = id;
     this.name = name;
+    this.workoutExercises = workoutExercises;
   }
 
   @Ignore

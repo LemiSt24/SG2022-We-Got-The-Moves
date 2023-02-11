@@ -4,9 +4,10 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
-@Entity(
-    tableName = "WorkoutExercise",
+/*(
+    ,
     primaryKeys = {"workoutId", "exerciseId"},
     foreignKeys = {
       @ForeignKey(
@@ -28,13 +29,32 @@ import androidx.room.Index;
           unique = true),
       @Index(value = {"exerciseId"}),
       @Index(value = {"workoutId"})
-    })
+    })*/
+@Entity (tableName = "WorkoutExercise",
+        foreignKeys = {
+                @ForeignKey(
+                        entity = Workout.class,
+                        parentColumns = "id",
+                        childColumns = "workoutId",
+                        onDelete = ForeignKey.CASCADE,
+                        onUpdate = ForeignKey.CASCADE),
+                @ForeignKey(
+                        entity = Exercise.class,
+                        parentColumns = "id",
+                        childColumns = "exerciseId",
+                        onDelete = ForeignKey.CASCADE,
+                        onUpdate = ForeignKey.CASCADE)
+        })
 public class WorkoutExercise {
 
-  @ColumnInfo(name = "workoutId")
+  @PrimaryKey(autoGenerate = true)
+  @ColumnInfo(name = "id")
+  public long id;
+
+  @ColumnInfo(name = "workoutId", index = true)
   public long workoutId;
 
-  @ColumnInfo(name = "exerciseId")
+  @ColumnInfo(name = "exerciseId", index = true)
   public long exerciseId;
 
   @ColumnInfo(name = "amount")
