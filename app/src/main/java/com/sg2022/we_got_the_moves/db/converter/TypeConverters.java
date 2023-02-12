@@ -76,4 +76,26 @@ public class TypeConverters {
     List<Long> ConstraintIds = gson.fromJson(ConstraintIdsString, type);
     return ConstraintIds;
   }
+
+  @TypeConverter
+  public String fromAmountList(List<Integer> amounts) {
+    if (amounts == null) {
+      return (null);
+    }
+    Gson gson = new Gson();
+    Type type = new TypeToken<List<Integer>>() {}.getType();
+    String json = gson.toJson(amounts, type);
+    return json;
+  }
+
+  @TypeConverter
+  public List<Integer> toAmountList(String amountsString) {
+    if (amountsString == null) {
+      return (null);
+    }
+    Gson gson = new Gson();
+    Type type = new TypeToken<List<Integer>>() {}.getType();
+    List<Integer> amounts = gson.fromJson(amountsString, type);
+    return amounts;
+  }
 }

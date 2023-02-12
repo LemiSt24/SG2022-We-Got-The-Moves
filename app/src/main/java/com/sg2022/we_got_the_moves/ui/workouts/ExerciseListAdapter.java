@@ -58,7 +58,7 @@ public class ExerciseListAdapter
   public void onBindViewHolder(@NonNull ExerciseItemViewHolder holder, int position) {
     WorkoutExerciseAndExercise wee = this.list.get(position);
     holder.binding.setWee(wee);
-    holder.binding.buttonAmountExerciseItem.setOnClickListener(v -> showAmountDialog(wee));
+    holder.binding.buttonAmountExerciseItem.setOnClickListener(v -> showAmountDialog(holder, wee));
     holder.binding.imagebuttonInfoExerciseItem.setOnClickListener(
         v -> showInstructionDialog(wee.exercise));
   }
@@ -68,7 +68,7 @@ public class ExerciseListAdapter
     return this.list.size();
   }
 
-  private void showAmountDialog(WorkoutExerciseAndExercise ewe) {
+  private void showAmountDialog(@NonNull ExerciseItemViewHolder holder, WorkoutExerciseAndExercise ewe) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.fragment.getContext());
     ViewDataBinding binding =
         DataBindingUtil.inflate(
@@ -93,12 +93,16 @@ public class ExerciseListAdapter
               R.string.yes,
               (dialog, id) -> {
                 int amount = b.numberPickerNumberDialog.getValue();
-                if (amount == ewe.workoutExercise.amount) dialog.dismiss();
-                if (amount == 0) {
+                if (amount == ewe.workoutExercise.amount){
+                    dialog.dismiss();
+                }
+                else if (amount == 0) {
                   model.repository.deleteWorkoutExercise(ewe.workoutExercise);
                 } else {
+                    Log.println(Log.DEBUG, "test", "in else");
                   ewe.workoutExercise.amount = amount;
-                  model.repository.updateWorkoutExercise(ewe.workoutExercise);
+                  holder.binding.buttonAmountExerciseItem.setText(String.valueOf(amount));
+                  //model.repository.updateWorkoutExercise(ewe.workoutExercise);
                 }
                 dialog.dismiss();
               })
@@ -142,7 +146,8 @@ public class ExerciseListAdapter
                   model.repository.deleteWorkoutExercise(ewe.workoutExercise);
                 } else {
                   ewe.workoutExercise.amount = amount;
-                  model.repository.updateWorkoutExercise(ewe.workoutExercise);
+                  holder.binding.buttonAmountExerciseItem.setText(TimeFormatUtil.formatTimeHhmmss(amount));
+                  //model.repository.updateWorkoutExercise(ewe.workoutExercise);
                 }
                 dialog.dismiss();
               })

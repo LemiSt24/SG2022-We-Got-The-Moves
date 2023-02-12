@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
 
+import java.util.List;
+
 @Entity(
     tableName = "WorkoutExercise",
     primaryKeys = {"workoutId", "exerciseId"},

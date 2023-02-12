@@ -77,6 +77,7 @@ public class WorkoutListAdapter
     holder.binding.setWorkout(w);
     holder.binding.setVisible(false);
 
+    holder.binding.saveBtnWorkoutItem.setOnClickListener(v -> saveWorkoutExercises(we));
     holder.binding.editBtnWorkoutItem.setOnClickListener(v -> showEditDialog(w));
     holder.binding.copyBtnWorkoutItem.setOnClickListener(v -> showCopyDialog(w));
     holder.binding.addBtnWorkoutItem.setOnClickListener(v -> showAddDialog(w));
@@ -90,6 +91,12 @@ public class WorkoutListAdapter
   @Override
   public int getItemCount() {
     return this.list.size();
+  }
+
+  private void saveWorkoutExercises(List<WorkoutExerciseAndExercise> we){
+      for (WorkoutExerciseAndExercise weElement : we){
+          model.repository.updateWorkoutExercise(weElement.workoutExercise);
+      }
   }
 
   private void showDeleteDialog(@NonNull Workout w) {

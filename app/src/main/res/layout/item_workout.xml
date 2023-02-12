@@ -86,6 +86,18 @@
                         tools:ignore="ImageContrastCheck" />
 
                     <ImageButton
+                        android:id="@+id/save_btn_workout_item"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#00FFFFFF"
+                        android:contentDescription="@string/expand"
+                        android:minHeight="48dp"
+                        android:src="@drawable/ic_save_black_24dp"
+                        app:layout_constraintEnd_toStartOf="@+id/edit_btn_workout_item"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="ImageContrastCheck" />
+
+                    <ImageButton
                         android:id="@+id/edit_btn_workout_item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
