@@ -126,7 +126,7 @@ public class ExerciseListAdapter
             false);
     if (binding instanceof DialogNumberInputBinding) {
       DialogNumberInputBinding b = (DialogNumberInputBinding) binding;
-      b.numberPickerNumberDialog.setMinValue(0);
+      b.numberPickerNumberDialog.setMinValue(1);
       b.numberPickerNumberDialog.setMaxValue(100);
       b.numberPickerNumberDialog.setWrapSelectorWheel(true);
       b.numberPickerNumberDialog.setValue(ewe.workoutExercise.amount.get(set));
