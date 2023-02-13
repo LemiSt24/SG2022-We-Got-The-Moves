@@ -1,9 +1,13 @@
 package com.sg2022.we_got_the_moves.ui.workouts;
 
 import android.app.AlertDialog;
+import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -36,6 +40,8 @@ public class ExerciseListAdapter
   private final WorkoutsViewModel model;
   private final List<WorkoutExerciseAndExercise> list;
 
+
+
   public ExerciseListAdapter(
       @NonNull Fragment fragment,
       @NonNull WorkoutsViewModel model,
@@ -58,9 +64,17 @@ public class ExerciseListAdapter
   public void onBindViewHolder(@NonNull ExerciseItemViewHolder holder, int position) {
     WorkoutExerciseAndExercise wee = this.list.get(position);
     holder.binding.setWee(wee);
-    holder.binding.buttonAmountExerciseItem.setOnClickListener(v -> showAmountDialog(holder, wee));
+    for (int i = 0; i < wee.workoutExercise.amount.size(); i++){
+        addAmountButton(holder, position);
+    }
     holder.binding.imagebuttonInfoExerciseItem.setOnClickListener(
         v -> showInstructionDialog(wee.exercise));
+    holder.binding.imagebuttonAddSetExerciseItem.setOnClickListener(
+        v -> addAmountButton(holder, position)
+    );
+    holder.binding.imagebuttonRemoveSetExerciseItem.setOnClickListener(
+        v -> deleteLastAmountButton(holder, position)
+    );
   }
 
   @Override
@@ -68,7 +82,39 @@ public class ExerciseListAdapter
     return this.list.size();
   }
 
-  private void showAmountDialog(@NonNull ExerciseItemViewHolder holder, WorkoutExerciseAndExercise ewe) {
+  private void addAmountButton(@NonNull ExerciseItemViewHolder holder, int position){
+      WorkoutExerciseAndExercise wee = list.get(position);
+      Button btn = new Button(this.fragment.getContext());
+      int buttonNumber = holder.binding.linearLayoutButtonsAmountExerciseItem.getChildCount();
+      if (wee.workoutExercise.amount.size() <= buttonNumber){
+          wee.workoutExercise.amount.add(5);
+      }
+
+      btn.getBackground().setColorFilter(btn.getContext().getResources().
+              getColor(R.color.sg_design_green), PorterDuff.Mode.MULTIPLY);
+      btn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+      btn.setTypeface(Typeface.DEFAULT_BOLD);
+      btn.setId(buttonNumber);
+      if (wee.exercise.isCountable()){
+          btn.setText(String.valueOf(wee.workoutExercise.amount.get(buttonNumber)));
+      }
+      else btn.setText(TimeFormatUtil.formatTimeHhmmss(wee.workoutExercise.amount.get(buttonNumber)));
+
+      btn.setOnClickListener(v -> showAmountDialog(holder, wee, v.getId()));
+      holder.binding.linearLayoutButtonsAmountExerciseItem.addView(btn);
+  }
+
+  private void deleteLastAmountButton(@NonNull ExerciseItemViewHolder holder, int position){
+      if (holder.binding.linearLayoutButtonsAmountExerciseItem.getChildCount() <= 1) return;
+      WorkoutExerciseAndExercise wee = list.get(position);
+      int lastButtonPos = holder.binding.linearLayoutButtonsAmountExerciseItem.getChildCount() - 1;
+      holder.binding.linearLayoutButtonsAmountExerciseItem.removeView(
+              holder.binding.linearLayoutButtonsAmountExerciseItem.findViewById(lastButtonPos)
+      );
+      wee.workoutExercise.amount.remove(lastButtonPos);
+  }
+
+  private void showAmountDialog(@NonNull ExerciseItemViewHolder holder, WorkoutExerciseAndExercise ewe, int set) {
     AlertDialog.Builder builder = new AlertDialog.Builder(this.fragment.getContext());
     ViewDataBinding binding =
         DataBindingUtil.inflate(
@@ -83,7 +129,7 @@ public class ExerciseListAdapter
       b.numberPickerNumberDialog.setMinValue(0);
       b.numberPickerNumberDialog.setMaxValue(100);
       b.numberPickerNumberDialog.setWrapSelectorWheel(true);
-      b.numberPickerNumberDialog.setValue(ewe.workoutExercise.amount);
+      b.numberPickerNumberDialog.setValue(ewe.workoutExercise.amount.get(set));
       builder
           .setView(binding.getRoot())
           .setTitle(
@@ -93,16 +139,15 @@ public class ExerciseListAdapter
               R.string.yes,
               (dialog, id) -> {
                 int amount = b.numberPickerNumberDialog.getValue();
-                if (amount == ewe.workoutExercise.amount){
+                if (amount == ewe.workoutExercise.amount.get(set)){
                     dialog.dismiss();
                 }
                 else if (amount == 0) {
                   model.repository.deleteWorkoutExercise(ewe.workoutExercise);
                 } else {
-                    Log.println(Log.DEBUG, "test", "in else");
-                  ewe.workoutExercise.amount = amount;
-                  holder.binding.buttonAmountExerciseItem.setText(String.valueOf(amount));
-                  //model.repository.updateWorkoutExercise(ewe.workoutExercise);
+                  ewe.workoutExercise.amount.set(set, amount);
+                  ((Button)holder.binding.linearLayoutButtonsAmountExerciseItem.
+                          findViewById(set)).setText(String.valueOf(amount));
                 }
                 dialog.dismiss();
               })
@@ -112,7 +157,7 @@ public class ExerciseListAdapter
     } else {
       DialogTimeInputBinding b = (DialogTimeInputBinding) binding;
       Triple<Integer, Integer, Integer> triple =
-          TimeFormatUtil.secsToHhmmss(ewe.workoutExercise.amount);
+          TimeFormatUtil.secsToHhmmss(ewe.workoutExercise.amount.get(set));
       b.numberPickerHoursDialog.setMinValue(0);
       b.numberPickerHoursDialog.setMaxValue(23);
       b.numberPickerHoursDialog.setValue(triple.getFirst());
@@ -141,13 +186,13 @@ public class ExerciseListAdapter
                             b.numberPickerHoursDialog.getValue(),
                             b.numberPickerMinutesDialog.getValue(),
                             b.numberPickerSecondsDialog.getValue()));
-                if (amount == ewe.workoutExercise.amount) dialog.dismiss();
+                if (amount == ewe.workoutExercise.amount.get(set)) dialog.dismiss();
                 if (amount == 0) {
                   model.repository.deleteWorkoutExercise(ewe.workoutExercise);
                 } else {
-                  ewe.workoutExercise.amount = amount;
-                  holder.binding.buttonAmountExerciseItem.setText(TimeFormatUtil.formatTimeHhmmss(amount));
-                  //model.repository.updateWorkoutExercise(ewe.workoutExercise);
+                  ewe.workoutExercise.amount.set(set, amount);
+                  ((Button)holder.binding.linearLayoutButtonsAmountExerciseItem.findViewById(set)).
+                          setText(TimeFormatUtil.formatTimeHhmmss(amount));
                 }
                 dialog.dismiss();
               })

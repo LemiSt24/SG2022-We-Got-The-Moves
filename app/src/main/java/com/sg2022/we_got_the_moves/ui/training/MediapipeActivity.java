@@ -323,9 +323,9 @@ public class MediapipeActivity extends AppCompatActivity {
                         this,
                         workoutExercise -> {
                           exerciseIdToAmount.put(
-                              workoutExercise.exerciseId, workoutExercise.amount);
+                              workoutExercise.exerciseId, workoutExercise.amount.get(0)); //finished exercises dann auch anpassen
                           if (firstTimeShowDialog) {
-                            showNextExerciseDialog(currentExercise, workoutExercise.amount, 5);
+                            showNextExerciseDialog(currentExercise, workoutExercise.amount.get(0), 5);
                             firstTimeShowDialog = false;
                           }
                         });

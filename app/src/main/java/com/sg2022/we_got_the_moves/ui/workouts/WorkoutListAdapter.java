@@ -220,6 +220,8 @@ public class WorkoutListAdapter
                     public void onSuccess(@NonNull List<WorkoutExerciseAndExercise> found) {
                       List<Exercise> tmp =
                           found.stream().map(e -> e.exercise).collect(Collectors.toList());
+                      List<String> tmpNames = new ArrayList<>();
+                      for (Exercise e : tmp) tmpNames.add(e.name);
                       String[] items = total.stream().map(e -> e.name).toArray(String[]::new);
                       List<Boolean> b =
                           total.stream().map(tmp::contains).collect(Collectors.toList());
@@ -236,10 +238,20 @@ public class WorkoutListAdapter
                               (dialog, id) -> {
                                 List<Pair<WorkoutExercise, Boolean>> result = new ArrayList<>();
                                 for (int i = 0; i < checkedList.length; i++) {
-                                  result.add(
-                                      new Pair<>(
-                                          new WorkoutExercise(w.id, total.get(i).id, 5),
-                                          checkedList[i]));
+                                    if (tmpNames.contains(total.get(i).name)) {
+                                        result.add(
+                                                new Pair<>(
+                                                        found.get(tmpNames.indexOf(total.get(i).name))
+                                                                .workoutExercise,
+                                                        checkedList[i]));
+                                    }
+                                    else {
+                                        result.add(
+                                                new Pair<>(
+                                                        new WorkoutExercise(w.id, total.get(i).id,
+                                                                new ArrayList<>(List.of(5))),
+                                                        checkedList[i]));
+                                    }
                                 }
                                 if (result.size() > 0) {
                                   model.repository.insertOrDeleteWorkoutExercises(result);

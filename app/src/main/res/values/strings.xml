@@ -27,6 +27,8 @@
     <string name="amount">Amount</string>
     <string name="name">Name</string>
     <string name="info">Info</string>
+    <string name="plus">Plus</string>
+    <string name="minus">Minus</string>
     <string name="instruction_title">Instruction of Exercise: %s</string>
     <string name="ok">OK</string>
     <string name="description">Description</string>
@@ -78,4 +80,5 @@
     <string name="all_workouts">All Workouts</string>
     <string name="recent_trainings">Recent Trainings</string>
     <string name="all_trainings">All Trainings</string>
+
 </resources>
