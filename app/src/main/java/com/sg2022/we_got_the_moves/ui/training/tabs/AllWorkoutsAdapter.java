@@ -15,6 +15,8 @@ import com.sg2022.we_got_the_moves.databinding.DialogStartWorkoutBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemWorkoutNoEditBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
+import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
+import com.sg2022.we_got_the_moves.ui.workouts.WorkoutListAdapter;
 
 import java.util.List;
 
@@ -64,36 +66,45 @@ public class AllWorkoutsAdapter
   private void showWorkoutDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstanceActivity());
     DialogStartWorkoutBinding binding =
-        DataBindingUtil.inflate(
-            LayoutInflater.from(MainActivity.getInstanceActivity()),
-            R.layout.dialog_start_workout,
-            null,
-            false);
+            DataBindingUtil.inflate(
+                    LayoutInflater.from(MainActivity.getInstanceActivity()),
+                    R.layout.dialog_start_workout,
+                    null,
+                    false);
     builder
-        .setView(binding.getRoot())
-        .setPositiveButton(
-            "Start",
-            (dialog, id) -> {
-              MainActivity.getInstanceActivity().openMediapipeActivity(w.id);
-              dialog.dismiss();
-            })
-        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
-        .create()
-        .show();
+            .setView(binding.getRoot())
+            .setPositiveButton(
+                    "Start",
+                    (dialog, id) -> {
+                      MainActivity.getInstanceActivity().openMediapipeActivity(w.id);
+                      dialog.dismiss();
+                    })
+            .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+            .create()
+            .show();
     binding.textviewStartWorkoutWorkout.setText(w.name);
     exercisesString = "";
     model
-        .workoutsRepository
-        .getAllExercises(w.id)
-        .observe(
-            fragment,
-            exercises -> {
-              for (Exercise e : exercises) {
-                exercisesString += e.name + "\n";
-              }
-              binding.textviewStartWorkoutExercises.setText(exercisesString);
-              notifyDataSetChanged();
-            });
+            .workoutsRepository
+            .getAllWorkoutExerciseAndExercise(w.id)
+            .observe(
+                    fragment,
+                    wee -> {
+                      wee.sort(new WorkoutListAdapter.WorkoutExerciseComparator());
+                      for (WorkoutExerciseAndExercise e : wee) {
+                        if (e.exercise.isCountable()){
+                          for (int a : e.workoutExercise.amount){
+                            exercisesString += a + " x " + e.exercise.name + "\n";
+                          }
+                        }
+                        else for (int a : e.workoutExercise.amount){
+                          exercisesString += a + " s " + e.exercise.name + "\n";
+                        }
+
+                      }
+                      binding.textviewStartWorkoutExercises.setText(exercisesString);
+                      notifyDataSetChanged();
+                    });
   }
 
   @Override

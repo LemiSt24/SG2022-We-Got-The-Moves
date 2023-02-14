@@ -17,6 +17,8 @@ import com.sg2022.we_got_the_moves.databinding.ItemWorkoutNoEditBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
+import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
+import com.sg2022.we_got_the_moves.ui.workouts.WorkoutListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,12 +118,21 @@ public class LastWorkoutsAdapter
     exercisesString = "";
     model
         .workoutsRepository
-        .getAllExercises(w.id)
+        .getAllWorkoutExerciseAndExercise(w.id)
         .observe(
             fragment,
-            exercises -> {
-              for (Exercise e : exercises) {
-                exercisesString += e.name + "\n";
+            wee -> {
+              wee.sort(new WorkoutListAdapter.WorkoutExerciseComparator());
+              for (WorkoutExerciseAndExercise e : wee) {
+                  if (e.exercise.isCountable()){
+                      for (int a : e.workoutExercise.amount){
+                          exercisesString += a + " x " + e.exercise.name + "\n";
+                      }
+                  }
+                  else for (int a : e.workoutExercise.amount){
+                      exercisesString += a + " s " + e.exercise.name + "\n";
+                  }
+
               }
               binding.textviewStartWorkoutExercises.setText(exercisesString);
               notifyDataSetChanged();
