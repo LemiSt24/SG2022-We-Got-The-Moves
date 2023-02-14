@@ -24,6 +24,7 @@ import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExercises
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -74,6 +75,7 @@ public class WorkoutListAdapter
   public void onBindViewHolder(@NonNull WorkoutItemViewHolder holder, int position) {
     Workout w = this.list.get(position).workout;
     List<WorkoutExerciseAndExercise> we = this.list.get(position).workoutAndExercises;
+    we.sort(new WorkoutExerciseComparator());
     holder.binding.setWorkout(w);
     holder.binding.setVisible(false);
 
@@ -237,8 +239,15 @@ public class WorkoutListAdapter
                               R.string.yes,
                               (dialog, id) -> {
                                 List<Pair<WorkoutExercise, Boolean>> result = new ArrayList<>();
+                                int newElementCounter = 0;
+                                found.sort(new WorkoutExerciseComparator());
+                                Log.println(Log.DEBUG, "test", "foundFirst: " + found.size());
+                                for (int i = 0; i < found.size(); i++){
+                                    found.get(i).workoutExercise.orderNum = i;
+                                }
                                 for (int i = 0; i < checkedList.length; i++) {
                                     if (tmpNames.contains(total.get(i).name)) {
+                                        Log.println(Log.DEBUG, "test", "added found");
                                         result.add(
                                                 new Pair<>(
                                                         found.get(tmpNames.indexOf(total.get(i).name))
@@ -249,8 +258,9 @@ public class WorkoutListAdapter
                                         result.add(
                                                 new Pair<>(
                                                         new WorkoutExercise(w.id, total.get(i).id,
-                                                                new ArrayList<>(List.of(5))),
+                                                                new ArrayList<>(List.of(5)), found.size() + newElementCounter),
                                                         checkedList[i]));
+                                        newElementCounter ++;
                                     }
                                 }
                                 if (result.size() > 0) {
@@ -325,6 +335,14 @@ public class WorkoutListAdapter
       }
       return true;
     }
+  }
+ public class WorkoutExerciseComparator implements  Comparator<WorkoutExerciseAndExercise>{
+      @Override
+      public int compare(WorkoutExerciseAndExercise o1, WorkoutExerciseAndExercise o2) {
+          if (o1.workoutExercise.orderNum > o2.workoutExercise.orderNum) return 1;
+          else if (o1.workoutExercise.orderNum < o2.workoutExercise.orderNum) return -1;
+          else return 0;
+      }
   }
 
   public static class WorkoutItemViewHolder extends RecyclerView.ViewHolder {

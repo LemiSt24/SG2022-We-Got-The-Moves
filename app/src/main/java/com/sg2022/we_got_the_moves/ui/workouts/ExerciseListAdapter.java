@@ -49,6 +49,7 @@ public class ExerciseListAdapter
     this.fragment = fragment;
     this.model = model;
     this.list = list;
+    for (WorkoutExerciseAndExercise wee : list) Log.println(Log.DEBUG, "test","orderNum :" +  wee.workoutExercise.orderNum);
   }
 
   @NonNull

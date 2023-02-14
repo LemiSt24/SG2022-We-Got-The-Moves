@@ -42,9 +42,13 @@ public class WorkoutExercise {
   @ColumnInfo(name = "amount")
   public List<Integer> amount; // in [sec] or [#]
 
-  public WorkoutExercise(long workoutId, long exerciseId, List<Integer> amount) {
+  @ColumnInfo(name = "orderNum")
+  public int orderNum; // in [sec] or [#]
+
+  public WorkoutExercise(long workoutId, long exerciseId, List<Integer> amount, int orderNum) {
     this.workoutId = workoutId;
     this.exerciseId = exerciseId;
     this.amount = amount;
+    this.orderNum = orderNum;
   }
 }
