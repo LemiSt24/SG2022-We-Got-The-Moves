@@ -53,6 +53,7 @@ import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.UserRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
+import com.sg2022.we_got_the_moves.ui.workouts.WorkoutListAdapter;
 
 import java.lang.ref.WeakReference;
 import java.time.Duration;
@@ -64,6 +65,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -309,12 +311,14 @@ public class MediapipeActivity extends AppCompatActivity {
     exercises = new ArrayList<Exercise>();
     exerciseIdToAmount = new HashMap<>();
     workoutsRepository
-        .getAllExercises(workoutId)
+        .getAllWorkoutExerciseAndExercise(workoutId)
         .observe(
             this,
-            e -> {
-              exercises = e;
-              currentExercise = e.get(0);
+            wee -> {
+              wee.sort(new WorkoutListAdapter.WorkoutExerciseComparator());
+
+              exercises = wee.stream().map(e -> e.exercise).collect(Collectors.toList());
+              currentExercise = exercises.get(0);
               setExerciseName(currentExercise.name);
               if (currentExercise.isCountable()) setRepetition("0");
 
