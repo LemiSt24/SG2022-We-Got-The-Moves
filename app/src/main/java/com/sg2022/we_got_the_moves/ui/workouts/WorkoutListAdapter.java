@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +25,7 @@ import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExercises
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +40,8 @@ public class WorkoutListAdapter
   private final Fragment fragment;
   private final WorkoutsViewModel model;
   private List<WorkoutAndWorkoutExercises> list;
+
+  private List<WorkoutExerciseAndExercise> weeList;
 
   public WorkoutListAdapter(@NonNull Fragment fragment, @NonNull WorkoutsViewModel model) {
     this.fragment = fragment;
@@ -74,20 +78,23 @@ public class WorkoutListAdapter
   @Override
   public void onBindViewHolder(@NonNull WorkoutItemViewHolder holder, int position) {
     Workout w = this.list.get(position).workout;
-    List<WorkoutExerciseAndExercise> we = this.list.get(position).workoutAndExercises;
-    we.sort(new WorkoutExerciseComparator());
+    weeList = this.list.get(position).workoutAndExercises;
+    weeList.sort(new WorkoutExerciseComparator());
     holder.binding.setWorkout(w);
     holder.binding.setVisible(false);
 
-    holder.binding.saveBtnWorkoutItem.setOnClickListener(v -> saveWorkoutExercises(we));
+    holder.binding.saveBtnWorkoutItem.setOnClickListener(v -> saveWorkoutExercises(weeList));
     holder.binding.editBtnWorkoutItem.setOnClickListener(v -> showEditDialog(w));
     holder.binding.copyBtnWorkoutItem.setOnClickListener(v -> showCopyDialog(w));
     holder.binding.addBtnWorkoutItem.setOnClickListener(v -> showAddDialog(w));
     holder.binding.deleteBtnWorkoutItem.setOnClickListener(v -> showDeleteDialog(w));
     holder.binding.expandBtnWorkoutItem.setOnClickListener(
         v -> holder.binding.setVisible(!holder.binding.getVisible()));
-    ExerciseListAdapter adapter = new ExerciseListAdapter(this.fragment, this.model, we);
+    ExerciseListAdapter adapter = new ExerciseListAdapter(this.fragment, this.model, weeList);
     holder.binding.recyclerviewExercises.setAdapter(adapter);
+
+    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+    itemTouchHelper.attachToRecyclerView(holder.binding.recyclerviewExercises);
   }
 
   @Override
@@ -241,13 +248,11 @@ public class WorkoutListAdapter
                                 List<Pair<WorkoutExercise, Boolean>> result = new ArrayList<>();
                                 int newElementCounter = 0;
                                 found.sort(new WorkoutExerciseComparator());
-                                Log.println(Log.DEBUG, "test", "foundFirst: " + found.size());
                                 for (int i = 0; i < found.size(); i++){
                                     found.get(i).workoutExercise.orderNum = i;
                                 }
                                 for (int i = 0; i < checkedList.length; i++) {
                                     if (tmpNames.contains(total.get(i).name)) {
-                                        Log.println(Log.DEBUG, "test", "added found");
                                         result.add(
                                                 new Pair<>(
                                                         found.get(tmpNames.indexOf(total.get(i).name))
@@ -336,7 +341,7 @@ public class WorkoutListAdapter
       return true;
     }
   }
- public class WorkoutExerciseComparator implements  Comparator<WorkoutExerciseAndExercise>{
+ public static class WorkoutExerciseComparator implements  Comparator<WorkoutExerciseAndExercise>{
       @Override
       public int compare(WorkoutExerciseAndExercise o1, WorkoutExerciseAndExercise o2) {
           if (o1.workoutExercise.orderNum > o2.workoutExercise.orderNum) return 1;
@@ -344,6 +349,31 @@ public class WorkoutListAdapter
           else return 0;
       }
   }
+
+  ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(
+          ItemTouchHelper.UP | ItemTouchHelper.DOWN |
+                  ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+      @Override
+      public boolean onMove(@NonNull RecyclerView recyclerView,
+                            @NonNull RecyclerView.ViewHolder viewHolder,
+                            @NonNull RecyclerView.ViewHolder target) {
+          int fromPosition = viewHolder.getAdapterPosition();
+          int toPosition = target.getAdapterPosition();
+
+          Collections.swap(weeList, fromPosition, toPosition);
+          int saveOrderNum = weeList.get(fromPosition).workoutExercise.orderNum;
+          weeList.get(fromPosition).workoutExercise.orderNum =
+                  weeList.get(toPosition).workoutExercise.orderNum;
+          weeList.get(toPosition).workoutExercise.orderNum = saveOrderNum;
+          recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+          return false;
+      }
+
+      @Override
+      public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+      }
+  };
 
   public static class WorkoutItemViewHolder extends RecyclerView.ViewHolder {
 
