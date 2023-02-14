@@ -280,15 +280,15 @@ public class DataGenerator {
     constraints.add(
         new Constraint(
             "left_foot_index,right_foot_index",
+            "left_heel,right_heel",
             "left_knee,right_knee",
-            "left_heel",
-            "left_hip,left_knee",
-            0.1,
-            "Keep knees behind your toe tips.",
-            Constraint.TYPE.DISTANCE,
+            "left_heel,right_heel",
+            5,
+            "Keep knees right behind your toe tips.",
+            Constraint.TYPE.ANGLE,
             Constraint.INEQUALITY_TYPE.EQUAL,
-            Constraint.INSIGNIFICANT_DIMENSION.NONE,
-            null));
+            Constraint.INSIGNIFICANT_DIMENSION.Z,
+            85));
     // Körper gerade (squat-top, side_plank-global, mountain_climbers-top, push_up-global,
     // plank-global)
     constraints.add(
@@ -329,19 +329,19 @@ public class DataGenerator {
             Constraint.INEQUALITY_TYPE.EQUAL,
             Constraint.INSIGNIFICANT_DIMENSION.Z,
             70));
-    // Füße auf Boden / Knie angewinkelt (sit_up-global)
+    // Knie angewinkelt (sit_up-global)
     constraints.add(
         new Constraint(
             "left_hip,right_hip",
-            "left_ankle,right_ankle",
             "left_knee,right_knee",
             "left_ankle,right_ankle",
-            0.1,
+            "left_knee,right_knee",
+            10,
             "Keep your feet flat on the ground.",
-            Constraint.TYPE.DISTANCE,
+            Constraint.TYPE.ANGLE,
             Constraint.INEQUALITY_TYPE.EQUAL,
-            Constraint.INSIGNIFICANT_DIMENSION.NONE,
-            null));
+            Constraint.INSIGNIFICANT_DIMENSION.Z,
+            90));
     // Ellenbogen am Körper (bicep_curl-global)
     constraints.add(
         new Constraint(
