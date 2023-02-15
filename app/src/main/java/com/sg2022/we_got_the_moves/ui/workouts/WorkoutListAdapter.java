@@ -41,7 +41,6 @@ public class WorkoutListAdapter
   private final WorkoutsViewModel model;
   private List<WorkoutAndWorkoutExercises> list;
 
-  private List<WorkoutExerciseAndExercise> weeList;
 
   public WorkoutListAdapter(@NonNull Fragment fragment, @NonNull WorkoutsViewModel model) {
     this.fragment = fragment;
@@ -78,7 +77,7 @@ public class WorkoutListAdapter
   @Override
   public void onBindViewHolder(@NonNull WorkoutItemViewHolder holder, int position) {
     Workout w = this.list.get(position).workout;
-    weeList = this.list.get(position).workoutAndExercises;
+    List<WorkoutExerciseAndExercise> weeList = this.list.get(position).workoutAndExercises;
     weeList.sort(new WorkoutExerciseComparator());
     holder.binding.setWorkout(w);
     holder.binding.setVisible(false);
@@ -92,6 +91,31 @@ public class WorkoutListAdapter
         v -> holder.binding.setVisible(!holder.binding.getVisible()));
     ExerciseListAdapter adapter = new ExerciseListAdapter(this.fragment, this.model, weeList);
     holder.binding.recyclerviewExercises.setAdapter(adapter);
+
+      ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(
+              ItemTouchHelper.UP | ItemTouchHelper.DOWN |
+                      ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+          @Override
+          public boolean onMove(@NonNull RecyclerView recyclerView,
+                                @NonNull RecyclerView.ViewHolder viewHolder,
+                                @NonNull RecyclerView.ViewHolder target) {
+              int fromPosition = viewHolder.getAdapterPosition();
+              int toPosition = target.getAdapterPosition();
+
+              Collections.swap(weeList, fromPosition, toPosition);
+              int saveOrderNum = weeList.get(fromPosition).workoutExercise.orderNum;
+              weeList.get(fromPosition).workoutExercise.orderNum =
+                      weeList.get(toPosition).workoutExercise.orderNum;
+              weeList.get(toPosition).workoutExercise.orderNum = saveOrderNum;
+              recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+              return false;
+          }
+
+          @Override
+          public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+          }
+      };
 
     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
     itemTouchHelper.attachToRecyclerView(holder.binding.recyclerviewExercises);
@@ -349,31 +373,6 @@ public class WorkoutListAdapter
           else return 0;
       }
   }
-
-  ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(
-          ItemTouchHelper.UP | ItemTouchHelper.DOWN |
-                  ItemTouchHelper.START | ItemTouchHelper.END, 0) {
-      @Override
-      public boolean onMove(@NonNull RecyclerView recyclerView,
-                            @NonNull RecyclerView.ViewHolder viewHolder,
-                            @NonNull RecyclerView.ViewHolder target) {
-          int fromPosition = viewHolder.getAdapterPosition();
-          int toPosition = target.getAdapterPosition();
-
-          Collections.swap(weeList, fromPosition, toPosition);
-          int saveOrderNum = weeList.get(fromPosition).workoutExercise.orderNum;
-          weeList.get(fromPosition).workoutExercise.orderNum =
-                  weeList.get(toPosition).workoutExercise.orderNum;
-          weeList.get(toPosition).workoutExercise.orderNum = saveOrderNum;
-          recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
-          return false;
-      }
-
-      @Override
-      public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
-      }
-  };
 
   public static class WorkoutItemViewHolder extends RecyclerView.ViewHolder {
 
