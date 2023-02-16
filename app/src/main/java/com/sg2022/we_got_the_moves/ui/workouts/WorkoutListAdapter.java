@@ -110,8 +110,7 @@ public class WorkoutListAdapter
                     }
                 }
                 if(itemTouchHelper != null) itemTouchHelper.attachToRecyclerView(null);
-                ExerciseSimpleCallback simpleCallback = new ExerciseSimpleCallback(
-                        weeList,
+                ExerciseSimpleCallback simpleCallback = new ExerciseSimpleCallback(weeList,
                         ItemTouchHelper.UP | ItemTouchHelper.DOWN |
                                 ItemTouchHelper.START | ItemTouchHelper.END, 0);
                 itemTouchHelper = new ItemTouchHelper(simpleCallback);
@@ -383,7 +382,6 @@ public class WorkoutListAdapter
     public class ExerciseSimpleCallback extends ItemTouchHelper.SimpleCallback {
 
         private List<WorkoutExerciseAndExercise> weeList;
-        private ExerciseListAdapter adapter;
 
         public ExerciseSimpleCallback(List<WorkoutExerciseAndExercise> weeList, int dragDirs, int swipeDirs) {
             super(dragDirs, swipeDirs);
@@ -401,7 +399,6 @@ public class WorkoutListAdapter
                         weeList.get(toPosition).workoutExercise.orderNum;
                 weeList.get(toPosition).workoutExercise.orderNum = saveOrderNum;
                 recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
-                //recyclerView.getAdapter().notifyItemRangeChanged(Math.min(fromPosition, toPosition), Math.max(fromPosition, toPosition));
                 return false;
         }
 
