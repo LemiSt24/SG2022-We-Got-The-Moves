@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
@@ -40,8 +41,6 @@ public class ExerciseListAdapter
   private final WorkoutsViewModel model;
   private final List<WorkoutExerciseAndExercise> list;
 
-
-
   public ExerciseListAdapter(
       @NonNull Fragment fragment,
       @NonNull WorkoutsViewModel model,
@@ -49,7 +48,7 @@ public class ExerciseListAdapter
     this.fragment = fragment;
     this.model = model;
     this.list = list;
-    for (WorkoutExerciseAndExercise wee : list) Log.println(Log.DEBUG, "test","orderNum :" +  wee.workoutExercise.orderNum);
+    //for (WorkoutExerciseAndExercise wee : list) Log.println(Log.DEBUG, "test","orderNum :" +  wee.workoutExercise.orderNum);
   }
 
   @NonNull
@@ -84,6 +83,7 @@ public class ExerciseListAdapter
   }
 
   private void addAmountButton(@NonNull ExerciseItemViewHolder holder, int position){
+      Log.println(Log.DEBUG, "test", list.get(position).exercise.name);
       WorkoutExerciseAndExercise wee = list.get(position);
       Button btn = new Button(this.fragment.getContext());
       int buttonNumber = holder.binding.linearLayoutButtonsAmountExerciseItem.getChildCount();
