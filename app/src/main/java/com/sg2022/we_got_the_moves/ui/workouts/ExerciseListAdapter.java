@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
@@ -40,8 +41,6 @@ public class ExerciseListAdapter
   private final WorkoutsViewModel model;
   private final List<WorkoutExerciseAndExercise> list;
 
-
-
   public ExerciseListAdapter(
       @NonNull Fragment fragment,
       @NonNull WorkoutsViewModel model,
@@ -49,7 +48,7 @@ public class ExerciseListAdapter
     this.fragment = fragment;
     this.model = model;
     this.list = list;
-    for (WorkoutExerciseAndExercise wee : list) Log.println(Log.DEBUG, "test","orderNum :" +  wee.workoutExercise.orderNum);
+    //for (WorkoutExerciseAndExercise wee : list) Log.println(Log.DEBUG, "test","orderNum :" +  wee.workoutExercise.orderNum);
   }
 
   @NonNull
@@ -66,16 +65,17 @@ public class ExerciseListAdapter
     WorkoutExerciseAndExercise wee = this.list.get(position);
     holder.binding.setWee(wee);
     for (int i = 0; i < wee.workoutExercise.amount.size(); i++){
-        addAmountButton(holder, position);
+        addAmountButton(holder);
     }
     holder.binding.imagebuttonInfoExerciseItem.setOnClickListener(
         v -> showInstructionDialog(wee.exercise));
     holder.binding.imagebuttonAddSetExerciseItem.setOnClickListener(
-        v -> addAmountButton(holder, position)
+        v -> addAmountButton(holder)
     );
     holder.binding.imagebuttonRemoveSetExerciseItem.setOnClickListener(
-        v -> deleteLastAmountButton(holder, position)
+        v -> deleteLastAmountButton(holder)
     );
+
   }
 
   @Override
@@ -83,8 +83,8 @@ public class ExerciseListAdapter
     return this.list.size();
   }
 
-  private void addAmountButton(@NonNull ExerciseItemViewHolder holder, int position){
-      WorkoutExerciseAndExercise wee = list.get(position);
+  private void addAmountButton(@NonNull ExerciseItemViewHolder holder){
+      WorkoutExerciseAndExercise wee = holder.binding.getWee();
       Button btn = new Button(this.fragment.getContext());
       int buttonNumber = holder.binding.linearLayoutButtonsAmountExerciseItem.getChildCount();
       if (wee.workoutExercise.amount.size() <= buttonNumber){
@@ -105,9 +105,9 @@ public class ExerciseListAdapter
       holder.binding.linearLayoutButtonsAmountExerciseItem.addView(btn);
   }
 
-  private void deleteLastAmountButton(@NonNull ExerciseItemViewHolder holder, int position){
+  private void deleteLastAmountButton(@NonNull ExerciseItemViewHolder holder){
       if (holder.binding.linearLayoutButtonsAmountExerciseItem.getChildCount() <= 1) return;
-      WorkoutExerciseAndExercise wee = list.get(position);
+      WorkoutExerciseAndExercise wee = holder.binding.getWee();
       int lastButtonPos = holder.binding.linearLayoutButtonsAmountExerciseItem.getChildCount() - 1;
       holder.binding.linearLayoutButtonsAmountExerciseItem.removeView(
               holder.binding.linearLayoutButtonsAmountExerciseItem.findViewById(lastButtonPos)
