@@ -15,6 +15,7 @@ import com.sg2022.we_got_the_moves.ui.CustomFragmentStateAdapter;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.DailyOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.ExercisesOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.WeeklyOverviewFragment;
+import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,8 +33,9 @@ public class StatisticsFragment extends Fragment {
         Arrays.asList(
             DailyOverviewFragment.class,
             WeeklyOverviewFragment.class,
-            ExercisesOverviewFragment.class);
-    this.tabLabels = Arrays.asList("Calories", "Weekly Overview", "Exercise Analysis");
+            ExercisesOverviewFragment.class,
+            TrophiesFragment.class);
+    this.tabLabels = Arrays.asList("Calories", "Weekly Overview", "Exercise Analysis", "Trophies");
   }
 
   public View onCreateView(
