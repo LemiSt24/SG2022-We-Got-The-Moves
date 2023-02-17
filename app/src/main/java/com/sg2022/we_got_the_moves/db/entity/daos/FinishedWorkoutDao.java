@@ -71,4 +71,13 @@ public interface FinishedWorkoutDao {
   @Query(
       "Select AVG(FinishedWorkout.duration) From FinishedWorkout WHERE FinishedWorkout.date >= :begin AND FinishedWorkout.date <= :end")
   Single<Duration> getAvgDurationByRange(Date begin, Date end);
+
+  @Query("SELECT COUNT(*) FROM (" +
+    "SELECT DISTINCT(fw.id) FROM FinishedWorkout fw, FinishedExercise fe " +
+    "WHERE fw.id == fe.finishedWorkoutId " +
+    "GROUP BY fw.id HAVING COUNT(DISTINCT fe.exerciseId) <= :value)dt")
+  Single<List<Integer>> getNumberOfFinishedWorkoutsSmallerEqualNumberOfDistinctExercises(int value);
+
+  @Query("SELECT w.duration FROM FinishedWorkout w ORDER BY w.duration DESC limit 1")
+  Single<List<Duration>> getLongestWorkoutDuration();
 }

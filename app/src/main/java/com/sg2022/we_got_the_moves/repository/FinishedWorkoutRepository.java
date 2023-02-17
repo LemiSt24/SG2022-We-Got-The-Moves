@@ -152,4 +152,22 @@ public class FinishedWorkoutRepository {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer);
   }
+
+  public void getNumberOfFinishedWorkoutsSmallerEqualNumberOfDistinctExercises
+          (int value, SingleObserver<List<Integer>> observer){
+    this.finishedWorkoutDao
+        .getNumberOfFinishedWorkoutsSmallerEqualNumberOfDistinctExercises(value)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
+  }
+
+  public void getLongestDurationOfFinishedWorkouts(SingleObserver<List<Duration>> observer){
+    this.finishedWorkoutDao
+            .getLongestWorkoutDuration()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
+  }
+
 }

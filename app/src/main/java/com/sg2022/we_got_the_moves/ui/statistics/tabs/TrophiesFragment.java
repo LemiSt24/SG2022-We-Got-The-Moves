@@ -1,6 +1,5 @@
 package com.sg2022.we_got_the_moves.ui.statistics.tabs;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,14 +14,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsTrophiesBinding;
-import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.User;
-import com.sg2022.we_got_the_moves.db.entity.Workout;
-import com.sg2022.we_got_the_moves.db.entity.daos.FinishedWorkoutDao;
-import com.sg2022.we_got_the_moves.db.entity.relation.FinishedExerciseAndExercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedWorkoutAndFinishedExercises;
 import com.sg2022.we_got_the_moves.ui.statistics.StatisticsViewModel;
 
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.SingleObserver;
@@ -33,6 +30,8 @@ public class TrophiesFragment extends Fragment {
   private final String TAG = "TrophiesFragment";
   private FragmentStatisticsTrophiesBinding binding;
   private StatisticsViewModel model;
+  private Toast toast;
+  private HashMap<String, ACHIEVEMENT> achievements;
 
 
   @Override
@@ -42,6 +41,7 @@ public class TrophiesFragment extends Fragment {
         new StatisticsViewModel.Factory(this.requireActivity().getApplication());
     this.model =
         new ViewModelProvider(this.requireActivity(), factory).get(StatisticsViewModel.class);
+    achievements = new HashMap<String, ACHIEVEMENT>();
     Log.println(Log.DEBUG, TAG, "onCreate");
   }
 
@@ -53,7 +53,6 @@ public class TrophiesFragment extends Fragment {
     model.finishedWorkoutRepository.getAllFinishedWorkoutsSingle(
             new SingleObserver<List<FinishedWorkoutAndFinishedExercises>>() {
       @Override public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
-
       @Override
       public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull
                   List<FinishedWorkoutAndFinishedExercises> finishedWorkoutAndFinishedExercises) {
@@ -65,10 +64,10 @@ public class TrophiesFragment extends Fragment {
                     workout.finishedWorkout.date.getHours() >= 23)
               night_trainings++;
         }
-        ACHIEVEMENT nightOwlAchievement = ACHIEVEMENT.NOT;
-        if (night_trainings > 0) nightOwlAchievement = ACHIEVEMENT.LEVEL_ONE;
-        if (night_trainings >= 10) nightOwlAchievement = ACHIEVEMENT.LEVEL_TWO;
-        binding.cardviewNightOwl.setCardBackgroundColor(getColor(nightOwlAchievement));
+        achievements.put("nightOwl", ACHIEVEMENT.NOT);
+        if (night_trainings > 0) achievements.put("nightOwl", ACHIEVEMENT.LEVEL_ONE);
+        if (night_trainings >= 10) achievements.put("nightOwl", ACHIEVEMENT.LEVEL_TWO);
+        binding.cardviewNightOwl.setCardBackgroundColor(getColor(achievements.get("nightOwl")));
       }
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
@@ -77,58 +76,47 @@ public class TrophiesFragment extends Fragment {
     //setting workout collector
     model.workoutsRepository.getWorkoutCount(new SingleObserver<List<Integer>>() {
       @Override public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
-
       @Override
       public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Integer> list) {
         Integer workouts = list.get(0);
-        ACHIEVEMENT workoutCollectorAchievement = ACHIEVEMENT.NOT;
-        if (workouts != null && workouts >= 10) workoutCollectorAchievement = ACHIEVEMENT.LEVEL_ONE;
-        if (workouts != null && workouts >= 20) workoutCollectorAchievement = ACHIEVEMENT.LEVEL_TWO;
-        binding.cardviewWorkoutCollector.setCardBackgroundColor(getColor(workoutCollectorAchievement));
+        achievements.put("workoutCollector", ACHIEVEMENT.NOT);
+        if (workouts != null && workouts >= 10) achievements.put("workoutCollector", ACHIEVEMENT.LEVEL_ONE);
+        if (workouts != null && workouts >= 20) achievements.put("workoutCollector", ACHIEVEMENT.LEVEL_TWO);
+        binding.cardviewWorkoutCollector.setCardBackgroundColor(getColor(achievements.get("workoutCollector")));
       }
-
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
-    /*
-    model.workoutsRepository.getAllWorkouts(new SingleObserver<List<Workout>>() {
+
+
+    //setting minimalist
+    model.finishedWorkoutRepository
+            .getNumberOfFinishedWorkoutsSmallerEqualNumberOfDistinctExercises(1, new SingleObserver<List<Integer>>() {
       @Override public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
-
       @Override
-      public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Workout> workouts) {
-        ACHIEVEMENT workoutCollectorAchievement = ACHIEVEMENT.NOT;
-        if (workouts.size() >= 10) workoutCollectorAchievement = ACHIEVEMENT.LEVEL_ONE;
-        if (workouts.size() >= 20) workoutCollectorAchievement = ACHIEVEMENT.LEVEL_TWO;
-        binding.cardviewWorkoutCollector.setCardBackgroundColor(getColor(workoutCollectorAchievement));
+      public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Integer> integers) {
+          Integer number = integers.get(0);
+          if (number == null) number = 0;
+          achievements.put("minimalist", ACHIEVEMENT.NOT);
+          if (number >= 5) achievements.put("minimalist", ACHIEVEMENT.LEVEL_ONE);
+          if (number >= 25) achievements.put("minimalist", ACHIEVEMENT.LEVEL_TWO);
+          binding.cardviewMinimalist.setCardBackgroundColor(getColor(achievements.get("minimalist")));
       }
-
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
-    });*/
-
-
-    //setting minimalist TODO add other cases
-    ACHIEVEMENT minimalist = ACHIEVEMENT.NOT;
-    binding.cardviewMinimalist.setCardBackgroundColor(getColor(minimalist));
+    });
 
 
     //setting Endurance
-    model.finishedWorkoutRepository.getAllFinishedWorkoutsSingle(
-            new SingleObserver<List<FinishedWorkoutAndFinishedExercises>>() {
+    model.finishedWorkoutRepository.getLongestDurationOfFinishedWorkouts(new SingleObserver<List<Duration>>() {
       @Override public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
-
       @Override
-      public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull
-            List<FinishedWorkoutAndFinishedExercises> finishedWorkoutAndFinishedExercises) {
-        long longestTraining = 0;
-        int last_id = -1;
-        for (FinishedWorkoutAndFinishedExercises workout: finishedWorkoutAndFinishedExercises){
-          if (workout.finishedWorkout.id != last_id)
-            if (workout.finishedWorkout.duration.getSeconds() > longestTraining)
-              longestTraining = workout.finishedWorkout.duration.getSeconds();
-        }
-        ACHIEVEMENT longTrainingAchievement = ACHIEVEMENT.NOT;
-        if (longestTraining/60 >= 30) longTrainingAchievement = ACHIEVEMENT.LEVEL_ONE;
-        if (longestTraining/60 >= 60) longTrainingAchievement = ACHIEVEMENT.LEVEL_TWO;
-        binding.cardviewLongTraining.setCardBackgroundColor(getColor(longTrainingAchievement));
+      public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Duration> durations) {
+        Duration longest = durations.get(0);
+        int minutes = 0;
+        if (longest != null) minutes = (int) (longest.getSeconds()/60);
+        achievements.put("longTraining", ACHIEVEMENT.NOT);
+        if (minutes >= 30) achievements.put("longTraining", ACHIEVEMENT.LEVEL_ONE);
+        if (minutes >= 60) achievements.put("longTraining", ACHIEVEMENT.LEVEL_TWO);
+        binding.cardviewLongTraining.setCardBackgroundColor(getColor(achievements.get("longTraining")));
       }
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
@@ -137,34 +125,62 @@ public class TrophiesFragment extends Fragment {
     //setting many calories (calorie goal as i don't want to calculate new calories)
     model.userRepository.getUser(new SingleObserver<User>() {
       @Override public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
-
       @Override
       public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull User user) {
-        ACHIEVEMENT calorieGoalAchievement = ACHIEVEMENT.NOT;
-        if (user.calories >= 750) calorieGoalAchievement = ACHIEVEMENT.LEVEL_ONE;
-        if (user.calories >= 1500) calorieGoalAchievement = ACHIEVEMENT.LEVEL_TWO;
-        binding.cardviewManyCalories.setBackgroundColor(getColor(calorieGoalAchievement));
+        achievements.put("calorieGoal", ACHIEVEMENT.NOT);
+        if (user.calories >= 750) achievements.put("calorieGoal", ACHIEVEMENT.LEVEL_ONE);
+        if (user.calories >= 1250) achievements.put("calorieGoal", ACHIEVEMENT.LEVEL_TWO);
+        binding.cardviewManyCalories.setBackgroundColor(getColor(achievements.get("calorieGoal")));
       }
-
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
 
 
     //setting the toast messages
     binding.cardviewNightOwl.setOnClickListener(v -> {
-      Toast.makeText(getContext(), "The late bird gets the award", Toast.LENGTH_LONG).show();
+      if (toast != null) toast.cancel();
+      String[] text = {
+        "The late bird gets the award!",
+        "Training in the night is beautiful.",
+        "You're a real night time sportsman!"};
+      toast = Toast.makeText(getContext(), text[achievements.get("nightOwl").getValue()], Toast.LENGTH_LONG);
+      toast.show();
     });
     binding.cardviewWorkoutCollector.setOnClickListener(v -> {
-      Toast.makeText(getContext(), "You can never have to many workouts in your collection", Toast.LENGTH_LONG).show();
+      if (toast != null) toast.cancel();
+      String[] text = {
+        "You can never have to many workouts in your collection!",
+        "Every Situation gets it's own training.",
+        "You're a collector by heart."};
+      toast = Toast.makeText(getContext(), text[achievements.get("workoutCollector").getValue()], Toast.LENGTH_LONG);
+      toast.show();
     });
     binding.cardviewMinimalist.setOnClickListener(v -> {
-      Toast.makeText(getContext(), "Minimalism is the key to success", Toast.LENGTH_LONG).show();
+      if (toast != null) toast.cancel();
+      String[] text = {
+        "Minimalism is the key to success.",
+        "One Exercise to rule them all!",
+        "You're a real minimalist!"};
+      toast = Toast.makeText(getContext(), text[achievements.get("minimalist").getValue()], Toast.LENGTH_LONG);
+      toast.show();
     });
     binding.cardviewLongTraining.setOnClickListener(v -> {
-      Toast.makeText(getContext(), "Only for real workout enjoyer", Toast.LENGTH_LONG).show();
+      if (toast != null) toast.cancel();
+      String[] text = {
+        "Only for real workout enjoyer.",
+        "Longer workouts are your thing.",
+        "You are the king of workouts!"};
+      toast = Toast.makeText(getContext(), text[achievements.get("longTraining").getValue()], Toast.LENGTH_LONG);
+      toast.show();
     });
     binding.cardviewManyCalories.setOnClickListener(v -> {
-      Toast.makeText(getContext(), "Caution fire is hot", Toast.LENGTH_LONG).show();
+      if (toast != null) toast.cancel();
+      String[] text = {
+        "Caution fire is hot!",
+        "From great goals comes great responsibility.",
+        "Your goals are fire."};
+      toast = Toast.makeText(getContext(), text[achievements.get("calorieGoal").getValue()], Toast.LENGTH_LONG);
+      toast.show();
     });
 
     return binding.getRoot();
@@ -190,9 +206,12 @@ public class TrophiesFragment extends Fragment {
   }
 
   public int getColor(ACHIEVEMENT achievement){
-    if (achievement == ACHIEVEMENT.NOT) return getResources().getColor(R.color.grey);
-    if (achievement == ACHIEVEMENT.LEVEL_ONE) return getResources().getColor(R.color.sg_design_green);
-    if (achievement == ACHIEVEMENT.LEVEL_TWO) return getResources().getColor(R.color.gold);
+    if (achievement == null || achievement == ACHIEVEMENT.NOT)
+      return getResources().getColor(R.color.grey);
+    if (achievement == ACHIEVEMENT.LEVEL_ONE)
+      return getResources().getColor(R.color.sg_design_green);
+    if (achievement == ACHIEVEMENT.LEVEL_TWO)
+      return getResources().getColor(R.color.gold);
     return 0;
   }
 
