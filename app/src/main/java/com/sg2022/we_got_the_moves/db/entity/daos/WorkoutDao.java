@@ -50,7 +50,13 @@ public interface WorkoutDao {
   @Query("SELECT * FROM Workout")
   LiveData<List<Workout>> getAllWorkouts();
 
+  @Query("SELECT * FROM Workout")
+  Single<List<Workout>> getAllWorkoutsSingle();
+
   @Transaction
   @Query("SELECT * FROM Workout")
   LiveData<List<WorkoutAndWorkoutExercises>> getAllWorkoutsWithExerciseAndWorkoutExercise();
+
+  @Query("SELECT count(DISTINCT Workout.id) FROM Workout")
+  Single<List<Integer>> getWorkoutCount();
 }
