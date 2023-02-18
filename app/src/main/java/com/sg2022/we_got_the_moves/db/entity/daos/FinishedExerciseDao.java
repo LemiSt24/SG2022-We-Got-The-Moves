@@ -10,6 +10,7 @@ import androidx.room.Update;
 
 import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 
+import java.time.Duration;
 import java.util.List;
 
 import io.reactivex.rxjava3.core.Single;
@@ -45,4 +46,13 @@ public interface FinishedExerciseDao {
 
   @Query("SELECT * FROM FinishedExercise WHERE FinishedExercise.exerciseId = :exerciseId")
   Single<List<FinishedExercise>> getAllByExerciseIdSingle(long exerciseId);
+
+  @Query("SELECT SUM(fe.amount) FROM FinishedExercise fe WHERE fe.exerciseId = :exerciseId")
+  Single<List<Integer>> getTotalReps(long exerciseId);
+
+  @Query("SELECT SUM(fe.duration) FROM FinishedExercise fe WHERE fe.exerciseId = :exerciseId")
+  Single<List<Duration>> getTotalDuration(long exerciseId);
+
+  @Query("SELECT COUNT(*) FROM (SELECT fe.exerciseId FROM FinishedExercise fe WHERE fe.duration > 0 GROUP BY fe.exerciseId)")
+  Single<List<Integer>> getNumberDistinctFinishedExercises();
 }

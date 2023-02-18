@@ -130,7 +130,52 @@ public class TrophiesFragment extends Fragment {
         achievements.put("calorieGoal", ACHIEVEMENT.NOT);
         if (user.calories >= 750) achievements.put("calorieGoal", ACHIEVEMENT.LEVEL_ONE);
         if (user.calories >= 1250) achievements.put("calorieGoal", ACHIEVEMENT.LEVEL_TWO);
-        binding.cardviewManyCalories.setBackgroundColor(getColor(achievements.get("calorieGoal")));
+        binding.cardviewManyCalories.setCardBackgroundColor(getColor(achievements.get("calorieGoal")));
+      }
+      @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
+    });
+
+
+    //setting mountain challenge
+    model.finishedWorkoutRepository.getTotalReps(1L, new SingleObserver<List<Integer>>() {
+      @Override public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+      @Override
+      public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Integer> integers) {
+        Integer reps = integers.get(0);
+        if (reps == null) reps = 0;
+        int heightInMeters = (int) 0.3 * reps;
+        achievements.put("squatToTheTop", ACHIEVEMENT.NOT);
+        if (heightInMeters >= 950) achievements.put("squatToTheTop", ACHIEVEMENT.LEVEL_ONE);
+        if (heightInMeters >= 2962) achievements.put("squatToTheTop", ACHIEVEMENT.LEVEL_ONE_HALF);
+        if (heightInMeters >= 8848) achievements.put("squatToTheTop", ACHIEVEMENT.LEVEL_TWO);
+        binding.cardviewSquat.setCardBackgroundColor(getColor(achievements.get("squatToTheTop")));
+      }
+      @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
+    });
+
+
+    //setting maximalist
+    model.finishedWorkoutRepository.getNumberDistinctFinishedExercises(new SingleObserver<List<Integer>>() {
+      @Override public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+      @Override
+      public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Integer> integers) {
+        Integer finishedExercise = integers.get(0);
+        if (finishedExercise == null) finishedExercise = 0;
+        achievements.put("maximalist", ACHIEVEMENT.NOT);
+        Integer finalFinishedExercise = finishedExercise;
+        model.workoutsRepository.getExerciseCount(new SingleObserver<List<Integer>>() {
+          @Override public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+          @Override
+          public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Integer> integers) {
+            Integer exercises = integers.get(0);
+            if (exercises == null) exercises = 1;
+            if ((float) finalFinishedExercise.floatValue() / (float) exercises.floatValue() > 0.5)
+              achievements.put("maximalist", ACHIEVEMENT.LEVEL_ONE);
+            if (finalFinishedExercise == exercises) achievements.put("maximalist", ACHIEVEMENT.LEVEL_TWO);
+            binding.cardviewMaximalist.setCardBackgroundColor(getColor(achievements.get("maximalist")));
+          }
+          @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
+        });
       }
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
@@ -182,6 +227,26 @@ public class TrophiesFragment extends Fragment {
       toast = Toast.makeText(getContext(), text[achievements.get("calorieGoal").getValue()], Toast.LENGTH_LONG);
       toast.show();
     });
+    binding.cardviewSquat.setOnClickListener(v -> {
+      if (toast != null) toast.cancel();
+      String[] text = {
+              "Every squat gets you closer to the top. First Goal Wasserkuppe(960m)",
+              "Wasserkuppe mastered. Next Challenge Zugspitze(2962m).",
+              "You squatted to the top of Mount Everest. Your a real high climber.",
+              //Level ONE_HALF text
+              "Zugspitze mastered. Next Challenge Mount Everest(8848m)."};
+      toast = Toast.makeText(getContext(), text[achievements.get("squatToTheTop").getValue()], Toast.LENGTH_LONG);
+      toast.show();
+    });
+    binding.cardviewMaximalist.setOnClickListener(v -> {
+      if (toast != null) toast.cancel();
+      String[] text = {
+              "You have to try them all.",
+              "Already tried half of all exercises.",
+              "You have done them all."};
+      toast = Toast.makeText(getContext(), text[achievements.get("maximalist").getValue()], Toast.LENGTH_LONG);
+      toast.show();
+    });
 
     return binding.getRoot();
   }
@@ -199,7 +264,7 @@ public class TrophiesFragment extends Fragment {
 
 
   public enum ACHIEVEMENT {
-    NOT(0), LEVEL_ONE(1), LEVEL_TWO(2);
+    NOT(0), LEVEL_ONE(1), LEVEL_ONE_HALF(3) ,LEVEL_TWO(2);
     private final int achievementInt;
     ACHIEVEMENT(int value) {this.achievementInt = value;}
     public int getValue() {return achievementInt;}
@@ -208,7 +273,7 @@ public class TrophiesFragment extends Fragment {
   public int getColor(ACHIEVEMENT achievement){
     if (achievement == null || achievement == ACHIEVEMENT.NOT)
       return getResources().getColor(R.color.grey);
-    if (achievement == ACHIEVEMENT.LEVEL_ONE)
+    if (achievement == ACHIEVEMENT.LEVEL_ONE || achievement == ACHIEVEMENT.LEVEL_ONE_HALF)
       return getResources().getColor(R.color.sg_design_green);
     if (achievement == ACHIEVEMENT.LEVEL_TWO)
       return getResources().getColor(R.color.gold);

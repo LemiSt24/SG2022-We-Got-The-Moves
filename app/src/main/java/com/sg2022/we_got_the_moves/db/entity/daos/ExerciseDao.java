@@ -54,4 +54,7 @@ public interface ExerciseDao {
   @Transaction
   @Query("SELECT * FROM Exercise")
   Single<List<ExerciseAndFinishedExercises>> getAllFinishedExercisesSingle();
+
+  @Query("SELECT COUNT(DISTINCT Exercise.id) FROM Exercise")
+  Single<List<Integer>> getNumberOfExercises();
 }

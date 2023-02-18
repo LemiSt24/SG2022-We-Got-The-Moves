@@ -212,4 +212,12 @@ public class WorkoutsRepository {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(singleObserver);
   }
+
+  public void getExerciseCount(SingleObserver<List<Integer>> singleObserver){
+    this.exerciseDao
+      .getNumberOfExercises()
+      .subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(singleObserver);
+  }
 }
