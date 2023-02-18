@@ -142,9 +142,6 @@ public class ExerciseListAdapter
                 int amount = b.numberPickerNumberDialog.getValue();
                 if (amount == ewe.workoutExercise.amount.get(set)){
                     dialog.dismiss();
-                }
-                else if (amount == 0) {
-                  model.repository.deleteWorkoutExercise(ewe.workoutExercise);
                 } else {
                   ewe.workoutExercise.amount.set(set, amount);
                   ((Button)holder.binding.linearLayoutButtonsAmountExerciseItem.
@@ -189,7 +186,9 @@ public class ExerciseListAdapter
                             b.numberPickerSecondsDialog.getValue()));
                 if (amount == ewe.workoutExercise.amount.get(set)) dialog.dismiss();
                 if (amount == 0) {
-                  model.repository.deleteWorkoutExercise(ewe.workoutExercise);
+                    ewe.workoutExercise.amount.set(set, 1);
+                    ((Button)holder.binding.linearLayoutButtonsAmountExerciseItem.findViewById(set)).
+                            setText(TimeFormatUtil.formatTimeHhmmss(1));
                 } else {
                   ewe.workoutExercise.amount.set(set, amount);
                   ((Button)holder.binding.linearLayoutButtonsAmountExerciseItem.findViewById(set)).
