@@ -112,7 +112,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private static final String BINARY_GRAPH_NAME = "pose_tracking_gpu.binarypb";
   private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
   private static final String OUTPUT_VIDEO_STREAM_NAME = "output_video";
-  private static final String OUTPUT_LANDMARKS_STREAM_NAME = "pose_landmarks";
+  private static final String OUTPUT_LANDMARKS_STREAM_NAME = "pose_world_landmarks";
   private static final int STATE_CHANGE_VALUE = 10;
   // Flips the camera-preview frames vertically before sending them into FrameProcessor to be
   // processed in a MediaPipe graph, and flips the processed frames back when they are displayed.
