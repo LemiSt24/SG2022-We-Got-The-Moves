@@ -103,7 +103,9 @@ public class Constraint {
 
   public enum TYPE {
     ANGLE,
-    DISTANCE
+    DISTANCE,
+    FLOOR_DISTANCE, // Distanz mit fester Zahl vergleichen
+    UPRIGHT // Sonderfall: Steht der Nutzer aufrecht?
   }
 
   public enum INEQUALITY_TYPE {

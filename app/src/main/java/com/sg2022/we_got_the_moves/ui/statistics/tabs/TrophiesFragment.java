@@ -194,8 +194,8 @@ public class TrophiesFragment extends Fragment {
     binding.cardviewWorkoutCollector.setOnClickListener(v -> {
       if (toast != null) toast.cancel();
       String[] text = {
-        "You can never have to many workouts in your collection!",
-        "Every Situation gets it's own training.",
+        "You can never have too many workouts in your collection!",
+        "Every Situation gets its own training.",
         "You're a collector by heart."};
       toast = Toast.makeText(getContext(), text[achievements.get("workoutCollector").getValue()], Toast.LENGTH_LONG);
       toast.show();
@@ -212,7 +212,7 @@ public class TrophiesFragment extends Fragment {
     binding.cardviewLongTraining.setOnClickListener(v -> {
       if (toast != null) toast.cancel();
       String[] text = {
-        "Only for real workout enjoyer.",
+        "Only for real workout enjoyers.",
         "Longer workouts are your thing.",
         "You are the king of workouts!"};
       toast = Toast.makeText(getContext(), text[achievements.get("longTraining").getValue()], Toast.LENGTH_LONG);
@@ -221,7 +221,7 @@ public class TrophiesFragment extends Fragment {
     binding.cardviewManyCalories.setOnClickListener(v -> {
       if (toast != null) toast.cancel();
       String[] text = {
-        "Caution fire is hot!",
+        "Caution, fire is hot!",
         "From great goals comes great responsibility.",
         "Your goals are fire."};
       toast = Toast.makeText(getContext(), text[achievements.get("calorieGoal").getValue()], Toast.LENGTH_LONG);
