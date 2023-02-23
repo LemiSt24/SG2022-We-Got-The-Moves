@@ -118,7 +118,8 @@ public class DataGenerator {
         "left_hip,right_hip",
         ExerciseState.COMPARATOR.GREATER,
         160,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // top
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L),
+          // top
     new ExerciseState(
         1,
         new ArrayList<>(Arrays.asList(1L, 2L, 8L)),
@@ -127,12 +128,12 @@ public class DataGenerator {
         "left_hip,right_hip",
         ExerciseState.COMPARATOR.LESS,
         120,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // bottom
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     // Side-planks
-    new ExerciseState(2, new ArrayList<>(List.of()), "", "", "", null, 0, null),
+    new ExerciseState(2, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
     // Mountain-climbers
-    new ExerciseState(3, new ArrayList<>(List.of()), "", "", "", null, 0, null),
-    new ExerciseState(3, new ArrayList<>(List.of()), "", "", "", null, 0, null),
+    new ExerciseState(3, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
+    new ExerciseState(3, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
     // Push-Up
     new ExerciseState(
         4,
@@ -142,7 +143,7 @@ public class DataGenerator {
         "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.GREATER,
         160,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // top
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
     new ExerciseState(
         4,
         new ArrayList<>(List.of(4L)),
@@ -151,7 +152,7 @@ public class DataGenerator {
         "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.LESS,
         100,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // bottom
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     // Sit-Up
     new ExerciseState(
         5,
@@ -161,7 +162,7 @@ public class DataGenerator {
         "left_ankle,right_ankle",
         ExerciseState.COMPARATOR.LESS,
         190,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // bottom
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     new ExerciseState(
         5,
         new ArrayList<>(List.of(6L)),
@@ -170,9 +171,14 @@ public class DataGenerator {
         "left_ankle,right_ankle",
         ExerciseState.COMPARATOR.GREATER,
         250,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // top
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
     // Plank
-    new ExerciseState(6, new ArrayList<>(List.of(3L, 10L)), "", "", "", null, 0, null),
+    new ExerciseState(6, new ArrayList<>(List.of(3L, 10L)),
+            "",
+            "",
+            "",
+            null, 0,
+            null, 500L),
     // Biceps-Curl
     new ExerciseState(
         7,
@@ -182,7 +188,7 @@ public class DataGenerator {
         "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.GREATER,
         150,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // bottom
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     new ExerciseState(
         7,
         new ArrayList<>(Arrays.asList(1L, 7L, 3L, 8L)),
@@ -191,7 +197,7 @@ public class DataGenerator {
         "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.LESS,
         90,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // top
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
 
     // Romanian Deadlift
     new ExerciseState(
@@ -202,7 +208,7 @@ public class DataGenerator {
     "left_hip,right_hip",
         ExerciseState.COMPARATOR.GREATER,
         160,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // bottom
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     new ExerciseState(
         8,
         new ArrayList<>(Arrays.asList(1L, 2L, 11L, 12L)),
@@ -211,7 +217,7 @@ public class DataGenerator {
         "left_hip,right_hip",
         ExerciseState.COMPARATOR.LESS,
         135,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z), // top
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
   };
 
   public static List<Exercise> getDummyExercises() {

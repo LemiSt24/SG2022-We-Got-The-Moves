@@ -162,6 +162,8 @@ public class MediapipeActivity extends AppCompatActivity {
   private List<FinishedExercise> finishedExercises;
   private long countableStartTime;
   private long countableEndTime;
+
+  private long stateStartTime;
   private String finishedExerciseSummary = "";
   private Long timeLastCheck = SystemClock.elapsedRealtime();
   private TextToSpeech tts;
@@ -203,6 +205,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
     weakMediapipeActivity = new WeakReference<>(MediapipeActivity.this);
     timeLastCheck = SystemClock.elapsedRealtime();
+
 
     UserRepository userRepository = UserRepository.getInstance(this.getApplication());
     userRepository.getCameraBoolean(
@@ -346,6 +349,7 @@ public class MediapipeActivity extends AppCompatActivity {
                   }
                   if (currentExercise.isCountable())
                     countableStartTime = SystemClock.elapsedRealtime();
+                  stateStartTime = SystemClock.elapsedRealtime();
                   inStartPosition = true;
                 }
               }
@@ -384,8 +388,8 @@ public class MediapipeActivity extends AppCompatActivity {
                   for (Constraint constraint :
                       currentConstraints.get(currentExercise.exerciseStates.get(lastState))) {
                     if (!classifier.judge_constraint(constraint)) {
-                      setExerciseX(constraint.message);
-                      tts(constraint.message);
+                      //setExerciseX(constraint.message);
+                      //tts(constraint.message);
                       changed = true;
                       break;
                     }
@@ -570,7 +574,13 @@ public class MediapipeActivity extends AppCompatActivity {
       nextState = 0;
     }
     if (classifier.judgeEnterState(currentExercise.exerciseStates.get(nextState))) {
+      if (currentExercise.exerciseStates.get(lastState).stateTime >
+          SystemClock.elapsedRealtime() - stateStartTime){
+          setExerciseX("Slower your execution speed");
+          tts("Slower your execution speed");
+      }
       lastState = nextState;
+      stateStartTime = SystemClock.elapsedRealtime();
       if (lastState == 0) countRepUp();
       return true;
     }
@@ -700,6 +710,7 @@ public class MediapipeActivity extends AppCompatActivity {
         if (Reps == 0) return;
       amount = Reps;
       duration = (int) ((countableEndTime - countableStartTime) / 1000);
+      Log.println(Log.DEBUG, "test", "" + duration);
     } else {
       if (finished) {
         duration = exerciseIdToAmount.get(exercise.id).get(setPointer);
@@ -720,6 +731,7 @@ public class MediapipeActivity extends AppCompatActivity {
     else{
       inStartPosition = false;
       Pause = true;
+      countableEndTime = SystemClock.elapsedRealtime();
       addFinishedExercise(currentExercise, true);
       setPointer ++;
       for (FinishedExercise f : finishedExercises) Log.println(Log.DEBUG, "test", "f: "+f.duration);
