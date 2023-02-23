@@ -12,7 +12,6 @@ import com.sg2022.we_got_the_moves.db.entity.daos.UserDao;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.SingleObserver;

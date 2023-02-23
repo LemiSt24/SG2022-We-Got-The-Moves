@@ -67,7 +67,7 @@
     <string name="male">Male</string>
     <string name="height">Height [m]</string>
     <string name="weight">Weight [kg]</string>
-    <string name="age">Age</string>
+    <string name="age">Age [year]</string>
     <string name="calorie_goal">Calorie goal [kcal]</string>
     <string name="gender">Gender</string>
     <string name="camera">Camera</string>

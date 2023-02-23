@@ -17,6 +17,7 @@
             android:id="@+id/cardview_viditem"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:cardBackgroundColor="@color/sg_design_light_green"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -26,23 +27,7 @@
                 android:id="@+id/constraint_layout_card_viditem"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/design_default_color_primary"
-                android:minHeight="300dp"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textview_title_viditem"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@color/transparent"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:text="@string/enter_text"
-                    android:textColor="@color/white"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.player.autoplayer.AutoPlayer
                     android:id="@+id/autoplayer_viditem"
@@ -51,7 +36,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_title_viditem" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/imageview_placeholder_viditem"
@@ -60,7 +45,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_title_viditem" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ImageContrastCheck" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/imageview_volume_viditem"
@@ -73,7 +59,7 @@
                     android:background="@drawable/bg_mute_icon"
                     android:padding="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textview_title_viditem"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_volume_on_white_24dp"
                     tools:ignore="VisualLintBounds,ImageContrastCheck" />
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,7 +29,6 @@ import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutExerciseDao;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
 
 import java.util.HashMap;
-import java.util.Map;
 
 // TODO: Add entity classes here
 @Database(
@@ -78,7 +77,7 @@ public abstract class AppDatabase extends RoomDatabase {
               public void onCreate(@NonNull SupportSQLiteDatabase db1) {
                 super.onCreate(db1);
                 Log.d(TAG, "DB created");
-                HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies = new HashMap();
+                HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies = new HashMap<>();
                 executors
                     .getPoolThread()
                     .execute(
@@ -103,7 +102,7 @@ public abstract class AppDatabase extends RoomDatabase {
                                       500,
                                       true,
                                       true,
-                                         trophies));
+                                      trophies));
                           getInstance(app)
                               .FinishedWorkoutDao()
                               .insert(DataGenerator.getDummyFinsishedWorkouts());

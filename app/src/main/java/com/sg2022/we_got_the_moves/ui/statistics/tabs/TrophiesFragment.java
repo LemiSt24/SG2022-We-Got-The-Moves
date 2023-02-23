@@ -21,8 +21,6 @@ import com.sg2022.we_got_the_moves.ui.statistics.StatisticsViewModel;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;

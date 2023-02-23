@@ -50,7 +50,6 @@ public class PlaybackItemAdapter
         .centerCrop()
         .placeholder(R.drawable.placeholder)
         .into(holder.binding.imageviewPlaceholderViditem);
-    holder.binding.textviewTitleViditem.setText(vids.get(position).filename);
     holder.binding.autoplayerViditem.setUrl(vids.get(position).uri.toString());
     holder.binding.autoplayerViditem.setAnimationTime(500);
     holder.binding.autoplayerViditem.setPlaceholderView(holder.binding.imageviewPlaceholderViditem);

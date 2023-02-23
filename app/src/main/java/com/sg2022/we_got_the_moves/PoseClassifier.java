@@ -6,7 +6,6 @@ import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.mediapipe.formats.proto.LandmarkProto;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;

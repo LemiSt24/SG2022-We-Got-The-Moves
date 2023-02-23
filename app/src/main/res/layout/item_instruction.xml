@@ -20,14 +20,10 @@
             android:id="@+id/cardview_exercise_instruction_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_margin="4dp"
             android:outlineProvider="background"
             app:cardBackgroundColor="@color/sg_design_green"
-            app:cardElevation="4dp"
-            app:cardMaxElevation="4dp"
+            app:cardCornerRadius="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +33,7 @@
                 android:id="@+id/constraint_layout_exercise_instruction_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp">
+                android:layout_margin="12dp">
 
                 <TextView
                     android:id="@+id/textview_exercise_instruction_item"
@@ -46,6 +42,7 @@
                     android:autoSizeMaxTextSize="24sp"
                     android:autoSizeTextType="uniform"
                     android:contentDescription="@string/empty_string"
+                    android:gravity="center_horizontal|center_vertical"
                     android:maxLines="1"
                     android:outlineProvider="background"
                     android:text="@{exercise.name, default=@string/enter_text}"
@@ -62,6 +59,7 @@
                     android:id="@+id/imageview_exercise_instruction_item"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:adjustViewBounds="true"
                     android:outlineProvider="background"
                     android:scaleType="fitCenter"

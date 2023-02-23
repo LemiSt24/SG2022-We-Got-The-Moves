@@ -18,7 +18,6 @@ import com.sg2022.we_got_the_moves.databinding.FragmentDashboardBinding;
 public class DashboardFragment extends Fragment {
 
   private static final String TAG = "InstructionListFragment";
-
   private InstructionListAdapter adapter;
 
   @Override

@@ -12,7 +12,6 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TypeConverters {
 
@@ -33,7 +32,7 @@ public class TypeConverters {
 
   @TypeConverter
   public static long duratioToLong(Duration duration) {
-    return duration == null ? null : duration.getSeconds();
+    return duration == null ? -1 : duration.getSeconds();
   }
 
   @TypeConverter
@@ -43,8 +42,7 @@ public class TypeConverters {
     }
     Gson gson = new Gson();
     Type type = new TypeToken<List<ExerciseState>>() {}.getType();
-    String json = gson.toJson(ExerciseStates, type);
-    return json;
+    return gson.toJson(ExerciseStates, type);
   }
 
   @TypeConverter
@@ -54,8 +52,7 @@ public class TypeConverters {
     }
     Gson gson = new Gson();
     Type type = new TypeToken<List<ExerciseState>>() {}.getType();
-    List<ExerciseState> ExerciseStates = gson.fromJson(ExerciseStateString, type);
-    return ExerciseStates;
+    return gson.fromJson(ExerciseStateString, type);
   }
 
   @TypeConverter
@@ -65,8 +62,7 @@ public class TypeConverters {
     }
     Gson gson = new Gson();
     Type type = new TypeToken<List<Long>>() {}.getType();
-    String json = gson.toJson(ConstraintIds, type);
-    return json;
+    return gson.toJson(ConstraintIds, type);
   }
 
   @TypeConverter
@@ -76,8 +72,7 @@ public class TypeConverters {
     }
     Gson gson = new Gson();
     Type type = new TypeToken<List<Long>>() {}.getType();
-    List<Long> ConstraintIds = gson.fromJson(ConstraintIdsString, type);
-    return ConstraintIds;
+    return gson.fromJson(ConstraintIdsString, type);
   }
 
   @TypeConverter
@@ -87,8 +82,7 @@ public class TypeConverters {
     }
     Gson gson = new Gson();
     Type type = new TypeToken<List<Integer>>() {}.getType();
-    String json = gson.toJson(amounts, type);
-    return json;
+    return gson.toJson(amounts, type);
   }
 
   @TypeConverter
@@ -98,8 +92,7 @@ public class TypeConverters {
     }
     Gson gson = new Gson();
     Type type = new TypeToken<List<Integer>>() {}.getType();
-    List<Integer> amounts = gson.fromJson(amountsString, type);
-    return amounts;
+    return gson.fromJson(amountsString, type);
   }
 
   @TypeConverter

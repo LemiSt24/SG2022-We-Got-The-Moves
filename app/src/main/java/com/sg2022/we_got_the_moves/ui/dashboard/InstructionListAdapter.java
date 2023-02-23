@@ -57,7 +57,6 @@ public class InstructionListAdapter
     ItemInstructionBinding binding =
         DataBindingUtil.inflate(
             LayoutInflater.from(parent.getContext()), R.layout.item_instruction, parent, false);
-    binding.setLifecycleOwner(this.fragment);
     return new ExerciseInstructionListViewHolder(binding);
   }
 
@@ -92,7 +91,7 @@ public class InstructionListAdapter
             null,
             false);
     binding.setExercise(e);
-    this.fragment.getLifecycle().addObserver(binding.youtubePlayerViewInstructionDialog);
+    // this.fragment.getLifecycle().addObserver(binding.youtubePlayerViewInstructionDialog);
     binding.youtubePlayerViewInstructionDialog.addYouTubePlayerListener(
         new AbstractYouTubePlayerListener() {
           @Override
@@ -112,7 +111,7 @@ public class InstructionListAdapter
         .setOnDismissListener(dialog -> binding.youtubePlayerViewInstructionDialog.release())
         .setView(binding.getRoot())
         .setTitle(String.format(this.fragment.getString(R.string.instruction_title), e.name))
-        .setNeutralButton(R.string.ok, (dialog, id) -> dialog.dismiss())
+        .setNegativeButton(R.string.ok, (dialog, id) -> dialog.dismiss())
         .create()
         .show();
   }

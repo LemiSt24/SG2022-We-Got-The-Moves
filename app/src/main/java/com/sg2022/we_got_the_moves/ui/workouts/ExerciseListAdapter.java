@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
@@ -38,7 +37,6 @@ public class ExerciseListAdapter
   private static final String TAG = "ExerciseListAdapter";
 
   private final Fragment fragment;
-  private final WorkoutsViewModel model;
   private final List<WorkoutExerciseAndExercise> list;
 
   public ExerciseListAdapter(
@@ -46,9 +44,7 @@ public class ExerciseListAdapter
       @NonNull WorkoutsViewModel model,
       @NonNull List<WorkoutExerciseAndExercise> list) {
     this.fragment = fragment;
-    this.model = model;
     this.list = list;
-    //for (WorkoutExerciseAndExercise wee : list) Log.println(Log.DEBUG, "test","orderNum :" +  wee.workoutExercise.orderNum);
   }
 
   @NonNull

@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @Entity(tableName = "User")
 public class User {
@@ -52,7 +51,7 @@ public class User {
       int calories,
       boolean frontCamera,
       boolean tts,
-      HashMap trophies) {
+      HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies) {
     this.id = 1;
     this.name = name;
     this.height = height;

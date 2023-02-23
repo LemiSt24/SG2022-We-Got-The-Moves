@@ -5,7 +5,6 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
-import androidx.room.MapInfo;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -13,7 +12,6 @@ import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import io.reactivex.rxjava3.core.Single;
 

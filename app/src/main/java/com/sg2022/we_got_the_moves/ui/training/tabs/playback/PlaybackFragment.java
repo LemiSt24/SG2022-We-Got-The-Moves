@@ -17,8 +17,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.exoplayer2.C;
 import com.player.autoplayer.AutoPlayerManager;
-import com.player.autoplayer.utils.HelperForExoPlayer;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentTrainingPlaybackBinding;
 import com.sg2022.we_got_the_moves.io.VidItem;
@@ -100,11 +100,19 @@ public class PlaybackFragment extends Fragment {
     this.autoPlayerManager.setUseController(true);
     this.autoPlayerManager.attachRecyclerView(binding.recyclerviewReplays);
     this.autoPlayerManager.setup();
-    assert this.autoPlayerManager.getHelperForExoPlayer() != null;
-    HelperForExoPlayer h = this.autoPlayerManager.getHelperForExoPlayer();
-    h.makeLifeCycleAware(this);
     this.autoPlayerManager.setAutoPlayPlayer(true);
+    assert this.autoPlayerManager.getHelperForExoPlayer() != null;
+    this.autoPlayerManager
+        .getHelperForExoPlayer()
+        .getPlayer()
+        .setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+    this.permissionActivityLauncher.launch(this.model.repository.getPermissionsDefault());
     return binding.getRoot();
+  }
+
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
   }
 
   @Override
@@ -115,7 +123,6 @@ public class PlaybackFragment extends Fragment {
   @Override
   public void onResume() {
     super.onResume();
-    this.permissionActivityLauncher.launch(this.model.repository.getPermissionsDefault());
   }
 
   @Override
