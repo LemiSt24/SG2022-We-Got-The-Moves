@@ -174,6 +174,8 @@ public class MediapipeActivity extends AppCompatActivity {
   private TextToSpeech tts;
   private boolean ttsBoolean = true;
 
+  private WorkoutsRepository workoutsRepository;
+
   public static MediapipeActivity getInstanceActivity() {
     return weakMediapipeActivity.get();
   }
@@ -306,7 +308,7 @@ public class MediapipeActivity extends AppCompatActivity {
     Log.println(Log.DEBUG, "workoutID", String.valueOf(workoutId));
 
     // loading of the workout form db, with exercises and amounts
-    WorkoutsRepository workoutsRepository = WorkoutsRepository.getInstance(this.getApplication());
+    workoutsRepository = WorkoutsRepository.getInstance(this.getApplication());
     finishedExercises = new ArrayList<FinishedExercise>();
     exercises = new ArrayList<Exercise>();
     exerciseIdToAmount = new HashMap<>();
@@ -478,7 +480,8 @@ public class MediapipeActivity extends AppCompatActivity {
     );
     finish_but.setOnClickListener(
         v -> {
-          finishedExercises.add(createFinishedExercise(currentExercise, false));
+          if (currentExercise.isCountable() && Reps != 0 || !currentExercise.isCountable())
+            finishedExercises.add(createFinishedExercise(currentExercise, false));
           showEndScreenAndSave();
         });
   }
@@ -802,7 +805,8 @@ public class MediapipeActivity extends AppCompatActivity {
     }
     else{
       noPause = false;
-      finishedExercises.add(createFinishedExercise(currentExercise, true));
+      if (currentExercise.isCountable() && Reps != 0 || !currentExercise.isCountable())
+        finishedExercises.add(createFinishedExercise(currentExercise, true));
       setPointer ++;
       for (FinishedExercise f : finishedExercises) Log.println(Log.DEBUG, "test", "f: "+f.duration);
       Reps = 0;
@@ -823,7 +827,7 @@ public class MediapipeActivity extends AppCompatActivity {
     //current is cont based
     if (currentExercise.isCountable()) {
       countableEndTime = SystemClock.elapsedRealtime();
-      finishedExercises.add(createFinishedExercise(currentExercise, finishedNormal));
+      if (Reps != 0) finishedExercises.add(createFinishedExercise(currentExercise, finishedNormal));
       setPointer = 0;
       ExercisePointer++;
 
@@ -964,9 +968,9 @@ public class MediapipeActivity extends AppCompatActivity {
         .observe(
             this,
             lastTraining -> {
-              for (int i = 0; i < finishedExercises.size(); i++) {
+              for (FinishedExercise finishedExercise: finishedExercises) {
                 Log.println(Log.DEBUG, "test", String.valueOf(lastTraining.id));
-                finishedExercises.get(i).setFinishedWorkoutId(lastTraining.id);
+                finishedExercise.setFinishedWorkoutId(lastTraining.id);
               }
               finishedWorkoutRepository.insertFinishedExercise(finishedExercises);
             });

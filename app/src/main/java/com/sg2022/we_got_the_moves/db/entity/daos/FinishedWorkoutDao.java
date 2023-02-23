@@ -74,7 +74,7 @@ public interface FinishedWorkoutDao {
 
   @Query("SELECT COUNT(*) FROM (" +
     "SELECT DISTINCT(fw.id) FROM FinishedWorkout fw, FinishedExercise fe " +
-    "WHERE fw.id == fe.finishedWorkoutId " +
+    "WHERE fw.id == fe.finishedWorkoutId AND fe.duration != 0 " +
     "GROUP BY fw.id HAVING COUNT(DISTINCT fe.exerciseId) <= :value)dt")
   Single<List<Integer>> getNumberOfFinishedWorkoutsSmallerEqualNumberOfDistinctExercises(int value);
 
