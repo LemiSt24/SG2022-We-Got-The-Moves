@@ -4,6 +4,11 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
+
+import java.util.HashMap;
+import java.util.Map;
+
 @Entity(tableName = "User")
 public class User {
 
@@ -35,6 +40,9 @@ public class User {
   @ColumnInfo(name = "tts")
   public boolean tts;
 
+  @ColumnInfo(name = "trophies")
+  public HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies;
+
   public User(
       String name,
       float height,
@@ -43,7 +51,8 @@ public class User {
       int age,
       int calories,
       boolean frontCamera,
-      boolean tts) {
+      boolean tts,
+      HashMap trophies) {
     this.id = 1;
     this.name = name;
     this.height = height;
@@ -53,6 +62,7 @@ public class User {
     this.calories = calories;
     this.frontCamera = frontCamera;
     this.tts = tts;
+    this.trophies = trophies;
   }
 
   public double getBMI() {
