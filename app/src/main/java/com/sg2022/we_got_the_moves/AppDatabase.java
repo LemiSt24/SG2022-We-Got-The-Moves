@@ -79,8 +79,6 @@ public abstract class AppDatabase extends RoomDatabase {
                 super.onCreate(db1);
                 Log.d(TAG, "DB created");
                 HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies = new HashMap();
-                trophies.put("nightOwl", TrophiesFragment.ACHIEVEMENT.NOT);
-                trophies.put("workoutCollector", TrophiesFragment.ACHIEVEMENT.LEVEL_TWO);
                 executors
                     .getPoolThread()
                     .execute(

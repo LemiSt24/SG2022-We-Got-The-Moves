@@ -85,6 +85,7 @@ public class TrophiesFragment extends Fragment {
         if (night_trainings >= 10 && achievements.get("nightOwl").getValue() < 2)
             achievements.put("nightOwl", ACHIEVEMENT.LEVEL_TWO);
         binding.cardviewNightOwl.setCardBackgroundColor(getColor(achievements.get("nightOwl")));
+        model.userRepository.updateTrophies(achievements);
       }
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
@@ -103,6 +104,7 @@ public class TrophiesFragment extends Fragment {
         if (workouts != null && workouts >= 20 && achievements.get("workoutCollector").getValue() < 2)
             achievements.put("workoutCollector", ACHIEVEMENT.LEVEL_TWO);
         binding.cardviewWorkoutCollector.setCardBackgroundColor(getColor(achievements.get("workoutCollector")));
+        model.userRepository.updateTrophies(achievements);
       }
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
@@ -123,6 +125,7 @@ public class TrophiesFragment extends Fragment {
           if (number >= 25 && achievements.get("minimalist").getValue() < 2)
               achievements.put("minimalist", ACHIEVEMENT.LEVEL_TWO);
           binding.cardviewMinimalist.setCardBackgroundColor(getColor(achievements.get("minimalist")));
+        model.userRepository.updateTrophies(achievements);
       }
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
@@ -143,6 +146,7 @@ public class TrophiesFragment extends Fragment {
         if (minutes >= 60 && achievements.get("longTraining").getValue() < 2)
             achievements.put("longTraining", ACHIEVEMENT.LEVEL_TWO);
         binding.cardviewLongTraining.setCardBackgroundColor(getColor(achievements.get("longTraining")));
+        model.userRepository.updateTrophies(achievements);
       }
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
@@ -160,6 +164,7 @@ public class TrophiesFragment extends Fragment {
         if (user.calories >= 1250 && achievements.get("calorieGoal").getValue() < 2)
             achievements.put("calorieGoal", ACHIEVEMENT.LEVEL_TWO);
         binding.cardviewManyCalories.setCardBackgroundColor(getColor(achievements.get("calorieGoal")));
+        model.userRepository.updateTrophies(achievements);
       }
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
@@ -182,6 +187,7 @@ public class TrophiesFragment extends Fragment {
         if (heightInMeters >= 8848 && achievements.get("calorieGoal").getValue() < 2)
             achievements.put("squatToTheTop", ACHIEVEMENT.LEVEL_TWO);
         binding.cardviewSquat.setCardBackgroundColor(getColor(achievements.get("squatToTheTop")));
+        model.userRepository.updateTrophies(achievements);
       }
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
@@ -209,6 +215,7 @@ public class TrophiesFragment extends Fragment {
             if (finalFinishedExercise == exercises && achievements.get("maximalist").getValue() < 2)
                 achievements.put("maximalist", ACHIEVEMENT.LEVEL_TWO);
             binding.cardviewMaximalist.setCardBackgroundColor(getColor(achievements.get("maximalist")));
+            model.userRepository.updateTrophies(achievements);
           }
           @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
         });
@@ -293,10 +300,6 @@ public class TrophiesFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    while (achievements.isEmpty()) {
-
-    }
-    Log.println(Log.DEBUG, TAG, achievements.toString());
 
   }
 
