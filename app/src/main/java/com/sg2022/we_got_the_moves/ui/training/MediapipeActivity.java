@@ -2,7 +2,6 @@ package com.sg2022.we_got_the_moves.ui.training;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,8 +34,6 @@ import com.google.mediapipe.components.FrameProcessor;
 import com.google.mediapipe.components.PermissionHelper;
 import com.google.mediapipe.formats.proto.LandmarkProto;
 import com.google.mediapipe.framework.AndroidAssetUtil;
-import com.google.mediapipe.framework.AndroidPacketCreator;
-import com.google.mediapipe.framework.Packet;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -141,8 +138,6 @@ public class MediapipeActivity extends AppCompatActivity {
   // consumed by {@link FrameProcessor} and the underlying MediaPipe graph.
   private ExternalTextureConverter converter;
   // ApplicationInfo for retrieving metadata defined in the manifest.
-  private ApplicationInfo applicationInfo;
-  // Handles camera access via the {@link CameraX} Jetpack support library.
   private Camera2Helper cameraHelper;
   // Saves the current time in counter at stopTimeCounter to use this at startTimeCounter
   private long time_counter_time = 0;
@@ -156,55 +151,28 @@ public class MediapipeActivity extends AppCompatActivity {
 
   private int setPointer = 0;
   private int ExercisePointer = 0;
-  private boolean lastStateWasTop = true;
   private int lastState = 0;
   private int Reps = 0;
   private Exercise currentExercise;
   private HashMap<ExerciseState, List<Constraint>> currentConstraints;
   private boolean timerSet = false;
   private Date startTime;
-  private boolean noPause = false;
+  private boolean Pause = true;
   private boolean firstTimeShowDialog = true;
   private List<FinishedExercise> finishedExercises;
   private long countableStartTime;
   private long countableEndTime;
   private String finishedExerciseSummary = "";
-  private boolean timeUp;
   private Long timeLastCheck = SystemClock.elapsedRealtime();
   private TextToSpeech tts;
   private boolean ttsBoolean = true;
+
+  private boolean inStartPosition = false;
 
   private WorkoutsRepository workoutsRepository;
 
   public static MediapipeActivity getInstanceActivity() {
     return weakMediapipeActivity.get();
-  }
-
-  private static String getClassificationDebugString(Map<String, Integer> classification) {
-    String classificationString = "";
-    for (Map.Entry<String, Integer> entry : classification.entrySet()) {
-      classificationString += entry.getKey() + ": " + entry.getValue() + "\n";
-    }
-    return classificationString;
-  }
-
-  private static String getLandmarksDebugString(LandmarkProto.NormalizedLandmarkList landmarks) {
-    int landmarkIndex = 0;
-    String landmarksString = "";
-    for (LandmarkProto.NormalizedLandmark landmark : landmarks.getLandmarkList()) {
-      landmarksString +=
-          "\t\tLandmark["
-              + landmarkIndex
-              + "]: ("
-              + landmark.getX()
-              + ", "
-              + landmark.getY()
-              + ", "
-              + landmark.getZ()
-              + ")\n";
-      ++landmarkIndex;
-    }
-    return landmarksString;
   }
 
   // loads all constraints from db which are related to the supplied exercise and saves them in
@@ -213,19 +181,17 @@ public class MediapipeActivity extends AppCompatActivity {
     ConstraintRepository constraintRepository =
         ConstraintRepository.getInstance(this.getApplication());
 
-    currentConstraints = new HashMap<ExerciseState, List<Constraint>>();
+    currentConstraints = new HashMap<>();
 
     for (ExerciseState state : currentExercise.exerciseStates) {
-      List<Constraint> tmpConstraints = new ArrayList<Constraint>();
+      List<Constraint> tmpConstraints = new ArrayList<>();
       for (Long constraintId : state.constraintIds) {
         Log.println(Log.DEBUG, TAG, constraintId.toString());
         constraintRepository
             .getConstraint(constraintId)
             .subscribeOn(Schedulers.io())
             .subscribe(
-                constraint -> {
-                  tmpConstraints.add(constraint);
-                });
+                constraint -> tmpConstraints.add(constraint));
       }
       currentConstraints.put(state, tmpConstraints);
     }
@@ -240,47 +206,42 @@ public class MediapipeActivity extends AppCompatActivity {
 
     UserRepository userRepository = UserRepository.getInstance(this.getApplication());
     userRepository.getCameraBoolean(
-        new SingleObserver<Boolean>() {
-          @Override
-          public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+            new SingleObserver<>() {
+              @Override
+              public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+              }
 
-          @Override
-          public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
-            if (aBoolean) CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
-            else CAMERA_FACING = CameraHelper.CameraFacing.BACK;
-            Log.println(Log.DEBUG, "test", "boolean now: " + aBoolean);
-          }
+              @Override
+              public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
+                if (aBoolean) CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
+                else CAMERA_FACING = CameraHelper.CameraFacing.BACK;
+                Log.println(Log.DEBUG, "test", "boolean now: " + aBoolean);
+              }
 
-          @Override
-          public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
-        });
+              @Override
+              public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+              }
+            });
 
     userRepository.getTTSBoolean(
-        new SingleObserver<Boolean>() {
-          @Override
-          public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+            new SingleObserver<>() {
+              @Override
+              public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+              }
 
-          @Override
-          public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
-            ttsBoolean = aBoolean;
-          }
+              @Override
+              public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
+                ttsBoolean = aBoolean;
+              }
 
-          @Override
-          public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
-        });
+              @Override
+              public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+              }
+            });
     tts("");
     setContentView(getContentViewLayoutResId());
 
     startTime = new Date(System.currentTimeMillis());
-
-    /*
-    // wird für nichts benutzt?, keine metadata in manifest?
-    try {
-      applicationInfo =
-          getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-    } catch (PackageManager.NameNotFoundException e) {
-      Log.e(TAG, "Cannot find application info: " + e);
-    }*/
 
     classifier = new PoseClassifier(getApplicationContext(), 20, 10, "dataset.csv");
 
@@ -309,8 +270,8 @@ public class MediapipeActivity extends AppCompatActivity {
 
     // loading of the workout form db, with exercises and amounts
     workoutsRepository = WorkoutsRepository.getInstance(this.getApplication());
-    finishedExercises = new ArrayList<FinishedExercise>();
-    exercises = new ArrayList<Exercise>();
+    finishedExercises = new ArrayList<>();
+    exercises = new ArrayList<>();
     exerciseIdToAmount = new HashMap<>();
     workoutsRepository
         .getAllWorkoutExerciseAndExercise(workoutId)
@@ -340,16 +301,6 @@ public class MediapipeActivity extends AppCompatActivity {
               }
             });
 
-    AndroidPacketCreator packetCreator = processor.getPacketCreator();
-    Map<String, Packet> inputSidePackets = new HashMap<>();
-
-    //        inputSidePackets.put(INPUT_NUM_HANDS_SIDE_PACKET_NAME,
-    // packetCreator.createInt32(NUM_HANDS));
-    //        processor.setInputSidePackets(inputSidePackets);
-
-    // To show verbose logging, run:
-    // adb shell setprop log.tag.MainActivity VERBOSE
-    //        if (Log.isLoggable(TAG, Log.VERBOSE)) {
     processor.addPacketCallback(
         OUTPUT_LANDMARKS_STREAM_NAME,
         (packet) -> {
@@ -368,13 +319,12 @@ public class MediapipeActivity extends AppCompatActivity {
                     TAG,
                     "landmark not visible: " + landmark_names.get(i) + " " + landmarkList.get(i));
                 setExerciseX(landmark_names.get(i) + " is not visible");
-                return;
               }
             }
 
-            // Klassifizierung durchführen.
-            // Der Classifier speichert das Ergebnis, es lässt sich aus get_result abrufen und für
-            // weitere Untersuchungen weiterverwenden
+            // Perform classification.
+            // The classifier stores the result, it can be retrieved from get_result and used for
+            // further analysis
             classifier.classify(landmarks);
 
             /*  print all landmarks with name
@@ -387,22 +337,32 @@ public class MediapipeActivity extends AppCompatActivity {
 
             if (exercises.size() != 0) {
 
+              if(!inStartPosition){
+                for (Constraint constraint :
+                        currentConstraints.get(currentExercise.exerciseStates.get(lastState))) {
+                  if (!classifier.judge_constraint(constraint)) {
+                    setExerciseX(constraint.message);
+                    return;
+                  }
+                  if (currentExercise.isCountable())
+                    countableStartTime = SystemClock.elapsedRealtime();
+                  inStartPosition = true;
+                }
+              }
+
               // exercises time based
-              if (noPause && !currentExercise.isCountable()) {
+              if (!Pause && !currentExercise.isCountable()) {
 
                 if (!timerSet) {
                   setTimeCounter(exerciseIdToAmount.get(currentExercise.id).get(setPointer));
                   timerSet = true;
-                  timeUp = false;
                 }
 
                 if (SystemClock.elapsedRealtime() - timeLastCheck > 5000L) {
                   boolean changed = false;
 
-                  for (Constraint constraint :
+                  for (Constraint constraint : 
                       currentConstraints.get(currentExercise.exerciseStates.get(lastState))) {
-                    // Log.println(Log.DEBUG, "test",
-                    // String.valueOf(classifier.judge_constraint(constraint)));
                     if (!classifier.judge_constraint(constraint)) {
                       setExerciseX(constraint.message);
                       tts(constraint.message);
@@ -418,7 +378,7 @@ public class MediapipeActivity extends AppCompatActivity {
               }
 
               // exercises rep based
-              else if (noPause) {
+              else if (!Pause) {
                 if (checkExerciseState()) { // TODO Change for toggleable Classifier
                   boolean changed = false;
                   for (Constraint constraint :
@@ -455,9 +415,7 @@ public class MediapipeActivity extends AppCompatActivity {
     Button skip_but = findViewById(R.id.mediapipe_skip_exercise_button);
     Button finish_but = findViewById(R.id.mediapipe_finish_button);
     stop_but.setOnClickListener(
-        v -> {
-          showPauseCard();
-        });
+        v -> showPauseCard());
     continue_but.setOnClickListener(
         v -> {
           tts("continue");
@@ -466,7 +424,7 @@ public class MediapipeActivity extends AppCompatActivity {
           skip_but.setClickable(false);
           finish_but.setClickable(false);
           startTimeCounter();
-          noPause = true;
+          Pause = false;
         });
     skip_but.setOnClickListener(
         v -> {
@@ -480,8 +438,7 @@ public class MediapipeActivity extends AppCompatActivity {
     );
     finish_but.setOnClickListener(
         v -> {
-          if (currentExercise.isCountable() && Reps != 0 || !currentExercise.isCountable())
-            finishedExercises.add(createFinishedExercise(currentExercise, false));
+          addFinishedExercise(currentExercise, false);
           showEndScreenAndSave();
         });
   }
@@ -503,13 +460,6 @@ public class MediapipeActivity extends AppCompatActivity {
     }
   }
 
-  /* protected void onCameraStarted(SurfaceTexture surfaceTexture) {
-    previewFrameTexture = surfaceTexture;
-    // Make the display view visible to start showing the preview. This triggers the
-    // SurfaceHolder.Callback added to (the holder of) previewDisplayView.
-    previewDisplayView.setVisibility(View.VISIBLE);
-  }*/
-
   @Override
   protected void onPause() {
     super.onPause();
@@ -521,16 +471,10 @@ public class MediapipeActivity extends AppCompatActivity {
 
   @Override
   public void onRequestPermissionsResult(
-      int requestCode, String[] permissions, int[] grantResults) {
+          int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     PermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
-
-  protected Size cameraTargetResolution() {
-    return null; // No preference and let the camera (helper) decide.
-  }
-
-
 
   public void startCamera() {
     int textureName = 65;
@@ -558,7 +502,6 @@ public class MediapipeActivity extends AppCompatActivity {
     Size viewSize = computeViewSize(width, height);
     Size displaySize = cameraHelper.computeDisplaySizeFromViewSize(viewSize);
     boolean isCameraRotated = cameraHelper.isCameraRotated();
-    Log.println(Log.DEBUG, "test", "cameraroatation" + String.valueOf(isCameraRotated));
 
     // Connect the converter to the camera-preview frames as its input (via
     // previewFrameTexture), and configure the output width and height as the computed
@@ -643,13 +586,10 @@ public class MediapipeActivity extends AppCompatActivity {
     TextView evaluation_text = findViewById(R.id.mediapipe_evaluation_text);
 
     runOnUiThread(
-        new Runnable() {
-          @Override
-          public void run() {
-            check_x_mark.setImageResource(R.drawable.ic_check_green_24dp);
-            evaluation_text.setText("all correct");
-          }
-        });
+            () -> {
+              check_x_mark.setImageResource(R.drawable.ic_check_green_24dp);
+              evaluation_text.setText("all correct");
+            });
   }
 
   /**
@@ -663,13 +603,10 @@ public class MediapipeActivity extends AppCompatActivity {
     TextView evaluation_text = findViewById(R.id.mediapipe_evaluation_text);
 
     runOnUiThread(
-        new Runnable() {
-          @Override
-          public void run() {
-            check_x_mark.setImageResource(R.drawable.ic_x_red_24dp);
-            evaluation_text.setText(reason);
-          }
-        });
+            () -> {
+              check_x_mark.setImageResource(R.drawable.ic_x_red_24dp);
+              evaluation_text.setText(reason);
+            });
   }
 
   public void setTimeCounter(long seconds) {
@@ -678,30 +615,23 @@ public class MediapipeActivity extends AppCompatActivity {
     TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
 
     runOnUiThread(
-        new Runnable() {
-          @Override
-          public void run() {
+            () -> {
 
-            time_counter.setVisibility(View.VISIBLE);
-            repetition_counter.setVisibility(View.GONE);
-            time_counter.setBase(SystemClock.elapsedRealtime() + 1000 * seconds);
-            time_counter.start();
-            time_counter.setOnChronometerTickListener(
-                new Chronometer.OnChronometerTickListener() {
-                  @Override
-                  public void onChronometerTick(Chronometer chronometer) {
-                    long base = time_counter.getBase();
-                    if (base < SystemClock.elapsedRealtime()) {
-                      time_counter.stop();
-                      timerSet = false;
-                      timeUp = true;
-                      nextExerciseSet();
-                      return;
-                    }
-                  }
-                });
-          }
-        });
+              time_counter.setVisibility(View.VISIBLE);
+              repetition_counter.setVisibility(View.GONE);
+              time_counter.setBase(SystemClock.elapsedRealtime() + 1000 * seconds);
+              time_counter.start();
+              time_counter.setOnChronometerTickListener(
+                      chronometer -> {
+                        long base = time_counter.getBase();
+                        if (base < SystemClock.elapsedRealtime()) {
+                          time_counter.stop();
+                          timerSet = false;
+                          nextExerciseSet();
+                          return;
+                        }
+                      });
+            });
   }
 
   public void stopTimeCounter() {
@@ -730,12 +660,7 @@ public class MediapipeActivity extends AppCompatActivity {
   public void setExerciseName(String name) {
     TextView exerciseText = findViewById(R.id.mediapipe_exercise_name);
     runOnUiThread(
-        new Runnable() {
-          @Override
-          public void run() {
-            exerciseText.setText(name);
-          }
-        });
+            () -> exerciseText.setText(name));
   }
 
   /**
@@ -747,14 +672,11 @@ public class MediapipeActivity extends AppCompatActivity {
     TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
     Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
     runOnUiThread(
-        new Runnable() {
-          @Override
-          public void run() {
-            repetition_counter.setVisibility(View.VISIBLE);
-            time_counter.setVisibility(View.GONE);
-            repetition_counter.setText(Rep);
-          }
-        });
+            () -> {
+              repetition_counter.setVisibility(View.VISIBLE);
+              time_counter.setVisibility(View.GONE);
+              repetition_counter.setText(Rep);
+            });
   }
 
   /** Increments the rep-counter by one running on separate UIThread */
@@ -762,26 +684,20 @@ public class MediapipeActivity extends AppCompatActivity {
     TextView repetition_counter = findViewById(R.id.mediapipe_repetition_counter);
     Reps = Reps + 1;
     runOnUiThread(
-        new Runnable() {
-          @Override
-          public void run() {
-            repetition_counter.setText(String.valueOf(Reps));
-          }
-        });
+            () -> repetition_counter.setText(String.valueOf(Reps)));
   }
-//finished exercises dann auch anpassen
   /**
-   * Creates and returns a finishedExercise-Object
+   * Creates a finishedExercise-Object and adds it to finishedExercises
    *
    * @param exercise the exercise that should get saved
    * @param finished bool for time based exercises, if they have finished (for correct duration
    *     time)
-   * @return the finishedExercise
    */
-  public FinishedExercise createFinishedExercise(Exercise exercise, boolean finished) {
+  public void addFinishedExercise(Exercise exercise, boolean finished) {
     int duration;
     int amount = 0;
     if (exercise.isCountable()) {
+        if (Reps == 0) return;
       amount = Reps;
       duration = (int) ((countableEndTime - countableStartTime) / 1000);
     } else {
@@ -794,19 +710,17 @@ public class MediapipeActivity extends AppCompatActivity {
                 - ((int) ((time_counter.getBase() - time_counter_time) / 1000));
       }
     }
-    return new FinishedExercise(0, exercise.id, duration, amount);
+    finishedExercises.add(new FinishedExercise(0, exercise.id, duration, amount));
   }
 
   public void nextExerciseSet(){
-    Log.println(Log.DEBUG, "test", "setPointer: "+ setPointer);
-    Log.println(Log.DEBUG, "test", "amount: "+ exerciseIdToAmount.get(currentExercise.id));
     if (setPointer >= exerciseIdToAmount.get(currentExercise.id).size() - 1){
       nextExercise(true);
     }
     else{
-      noPause = false;
-      if (currentExercise.isCountable() && Reps != 0 || !currentExercise.isCountable())
-        finishedExercises.add(createFinishedExercise(currentExercise, true));
+      inStartPosition = false;
+      Pause = true;
+      addFinishedExercise(currentExercise, true);
       setPointer ++;
       for (FinishedExercise f : finishedExercises) Log.println(Log.DEBUG, "test", "f: "+f.duration);
       Reps = 0;
@@ -825,27 +739,24 @@ public class MediapipeActivity extends AppCompatActivity {
    */
   public void nextExercise(boolean finishedNormal){
     //current is cont based
+    inStartPosition = false;
     if (currentExercise.isCountable()) {
       countableEndTime = SystemClock.elapsedRealtime();
-      if (Reps != 0) finishedExercises.add(createFinishedExercise(currentExercise, finishedNormal));
+      addFinishedExercise(currentExercise, finishedNormal);
       setPointer = 0;
       ExercisePointer++;
 
       // -> training finished
       if (ExercisePointer >= exercises.size()) {
-        noPause = false;
+        Pause = true;
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(
-                new Runnable() {
-                  public void run() {
-                    showEndScreenAndSave();
-                  }
-                });
+                () -> showEndScreenAndSave());
       }
 
       // next exercise is loaded
       else {
-        noPause = false;
+        Pause = true;
         currentExercise = exercises.get(ExercisePointer);
         showNextExerciseSetDialog(
                 currentExercise, exerciseIdToAmount.get(currentExercise.id).get(setPointer), 5);
@@ -859,102 +770,85 @@ public class MediapipeActivity extends AppCompatActivity {
     else {
       Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
       runOnUiThread(
-              new Runnable() {
-                @Override
-                public void run() {
-                  finishedExercises.add(createFinishedExercise(currentExercise, finishedNormal));
+              () -> {
+                addFinishedExercise(currentExercise, finishedNormal);
+                setPointer = 0;
+                ExercisePointer++;
+                //no more exercises
+                if (ExercisePointer >= exercises.size()) {
+                  Log.println(Log.DEBUG, TAG, "workout finished");
+                  Pause = true;
+                  Handler handler = new Handler(Looper.getMainLooper());
+                  handler.post(
+                          this::showEndScreenAndSave);
+                  time_counter.stop();
+                }
+                //load new exercise
+                else {
+                  Pause = true;
+                  currentExercise = exercises.get(ExercisePointer);
+                  setExerciseName(currentExercise.name);
+                  showNextExerciseSetDialog(
+                          currentExercise, exerciseIdToAmount.get(currentExercise.id).get(setPointer), 5);
+                  timerSet = false;
+                  Reps = 0;
+                  setRepetition(String.valueOf(0));
+                  time_counter.stop();
                   setPointer = 0;
-                  ExercisePointer++;
-                  //no more exercises
-                  if (ExercisePointer >= exercises.size()) {
-                    Log.println(Log.DEBUG, TAG, "workout finished");
-                    noPause = false;
-                    timeUp = true;
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(
-                            new Runnable() {
-                              public void run() {
-                                showEndScreenAndSave();
-                              }
-                            });
-                    time_counter.stop();
-                  }
-                  //load new exercise
-                  else {
-                    noPause = false;
-                    currentExercise = exercises.get(ExercisePointer);
-                    setExerciseName(currentExercise.name);
-                    showNextExerciseSetDialog(
-                            currentExercise, exerciseIdToAmount.get(currentExercise.id).get(setPointer), 5);
-                    timerSet = false;
-                    Reps = 0;
-                    setRepetition(String.valueOf(0));
-                    time_counter.stop();
-                    timeUp = true;
-                    setPointer = 0;
-                  }
                 }
               });
     }
   }
 
   private void showNextExerciseSetDialog(
-      @NonNull Exercise e, @NonNull int amount, @NonNull int seconds) {
+      @NonNull Exercise e, int amount, int seconds) {
     tts("Next Exercise " + amount + e.name);
     runOnUiThread(
-        new Runnable() {
-          @Override
-          public void run() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MediapipeActivity.this);
-            DialogBetweenExerciseScreenBinding binding =
-                DataBindingUtil.inflate(
-                    LayoutInflater.from(MediapipeActivity.this),
-                    R.layout.dialog_between_exercise_screen,
-                    null,
-                    false);
-            binding.setExercise(e);
-            builder.setView(binding.getRoot());
-            AlertDialog dialog = builder.create();
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.setCancelable(false);
-            dialog.show();
+            () -> {
+              AlertDialog.Builder builder = new AlertDialog.Builder(MediapipeActivity.this);
+              DialogBetweenExerciseScreenBinding binding =
+                  DataBindingUtil.inflate(
+                      LayoutInflater.from(MediapipeActivity.this),
+                      R.layout.dialog_between_exercise_screen,
+                      null,
+                      false);
+              binding.setExercise(e);
+              builder.setView(binding.getRoot());
+              AlertDialog dialog = builder.create();
+              dialog.setCanceledOnTouchOutside(false);
+              dialog.setCancelable(false);
+              dialog.show();
 
-            Chronometer pause_countdown = dialog.findViewById(R.id.pause_countdown);
-            pause_countdown.setBase(SystemClock.elapsedRealtime() + 1000 * seconds);
-            pause_countdown.start();
+              Chronometer pause_countdown = dialog.findViewById(R.id.pause_countdown);
+              pause_countdown.setBase(SystemClock.elapsedRealtime() + 1000L * seconds);
+              pause_countdown.start();
 
-            TextView amountView = dialog.findViewById(R.id.pause_screen_excercise_amount);
-            String text = String.valueOf(amount);
-            if (e.isCountable()) text += " x ";
-            else text += " s ";
-            text += e.name;
-            amountView.setText(text);
+              TextView amountView = dialog.findViewById(R.id.pause_screen_excercise_amount);
+              String text = String.valueOf(amount);
+              if (e.isCountable()) text += " x ";
+              else text += " s ";
+              text += e.name;
+              amountView.setText(text);
 
-            String filename = e.name.toLowerCase() + ".csv";
-            Log.println(Log.DEBUG, "Test", filename);
-            classifier = new PoseClassifier(getApplicationContext(), 20, 10, filename);
-            loadConstraintsForExercise();
+              String filename = e.name.toLowerCase() + ".csv";
+              Log.println(Log.DEBUG, "Test", filename);
+              classifier = new PoseClassifier(getApplicationContext(), 20, 10, filename);
+              loadConstraintsForExercise();
 
-            pause_countdown.setOnChronometerTickListener(
-                new Chronometer.OnChronometerTickListener() {
-                  @Override
-                  public void onChronometerTick(Chronometer chronometer) {
-                    long base = pause_countdown.getBase();
-                    if (base < SystemClock.elapsedRealtime()) {
-                      dialog.dismiss();
-                      noPause = true;
-                      if (currentExercise.isCountable())
-                        countableStartTime = SystemClock.elapsedRealtime();
-                    }
-                  }
-                });
-          }
-        });
+              pause_countdown.setOnChronometerTickListener(
+                      chronometer -> {
+                        long base = pause_countdown.getBase();
+                        if (base < SystemClock.elapsedRealtime()) {
+                          dialog.dismiss();
+                          Pause = false;
+                        }
+                      });
+            });
 
   }
 
   private void showEndScreenAndSave() {
-    Long endTime = System.currentTimeMillis();
+    long endTime = System.currentTimeMillis();
 
     Duration timeSpent = Duration.of(endTime - startTime.getTime(), ChronoUnit.MILLIS);
     FinishedWorkout finishedWorkout = new FinishedWorkout(startTime, workoutId, timeSpent);
@@ -1010,14 +904,12 @@ public class MediapipeActivity extends AppCompatActivity {
               .getWorkout(workoutId)
               .observe(
                   MediapipeActivity.this,
-                  x -> {
-                    titel.setText(x.name);
-                  });
+                  x -> titel.setText(x.name));
 
           // Setting the duration
-          String durationString = "Duration: " + String.valueOf(timeSpent.toMinutes()) + ":";
+          String durationString = "Duration: " + timeSpent.toMinutes() + ":";
           if (timeSpent.getSeconds() % 60 < 10) {
-            durationString += "0" + String.valueOf(timeSpent.getSeconds() % 60);
+            durationString += "0" + (timeSpent.getSeconds() % 60);
           } else {
             durationString += String.valueOf(timeSpent.getSeconds() % 60);
           }
@@ -1054,17 +946,14 @@ public class MediapipeActivity extends AppCompatActivity {
   public void showPauseCard() {
     tts("Pause");
     runOnUiThread(
-        new Runnable() {
-          @Override
-          public void run() {
-            findViewById(R.id.mediapipe_stop_card).setVisibility(View.VISIBLE);
-            findViewById(R.id.mediapipe_continue_button).setClickable(true);
-            findViewById(R.id.mediapipe_skip_exercise_button).setClickable(true);
-            findViewById(R.id.mediapipe_finish_button).setClickable(true);
-          }
-        });
+            () -> {
+              findViewById(R.id.mediapipe_stop_card).setVisibility(View.VISIBLE);
+              findViewById(R.id.mediapipe_continue_button).setClickable(true);
+              findViewById(R.id.mediapipe_skip_exercise_button).setClickable(true);
+              findViewById(R.id.mediapipe_finish_button).setClickable(true);
+            });
     stopTimeCounter();
-    noPause = false;
+    Pause = true;
   }
 
   @Override
@@ -1083,15 +972,12 @@ public class MediapipeActivity extends AppCompatActivity {
     tts =
         new TextToSpeech(
             getApplicationContext(),
-            new TextToSpeech.OnInitListener() {
-              public void onInit(int status) {
-                if (status != TextToSpeech.ERROR) {
-                  tts.setLanguage(Locale.UK);
-                  if (!tts.isSpeaking())
-                    ;
-                  tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "1");
-                }
-              }
-            });
+                status -> {
+                  if (status != TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.UK);
+                    //if (!tts.isSpeaking()) ;
+                    tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "1");
+                  }
+                });
   }
 }
