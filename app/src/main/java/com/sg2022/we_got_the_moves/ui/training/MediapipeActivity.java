@@ -188,7 +188,6 @@ public class MediapipeActivity extends AppCompatActivity {
     for (ExerciseState state : currentExercise.exerciseStates) {
       List<Constraint> tmpConstraints = new ArrayList<>();
       for (Long constraintId : state.constraintIds) {
-        Log.println(Log.DEBUG, TAG, constraintId.toString());
         constraintRepository
             .getConstraint(constraintId)
             .subscribeOn(Schedulers.io())
@@ -218,7 +217,6 @@ public class MediapipeActivity extends AppCompatActivity {
               public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
                 if (aBoolean) CAMERA_FACING = CameraHelper.CameraFacing.FRONT;
                 else CAMERA_FACING = CameraHelper.CameraFacing.BACK;
-                Log.println(Log.DEBUG, "test", "boolean now: " + aBoolean);
               }
 
               @Override
@@ -269,7 +267,7 @@ public class MediapipeActivity extends AppCompatActivity {
     Bundle extras = intent.getExtras();
     workoutId = extras.getLong("WORKOUT_ID");
 
-    Log.println(Log.DEBUG, "workoutID", String.valueOf(workoutId));
+    Log.println(Log.DEBUG, TAG, "workoutId" + workoutId);
 
     // loading of the workout form db, with exercises and amounts
     workoutsRepository = WorkoutsRepository.getInstance(this.getApplication());
@@ -330,14 +328,6 @@ public class MediapipeActivity extends AppCompatActivity {
             // further analysis
             classifier.classify(landmarks);
 
-            /*  print all landmarks with name
-            for (int i = 0; i < landmarkList.size(); i++) {
-              Log.v(
-                      TAG,
-                      "name: " + landmark_names.get(i) +" "
-                      + landmarkList.get(i));
-            }*/
-
             if (exercises.size() != 0) {
 
               if(!inStartPosition){
@@ -388,8 +378,8 @@ public class MediapipeActivity extends AppCompatActivity {
                   for (Constraint constraint :
                       currentConstraints.get(currentExercise.exerciseStates.get(lastState))) {
                     if (!classifier.judge_constraint(constraint)) {
-                      //setExerciseX(constraint.message);
-                      //tts(constraint.message);
+                      setExerciseX(constraint.message);
+                      tts(constraint.message);
                       changed = true;
                       break;
                     }
@@ -422,6 +412,7 @@ public class MediapipeActivity extends AppCompatActivity {
         v -> showPauseCard());
     continue_but.setOnClickListener(
         v -> {
+          countableStartTime += (SystemClock.elapsedRealtime() - time_counter_time);
           tts("continue");
           stop_card.setVisibility(View.GONE);
           continue_but.setClickable(false);
@@ -432,6 +423,7 @@ public class MediapipeActivity extends AppCompatActivity {
         });
     skip_but.setOnClickListener(
         v -> {
+          countableStartTime += (SystemClock.elapsedRealtime() - time_counter_time);
           nextExercise(false);
           stop_card.setVisibility(View.GONE);
           continue_but.setClickable(false);
@@ -442,6 +434,8 @@ public class MediapipeActivity extends AppCompatActivity {
     );
     finish_but.setOnClickListener(
         v -> {
+          countableStartTime += (SystemClock.elapsedRealtime() - time_counter_time);
+          countableEndTime = SystemClock.elapsedRealtime();
           addFinishedExercise(currentExercise, false);
           showEndScreenAndSave();
         });
@@ -647,7 +641,6 @@ public class MediapipeActivity extends AppCompatActivity {
   public void stopTimeCounter() {
     Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
     time_counter_time = SystemClock.elapsedRealtime();
-    countableEndTime = time_counter_time;
     time_counter.stop();
     time_stopped = true;
   }
@@ -709,8 +702,7 @@ public class MediapipeActivity extends AppCompatActivity {
     if (exercise.isCountable()) {
         if (Reps == 0) return;
       amount = Reps;
-      duration = (int) ((countableEndTime - countableStartTime) / 1000);
-      Log.println(Log.DEBUG, "test", "" + duration);
+      duration = (int) ((countableEndTime - countableStartTime) / 1000L);
     } else {
       if (finished) {
         duration = exerciseIdToAmount.get(exercise.id).get(setPointer);
@@ -718,7 +710,7 @@ public class MediapipeActivity extends AppCompatActivity {
         Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
         duration =
             exerciseIdToAmount.get(exercise.id).get(setPointer)
-                - ((int) ((time_counter.getBase() - time_counter_time) / 1000));
+                - ((int) ((time_counter.getBase() - time_counter_time) / 1000L));
       }
     }
     finishedExercises.add(new FinishedExercise(0, exercise.id, duration, amount));
@@ -734,7 +726,6 @@ public class MediapipeActivity extends AppCompatActivity {
       countableEndTime = SystemClock.elapsedRealtime();
       addFinishedExercise(currentExercise, true);
       setPointer ++;
-      for (FinishedExercise f : finishedExercises) Log.println(Log.DEBUG, "test", "f: "+f.duration);
       Reps = 0;
       setRepetition(String.valueOf(0));
       showNextExerciseSetDialog(currentExercise,
@@ -763,7 +754,7 @@ public class MediapipeActivity extends AppCompatActivity {
         Pause = true;
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(
-                () -> showEndScreenAndSave());
+                this::showEndScreenAndSave);
       }
 
       // next exercise is loaded
@@ -875,7 +866,6 @@ public class MediapipeActivity extends AppCompatActivity {
             this,
             lastTraining -> {
               for (FinishedExercise finishedExercise: finishedExercises) {
-                Log.println(Log.DEBUG, "test", String.valueOf(lastTraining.id));
                 finishedExercise.setFinishedWorkoutId(lastTraining.id);
               }
               finishedWorkoutRepository.insertFinishedExercise(finishedExercises);
@@ -935,7 +925,6 @@ public class MediapipeActivity extends AppCompatActivity {
                   MediapipeActivity.this,
                   exercises -> {
                     for (FinishedExercise finishedExercise : finishedExercises) {
-                      Log.println(Log.DEBUG, "test", "finishedExercise: " + finishedExercise.duration);
                       for (Exercise exercise : exercises) {
                         if (exercise.id == finishedExercise.exerciseId) {
                           if (exercise.isCountable()) {

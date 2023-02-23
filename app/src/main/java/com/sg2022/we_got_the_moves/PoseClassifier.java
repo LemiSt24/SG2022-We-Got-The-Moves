@@ -335,8 +335,8 @@ public class PoseClassifier {
 
       double dist1 = normFrom1.getDistance(normTo1);
       double dist2 = normFrom2.getDistance(normTo2);
-      Log.println(Log.DEBUG, "test3", "dist1 " + String.valueOf(dist1));
-      Log.println(Log.DEBUG, "test3", "dist2 " + String.valueOf(dist2));
+     // Log.println(Log.DEBUG, "test3", "dist1 " + String.valueOf(dist1));
+     // Log.println(Log.DEBUG, "test3", "dist2 " + String.valueOf(dist2));
 
       if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
         if (dist1 < dist2 * (1 - constraint.maxDiff)) return false;
