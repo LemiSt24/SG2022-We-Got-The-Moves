@@ -287,6 +287,33 @@ public class PoseClassifier {
         if (angle < compareAngle - constraint.maxDiff || angle > compareAngle + constraint.maxDiff)
           return false;
       }
+    } else if (constraint.type == Constraint.TYPE.UPRIGHT) {
+      return abs(normFrom1.y - normTo1.y) > (abs(normFrom1.x - normTo1.x) + abs(normFrom1.z - normTo1.z)) / 2.0;
+    } else if (constraint.type == Constraint.TYPE.FLOOR_DISTANCE){
+
+      double smallest_y = Double.POSITIVE_INFINITY;
+
+      // niedrigsten Punkt in der aktuellen Pose finden
+      NormalizedLandmark[] landmarks =
+              classification_history.get(classification_history.size() - 1).landmarks;
+      for(int i = 0; i < landmarks.length; i++)
+      {
+        if(landmarks[i].y < smallest_y)
+        {
+          smallest_y = landmarks[i].y;
+        }
+      }
+      // Vergleiche angegebenen Punkt mit dem kleinsten Y-Wert
+      double dist = normFrom1.y - smallest_y;
+      double compareAngle = (double) constraint.compareAngle;
+
+      if(constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
+        return dist <= compareAngle || dist <= compareAngle * (1.0 - constraint.maxDiff) || dist <= compareAngle * (1.0 + constraint.maxDiff);
+      } else if(constraint.inequalityType == Constraint.INEQUALITY_TYPE.EQUAL) {
+        return dist == compareAngle || (dist >= compareAngle * (1.0 - constraint.maxDiff) && dist <= compareAngle * (1.0 + constraint.maxDiff));
+      } else if(constraint.inequalityType == Constraint.INEQUALITY_TYPE.GREATER) {
+        return dist >= compareAngle || dist <= compareAngle * (1.0 - constraint.maxDiff) || dist >= compareAngle * (1.0 + constraint.maxDiff);
+      }
     } else {
 
       if (constraint.insignificantDimension == Constraint.INSIGNIFICANT_DIMENSION.X) {
@@ -308,8 +335,8 @@ public class PoseClassifier {
 
       double dist1 = normFrom1.getDistance(normTo1);
       double dist2 = normFrom2.getDistance(normTo2);
-      Log.println(Log.DEBUG, "test3", "dist1 " + String.valueOf(dist1));
-      Log.println(Log.DEBUG, "test3", "dist2 " + String.valueOf(dist2));
+     // Log.println(Log.DEBUG, "test3", "dist1 " + String.valueOf(dist1));
+     // Log.println(Log.DEBUG, "test3", "dist2 " + String.valueOf(dist2));
 
       if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
         if (dist1 < dist2 * (1 - constraint.maxDiff)) return false;

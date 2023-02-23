@@ -46,10 +46,12 @@ import kotlin.Pair;
 
 public class WeeklyOverviewFragment extends Fragment {
   private final String TAG = "WeeklyOverviewFragment";
+
   private FragmentStatisticsWeeklyBinding binding;
   private StatisticsViewModel model;
   private MutableLiveData<BarDataSet> barDataSet;
   private MutableLiveData<Date> currentDate;
+
   private DisplayMetrics displayMetrics;
 
   @Override
@@ -61,8 +63,8 @@ public class WeeklyOverviewFragment extends Fragment {
         new ViewModelProvider(this.requireActivity(), factory).get(StatisticsViewModel.class);
     this.barDataSet = new MutableLiveData<>(new BarDataSet(new ArrayList<>(), "Data"));
     this.currentDate = new MutableLiveData<>(new Date());
-    displayMetrics = new DisplayMetrics();
-    requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+      this.displayMetrics = new DisplayMetrics();
+      requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
   }
 
   public View onCreateView(
@@ -249,6 +251,7 @@ public class WeeklyOverviewFragment extends Fragment {
   }
 
   private void setupBarChart() {
+
     int minScreenSize = Math.min(displayMetrics.heightPixels, displayMetrics.widthPixels);
 
     BarChart bc = binding.barChartStatisticsWeekly;
@@ -299,8 +302,7 @@ public class WeeklyOverviewFragment extends Fragment {
   @Override
   public void onResume() {
     super.onResume();
-    displayMetrics = new DisplayMetrics();
-    requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-    setupBarChart();
+      this.displayMetrics = new DisplayMetrics();
+      requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
   }
 }

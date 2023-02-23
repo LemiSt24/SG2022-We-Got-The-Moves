@@ -4,10 +4,10 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 @Entity(
     tableName = "FinishedExercise",
-    primaryKeys = {"finishedWorkoutId", "exerciseId"},
     foreignKeys = {
       @ForeignKey(
           entity = FinishedWorkout.class,
@@ -24,9 +24,9 @@ import androidx.room.Index;
     },
     indices = {
       @Index(
-          value = {"finishedWorkoutId", "exerciseId"},
+          value = {"finishedWorkoutId", "exerciseId", "id"},
           unique = true),
-      @Index(value = {"exerciseId"})
+      @Index(value = {"exerciseId"}),
     })
 public class FinishedExercise {
 
@@ -35,6 +35,10 @@ public class FinishedExercise {
 
   @ColumnInfo(name = "exerciseId")
   public long exerciseId;
+
+  @PrimaryKey(autoGenerate = true)
+  @ColumnInfo(name = "id")
+  public long id;
 
   @ColumnInfo(name = "duration")
   public int duration; // in [secs]

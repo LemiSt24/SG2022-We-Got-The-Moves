@@ -43,6 +43,9 @@ public class ExerciseState {
   @ColumnInfo(name = "insignificantDimension")
   public ExerciseState.INSIGNIFICANT_DIMENSION insignificantDimension;
 
+  @ColumnInfo(name = "stateTime")
+  public Long stateTime;
+
   public ExerciseState(
       long exerciseId,
       List<Long> constraintIds,
@@ -51,7 +54,8 @@ public class ExerciseState {
       String enterStateLandmarkEnd,
       ExerciseState.COMPARATOR comparator,
       int compareAngle,
-      ExerciseState.INSIGNIFICANT_DIMENSION insignificantDimension) {
+      ExerciseState.INSIGNIFICANT_DIMENSION insignificantDimension,
+      Long stateTime) {
     this.exerciseId = exerciseId;
     this.constraintIds = constraintIds;
     this.enterStateLandmarkStart = enterStateLandmarkStart;
@@ -60,6 +64,7 @@ public class ExerciseState {
     this.comparator = comparator;
     this.compareAngle = compareAngle;
     this.insignificantDimension = insignificantDimension;
+    this.stateTime = stateTime;
   }
 
   public enum COMPARATOR {

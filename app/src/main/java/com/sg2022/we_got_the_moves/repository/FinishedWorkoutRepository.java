@@ -152,4 +152,48 @@ public class FinishedWorkoutRepository {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer);
   }
+
+  public void getNumberOfFinishedWorkoutsSmallerEqualNumberOfDistinctExercises
+          (int value, SingleObserver<List<Integer>> observer){
+    this.finishedWorkoutDao
+        .getNumberOfFinishedWorkoutsSmallerEqualNumberOfDistinctExercises(value)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(observer);
+  }
+
+  public void getLongestDurationOfFinishedWorkouts(SingleObserver<List<Duration>> observer){
+    this.finishedWorkoutDao
+            .getLongestWorkoutDuration()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
+  }
+
+  public void getTotalReps(long exerciseId, SingleObserver<List<Integer>> observer){
+    this.finishedExerciseDao
+      .getTotalReps(exerciseId)
+      .subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(observer);
+  }
+
+  public void getTotalDuration(long exerciseId, SingleObserver<List<Duration>> observer){
+    this.finishedExerciseDao
+            .getTotalDuration(exerciseId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
+  }
+
+  public void getNumberDistinctFinishedExercises(SingleObserver<List<Integer>> observer){
+    this.finishedExerciseDao
+            .getNumberDistinctFinishedExercises()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
+  }
+
+
+
 }

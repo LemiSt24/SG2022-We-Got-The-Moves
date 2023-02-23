@@ -103,7 +103,8 @@ public class DailyOverviewFragment extends Fragment {
                     PieDataSet pieDataSet = new PieDataSet(new ArrayList<>(), "Data");
                     pieDataSet.addEntry(new PieEntry((int) burnedCalories, "Burned"));
                     pieDataSet.addEntry(
-                        new PieEntry(((int) (user.calories - burnedCalories)), "Remaining"));
+                        new PieEntry((int) (user.calories - (int)burnedCalories) < 0 ?
+                            0 : ((int) (user.calories - (int)burnedCalories)), "Remaining"));
                     pieDataSet.setColors(Color.RED, Color.GREEN);
                     pieDataSet.setValueTextSize(16f);
                     pieDataSet.setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));

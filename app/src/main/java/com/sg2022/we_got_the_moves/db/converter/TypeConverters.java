@@ -5,11 +5,14 @@ import androidx.room.TypeConverter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
+import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
 
 import java.lang.reflect.Type;
 import java.time.Duration;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TypeConverters {
 
@@ -98,4 +101,18 @@ public class TypeConverters {
     List<Integer> amounts = gson.fromJson(amountsString, type);
     return amounts;
   }
+
+  @TypeConverter
+  public static HashMap<String, TrophiesFragment.ACHIEVEMENT> fromString(String value) {
+    Type mapType = new TypeToken<HashMap<String, TrophiesFragment.ACHIEVEMENT>>() {
+    }.getType();
+    return new Gson().fromJson(value, mapType);
+  }
+
+  @TypeConverter
+  public static String fromStringMap(HashMap<String, TrophiesFragment.ACHIEVEMENT> map) {
+    Gson gson = new Gson();
+    return gson.toJson(map);
+  }
+
 }
