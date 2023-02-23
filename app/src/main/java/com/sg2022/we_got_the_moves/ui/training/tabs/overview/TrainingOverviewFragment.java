@@ -1,4 +1,4 @@
-package com.sg2022.we_got_the_moves.ui.training.tabs;
+package com.sg2022.we_got_the_moves.ui.training.tabs.overview;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,21 +35,16 @@ public class TrainingOverviewFragment extends Fragment {
       @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     FragmentTrainingOverviewBinding binding =
         FragmentTrainingOverviewBinding.inflate(inflater, container, false);
-
     binding.textviewRecentlyTrainingsOverview.setText(R.string.last_workouts);
-
     LinearLayoutManager layoutManager =
         new LinearLayoutManager(this.requireContext(), LinearLayoutManager.VERTICAL, false);
     binding.recyclerviewTrainingsOverview.setLayoutManager(layoutManager);
     binding.recyclerviewTrainingsOverview.setAdapter(this.adapterLastWorkouts);
-
     binding.textviewAllTrainingsOverview.setText(R.string.all_workouts);
-
     layoutManager =
         new LinearLayoutManager(this.requireContext(), LinearLayoutManager.VERTICAL, false);
     binding.recyclerviewAllTrainingsOverview.setLayoutManager(layoutManager);
     binding.recyclerviewAllTrainingsOverview.setAdapter(this.adapterAllWorkouts);
-
     return binding.getRoot();
   }
 }

@@ -67,7 +67,7 @@ public class InstructionListAdapter
     holder.binding.setExercise(e);
     Glide.with(this.fragment)
         .load(e.imageId)
-        .placeholder(R.drawable.exercise_placeholder)
+        .placeholder(R.drawable.placeholder)
         .into(holder.binding.imageviewExerciseInstructionItem);
     holder.binding.imageviewExerciseInstructionItem.setOnClickListener(
         v -> showInstructionDialog(e));

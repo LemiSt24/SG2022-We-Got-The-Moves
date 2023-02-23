@@ -14,8 +14,8 @@ import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsBinding;
 import com.sg2022.we_got_the_moves.ui.CustomFragmentStateAdapter;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.DailyOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.ExercisesOverviewFragment;
-import com.sg2022.we_got_the_moves.ui.statistics.tabs.WeeklyOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
+import com.sg2022.we_got_the_moves.ui.statistics.tabs.WeeklyOverviewFragment;
 
 import java.util.Arrays;
 import java.util.List;

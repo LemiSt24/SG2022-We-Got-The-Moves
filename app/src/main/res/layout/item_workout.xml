@@ -95,7 +95,7 @@
                         android:src="@drawable/ic_save_black_24dp"
                         app:layout_constraintEnd_toStartOf="@+id/edit_btn_workout_item"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:ignore="ImageContrastCheck" />
+                        tools:ignore="ImageContrastCheck,DuplicateSpeakableTextCheck" />
 
                     <ImageButton
                         android:id="@+id/edit_btn_workout_item"

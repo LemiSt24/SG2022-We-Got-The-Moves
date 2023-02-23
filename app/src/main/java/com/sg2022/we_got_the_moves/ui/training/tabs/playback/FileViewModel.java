@@ -1,4 +1,4 @@
-package com.sg2022.we_got_the_moves.ui.training.tabs;
+package com.sg2022.we_got_the_moves.ui.training.tabs.playback;
 
 import android.app.Application;
 
@@ -11,28 +11,29 @@ import com.sg2022.we_got_the_moves.repository.FileRepository;
 
 public class FileViewModel extends AndroidViewModel {
 
-  public final FileRepository fileRepository;
+  private static final String TAG = "FileViewModel";
 
-  public FileViewModel(
-      @NonNull final Application app, @NonNull final FileRepository fileRepository) {
+  public final FileRepository repository;
+
+  public FileViewModel(@NonNull final Application app, @NonNull final FileRepository repository) {
     super(app);
-    this.fileRepository = fileRepository;
+    this.repository = repository;
   }
 
   public static class Factory implements ViewModelProvider.Factory {
     private final Application app;
-    private final FileRepository fileRepository;
+    private final FileRepository repository;
 
     public Factory(@NonNull final Application app) {
       this.app = app;
-      this.fileRepository = FileRepository.getInstance(app);
+      this.repository = FileRepository.getInstance(app);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     @NonNull
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-      return (T) new FileViewModel(app, fileRepository);
+      return (T) new FileViewModel(this.app, this.repository);
     }
   }
 }

@@ -33,10 +33,13 @@ public class ExerciseState {
 
   @ColumnInfo(name = "enterStateLandmarkEnd")
   public String enterStateLandmarkEnd;
+
   @ColumnInfo(name = "comparator")
   public ExerciseState.COMPARATOR comparator;
+
   @ColumnInfo(name = "compareAngle")
   public int compareAngle;
+
   @ColumnInfo(name = "insignificantDimension")
   public ExerciseState.INSIGNIFICANT_DIMENSION insignificantDimension;
 

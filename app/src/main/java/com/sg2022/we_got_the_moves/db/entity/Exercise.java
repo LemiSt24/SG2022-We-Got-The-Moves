@@ -28,7 +28,7 @@ public class Exercise {
   @ColumnInfo(name = "youtubeId", defaultValue = "" + R.string.youtube_video_placeholder)
   public String youtubeId;
 
-  @ColumnInfo(name = "imageId", defaultValue = "" + R.drawable.exercise_placeholder)
+  @ColumnInfo(name = "imageId", defaultValue = "" + R.drawable.placeholder)
   public int imageId;
 
   @ColumnInfo(name = "unit")

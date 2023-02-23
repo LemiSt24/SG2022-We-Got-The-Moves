@@ -43,8 +43,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
                 android:layout_marginTop="20sp"
+                android:layout_marginRight="20sp"
                 app:cardCornerRadius="10sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -55,9 +55,9 @@
                     android:id="@+id/nightOwlImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10sp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="10sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/ic_owl_45dp" />
 
@@ -65,13 +65,13 @@
                     android:id="@+id/textview_text_night_owl"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="8dp"
                     android:text="Night Owl"
                     android:textAlignment="center"
                     android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="75dp" />
+                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -79,8 +79,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
                 android:layout_marginTop="20sp"
+                android:layout_marginRight="20sp"
                 app:cardCornerRadius="10sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -91,9 +91,9 @@
                     android:id="@+id/booksImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10sp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="10sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/ic_bookshelf_45dp" />
 
@@ -101,13 +101,13 @@
                     android:id="@+id/textview_text_workout_collector"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="8dp"
                     android:text="Workout Collector"
                     android:textAlignment="center"
                     android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="75dp" />
+                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -115,8 +115,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
                 android:layout_marginTop="20sp"
+                android:layout_marginRight="20sp"
                 app:cardCornerRadius="10sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -127,9 +127,9 @@
                     android:id="@+id/minimalistImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10sp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="10sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/ic_minimalist_45dp" />
 
@@ -137,13 +137,13 @@
                     android:id="@+id/textview_text_minimalist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="8dp"
                     android:text="Minimalist"
                     android:textAlignment="center"
                     android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="75dp" />
+                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -151,8 +151,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
                 android:layout_marginTop="20sp"
+                android:layout_marginRight="20sp"
                 app:cardCornerRadius="10sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -163,9 +163,9 @@
                     android:id="@+id/long_training_Image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10sp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="10sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/ic_time_sand_45dp" />
 
@@ -173,13 +173,13 @@
                     android:id="@+id/textview_text_long_training"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="8dp"
                     android:text="Endurance"
                     android:textAlignment="center"
                     android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="75dp" />
+                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -187,8 +187,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20sp"
-                android:layout_marginRight="20sp"
                 android:layout_marginTop="20sp"
+                android:layout_marginRight="20sp"
                 app:cardCornerRadius="10sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -199,9 +199,9 @@
                     android:id="@+id/many_calories_Image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10sp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="10sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/ic_fire_45dp" />
 
@@ -209,13 +209,13 @@
                     android:id="@+id/textview_text_many_calories"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="75dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="8dp"
                     android:text="Burning Man"
                     android:textAlignment="center"
                     android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="75dp" />
+                    android:textStyle="bold" />
             </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

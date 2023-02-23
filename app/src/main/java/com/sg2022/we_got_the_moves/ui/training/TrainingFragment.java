@@ -12,23 +12,26 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.sg2022.we_got_the_moves.databinding.FragmentTrainingBinding;
 import com.sg2022.we_got_the_moves.ui.CustomFragmentStateAdapter;
-import com.sg2022.we_got_the_moves.ui.training.tabs.TrainingOverviewFragment;
-import com.sg2022.we_got_the_moves.ui.training.tabs.VideoReplaysFragment;
+import com.sg2022.we_got_the_moves.ui.training.tabs.overview.TrainingOverviewFragment;
+import com.sg2022.we_got_the_moves.ui.training.tabs.playback.PlaybackFragment;
+import com.sg2022.we_got_the_moves.ui.training.tabs.recording.RecordingFragment;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class TrainingFragment extends Fragment {
 
-  private final String TAG = "TrainingFragment";
+  private static final String TAG = TrainingFragment.class.getSimpleName().toUpperCase();
   private List<Class<? extends Fragment>> tabFragments;
   private List<String> tabLabels;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    this.tabFragments = Arrays.asList(TrainingOverviewFragment.class, VideoReplaysFragment.class);
-    this.tabLabels = Arrays.asList("Training Overview", "Video Replays");
+    this.tabFragments =
+        Arrays.asList(
+            TrainingOverviewFragment.class, RecordingFragment.class, PlaybackFragment.class);
+    this.tabLabels = Arrays.asList("Training Overview", "Test Recorder", "Playbacks");
   }
 
   public View onCreateView(

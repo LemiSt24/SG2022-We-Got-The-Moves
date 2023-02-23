@@ -1,5 +1,9 @@
 package com.sg2022.we_got_the_moves.io;
 
+import android.graphics.Bitmap;
+
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,44 +12,49 @@ public abstract class IOStorage {
 
   public abstract String getRootDirectoryPath();
 
-  public abstract void createDirectory(Subdirectory sub);
+  public abstract String getRootDirectoryName();
 
-  public abstract void createDirectories() throws Exception;
+  public abstract String getDirectoryPath(Subdirectory subdirectory);
 
-  public abstract String getDirectoryPath(Subdirectory sub);
+  public abstract String getRelativeDirectoryPath(Subdirectory subdirectory);
 
-  public File[] readFilesFromSubdirectory(Subdirectory sub) {
-    createDirectory(sub);
-    File f = new File(this.getDirectoryPath(sub));
+  public abstract String[] getPermissions();
+
+  public String createDirectory(Subdirectory subdirectory) {
+    File f = new File(this.getDirectoryPath(subdirectory));
+    if (!f.exists()) {
+      //noinspection ResultOfMethodCallIgnored
+      f.mkdirs();
+    }
+    return f.getPath();
+  }
+
+  public File[] readFiles(Subdirectory subdirectory) {
+    File f = new File(this.createDirectory(subdirectory));
+    return f.listFiles();
+  }
+
+  public File[] filterFiles(Subdirectory subdirectory) {
+    File f = new File(this.createDirectory(subdirectory));
     return f.listFiles(
         file -> {
-          for (String format : sub.getSupportedFormats()) {
-            if (file.getName().endsWith(format)) return true;
+          for (String format : subdirectory.getSupportedFormats()) {
+            if (FilenameUtils.getExtension(file.getName()).equals(format)) return true;
           }
           return false;
         });
   }
 
-  public void writeFileToDirectory(Subdirectory sub, byte[] data, String filename) {
+  public void writeImage(Bitmap bmp, String filename, Subdirectory subdirectory) {
+    createDirectory(subdirectory);
+    FileOutputStream fos;
     try {
-      createDirectory(sub);
-      File f = new File(this.getDirectoryPath(sub), filename);
-      FileOutputStream fileOutputStream = null;
-      try {
-        fileOutputStream = new FileOutputStream(f);
-        fileOutputStream.write(data);
-      } catch (Exception e) {
-        e.printStackTrace();
-      } finally {
-        if (fileOutputStream != null) {
-          try {
-            fileOutputStream.close();
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
-      }
-    } catch (Exception e) {
+      File f = new File(getDirectoryPath(subdirectory), filename);
+      fos = new FileOutputStream(f);
+      bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
+      fos.flush();
+      fos.close();
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }

@@ -12,8 +12,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-public class MutableLiveFileData extends MutableLiveData<List<File>> {
+public class MutableLiveItemData extends MutableLiveData<List<VidItem>> {
 
   private static final String TAG = "MutableLiveFileData";
   public final IOStorage ios;
@@ -29,7 +30,7 @@ public class MutableLiveFileData extends MutableLiveData<List<File>> {
   private final Subdirectory subdirectory;
   private FileObserver fileObserver;
 
-  public MutableLiveFileData(List<File> value, IOStorage ios, Subdirectory subdirectory) {
+  public MutableLiveItemData(List<VidItem> value, IOStorage ios, Subdirectory subdirectory) {
     super(value);
     this.ios = ios;
     this.subdirectory = subdirectory;
@@ -37,8 +38,12 @@ public class MutableLiveFileData extends MutableLiveData<List<File>> {
     this.setupFileObserver();
   }
 
-  public MutableLiveFileData(IOStorage ios, Subdirectory subdirectory) {
+  public MutableLiveItemData(IOStorage ios, Subdirectory subdirectory) {
     this(new ArrayList<>(), ios, subdirectory);
+  }
+
+  private List<VidItem> filesToItems(List<File> files) {
+    return files.stream().map(VidItem::new).collect(Collectors.toList());
   }
 
   private void setupFileObserver() {
@@ -50,7 +55,7 @@ public class MutableLiveFileData extends MutableLiveData<List<File>> {
             if (!Objects.equals(path, subdirectory.name())) {
               for (int e : relevantEvents) {
                 if (e == event) {
-                  postValue(List.of(ios.readFiles(subdirectory)));
+                  postValue(filesToItems(List.of(ios.readFiles(subdirectory))));
                   break;
                 }
               }
@@ -61,15 +66,15 @@ public class MutableLiveFileData extends MutableLiveData<List<File>> {
 
   @Override
   public void observe(
-      @NonNull LifecycleOwner owner, @NonNull Observer<? super List<File>> observer) {
+      @NonNull LifecycleOwner owner, @NonNull Observer<? super List<VidItem>> observer) {
     super.observe(owner, observer);
-    observer.onChanged(List.of(ios.readFiles(subdirectory)));
+    observer.onChanged(this.filesToItems(List.of(ios.readFiles(subdirectory))));
   }
 
   @Override
-  public void observeForever(@NonNull Observer<? super List<File>> observer) {
+  public void observeForever(@NonNull Observer<? super List<VidItem>> observer) {
     super.observeForever(observer);
-    observer.onChanged(List.of(ios.readFiles(subdirectory)));
+    observer.onChanged(this.filesToItems(List.of(ios.readFiles(subdirectory))));
   }
 
   @Override

@@ -3,25 +3,30 @@ package com.sg2022.we_got_the_moves.repository;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 
 import com.sg2022.we_got_the_moves.AppExecutors;
-import com.sg2022.we_got_the_moves.io.IOExternalStorage;
 import com.sg2022.we_got_the_moves.io.IOInternalStorage;
+import com.sg2022.we_got_the_moves.io.IOStorage;
 import com.sg2022.we_got_the_moves.io.MutableLiveFileData;
+import com.sg2022.we_got_the_moves.io.MutableLiveItemData;
 import com.sg2022.we_got_the_moves.io.Subdirectory;
+import com.sg2022.we_got_the_moves.io.VidItem;
+
+import java.io.File;
+import java.util.List;
 
 public class FileRepository {
 
   private static final String TAG = "FileRepository";
   private static volatile FileRepository INSTANCE;
+
+  private final IOStorage defaultStorage;
   private final AppExecutors executors;
-  private final IOInternalStorage internalStorage;
-  private final IOExternalStorage externalStorage;
 
   private FileRepository(@NonNull Application app) {
     this.executors = AppExecutors.getInstance();
-    this.internalStorage = IOInternalStorage.getInstance(app);
-    this.externalStorage = IOExternalStorage.getInstance();
+    this.defaultStorage = new IOInternalStorage(app);
   }
 
   public static FileRepository getInstance(@NonNull Application app) {
@@ -35,11 +40,19 @@ public class FileRepository {
     return INSTANCE;
   }
 
-  public MutableLiveFileData getAllReplaysInternal(Subdirectory sub) {
-    return new MutableLiveFileData(this.internalStorage, sub);
+  public LiveData<List<File>> getAllVideoFilesDefault() {
+    return new MutableLiveFileData(this.defaultStorage, Subdirectory.Videos);
   }
 
-  public MutableLiveFileData getAllReplaysExternal(Subdirectory sub) {
-    return new MutableLiveFileData(this.externalStorage, sub);
+  public LiveData<List<VidItem>> getAllVideoItemsDefault() {
+    return new MutableLiveItemData(this.defaultStorage, Subdirectory.Videos);
+  }
+
+  public String getDirectoryPathDefault(Subdirectory subdirectory) {
+    return this.defaultStorage.createDirectory(subdirectory);
+  }
+
+  public String[] getPermissionsDefault() {
+    return this.defaultStorage.getPermissions();
   }
 }

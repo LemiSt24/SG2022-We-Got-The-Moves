@@ -47,9 +47,9 @@
                     android:id="@+id/textview_unit_header_exercise_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:layout_marginStart="8dp"
                     android:text="@{wee.exercise.unit == unit.REPETITION? @string/repetitions : @string/duration, default = @string/duration}"
                     android:textAlignment="center"
                     android:textSize="20sp"
@@ -78,28 +78,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginBottom="8dp"
+                    android:orientation="vertical"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textview_unit_header_exercise_item"
-                    android:orientation="vertical">
-                </LinearLayout>
+                    app:layout_constraintTop_toBottomOf="@id/textview_unit_header_exercise_item" />
 
- <!--               <Button
-                    android:id="@+id/button_amount_exercise_item"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:contentDescription="@string/amount"
-                    android:gravity="center"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp"
-                    android:text="@{wee.exercise.unit == unit.REPETITION? Integer.toString(wee.workoutExercise.amount) : util.formatTimeHhmmss(wee.workoutExercise.amount)}"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:ignore="DuplicateSpeakableTextCheck" />
--->
                 <TextView
                     android:id="@+id/textview_name_exercise_item"
                     android:layout_width="wrap_content"
@@ -123,9 +105,9 @@
                     android:contentDescription="@string/info"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
+                    app:layout_constraintBottom_toTopOf="@+id/imagebutton_add_set_exercise_item"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/imagebutton_add_set_exercise_item"
                     app:srcCompat="@drawable/ic_info_black_24dp"
                     tools:ignore="ImageContrastCheck" />
 
@@ -138,9 +120,9 @@
                     android:contentDescription="@string/plus"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
+                    app:layout_constraintBottom_toTopOf="@+id/imagebutton_remove_set_exercise_item"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imagebutton_info_exercise_item"
-                    app:layout_constraintBottom_toTopOf="@+id/imagebutton_remove_set_exercise_item"
                     app:srcCompat="@drawable/ic_plus_black_24dp"
                     tools:ignore="ImageContrastCheck" />
 
@@ -153,9 +135,9 @@
                     android:contentDescription="@string/minus"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imagebutton_add_set_exercise_item"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:srcCompat="@drawable/ic_minus_black_24dp"
                     tools:ignore="ImageContrastCheck" />
 

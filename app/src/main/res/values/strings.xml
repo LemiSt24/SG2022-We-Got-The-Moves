@@ -80,5 +80,7 @@
     <string name="all_workouts">All Workouts</string>
     <string name="recent_trainings">Recent Trainings</string>
     <string name="all_trainings">All Trainings</string>
+    <string name="stop">STOP</string>
+    <string name="start">Start</string>
 
 </resources>

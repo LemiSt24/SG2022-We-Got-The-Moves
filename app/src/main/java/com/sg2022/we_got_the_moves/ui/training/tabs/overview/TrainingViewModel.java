@@ -1,4 +1,4 @@
-package com.sg2022.we_got_the_moves.ui.training.tabs;
+package com.sg2022.we_got_the_moves.ui.training.tabs.overview;
 
 import android.app.Application;
 

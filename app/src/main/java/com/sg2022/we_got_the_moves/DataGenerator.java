@@ -228,7 +228,12 @@ public class DataGenerator {
     List<WorkoutExercise> we = new ArrayList<>();
     for (int i = 0; i < DummyWorkouts.size(); ++i) {
       for (int j = 0; j < DummyExercises.size(); ++j) {
-        we.add(new WorkoutExercise(DummyWorkouts.get(i).id, DummyExercises.get(j).id, new ArrayList<>(List.of(5,7)), j));
+        we.add(
+            new WorkoutExercise(
+                DummyWorkouts.get(i).id,
+                DummyExercises.get(j).id,
+                new ArrayList<>(List.of(5, 7)),
+                j));
       }
     }
     return we;

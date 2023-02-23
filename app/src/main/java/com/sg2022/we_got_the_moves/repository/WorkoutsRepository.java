@@ -79,7 +79,7 @@ public class WorkoutsRepository {
     return this.workoutDao.getAllWorkouts();
   }
 
-  public void getAllWorkouts(SingleObserver<List<Workout>> observer){
+  public void getAllWorkouts(SingleObserver<List<Workout>> observer) {
     this.workoutDao
         .getAllWorkoutsSingle()
         .subscribeOn(Schedulers.io())
@@ -205,11 +205,11 @@ public class WorkoutsRepository {
     return this.workoutDao.getAllWorkoutsWithExerciseAndWorkoutExercise();
   }
 
-  public void getWorkoutCount(SingleObserver<List<Integer>> singleObserver){
+  public void getWorkoutCount(SingleObserver<List<Integer>> singleObserver) {
     this.workoutDao
-      .getWorkoutCount()
-      .subscribeOn(Schedulers.io())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(singleObserver);
+        .getWorkoutCount()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(singleObserver);
   }
 }
