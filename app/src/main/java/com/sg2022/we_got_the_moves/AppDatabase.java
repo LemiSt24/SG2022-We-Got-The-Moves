@@ -100,6 +100,7 @@ public abstract class AppDatabase extends RoomDatabase {
                                       User.SEX.MALE,
                                       22,
                                       500,
+                                      10,
                                       true,
                                       true,
                                       trophies));

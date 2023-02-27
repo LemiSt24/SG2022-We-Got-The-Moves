@@ -36,6 +36,9 @@ public interface UserDao {
   @Query("Select tts From User LIMIT 1")
   Single<Boolean> getTTSBoolean();
 
+  @Query("SELECT timeBetweenExercises FROM USER LIMIT 1")
+  Single<Integer> getTimeBetweenExercise();
+
   /*
   @Query("Select trophies FROM User LIMIT 1")
   Single<Map<String, TrophiesFragment.ACHIEVEMENT>> getTrophiesMap(); */

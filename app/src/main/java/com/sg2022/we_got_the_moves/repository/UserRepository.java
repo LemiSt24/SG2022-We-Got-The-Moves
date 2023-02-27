@@ -78,6 +78,14 @@ public class UserRepository {
         .subscribe(observer);
   }
 
+  public void getTimeBetweenExercise(SingleObserver<Integer> observer) {
+    this.userDao
+            .getTimeBetweenExercise()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
+  }
+
   /*
   public void getTrophies(SingleObserver<Map<String, TrophiesFragment.ACHIEVEMENT>> observer){
     this.userDao

@@ -33,6 +33,9 @@ public class User {
   @ColumnInfo(name = "calories")
   public int calories;
 
+  @ColumnInfo(name = "timeBetweenExercises")
+  public int timeBetweenExercises; // [sec]
+
   @ColumnInfo(name = "frontCamera")
   public boolean frontCamera;
 
@@ -49,6 +52,7 @@ public class User {
       SEX sex,
       int age,
       int calories,
+      int timeBetweenExercises,
       boolean frontCamera,
       boolean tts,
       HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies) {
@@ -59,6 +63,7 @@ public class User {
     this.sex = sex;
     this.age = age;
     this.calories = calories;
+    this.timeBetweenExercises = timeBetweenExercises;
     this.frontCamera = frontCamera;
     this.tts = tts;
     this.trophies = trophies;

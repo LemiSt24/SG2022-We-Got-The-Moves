@@ -168,6 +168,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private Long timeLastCheck = SystemClock.elapsedRealtime();
   private TextToSpeech tts;
   private boolean ttsBoolean = true;
+  private int timeBetweenExercises = 5;
 
   private boolean inStartPosition = false;
 
@@ -227,8 +228,7 @@ public class MediapipeActivity extends AppCompatActivity {
     userRepository.getTTSBoolean(
             new SingleObserver<>() {
               @Override
-              public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-              }
+              public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
 
               @Override
               public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
@@ -236,9 +236,21 @@ public class MediapipeActivity extends AppCompatActivity {
               }
 
               @Override
-              public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-              }
+              public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
             });
+
+    userRepository.getTimeBetweenExercise(new SingleObserver<Integer>() {
+        @Override
+        public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+
+        @Override
+        public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Integer integer) {
+            timeBetweenExercises = integer;
+        }
+
+        @Override
+        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
+    });
     tts("");
     setContentView(getContentViewLayoutResId());
 
@@ -295,7 +307,7 @@ public class MediapipeActivity extends AppCompatActivity {
                           exerciseIdToAmount.put(
                               workoutExercise.exerciseId, workoutExercise.amount);
                           if (firstTimeShowDialog) {
-                            showNextExerciseSetDialog(currentExercise, workoutExercise.amount.get(setPointer), 5);
+                            showNextExerciseSetDialog(currentExercise, workoutExercise.amount.get(setPointer), timeBetweenExercises);
                             firstTimeShowDialog = false;
                           }
                         });
@@ -729,7 +741,7 @@ public class MediapipeActivity extends AppCompatActivity {
       Reps = 0;
       setRepetition(String.valueOf(0));
       showNextExerciseSetDialog(currentExercise,
-              exerciseIdToAmount.get(currentExercise.id).get(setPointer), 5);
+              exerciseIdToAmount.get(currentExercise.id).get(setPointer), timeBetweenExercises);
     }
   }
 
@@ -762,7 +774,7 @@ public class MediapipeActivity extends AppCompatActivity {
         Pause = true;
         currentExercise = exercises.get(ExercisePointer);
         showNextExerciseSetDialog(
-                currentExercise, exerciseIdToAmount.get(currentExercise.id).get(setPointer), 5);
+                currentExercise, exerciseIdToAmount.get(currentExercise.id).get(setPointer), timeBetweenExercises);
         setExerciseName(currentExercise.name);
         Reps = 0;
         setRepetition(String.valueOf(0));
@@ -792,7 +804,7 @@ public class MediapipeActivity extends AppCompatActivity {
                   currentExercise = exercises.get(ExercisePointer);
                   setExerciseName(currentExercise.name);
                   showNextExerciseSetDialog(
-                          currentExercise, exerciseIdToAmount.get(currentExercise.id).get(setPointer), 5);
+                          currentExercise, exerciseIdToAmount.get(currentExercise.id).get(setPointer), timeBetweenExercises);
                   timerSet = false;
                   Reps = 0;
                   setRepetition(String.valueOf(0));
@@ -823,7 +835,7 @@ public class MediapipeActivity extends AppCompatActivity {
               dialog.show();
 
               Chronometer pause_countdown = dialog.findViewById(R.id.pause_countdown);
-              pause_countdown.setBase(SystemClock.elapsedRealtime() + 1000L * seconds);
+              pause_countdown.setBase(SystemClock.elapsedRealtime() + 1000L * (long)seconds);
               pause_countdown.start();
 
               TextView amountView = dialog.findViewById(R.id.pause_screen_excercise_amount);
