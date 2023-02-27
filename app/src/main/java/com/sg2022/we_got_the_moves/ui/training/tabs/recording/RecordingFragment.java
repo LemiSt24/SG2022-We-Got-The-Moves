@@ -122,7 +122,8 @@ public class RecordingFragment extends Fragment implements HBRecorderListener {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       this.hbRecorder.setOutputUri(uri);
     } else {
-      this.hbRecorder.setOutputPath(uri.getPath());
+      this.hbRecorder.setOutputPath(directoryPath);
+      this.hbRecorder.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
     }
   }
 
