@@ -147,6 +147,19 @@
                         app:layout_constraintTop_toTopOf="@+id/edittext_user_calories_settings" />
 
                     <TextView
+                        android:id="@+id/textview_timeBetweenExercise_header_settings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/time_between_exercise"
+                        android:textAlignment="textStart"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/edittext_time_between_exercise_settings"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/edittext_time_between_exercise_settings" />
+
+                    <TextView
                         android:id="@+id/textview_gender_header_settings"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -293,6 +306,24 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/radiogroup_sex_settings" />
 
+                    <EditText
+                        android:id="@+id/edittext_time_between_exercise_settings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:autofillHints=""
+                        android:ems="10"
+                        android:inputType="numberSigned"
+                        android:minHeight="48dp"
+                        android:singleLine="true"
+                        android:text="@{Integer.toString(user.timeBetweenExercises) ,default=@string/enter_time_between_exercise}"
+                        android:textAlignment="center"
+                        android:textColorHint="#78909C"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/edittext_user_calories_settings" />
 
                     <RadioGroup
                         android:id="@+id/radiogroup_sex_settings"
@@ -346,7 +377,7 @@
                         android:layout_marginEnd="8dp"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/edittext_user_calories_settings">
+                        app:layout_constraintTop_toBottomOf="@id/edittext_time_between_exercise_settings">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/constraint_layout_cameragroup_settings"

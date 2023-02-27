@@ -61,6 +61,7 @@ public class SettingsFragment extends Fragment {
               binding.radiobtnFrontcameraSettings.setEnabled(false);
               binding.radiobtnTtsOnSettings.setEnabled(false);
               binding.radiobtnTtsOffSettings.setEnabled(false);
+              binding.edittextTimeBetweenExerciseSettings.setEnabled(false);
 
               binding.edittextUserNameSettings.addTextChangedListener(
                   new TextWatcher() {
@@ -146,6 +147,21 @@ public class SettingsFragment extends Fragment {
                       binding.getUser().calories = Integer.parseInt(s.toString());
                     }
                   });
+                binding.edittextTimeBetweenExerciseSettings.addTextChangedListener(
+                        new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(
+                                    CharSequence s, int start, int count, int after) {}
+
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+                            @Override
+                            public void afterTextChanged(Editable s) {
+                                if (s.toString().isBlank()) s.append("0");
+                                binding.getUser().timeBetweenExercises = Integer.parseInt(s.toString());
+                            }
+                        });
               binding.radiobtnFrontcameraSettings.setOnClickListener(
                   v -> {
                     binding.radiobtnBackcameraSettings.setChecked(false);
@@ -185,6 +201,7 @@ public class SettingsFragment extends Fragment {
           binding.radiobtnFrontcameraSettings.setEnabled(true);
           binding.radiobtnTtsOnSettings.setEnabled(true);
           binding.radiobtnTtsOffSettings.setEnabled(true);
+          binding.edittextTimeBetweenExerciseSettings.setEnabled(true);
         });
 
     binding.btnUserProfileSave.setOnClickListener(
@@ -214,6 +231,7 @@ public class SettingsFragment extends Fragment {
                     binding.radiobtnFrontcameraSettings.setEnabled(false);
                     binding.radiobtnTtsOnSettings.setEnabled(false);
                     binding.radiobtnTtsOffSettings.setEnabled(false);
+                    binding.edittextTimeBetweenExerciseSettings.setEnabled(false);
                   }
 
                   @Override
