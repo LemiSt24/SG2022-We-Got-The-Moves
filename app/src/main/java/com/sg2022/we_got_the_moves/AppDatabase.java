@@ -55,7 +55,11 @@ public abstract class AppDatabase extends RoomDatabase {
       synchronized (AppDatabase.class) {
         if (INSTANCE == null) {
           AppExecutors e = AppExecutors.getInstance();
-          INSTANCE = buildDatabase(app, e);
+          //INSTANCE = buildDatabase(app, e);
+          INSTANCE = Room.databaseBuilder(app.getApplicationContext(), AppDatabase.class, DB_NAME)
+                        .fallbackToDestructiveMigration()
+                        .createFromAsset("database/SGWeGotTheMovesDB.db")
+                        .build();
         }
       }
     }
@@ -77,6 +81,8 @@ public abstract class AppDatabase extends RoomDatabase {
               public void onCreate(@NonNull SupportSQLiteDatabase db1) {
                 super.onCreate(db1);
                 Log.d(TAG, "DB created");
+
+
                 HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies = new HashMap<>();
                 executors
                     .getPoolThread()
