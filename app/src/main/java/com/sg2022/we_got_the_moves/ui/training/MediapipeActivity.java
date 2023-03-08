@@ -957,6 +957,7 @@ public class MediapipeActivity extends AppCompatActivity {
   }
 
   public void showPauseCard() {
+    if (Pause) return;
     tts("Pause");
     runOnUiThread(
             () -> {
@@ -982,6 +983,7 @@ public class MediapipeActivity extends AppCompatActivity {
    */
   public void tts(String text) {
     if (!ttsBoolean) return;
+    if (tts == null) {
     tts =
         new TextToSpeech(
             getApplicationContext(),
@@ -992,5 +994,10 @@ public class MediapipeActivity extends AppCompatActivity {
                     tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "1");
                   }
                 });
+    }
+    else {
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "1");
+    }
+
   }
 }
