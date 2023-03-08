@@ -957,6 +957,7 @@ public class MediapipeActivity extends AppCompatActivity {
   }
 
   public void showPauseCard() {
+    if (Pause) return;
     tts("Pause");
     runOnUiThread(
             () -> {
