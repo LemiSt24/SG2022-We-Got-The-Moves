@@ -9,6 +9,7 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
+import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseAndExerciseStates;
 
@@ -25,6 +26,10 @@ public interface ExerciseStateDao {
   @Insert(onConflict = REPLACE)
   void insert(List<ExerciseState> l);
 
+  @Transaction
+  @Insert(onConflict = REPLACE)
+  void insertAll(List<ExerciseState> es);
+
   @Update(onConflict = REPLACE)
   void update(ExerciseState es);
 
@@ -36,6 +41,7 @@ public interface ExerciseStateDao {
   Single<List<ExerciseAndExerciseStates>> getAllSingle();
 
   @Transaction
-  @Query("SELECT * FROM Exercise WHERE Exercise.id == :exerciseId")
-  Single<List<ExerciseAndExerciseStates>> getAllSingle(int exerciseId);
+  @Query("SELECT * FROM ExerciseState WHERE ExerciseState.exerciseId == :exerciseId")
+  Single<List<ExerciseState>> getAllSingle(long exerciseId);
+
 }

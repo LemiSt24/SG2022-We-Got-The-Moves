@@ -111,6 +111,7 @@ public class DataGenerator {
     // "Squat", "Side-planks", "Mountain-climbers", "Pushup", "Sit-up", "Plank", "Biceps-curl"
     // Squats
     new ExerciseState(
+        0,
         1,
         new ArrayList<>(Arrays.asList(1L, 8L, 13L)),
         "left_ankle,right_ankle",
@@ -122,6 +123,7 @@ public class DataGenerator {
           // top
     new ExerciseState(
         1,
+        1,
         new ArrayList<>(Arrays.asList(1L, 2L, 7L, 12L)),
         "left_ankle,right_ankle",
         "left_knee,right_knee",
@@ -130,12 +132,13 @@ public class DataGenerator {
         120,
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     // Side-planks
-    new ExerciseState(2, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
+    new ExerciseState(0,2, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
     // Mountain-climbers
-    new ExerciseState(3, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
-    new ExerciseState(3, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
+    new ExerciseState(0,3, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
+    new ExerciseState(1,3, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
     // Push-Up
     new ExerciseState(
+        0,
         4,
         new ArrayList<>(Arrays.asList(3L, 4L)),
         "left_wrist,right_wrist",
@@ -145,6 +148,7 @@ public class DataGenerator {
         160,
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
     new ExerciseState(
+        1,
         4,
         new ArrayList<>(List.of(3L)),
         "left_wrist,right_wrist",
@@ -155,6 +159,7 @@ public class DataGenerator {
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     // Sit-Up
     new ExerciseState(
+        0,
         5,
         new ArrayList<>(List.of(5L, 8L)),
         "left_shoulder,right_shoulder",
@@ -164,6 +169,7 @@ public class DataGenerator {
         190,
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     new ExerciseState(
+        1,
         5,
         new ArrayList<>(List.of(5L)),
         "left_shoulder,right_shoulder",
@@ -173,7 +179,9 @@ public class DataGenerator {
         250,
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
     // Plank
-    new ExerciseState(6, new ArrayList<>(List.of(3L, 9L)),
+    new ExerciseState(
+            0,
+            6, new ArrayList<>(List.of(3L, 9L)),
             "",
             "",
             "",
@@ -181,6 +189,7 @@ public class DataGenerator {
             null, 500L),
     // Biceps-Curl
     new ExerciseState(
+        0,
         7,
         new ArrayList<>(Arrays.asList(1L, 6L, 3L, 7L)),
         "left_wrist,right_wrist",
@@ -190,6 +199,7 @@ public class DataGenerator {
         150,
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     new ExerciseState(
+        1,
         7,
         new ArrayList<>(Arrays.asList(1L, 6L, 3L, 7L)),
         "left_wrist,right_wrist",
@@ -201,6 +211,7 @@ public class DataGenerator {
 
     // Romanian Deadlift
     new ExerciseState(
+        0,
         8,
         new ArrayList<>(Arrays.asList(1L, 2L, 3L, 7L, 10L, 11L, 12L)),
     "left_ankle,right_ankle",
@@ -210,6 +221,7 @@ public class DataGenerator {
         160,
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     new ExerciseState(
+        1,
         8,
         new ArrayList<>(Arrays.asList(1L, 2L, 10L, 11L, 12L)),
         "left_ankle,right_ankle",
@@ -219,6 +231,11 @@ public class DataGenerator {
         140,
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
   };
+  public static List<ExerciseState> getDummyExerciseStates(){
+    List<ExerciseState> exerciseStates = new ArrayList<>();
+    Arrays.stream(states).map(e -> exerciseStates.add(e));
+    return exerciseStates;
+  }
 
   public static List<Exercise> getDummyExercises() {
     List<Exercise> e = new ArrayList<>();
@@ -229,11 +246,11 @@ public class DataGenerator {
         continue;
       else {
         List<ExerciseState> exerciseStates = new ArrayList<>();
-        for (ExerciseState state : states) {
+        /*for (ExerciseState state : states) {
           if (state.exerciseId == i + 1) {
             exerciseStates.add(state);
           }
-        }
+        }*/
         e.add(
             new Exercise(
                 i + 1,
@@ -242,8 +259,7 @@ public class DataGenerator {
                 youtubeIds[i],
                 imageIds[i],
                 isCountable[i],
-                metScores[i],
-                exerciseStates));
+                metScores[i]));
       }
     }
     return e;

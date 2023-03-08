@@ -35,6 +35,7 @@ public class TypeConverters {
     return duration == null ? -1 : duration.getSeconds();
   }
 
+  //brauch man vermutlich nicht mehr
   @TypeConverter
   public String fromExerciseStatesList(List<ExerciseState> ExerciseStates) {
     if (ExerciseStates == null) {

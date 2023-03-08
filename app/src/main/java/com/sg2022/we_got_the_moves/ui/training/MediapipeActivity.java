@@ -57,6 +57,7 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -154,6 +155,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private int lastState = 0;
   private int Reps = 0;
   private Exercise currentExercise;
+  private HashMap<Exercise, List<ExerciseState>> exerciseToExerciseStates;
   private HashMap<ExerciseState, List<Constraint>> currentConstraints;
   private boolean timerSet = false;
   private Date startTime;
@@ -176,27 +178,6 @@ public class MediapipeActivity extends AppCompatActivity {
 
   public static MediapipeActivity getInstanceActivity() {
     return weakMediapipeActivity.get();
-  }
-
-  // loads all constraints from db which are related to the supplied exercise and saves them in
-  // class variables
-  private void loadConstraintsForExercise() {
-    ConstraintRepository constraintRepository =
-        ConstraintRepository.getInstance(this.getApplication());
-
-    currentConstraints = new HashMap<>();
-
-    for (ExerciseState state : currentExercise.exerciseStates) {
-      List<Constraint> tmpConstraints = new ArrayList<>();
-      for (Long constraintId : state.constraintIds) {
-        constraintRepository
-            .getConstraint(constraintId)
-            .subscribeOn(Schedulers.io())
-            .subscribe(
-                constraint -> tmpConstraints.add(constraint));
-      }
-      currentConstraints.put(state, tmpConstraints);
-    }
   }
 
   @Override
@@ -239,7 +220,7 @@ public class MediapipeActivity extends AppCompatActivity {
               public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
             });
 
-    userRepository.getTimeBetweenExercise(new SingleObserver<Integer>() {
+    userRepository.getTimeBetweenExercise(new SingleObserver<>() {
         @Override
         public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
 
@@ -286,6 +267,7 @@ public class MediapipeActivity extends AppCompatActivity {
     finishedExercises = new ArrayList<>();
     exercises = new ArrayList<>();
     exerciseIdToAmount = new HashMap<>();
+    exerciseToExerciseStates = new HashMap<>();
     workoutsRepository
         .getAllWorkoutExerciseAndExercise(workoutId)
         .observe(
@@ -299,6 +281,7 @@ public class MediapipeActivity extends AppCompatActivity {
               if (currentExercise.isCountable()) setRepetition("0");
 
               for (int i = 0; i < exercises.size(); i++) {
+                Exercise exercise = exercises.get(i);
                 workoutsRepository
                     .getWorkoutExercise(workoutId, exercises.get(i).id)
                     .observe(
@@ -311,6 +294,22 @@ public class MediapipeActivity extends AppCompatActivity {
                             firstTimeShowDialog = false;
                           }
                         });
+                  workoutsRepository.getAllExerciseStates(exercises.get(i).id,
+                      new SingleObserver<>() {
+                          @Override
+                          public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                          }
+                          @Override
+                          public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<ExerciseState> exerciseStates) {
+                              exerciseStates.sort(new ExerciseStateComparator());
+                              for (ExerciseState exerciseState: exerciseStates) Log.println(Log.DEBUG, "test", "exerciseState: " + exerciseState.id);
+                              exerciseToExerciseStates.put(exercise, exerciseStates);
+                          }
+                          @Override
+                          public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                          }
+                      }
+                  );
               }
             });
 
@@ -344,7 +343,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
               if(!inStartPosition){
                 for (Constraint constraint :
-                        currentConstraints.get(currentExercise.exerciseStates.get(lastState))) {
+                        currentConstraints.get(exerciseToExerciseStates.get(currentExercise).get(lastState))) {
                   if (!classifier.judge_constraint(constraint)) {
                     setExerciseX(constraint.message);
                     return;
@@ -368,7 +367,7 @@ public class MediapipeActivity extends AppCompatActivity {
                   boolean changed = false;
 
                   for (Constraint constraint : 
-                      currentConstraints.get(currentExercise.exerciseStates.get(lastState))) {
+                      currentConstraints.get(exerciseToExerciseStates.get(currentExercise).get(lastState))) {
                     if (!classifier.judge_constraint(constraint)) {
                       setExerciseX(constraint.message);
                       tts(constraint.message);
@@ -388,7 +387,7 @@ public class MediapipeActivity extends AppCompatActivity {
                 if (checkExerciseState()) { // TODO Change for toggleable Classifier
                   boolean changed = false;
                   for (Constraint constraint :
-                      currentConstraints.get(currentExercise.exerciseStates.get(lastState))) {
+                      currentConstraints.get(exerciseToExerciseStates.get(currentExercise).get(lastState))) {
                     if (!classifier.judge_constraint(constraint)) {
                       setExerciseX(constraint.message);
                       tts(constraint.message);
@@ -560,7 +559,7 @@ public class MediapipeActivity extends AppCompatActivity {
     Log.println(Log.DEBUG, "classifier", classifierOutput.toString());
     if (classifierOutput != null) {
       int nextState = lastState + 1;
-      if (nextState >= currentExercise.exerciseStates.size()) {
+      if (nextState >= exerciseToExerciseStates.get(currentExercise).size()) {
         nextState = 0;
       }
       if (classifierOutput.containsKey(currentExercise.name.toLowerCase() + "_" + nextState)
@@ -576,11 +575,11 @@ public class MediapipeActivity extends AppCompatActivity {
 
   public boolean checkExerciseState() {
     int nextState = lastState + 1;
-    if (nextState >= currentExercise.exerciseStates.size()) {
+    if (nextState >= exerciseToExerciseStates.get(currentExercise).size()) {
       nextState = 0;
     }
-    if (classifier.judgeEnterState(currentExercise.exerciseStates.get(nextState))) {
-      if (currentExercise.exerciseStates.get(lastState).stateTime >
+    if (classifier.judgeEnterState(exerciseToExerciseStates.get(currentExercise).get(nextState))) {
+      if (exerciseToExerciseStates.get(currentExercise).get(lastState).stateTime >
           SystemClock.elapsedRealtime() - stateStartTime){
           setExerciseX("Slower your execution speed");
           tts("Slower your execution speed");
@@ -701,6 +700,28 @@ public class MediapipeActivity extends AppCompatActivity {
     runOnUiThread(
             () -> repetition_counter.setText(String.valueOf(Reps)));
   }
+
+    // loads all constraints from db which are related to the supplied exercise and saves them in
+    // class variables
+    private void loadConstraintsForExercise() {
+        ConstraintRepository constraintRepository =
+                ConstraintRepository.getInstance(this.getApplication());
+
+        currentConstraints = new HashMap<>();
+
+        for (ExerciseState state : exerciseToExerciseStates.get(currentExercise)) {
+            List<Constraint> tmpConstraints = new ArrayList<>();
+            for (Long constraintId : state.constraintIds) {
+                constraintRepository
+                        .getConstraint(constraintId)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
+                                constraint -> tmpConstraints.add(constraint));
+            }
+            currentConstraints.put(state, tmpConstraints);
+        }
+    }
+
   /**
    * Creates a finishedExercise-Object and adds it to finishedExercises
    *
@@ -848,13 +869,13 @@ public class MediapipeActivity extends AppCompatActivity {
               String filename = e.name.toLowerCase() + ".csv";
               Log.println(Log.DEBUG, "Test", filename);
               classifier = new PoseClassifier(getApplicationContext(), 20, 10, filename);
-              loadConstraintsForExercise();
 
               pause_countdown.setOnChronometerTickListener(
                       chronometer -> {
                         long base = pause_countdown.getBase();
                         if (base < SystemClock.elapsedRealtime()) {
                           dialog.dismiss();
+                          loadConstraintsForExercise();
                           Pause = false;
                         }
                       });
@@ -1000,4 +1021,11 @@ public class MediapipeActivity extends AppCompatActivity {
     }
 
   }
+
+    public static class ExerciseStateComparator implements Comparator<ExerciseState> {
+        @Override
+        public int compare(ExerciseState o1, ExerciseState o2) {
+            return Integer.compare((int) o1.id,(int) o2.id);
+        }
+    }
 }

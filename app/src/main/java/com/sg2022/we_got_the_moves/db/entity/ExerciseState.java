@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity(
     tableName = "ExerciseState",
-    primaryKeys = {"exerciseId"},
+    primaryKeys = {"id", "exerciseId"},
     foreignKeys = {
       @ForeignKey(
           entity = Exercise.class,
@@ -18,6 +18,8 @@ import java.util.List;
           onUpdate = ForeignKey.CASCADE),
     })
 public class ExerciseState {
+  @ColumnInfo(name = "id")
+  public long id;
 
   @ColumnInfo(name = "exerciseId", index = true)
   public long exerciseId;
@@ -47,6 +49,7 @@ public class ExerciseState {
   public Long stateTime;
 
   public ExerciseState(
+      long id,
       long exerciseId,
       List<Long> constraintIds,
       String enterStateLandmarkStart,
@@ -56,6 +59,7 @@ public class ExerciseState {
       int compareAngle,
       ExerciseState.INSIGNIFICANT_DIMENSION insignificantDimension,
       Long stateTime) {
+    this.id = id;
     this.exerciseId = exerciseId;
     this.constraintIds = constraintIds;
     this.enterStateLandmarkStart = enterStateLandmarkStart;

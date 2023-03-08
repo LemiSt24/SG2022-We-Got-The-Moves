@@ -9,9 +9,11 @@ import androidx.lifecycle.LiveData;
 import com.sg2022.we_got_the_moves.AppDatabase;
 import com.sg2022.we_got_the_moves.AppExecutors;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
+import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.WorkoutExercise;
 import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseDao;
+import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseStateDao;
 import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutDao;
 import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutExerciseDao;
 import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseAndFinishedExercises;
@@ -33,12 +35,15 @@ public class WorkoutsRepository {
 
   private final WorkoutDao workoutDao;
   private final ExerciseDao exerciseDao;
+
+  private final ExerciseStateDao exerciseStateDao;
   private final WorkoutExerciseDao workoutExerciseDao;
   private final AppExecutors executors;
 
   private WorkoutsRepository(@NonNull AppDatabase db) {
     this.workoutDao = db.WorkoutDao();
     this.exerciseDao = db.ExerciseDao();
+    this.exerciseStateDao = db.ExerciseStateDao();
     this.workoutExerciseDao = db.WorkoutExerciseDao();
     this.executors = AppExecutors.getInstance();
   }
@@ -93,6 +98,14 @@ public class WorkoutsRepository {
 
   public LiveData<List<Exercise>> getAllExercises(long workoutId) {
     return this.exerciseDao.getAllExercises(workoutId);
+  }
+
+  public void getAllExerciseStates(long exerciseId, SingleObserver<List<ExerciseState>> observer) {
+    this.exerciseStateDao
+            .getAllSingle(exerciseId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
   }
 
   public void getAllExercises(int workoutId, SingleObserver<List<Exercise>> observer) {

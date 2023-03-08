@@ -55,11 +55,11 @@ public abstract class AppDatabase extends RoomDatabase {
       synchronized (AppDatabase.class) {
         if (INSTANCE == null) {
           AppExecutors e = AppExecutors.getInstance();
-          //INSTANCE = buildDatabase(app, e);
-          INSTANCE = Room.databaseBuilder(app.getApplicationContext(), AppDatabase.class, DB_NAME)
+          INSTANCE = buildDatabase(app, e);
+          /*INSTANCE = Room.databaseBuilder(app.getApplicationContext(), AppDatabase.class, DB_NAME)
                         .fallbackToDestructiveMigration()
                         .createFromAsset("database/SGWeGotTheMovesDB.db")
-                        .build();
+                        .build();*/
         }
       }
     }
@@ -92,6 +92,9 @@ public abstract class AppDatabase extends RoomDatabase {
                           getInstance(app)
                               .ExerciseDao()
                               .insertAll(DataGenerator.getDummyExercises());
+                          getInstance(app)
+                              .ExerciseStateDao()
+                              .insertAll(DataGenerator.getDummyExerciseStates());
                           getInstance(app).WorkoutDao().insertAll(DataGenerator.getDummyWorkouts());
                           getInstance(app)
                               .WorkoutExerciseDao()
