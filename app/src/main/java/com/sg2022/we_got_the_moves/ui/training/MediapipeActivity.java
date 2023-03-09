@@ -341,9 +341,9 @@ public class MediapipeActivity extends AppCompatActivity {
 
             if (exercises.size() != 0) {
 
-              if(!inStartPosition){
+              if(!inStartPosition && !Pause){
                 for (Constraint constraint :
-                        currentConstraints.get(exerciseToExerciseStates.get(currentExercise).get(lastState))) {
+                        currentConstraints.get((exerciseToExerciseStates.get(currentExercise)).get(lastState))) {
                   if (!classifier.judge_constraint(constraint)) {
                     setExerciseX(constraint.message);
                     return;
@@ -710,15 +710,20 @@ public class MediapipeActivity extends AppCompatActivity {
         currentConstraints = new HashMap<>();
 
         for (ExerciseState state : exerciseToExerciseStates.get(currentExercise)) {
-            List<Constraint> tmpConstraints = new ArrayList<>();
+            List<Constraint> constraints = new ArrayList<>();
             for (Long constraintId : state.constraintIds) {
-                constraintRepository
-                        .getConstraint(constraintId)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(
-                                constraint -> tmpConstraints.add(constraint));
+                constraintRepository.getConstraint(constraintId, new SingleObserver<Constraint>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+                    @Override
+                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Constraint constraint) {
+                        constraints.add(constraint);
+                    }
+                    @Override
+                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
+                });
             }
-            currentConstraints.put(state, tmpConstraints);
+            currentConstraints.put(state, constraints);
         }
     }
 
@@ -874,8 +879,8 @@ public class MediapipeActivity extends AppCompatActivity {
                       chronometer -> {
                         long base = pause_countdown.getBase();
                         if (base < SystemClock.elapsedRealtime()) {
-                          dialog.dismiss();
                           loadConstraintsForExercise();
+                          dialog.dismiss();
                           Pause = false;
                         }
                       });

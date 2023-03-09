@@ -13,7 +13,10 @@ import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseStateDao;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ConstraintRepository {
 
@@ -59,7 +62,11 @@ public class ConstraintRepository {
     this.executors.getPoolThread().execute(() -> this.constraintDao.insert(l));
   }
 
-  public Single<Constraint> getConstraint(Long id) {
-    return this.constraintDao.getSingle(id);
+  public void getConstraint(Long id, SingleObserver<Constraint> observer) {
+    this.constraintDao
+            .getSingle(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
   }
 }

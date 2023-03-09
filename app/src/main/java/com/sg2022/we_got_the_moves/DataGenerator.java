@@ -1,5 +1,7 @@
 package com.sg2022.we_got_the_moves;
 
+import android.util.Log;
+
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
@@ -131,11 +133,12 @@ public class DataGenerator {
         ExerciseState.COMPARATOR.LESS,
         120,
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
+          /*
     // Side-planks
     new ExerciseState(0,2, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
     // Mountain-climbers
     new ExerciseState(0,3, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
-    new ExerciseState(1,3, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
+    new ExerciseState(1,3, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L), */
     // Push-Up
     new ExerciseState(
         0,
@@ -233,7 +236,8 @@ public class DataGenerator {
   };
   public static List<ExerciseState> getDummyExerciseStates(){
     List<ExerciseState> exerciseStates = new ArrayList<>();
-    Arrays.stream(states).map(e -> exerciseStates.add(e));
+    for (ExerciseState exerciseState: states) exerciseStates.add(exerciseState);
+    Log.println(Log.DEBUG, "TAG", exerciseStates.toString());
     return exerciseStates;
   }
 
