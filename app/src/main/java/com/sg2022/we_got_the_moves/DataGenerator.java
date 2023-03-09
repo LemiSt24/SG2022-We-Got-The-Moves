@@ -261,7 +261,6 @@ public class DataGenerator {
                 exerciseNames[i],
                 exerciseInstructions[i],
                 youtubeIds[i],
-                imageIds[i],
                 isCountable[i],
                 metScores[i]));
       }

@@ -28,9 +28,6 @@ public class Exercise {
   @ColumnInfo(name = "youtubeId", defaultValue = "" + R.string.youtube_video_placeholder)
   public String youtubeId;
 
-  @ColumnInfo(name = "imageId", defaultValue = "" + R.drawable.placeholder)
-  public int imageId;
-
   @ColumnInfo(name = "unit")
   public Exercise.UNIT unit;
 
@@ -42,14 +39,12 @@ public class Exercise {
       String name,
       String instruction,
       String youtubeId,
-      int imageId,
       Exercise.UNIT unit,
       float met) {
     this.id = id;
     this.name = name;
     this.instruction = instruction;
     this.youtubeId = youtubeId;
-    this.imageId = imageId;
     this.unit = unit;
     this.met = met;
   }
