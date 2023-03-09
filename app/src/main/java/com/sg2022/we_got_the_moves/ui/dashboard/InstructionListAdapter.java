@@ -1,6 +1,7 @@
 package com.sg2022.we_got_the_moves.ui.dashboard;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -64,8 +65,13 @@ public class InstructionListAdapter
   public void onBindViewHolder(@NonNull ExerciseInstructionListViewHolder holder, int position) {
     Exercise e = this.list.get(position);
     holder.binding.setExercise(e);
+    Context context = holder.binding.getRoot().getContext();
+
+    //getting the resourceId from a picture by its name
+    String name = e.name.toLowerCase().replace("-", "_").replace(" ", "_");
+    int resourceId = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
     Glide.with(this.fragment)
-        .load(e.imageId)
+        .load(resourceId)
         .placeholder(R.drawable.placeholder)
         .into(holder.binding.imageviewExerciseInstructionItem);
     holder.binding.imageviewExerciseInstructionItem.setOnClickListener(

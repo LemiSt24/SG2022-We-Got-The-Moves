@@ -73,14 +73,14 @@ public class DataGenerator {
   };
 
   public static int[] imageIds = {
-    R.drawable.squates,
+    R.drawable.squats,
     R.drawable.side_planks,
     R.drawable.mountain_climbers,
     R.drawable.push_ups,
     R.drawable.sit_ups,
-    R.drawable.plank,
-    R.drawable.bicepsculs,
-    R.drawable.romanian_deadlift
+    R.drawable.planks,
+    R.drawable.bicep_curls,
+    R.drawable.romanian_deadlifts
   };
 
   public static Exercise.UNIT[] isCountable = {
