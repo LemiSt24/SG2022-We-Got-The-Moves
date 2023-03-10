@@ -42,9 +42,6 @@ public class User {
   @ColumnInfo(name = "tts")
   public boolean tts;
 
-  @ColumnInfo(name = "tutorial_shown")
-  public Boolean tutorial_shown;
-
   @ColumnInfo(name = "trophies")
   public HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies;
 
