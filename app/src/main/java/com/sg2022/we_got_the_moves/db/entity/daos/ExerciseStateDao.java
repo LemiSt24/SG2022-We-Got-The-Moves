@@ -5,16 +5,9 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Transaction;
 import androidx.room.Update;
-
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
-import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseAndExerciseStates;
-
 import java.util.List;
-
-import io.reactivex.rxjava3.core.Single;
 
 @Dao
 public interface ExerciseStateDao {
@@ -30,12 +23,4 @@ public interface ExerciseStateDao {
 
   @Delete
   void delete(ExerciseState es);
-
-  @Transaction
-  @Query("SELECT * FROM Exercise")
-  Single<List<ExerciseAndExerciseStates>> getAllSingle();
-
-  @Transaction
-  @Query("SELECT * FROM Exercise WHERE Exercise.id == :exerciseId")
-  Single<List<ExerciseAndExerciseStates>> getAllSingle(int exerciseId);
 }

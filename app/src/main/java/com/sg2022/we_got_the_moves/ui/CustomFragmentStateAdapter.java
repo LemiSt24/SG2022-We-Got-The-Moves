@@ -3,7 +3,6 @@ package com.sg2022.we_got_the_moves.ui;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-
 import java.util.List;
 
 public class CustomFragmentStateAdapter extends FragmentStateAdapter {
@@ -22,7 +21,7 @@ public class CustomFragmentStateAdapter extends FragmentStateAdapter {
   public Fragment createFragment(int position) {
     try {
       return this.fragments.get(position).newInstance();
-    } catch (IllegalAccessException | InstantiationException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
     //noinspection ConstantConditions

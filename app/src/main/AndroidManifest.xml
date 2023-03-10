@@ -2,14 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.any" />
     <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
+        android:name="android.hardware.camera.raw"
+        android:required="false" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -32,7 +32,9 @@
         tools:targetApi="33">
         <activity
             android:name="com.sg2022.we_got_the_moves.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,9 +42,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.training.MediapipeActivity"
+            android:name=".ui.training.mediapipe.MediapipeActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            tools:ignore="LockedOrientationActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

@@ -8,13 +8,11 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Button;
-
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
@@ -25,10 +23,8 @@ import com.sg2022.we_got_the_moves.databinding.DialogTimeInputBinding;
 import com.sg2022.we_got_the_moves.databinding.ItemExerciseBinding;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
-import com.sg2022.we_got_the_moves.ui.TimeFormatUtil;
-
+import com.sg2022.we_got_the_moves.util.TimeFormatter;
 import java.util.List;
-
 import kotlin.Triple;
 
 public class ExerciseListAdapter
@@ -92,10 +88,10 @@ public class ExerciseListAdapter
       btn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
       btn.setTypeface(Typeface.DEFAULT_BOLD);
       btn.setId(buttonNumber);
-      if (wee.exercise.isCountable()){
-          btn.setText(String.valueOf(wee.workoutExercise.amount.get(buttonNumber)));
-      }
-      else btn.setText(TimeFormatUtil.formatTimeHhmmss(wee.workoutExercise.amount.get(buttonNumber)));
+    if (wee.exercise.isCountable()) {
+      btn.setText(String.valueOf(wee.workoutExercise.amount.get(buttonNumber)));
+    } else
+      btn.setText(TimeFormatter.formatTimeHhmmss(wee.workoutExercise.amount.get(buttonNumber)));
 
       btn.setOnClickListener(v -> showAmountDialog(holder, wee, v.getId()));
       holder.binding.linearLayoutButtonsAmountExerciseItem.addView(btn);
@@ -151,7 +147,7 @@ public class ExerciseListAdapter
     } else {
       DialogTimeInputBinding b = (DialogTimeInputBinding) binding;
       Triple<Integer, Integer, Integer> triple =
-          TimeFormatUtil.secsToHhmmss(ewe.workoutExercise.amount.get(set));
+          TimeFormatter.secsToHhmmss(ewe.workoutExercise.amount.get(set));
       b.numberPickerHoursDialog.setMinValue(0);
       b.numberPickerHoursDialog.setMaxValue(23);
       b.numberPickerHoursDialog.setValue(triple.getFirst());
@@ -175,20 +171,20 @@ public class ExerciseListAdapter
               R.string.yes,
               (dialog, id) -> {
                 int amount =
-                    TimeFormatUtil.hhmmssToSecs(
+                    TimeFormatter.hhmmssToSecs(
                         new Triple<>(
                             b.numberPickerHoursDialog.getValue(),
                             b.numberPickerMinutesDialog.getValue(),
                             b.numberPickerSecondsDialog.getValue()));
                 if (amount == ewe.workoutExercise.amount.get(set)) dialog.dismiss();
                 if (amount == 0) {
-                    ewe.workoutExercise.amount.set(set, 1);
-                    ((Button)holder.binding.linearLayoutButtonsAmountExerciseItem.findViewById(set)).
-                            setText(TimeFormatUtil.formatTimeHhmmss(1));
+                  ewe.workoutExercise.amount.set(set, 1);
+                  ((Button) holder.binding.linearLayoutButtonsAmountExerciseItem.findViewById(set))
+                      .setText(TimeFormatter.formatTimeHhmmss(1));
                 } else {
                   ewe.workoutExercise.amount.set(set, amount);
-                  ((Button)holder.binding.linearLayoutButtonsAmountExerciseItem.findViewById(set)).
-                          setText(TimeFormatUtil.formatTimeHhmmss(amount));
+                  ((Button) holder.binding.linearLayoutButtonsAmountExerciseItem.findViewById(set))
+                      .setText(TimeFormatter.formatTimeHhmmss(amount));
                 }
                 dialog.dismiss();
               })

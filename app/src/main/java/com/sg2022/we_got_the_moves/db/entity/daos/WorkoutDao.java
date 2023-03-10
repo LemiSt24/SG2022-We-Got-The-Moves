@@ -9,13 +9,10 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
-
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutAndWorkoutExercises;
-
-import java.util.List;
-
 import io.reactivex.rxjava3.core.Single;
+import java.util.List;
 
 @Dao
 public interface WorkoutDao {
@@ -29,9 +26,6 @@ public interface WorkoutDao {
   @Insert(onConflict = REPLACE)
   void insertAll(List<Workout> ws);
 
-  @Insert(onConflict = REPLACE)
-  Single<List<Long>> insertAllSingle(List<Workout> ws);
-
   @Update(onConflict = REPLACE)
   void update(Workout w);
 
@@ -44,14 +38,8 @@ public interface WorkoutDao {
   @Query("SELECT * FROM Workout WHERE Workout.id = :workoutId")
   LiveData<Workout> getWorkout(long workoutId);
 
-  @Query("SELECT * FROM Workout WHERE Workout.id = :workoutId")
-  Single<Workout> getWorkoutSingle(long workoutId);
-
   @Query("SELECT * FROM Workout")
   LiveData<List<Workout>> getAllWorkouts();
-
-  @Query("SELECT * FROM Workout")
-  Single<List<Workout>> getAllWorkoutsSingle();
 
   @Transaction
   @Query("SELECT * FROM Workout")

@@ -1,5 +1,6 @@
 package com.sg2022.we_got_the_moves.ui.training.tabs.overview;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.util.Log;
@@ -11,6 +12,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.ItemWorkoutNoEditBinding;
+import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
@@ -21,42 +23,74 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AllWorkoutsAdapter
-    extends RecyclerView.Adapter<AllWorkoutsAdapter.AllWorkoutsListViewHolder> {
+public class RecentWorkoutsAdapter
+    extends RecyclerView.Adapter<RecentWorkoutsAdapter.LastWorkoutsListViewHolder> {
 
-  private static final String TAG = "AllWorkoutAdapter";
+  private static final String TAG = "LastWorkoutAdapter";
   private final TrainingOverviewFragment fragment;
   private final TrainingViewModel model;
   private List<Workout> workoutList;
+  private List<Long> workoutIds;
+  private final List<FinishedWorkout> finishedWorkouts;
 
-  public AllWorkoutsAdapter(
+  @SuppressLint("NotifyDataSetChanged")
+  public RecentWorkoutsAdapter(
       @NonNull TrainingOverviewFragment fragment, @NonNull TrainingViewModel model) {
     this.fragment = fragment;
     this.model = model;
     this.workoutList = new ArrayList<>();
+    this.finishedWorkouts = new ArrayList<>();
+    this.workoutIds = new ArrayList<>();
     this.model
-        .workoutsRepository
-        .getAllWorkouts()
+        .finishedWorkoutRepository
+        .getOrderedFinishedWorkouts()
         .observe(
             fragment,
-            workouts -> {
-              if (workouts == null) workoutList.clear();
-              else workoutList = workouts;
+            finishedTraining -> {
+              workoutIds = new ArrayList<>();
+              workoutList = new ArrayList<>();
+              Log.println(Log.DEBUG, TAG, finishedTraining.toString());
+              this.finishedWorkouts.clear();
+              this.finishedWorkouts.addAll(finishedTraining);
+              for (int i = 0; i < finishedWorkouts.size() && workoutIds.size() < 3; i++) {
+                if (!workoutIds.contains(finishedWorkouts.get(i).workoutId)) {
+                  workoutIds.add(finishedWorkouts.get(i).workoutId);
+                }
+              }
+
+              this.model
+                  .workoutsRepository
+                  .getAllWorkouts()
+                  .observe(
+                      fragment,
+                      workout -> {
+                        for (int i = 0; i < workoutIds.size(); i++) {
+                          for (int j = 0; j < workout.size(); j++) {
+                            if (workout.get(j).id == workoutIds.get(i)) {
+                              workoutList.add(workout.get(j));
+                              if (workoutList.size() == workoutIds.size()) break;
+                            }
+                          }
+                        }
+                        notifyDataSetChanged();
+                      });
+
               notifyDataSetChanged();
             });
   }
 
   @NonNull
   @Override
-  public AllWorkoutsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+  public LastWorkoutsListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     ItemWorkoutNoEditBinding binding =
         DataBindingUtil.inflate(
             LayoutInflater.from(parent.getContext()), R.layout.item_workout_no_edit, parent, false);
-    return new AllWorkoutsListViewHolder(binding);
+    binding.setLifecycleOwner(this.fragment);
+    return new LastWorkoutsListViewHolder(binding);
   }
 
   @Override
-  public void onBindViewHolder(@NonNull AllWorkoutsListViewHolder holder, int position) {
+  public void onBindViewHolder(@NonNull LastWorkoutsListViewHolder holder, int position) {
     Workout w = this.workoutList.get(position);
     holder.binding.setWorkout(w);
     holder.binding.workoutName.setText(w.name);
@@ -78,6 +112,7 @@ public class AllWorkoutsAdapter
                     @Override
                     public void onSuccess(@NonNull User user) {
                       Intent intent = new Intent(fragment.getContext(), MediapipeActivity.class);
+                      intent.putExtra(TrainingOverviewFragment.WORKOUT_TITLE, w.name);
                       intent.putExtra(TrainingOverviewFragment.WORKOUT_ID, w.id);
                       intent.putExtra(TrainingOverviewFragment.RECORDING_FLAG, false);
                       intent.putExtra(
@@ -88,7 +123,7 @@ public class AllWorkoutsAdapter
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-                      Log.e(TAG, "Couln't retrieve user configuration");
+                      Log.e(TAG, "Couldn't retrieve user configuration");
                       e.printStackTrace();
                     }
                   });
@@ -106,6 +141,7 @@ public class AllWorkoutsAdapter
                     @Override
                     public void onSuccess(@NonNull User user) {
                       Intent intent = new Intent(fragment.getContext(), MediapipeActivity.class);
+                      intent.putExtra(TrainingOverviewFragment.WORKOUT_TITLE, w.name);
                       intent.putExtra(TrainingOverviewFragment.WORKOUT_ID, w.id);
                       intent.putExtra(TrainingOverviewFragment.RECORDING_FLAG, true);
                       intent.putExtra(
@@ -170,10 +206,10 @@ public class AllWorkoutsAdapter
     return workoutList.size();
   }
 
-  protected static class AllWorkoutsListViewHolder extends RecyclerView.ViewHolder {
-    public final ItemWorkoutNoEditBinding binding;
+  protected static class LastWorkoutsListViewHolder extends RecyclerView.ViewHolder {
+    public ItemWorkoutNoEditBinding binding;
 
-    AllWorkoutsListViewHolder(ItemWorkoutNoEditBinding binding) {
+    LastWorkoutsListViewHolder(ItemWorkoutNoEditBinding binding) {
       super(binding.getRoot());
       this.binding = binding;
     }

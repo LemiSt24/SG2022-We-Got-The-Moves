@@ -7,13 +7,9 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-
 import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
-
-import java.time.Duration;
-import java.util.List;
-
 import io.reactivex.rxjava3.core.Single;
+import java.util.List;
 
 @Dao
 public interface FinishedExerciseDao {
@@ -36,22 +32,8 @@ public interface FinishedExerciseDao {
   @Delete
   void delete(FinishedExercise fe);
 
-  @Query(
-      "SELECT * FROM FinishedExercise WHERE FinishedExercise.exerciseId = :exerciseId AND FinishedExercise.finishedWorkoutId = :finishedWorkoutId")
-  Single<FinishedExercise> getSingle(long finishedWorkoutId, long exerciseId);
-
-  @Query(
-      "SELECT * FROM FinishedExercise WHERE FinishedExercise.finishedWorkoutId = :finishedWorkoutId")
-  Single<List<FinishedExercise>> getAllByFinishedWorkoutIdSingle(long finishedWorkoutId);
-
-  @Query("SELECT * FROM FinishedExercise WHERE FinishedExercise.exerciseId = :exerciseId")
-  Single<List<FinishedExercise>> getAllByExerciseIdSingle(long exerciseId);
-
   @Query("SELECT SUM(fe.amount) FROM FinishedExercise fe WHERE fe.exerciseId = :exerciseId")
   Single<List<Integer>> getTotalReps(long exerciseId);
-
-  @Query("SELECT SUM(fe.duration) FROM FinishedExercise fe WHERE fe.exerciseId = :exerciseId")
-  Single<List<Duration>> getTotalDuration(long exerciseId);
 
   @Query("SELECT COUNT(*) FROM (SELECT fe.exerciseId FROM FinishedExercise fe WHERE fe.duration > 0 GROUP BY fe.exerciseId)")
   Single<List<Integer>> getNumberDistinctFinishedExercises();

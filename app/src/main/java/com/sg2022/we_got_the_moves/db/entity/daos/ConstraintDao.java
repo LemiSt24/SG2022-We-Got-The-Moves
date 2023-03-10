@@ -7,12 +7,9 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
-
-import java.util.List;
-
 import io.reactivex.rxjava3.core.Single;
+import java.util.List;
 
 @Dao
 public interface ConstraintDao {
@@ -28,9 +25,6 @@ public interface ConstraintDao {
 
   @Delete
   void delete(Constraint c);
-
-  @Query("SELECT * FROM [Constraint]") // square brackets for escaping reserved keywords
-  Single<List<Constraint>> getAllSingle();
 
   @Query("SELECT * FROM [Constraint] WHERE [Constraint].id == :constraintId")
   Single<Constraint> getSingle(Long constraintId);

@@ -4,24 +4,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.sg2022.we_got_the_moves.databinding.FragmentTrainingBinding;
 import com.sg2022.we_got_the_moves.ui.CustomFragmentStateAdapter;
 import com.sg2022.we_got_the_moves.ui.training.tabs.overview.TrainingOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.training.tabs.playback.PlaybackFragment;
 import com.sg2022.we_got_the_moves.ui.training.tabs.recording.RecordingFragment;
-
 import java.util.Arrays;
 import java.util.List;
 
 public class TrainingFragment extends Fragment {
 
-  private static final String TAG = TrainingFragment.class.getSimpleName().toUpperCase();
+  private static final String TAG = "TrainingFragment";
   private List<Class<? extends Fragment>> tabFragments;
   private List<String> tabLabels;
 

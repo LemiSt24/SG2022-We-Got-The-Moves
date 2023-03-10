@@ -1,8 +1,4 @@
-package com.sg2022.we_got_the_moves.ui;
-
-import org.javatuples.Quartet;
-import org.javatuples.Quintet;
-import org.javatuples.Sextet;
+package com.sg2022.we_got_the_moves.util;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -13,13 +9,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 import kotlin.Pair;
 import kotlin.Triple;
+import org.javatuples.Quartet;
+import org.javatuples.Quintet;
+import org.javatuples.Sextet;
 
-public class TimeFormatUtil {
+public class TimeFormatter {
 
-  public static final String TAG = "TimeFormatUtil";
+  public static final String TAG = "TimeFormatter";
   public static final Integer DAYS_PER_MONTH = 30;
   public static final Integer DAYS_PER_YEAR = 360;
 

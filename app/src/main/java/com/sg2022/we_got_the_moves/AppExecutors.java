@@ -16,42 +16,25 @@
 
 package com.sg2022.we_got_the_moves;
 
-import android.os.Handler;
-import android.os.Looper;
 
-import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-/**
- * Global executor PoolThreads for the whole application.
- *
- * <p>Grouping tasks like this avoids the effects of task starvation (e.g. disk reads don't wait
- * behind webservice requests).
- */
 public class AppExecutors {
 
   private static final String TAG = "AppExecutors";
-
   private static final int NUMBER_OF_THREADS = 4;
   private static volatile AppExecutors INSTANCE;
 
-  private final Executor singleThread;
   private final Executor PoolThread;
-  private final Executor mainThread;
 
   public AppExecutors() {
-    this(
-        Executors.newSingleThreadExecutor(),
-        Executors.newFixedThreadPool(NUMBER_OF_THREADS),
-        new mainThreadExecutor());
+    this(Executors.newFixedThreadPool(NUMBER_OF_THREADS));
   }
 
-  private AppExecutors(Executor singleThread, Executor PoolThread, Executor mainThread) {
-    this.singleThread = singleThread;
+  private AppExecutors(Executor PoolThread) {
     this.PoolThread = PoolThread;
-    this.mainThread = mainThread;
   }
 
   public static AppExecutors getInstance() {
@@ -67,14 +50,5 @@ public class AppExecutors {
 
   public Executor getPoolThread() {
     return PoolThread;
-  }
-
-  private static class mainThreadExecutor implements Executor {
-    private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-
-    @Override
-    public void execute(@NonNull Runnable command) {
-      mainThreadHandler.post(command);
-    }
   }
 }

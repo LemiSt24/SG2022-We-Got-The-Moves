@@ -11,13 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -33,15 +31,13 @@ import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsDailyBinding;
 import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedExerciseAndExercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedWorkoutAndFinishedExercises;
-import com.sg2022.we_got_the_moves.ui.TimeFormatUtil;
 import com.sg2022.we_got_the_moves.ui.statistics.StatisticsViewModel;
-
+import com.sg2022.we_got_the_moves.util.TimeFormatter;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
 
 public class DailyOverviewFragment extends Fragment {
   private final String TAG = "DailyOverviewFragment";
@@ -76,8 +72,8 @@ public class DailyOverviewFragment extends Fragment {
             binding.textviewCaloriesValueDailyStatistics.setText(
                 String.format("%s kcal", user.calories));
 
-            final Date today_begin = TimeFormatUtil.atStartOfDay(new Date());
-            final Date today_end = TimeFormatUtil.atEndOfDay(new Date());
+            final Date today_begin = TimeFormatter.atStartOfDay(new Date());
+            final Date today_end = TimeFormatter.atEndOfDay(new Date());
 
             model.finishedWorkoutRepository.getAllFinishedWorkoutsByDateRangeSingle(
                 today_begin,
@@ -103,8 +99,11 @@ public class DailyOverviewFragment extends Fragment {
                     PieDataSet pieDataSet = new PieDataSet(new ArrayList<>(), "Data");
                     pieDataSet.addEntry(new PieEntry((int) burnedCalories, "Burned"));
                     pieDataSet.addEntry(
-                        new PieEntry((int) (user.calories - (int)burnedCalories) < 0 ?
-                            0 : ((int) (user.calories - (int)burnedCalories)), "Remaining"));
+                        new PieEntry(
+                            (int) (user.calories - (int) burnedCalories) < 0
+                                ? 0
+                                : ((int) (user.calories - (int) burnedCalories)),
+                            "Remaining"));
                     pieDataSet.setColors(Color.RED, Color.GREEN);
                     pieDataSet.setValueTextSize(16f);
                     pieDataSet.setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));

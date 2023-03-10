@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".ui.training.MediapipeActivity">
+    tools:context=".ui.training.mediapipe.MediapipeActivity">
 
     <FrameLayout
         android:id="@+id/preview_display_layout"
@@ -25,6 +25,7 @@
             android:textAlignment="center" />
 
     </FrameLayout>
+
 
     <ImageButton
         android:id="@+id/mediapipe_stop_button"

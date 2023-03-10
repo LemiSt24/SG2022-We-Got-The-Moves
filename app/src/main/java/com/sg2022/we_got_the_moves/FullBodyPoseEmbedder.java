@@ -15,8 +15,6 @@ public class FullBodyPoseEmbedder {
 
   public static double[] generate_embedding(NormalizedLandmark[] landmarks, Boolean flipped) {
     assert landmarks.length == NormalizedLandmark.landmark_names.size();
-    // NormalizedLandmark[] normalized_landmarks =
-    // NormalizedLandmark.convertFromMediapipe(landmarks);
     if (flipped) {
       for (NormalizedLandmark landmark : landmarks) {
         landmark.x = -1 * landmark.x;

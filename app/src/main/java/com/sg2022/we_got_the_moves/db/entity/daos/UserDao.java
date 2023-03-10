@@ -7,13 +7,10 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-
 import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
-
-import java.util.HashMap;
-
 import io.reactivex.rxjava3.core.Single;
+import java.util.HashMap;
 
 @Dao
 public interface UserDao {
@@ -35,10 +32,6 @@ public interface UserDao {
 
   @Query("Select tts From User LIMIT 1")
   Single<Boolean> getTTSBoolean();
-
-  /*
-  @Query("Select trophies FROM User LIMIT 1")
-  Single<Map<String, TrophiesFragment.ACHIEVEMENT>> getTrophiesMap(); */
 
   @Query("UPDATE User set trophies = :trophies")
   void updateTrophies(HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies);

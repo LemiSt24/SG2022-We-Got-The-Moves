@@ -13,26 +13,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-
 import com.hbisoft.hbrecorder.HBRecorder;
 import com.hbisoft.hbrecorder.HBRecorderListener;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentTrainingRecordingBinding;
 import com.sg2022.we_got_the_moves.io.Subdirectory;
 import com.sg2022.we_got_the_moves.repository.FileRepository;
-import com.sg2022.we_got_the_moves.ui.PermissionUtil;
-
-import org.apache.commons.io.FilenameUtils;
-
+import com.sg2022.we_got_the_moves.util.PermissionsChecker;
 import java.io.File;
 import java.util.Map;
+import org.apache.commons.io.FilenameUtils;
 
 public class RecordingFragment extends Fragment implements HBRecorderListener {
 
@@ -66,7 +62,7 @@ public class RecordingFragment extends Fragment implements HBRecorderListener {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
               boolean permissionsGranted =
-                  PermissionUtil.checkPermissions(this.context, this.permissions);
+                  PermissionsChecker.checkPermissions(this.context, this.permissions);
               if (result.getResultCode() == Activity.RESULT_OK && permissionsGranted) {
                 this.prepareRecording();
                 this.binding.btnRecording.setText(R.string.stop);
@@ -96,7 +92,7 @@ public class RecordingFragment extends Fragment implements HBRecorderListener {
             binding.btnRecording.setText(R.string.start);
           } else {
             boolean permissionsGranted =
-                PermissionUtil.checkPermissions(this.context, this.permissions);
+                PermissionsChecker.checkPermissions(this.context, this.permissions);
             if (!permissionsGranted) {
               this.permissionActivityLauncher.launch(this.permissions);
             } else {

@@ -9,13 +9,10 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
-
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseAndFinishedExercises;
-
-import java.util.List;
-
 import io.reactivex.rxjava3.core.Single;
+import java.util.List;
 
 @Dao
 public interface ExerciseDao {
@@ -42,14 +39,6 @@ public interface ExerciseDao {
   @Query(
       "SELECT Exercise.* FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :workoutId")
   LiveData<List<Exercise>> getAllExercises(long workoutId);
-
-  @Transaction
-  @Query(
-      "SELECT Exercise.* FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :workoutId")
-  Single<List<Exercise>> getAllExercisesSingle(long workoutId);
-
-  @Query("SELECT * FROM Exercise WHERE Exercise.id = :exerciseId")
-  LiveData<Exercise> getExercise(long exerciseId);
 
   @Transaction
   @Query("SELECT * FROM Exercise")

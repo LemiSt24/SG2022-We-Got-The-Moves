@@ -6,11 +6,9 @@ import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
 
 import android.content.Context;
-
 import com.google.mediapipe.formats.proto.LandmarkProto;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -62,14 +60,14 @@ class ClassificationResult {
 public class PoseClassifier {
 
   double[] current_embedding;
-  private Context context;
-  private int top_n_by_max_distance;
-  private int top_n_by_mean_distance;
-  private String dataset_filename;
-  private List<PoseSample> dataset;
-  private List<String> class_names;
-  private List<ClassificationResult> classification_history;
-  private int history_depth = 10; // wie viele Schritte kann man in die Vergangenheit blicken?
+  private final Context context;
+  private final int top_n_by_max_distance;
+  private final int top_n_by_mean_distance;
+  private final String dataset_filename;
+  private final List<PoseSample> dataset;
+  private final List<String> class_names;
+  private final List<ClassificationResult> classification_history;
+  private final int history_depth = 10; // wie viele Schritte kann man in die Vergangenheit blicken?
 
   public PoseClassifier(Context myContext, int top_n_max, int top_n_mean, String filename) {
     dataset = new ArrayList<PoseSample>();
@@ -279,12 +277,12 @@ public class PoseClassifier {
       double compareAngle = (double) constraint.compareAngle;
 
       if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
-        if (angle < compareAngle - constraint.maxDiff) return false;
+        return !(angle < compareAngle - constraint.maxDiff);
       } else if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.GREATER) {
-        if (angle > compareAngle + constraint.maxDiff) return false;
+        return !(angle > compareAngle + constraint.maxDiff);
       } else {
-        if (angle < compareAngle - constraint.maxDiff || angle > compareAngle + constraint.maxDiff)
-          return false;
+        return !(angle < compareAngle - constraint.maxDiff)
+            && !(angle > compareAngle + constraint.maxDiff);
       }
     } else if (constraint.type == Constraint.TYPE.UPRIGHT) {
       return abs(normFrom1.y - normTo1.y) > (abs(normFrom1.x - normTo1.x) + abs(normFrom1.z - normTo1.z)) / 2.0;
@@ -338,12 +336,12 @@ public class PoseClassifier {
      // Log.println(Log.DEBUG, "test3", "dist2 " + String.valueOf(dist2));
 
       if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
-        if (dist1 < dist2 * (1 - constraint.maxDiff)) return false;
+        return !(dist1 < dist2 * (1 - constraint.maxDiff));
       } else if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.GREATER) {
-        if (dist1 > dist2 * (1 + constraint.maxDiff)) return false;
+        return !(dist1 > dist2 * (1 + constraint.maxDiff));
       } else {
-        if (dist1 < dist2 * (1 - constraint.maxDiff) || dist1 > dist2 * (1 + constraint.maxDiff))
-          return false;
+        return !(dist1 < dist2 * (1 - constraint.maxDiff))
+            && !(dist1 > dist2 * (1 + constraint.maxDiff));
         // if (rel < 1.0 - constraint.maxDiff || rel > 1.0 + constraint.maxDiff) return false;
       }
     }
@@ -374,9 +372,9 @@ public class PoseClassifier {
     angle = abs(angle);
 
     if (exerciseState.comparator == ExerciseState.COMPARATOR.LESS) {
-      if (angle < exerciseState.compareAngle) return true;
+      return angle < exerciseState.compareAngle;
     } else if (exerciseState.comparator == ExerciseState.COMPARATOR.GREATER) {
-      if (angle > exerciseState.compareAngle) return true;
+      return angle > exerciseState.compareAngle;
     }
     return false;
   }
