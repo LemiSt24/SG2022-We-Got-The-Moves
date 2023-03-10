@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@+id/navigation_tutorial_dashboard">
+
+    <fragment
+        android:id="@+id/navigation_tutorial_dashboard"
+        android:name="com.sg2022.we_got_the_moves.ui.tutorial.fragments.DashboardTutorialFragment"
+        android:label="@string/title_tutorial_dashboard"
+        tools:layout="@layout/fragment_tutorial_dashboard" />
+
+    <fragment
+        android:id="@+id/navigation_tutorial_training"
+        android:name="com.sg2022.we_got_the_moves.ui.training.TrainingFragment"
+        android:label="@string/title_tutorial_training"
+        tools:layout="@layout/fragment_training_overview" />
+
+    <fragment
+        android:id="@+id/navigation_tutorial_workouts"
+        android:name="com.sg2022.we_got_the_moves.ui.workouts.WorkoutsFragment"
+        android:label="@string/title_tutorial_workouts"
+        tools:layout="@layout/fragment_workouts" />
+
+    <fragment
+        android:id="@+id/navigation_tutorial_statistics"
+        android:name="com.sg2022.we_got_the_moves.ui.statistics.StatisticsFragment"
+        android:label="@string/title_tutorial_statistics"
+        tools:layout="@layout/fragment_statistics" />
+
+    <fragment
+        android:id="@+id/navigation_tutorial_settings"
+        android:name="com.sg2022.we_got_the_moves.ui.settings.SettingsFragment"
+        android:label="@string/title_tutorial_settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>

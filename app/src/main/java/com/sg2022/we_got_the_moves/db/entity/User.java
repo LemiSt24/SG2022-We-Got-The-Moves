@@ -42,6 +42,9 @@ public class User {
   @ColumnInfo(name = "tts")
   public boolean tts;
 
+  @ColumnInfo(name = "tutorial_shown")
+  public Boolean tutorial_shown;
+
   @ColumnInfo(name = "trophies")
   public HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies;
 
@@ -55,7 +58,8 @@ public class User {
       int timeBetweenExercises,
       boolean frontCamera,
       boolean tts,
-      HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies) {
+      HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies)
+      {
     this.id = 1;
     this.name = name;
     this.height = height;

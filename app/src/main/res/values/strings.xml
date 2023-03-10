@@ -84,5 +84,14 @@
     <string name="start">Start</string>
     <string name="time_between_exercise">Time between \nExercise [sec]</string>
     <string name="enter_time_between_exercise">Enter time</string>
+    <string name="finish_activity">finish_activity</string>
+    <string name="end_tutorial">End Tutorial</string>
+    <string name="title_tutorial_dashboard">Dashboard Tutorial</string>
+    <string name="title_tutorial_training">Training Tutorial</string>
+    <string name="title_tutorial_workouts">Workout Tutorial</string>
+    <string name="title_tutorial_statistics">Statistics Tutorial</string>
+    <string name="title_tutorial_settings">Settings Tutorial</string>
+    <string name="tutorial">tutorial</string>
+    <string name="is_accessed">is_accessed</string>
 
 </resources>

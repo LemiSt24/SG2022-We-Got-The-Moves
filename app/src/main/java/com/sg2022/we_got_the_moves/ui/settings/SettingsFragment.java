@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.sg2022.we_got_the_moves.MainActivity;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentSettingsBinding;
 import com.sg2022.we_got_the_moves.db.entity.User;
@@ -239,6 +240,7 @@ public class SettingsFragment extends Fragment {
                     Log.e(TAG, e.toString());
                   }
                 }));
+    binding.btnSettingsOpenTutorial.setOnClickListener(v -> MainActivity.getInstanceActivity().openTutorialActivity());
 
     return binding.getRoot();
   }

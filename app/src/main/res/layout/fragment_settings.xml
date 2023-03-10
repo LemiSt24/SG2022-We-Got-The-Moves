@@ -492,6 +492,16 @@
                             app:layout_constraintStart_toEndOf="@+id/btn_user_profile_save"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:ignore="TextContrastCheck" />
+
+                        <Button
+                            android:id="@+id/btn_settings_open_tutorial"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tutorial"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/btn_user_profile_cancel" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,10 @@ package com.sg2022.we_got_the_moves;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -11,12 +14,19 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.sg2022.we_got_the_moves.databinding.ActivityMainBinding;
+import com.sg2022.we_got_the_moves.db.entity.User;
+import com.sg2022.we_got_the_moves.repository.UserRepository;
 import com.sg2022.we_got_the_moves.ui.training.MediapipeActivity;
+import com.sg2022.we_got_the_moves.ui.tutorial.TutorialActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,27 +41,40 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    weakMainActivity = new WeakReference<>(MainActivity.this);
     ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     List<Integer> fragments =
-        Arrays.asList(
-            R.id.navigation_dashboard,
-            R.id.navigation_training,
-            R.id.navigation_workouts,
-            R.id.navigation_statistics,
-            R.id.navigation_settings);
+      Arrays.asList(
+              R.id.navigation_dashboard,
+              R.id.navigation_training,
+              R.id.navigation_workouts,
+              R.id.navigation_statistics,
+              R.id.navigation_settings);
     AppBarConfiguration appBarConfiguration =
-        new AppBarConfiguration.Builder(new HashSet<>(fragments)).build();
-    NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-    NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+      new AppBarConfiguration.Builder(new HashSet<>(fragments)).build();
+    NavController navController = Navigation.findNavController(weakMainActivity.get(), R.id.nav_host_fragment);
+    NavigationUI.setupActionBarWithNavController(weakMainActivity.get(), navController, appBarConfiguration);
     NavigationUI.setupWithNavController(binding.bottomNavBarMain, navController);
 
-    weakMainActivity = new WeakReference<>(MainActivity.this);
+
+      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+      boolean isAccessed = prefs.getBoolean(getString(R.string.is_accessed), false);
+      if(!isAccessed) {
+          SharedPreferences.Editor edit = prefs.edit();
+          edit.putBoolean(getString(R.string.is_accessed), Boolean.TRUE);
+          edit.commit();
+          openTutorialActivity();
+      }
   }
 
   public void openMediapipeActivity(long id) {
     Intent intent = new Intent(this, MediapipeActivity.class);
     intent.putExtra("WORKOUT_ID", id);
+    startActivity(intent);
+  }
+  public void openTutorialActivity() {
+    Intent intent = new Intent(this, TutorialActivity.class);
     startActivity(intent);
   }
 }
