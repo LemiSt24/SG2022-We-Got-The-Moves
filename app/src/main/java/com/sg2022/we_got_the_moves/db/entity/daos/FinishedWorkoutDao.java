@@ -42,6 +42,9 @@ public interface FinishedWorkoutDao {
   @Query("Select * From FinishedWorkout Order by date Desc limit 1")
   LiveData<FinishedWorkout> getLastTraining();
 
+  @Query("Select * From FinishedWorkout Order by date Desc limit 1")
+  Single<FinishedWorkout> getLastWorkoutSingle();
+
   @Query("Select distinct workoutId From FinishedWorkout Order by date Desc limit :n")
   LiveData<List<Long>> getNLastDistictWorkoutIds(int n);
 
