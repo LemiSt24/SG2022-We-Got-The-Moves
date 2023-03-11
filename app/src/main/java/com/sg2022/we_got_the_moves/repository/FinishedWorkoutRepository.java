@@ -93,6 +93,14 @@ public class FinishedWorkoutRepository {
     this.executors.getPoolThread().execute(() -> this.finishedExerciseDao.insert(l));
   }
 
+  public void getLastWorkoutSingle(SingleObserver<FinishedWorkout> observer){
+    this.finishedWorkoutDao
+            .getLastWorkoutSingle()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
+  }
+
   public void getAllFinishedExercisesByWorkoutIdSingle(
       long workoutId, SingleObserver<List<FinishedExercise>> observer) {
     this.finishedExerciseDao

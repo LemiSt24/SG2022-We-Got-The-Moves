@@ -898,16 +898,19 @@ public class MediapipeActivity extends AppCompatActivity {
         FinishedWorkoutRepository.getInstance(getApplication());
     finishedWorkoutRepository.insert(finishedWorkout);
 
-    finishedWorkoutRepository
-        .getLastTraining()
-        .observe(
-            this,
-            lastTraining -> {
-              for (FinishedExercise finishedExercise: finishedExercises) {
-                finishedExercise.setFinishedWorkoutId(lastTraining.id);
-              }
-              finishedWorkoutRepository.insertFinishedExercise(finishedExercises);
-            });
+    finishedWorkoutRepository.getLastWorkoutSingle(new SingleObserver<FinishedWorkout>() {
+        @Override
+        public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+        @Override
+        public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull FinishedWorkout finishedWorkout) {
+            for (FinishedExercise finishedExercise: finishedExercises) {
+                finishedExercise.setFinishedWorkoutId(finishedWorkout.id);
+            }
+            finishedWorkoutRepository.insertFinishedExercise(finishedExercises);
+        }
+        @Override
+        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
+    });
 
     runOnUiThread(
         () -> {
