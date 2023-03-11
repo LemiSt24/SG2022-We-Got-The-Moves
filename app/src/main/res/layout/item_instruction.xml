@@ -33,23 +33,23 @@
                 android:id="@+id/constraint_layout_exercise_instruction_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp">
+                android:layout_margin="0dp">
 
                 <TextView
                     android:id="@+id/textview_exercise_instruction_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:autoSizeMaxTextSize="24sp"
+                    android:autoSizeMaxTextSize="30sp"
                     android:autoSizeTextType="uniform"
                     android:contentDescription="@string/empty_string"
-                    android:gravity="center_horizontal|center_vertical"
                     android:maxLines="1"
                     android:outlineProvider="background"
                     android:text="@{exercise.name, default=@string/enter_text}"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="24sp"
+                    android:textSize="30sp"
                     android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/imageview_exercise_instruction_item"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -57,9 +57,8 @@
 
                 <ImageView
                     android:id="@+id/imageview_exercise_instruction_item"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:adjustViewBounds="true"
                     android:outlineProvider="background"
                     android:scaleType="fitCenter"

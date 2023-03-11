@@ -19,27 +19,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint_layout_header_settings"
-            android:layout_width="match_parent"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/imagebtn_user_profile_settings"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/textview_title_user_profile_settings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/profile_settings"
-                android:textAlignment="textStart"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/sg_design_green_transparent"
+            android:contentDescription="@string/empty_string"
+            android:src="@drawable/ic_edit_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <ScrollView
             android:id="@+id/scrollview_profile_settings"
@@ -48,34 +39,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/constraint_layout_header_settings">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint_layout_scrollview_profile_settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/imagebtn_user_profile_settings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="24dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@color/sg_design_green_transparent"
-                    android:backgroundTint="@color/sg_design_green_transparent"
-                    android:contentDescription="@string/empty_string"
-                    android:minWidth="48dp"
-                    android:minHeight="48dp"
-                    android:src="@drawable/ic_edit_black_24dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:ignore="SpeakableTextPresentCheck" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraint_layout_content_profile_settings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="48dp"
+                    android:layout_marginBottom="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -202,7 +178,7 @@
                         android:id="@+id/edittext_user_name_settings"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:autofillHints=""
                         android:ems="10"
@@ -256,7 +232,7 @@
                         android:singleLine="true"
                         android:text="@{Float.toString(user.weight), default=@string/enter_weight_here}"
                         android:textAlignment="center"
-                        android:textColorHint="#78909C"
+                        android:textColorHint="#FFFFFF"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -463,7 +439,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="32dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textview_tts_boolean_header_settings">
@@ -472,12 +448,13 @@
                             android:id="@+id/btn_user_profile_save"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@color/sg_design_green"
-                            android:backgroundTint="@color/sg_design_green"
                             android:text="@string/save"
-                            android:textColor="@color/black"
+                            android:textColor="@color/white"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/btn_settings_open_tutorial"
                             tools:ignore="TextContrastCheck" />
 
                         <Button
@@ -485,12 +462,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:background="@color/sg_design_green"
-                            android:backgroundTint="@color/sg_design_green"
                             android:text="@string/cancel"
-                            android:textColor="@color/black"
+                            android:textColor="@color/white"
+                            android:paddingTop="16dp"
+                            android:paddingBottom="16dp"
                             app:layout_constraintStart_toEndOf="@+id/btn_user_profile_save"
-                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/btn_user_profile_save"
+                            app:layout_constraintBottom_toBottomOf="@id/btn_user_profile_save"
                             tools:ignore="TextContrastCheck" />
 
                         <Button
@@ -498,10 +476,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/tutorial"
-                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_marginTop="16dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/btn_user_profile_cancel" />
+                            app:layout_constraintTop_toBottomOf="@id/btn_user_profile_save"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:ignore="TextContrastCheck"/>
+
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="black">#121212</color>
     <color name="white">#FFFFFFFF</color>
     <color name="sg_design_green">#009D81</color>
     <color name="sg_design_green_transparent">#E6009D81</color>
     <color name="sg_design_light_green">#8BC34A</color>
     <color name="transparent">#00000000</color>
-    <color name="grey">#FF636262</color>
+    <color name="grey">#FF1F2F32</color>
     <color name="gold">#FFEAB308</color>
 </resources>

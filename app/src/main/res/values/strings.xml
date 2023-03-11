@@ -82,7 +82,7 @@
     <string name="all_trainings">All Trainings</string>
     <string name="stop">STOP</string>
     <string name="start">Start</string>
-    <string name="time_between_exercise">Time between \nExercise [sec]</string>
+    <string name="time_between_exercise">Pause Time [sec]</string>
     <string name="enter_time_between_exercise">Enter time</string>
     <string name="finish_activity">finish_activity</string>
     <string name="end_tutorial">End Tutorial</string>

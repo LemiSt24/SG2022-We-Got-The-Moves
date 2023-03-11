@@ -13,6 +13,8 @@
             android:id="@+id/recyclerview_workouts"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingBottom="70dp"
+            android:clipToPadding="false"
             tools:layout_editor_absoluteX="-29dp"
             tools:layout_editor_absoluteY="-354dp"
             tools:listitem="@layout/item_workout" />
@@ -30,7 +32,7 @@
             app:backgroundTint="@color/sg_design_green_transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:ignore="ImageContrastCheck" />
+            tools:ignore="SpeakableTextPresentCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

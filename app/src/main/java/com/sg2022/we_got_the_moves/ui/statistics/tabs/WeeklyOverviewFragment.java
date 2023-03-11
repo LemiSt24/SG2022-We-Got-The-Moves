@@ -25,6 +25,7 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsWeeklyBinding;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedWorkoutAndFinishedExercises;
 import com.sg2022.we_got_the_moves.ui.TimeFormatUtil;
@@ -175,7 +176,7 @@ public class WeeklyOverviewFragment extends Fragment {
                     long avgWeektime = totalWeektime / weekDay;
 
                     binding.textviewValueTotalWeekStatisticsWeekly.setText(
-                        TimeFormatUtil.formatTimeDdhhmmss((int) totalWeektime));
+                        TimeFormatUtil.formatTimeHhmmss((int) totalWeektime));
                     binding.textviewValueAverageStatisticsWeekly.setText(
                         TimeFormatUtil.formatTimeHhmmss((int) avgWeektime));
 
@@ -240,7 +241,7 @@ public class WeeklyOverviewFragment extends Fragment {
           @Override
           public void onSuccess(@NonNull Duration duration) {
             binding.textviewValueTotalStatistics.setText(
-                TimeFormatUtil.formatTimeYyMMddhhmmss((int) duration.getSeconds()));
+                TimeFormatUtil.formatTimeHhmmss((int) duration.getSeconds()));
           }
 
           @Override
@@ -263,6 +264,7 @@ public class WeeklyOverviewFragment extends Fragment {
     bc.setExtraLeftOffset(20f);
     bc.setTouchEnabled(false);
     bc.setVerticalScrollBarEnabled(true);
+    bc.setBackgroundColor(getResources().getColor(R.color.black));
 
     YAxis yAxisR = bc.getAxisRight();
     yAxisR.setEnabled(false);
@@ -270,6 +272,7 @@ public class WeeklyOverviewFragment extends Fragment {
     XAxis xAxis = bc.getXAxis();
     xAxis.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
     xAxis.setTextSize(14f);
+    xAxis.setTextColor(getResources().getColor(R.color.white));
     xAxis.setSpaceMax(1f);
     xAxis.setValueFormatter(
         new IndexAxisValueFormatter(
@@ -278,6 +281,7 @@ public class WeeklyOverviewFragment extends Fragment {
                 .collect(Collectors.toList())));
 
     YAxis yAxisL = bc.getAxisLeft();
+    yAxisL.setTextColor(getResources().getColor(R.color.white));
     yAxisL.setValueFormatter(
         new ValueFormatter() {
           @Override

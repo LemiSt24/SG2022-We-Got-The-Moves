@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LegendEntry;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -30,6 +31,9 @@ import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.relation.ExerciseAndFinishedExercises;
 import com.sg2022.we_got_the_moves.ui.statistics.StatisticsViewModel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -93,7 +97,7 @@ public class ExercisesOverviewFragment extends Fragment {
                         })
                     .collect(Collectors.toList());
 
-            List<BarEntry> entriesAverage =
+          /*  List<BarEntry> entriesAverage =
                 IntStream.range(0, list.size())
                     .mapToObj(
                         idx -> {
@@ -102,7 +106,7 @@ public class ExercisesOverviewFragment extends Fragment {
                               entriesDuration.get(idx).getY() / (amount == 0f ? 1 : amount);
                           return new BarEntry(idx, value, value);
                         })
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList()); */
 
             BarDataSet barDataSetAmount =
                 new BarDataSet(entriesAmount, getString(R.string.total_number_reps));
@@ -126,7 +130,7 @@ public class ExercisesOverviewFragment extends Fragment {
                   }
                 });
 
-            BarDataSet barDataSetAverage =
+          /*  BarDataSet barDataSetAverage =
                 new BarDataSet(entriesAverage, getString(R.string.average_secs_repetition));
             barDataSetAverage.setColor(Color.CYAN);
             barDataSetAverage.setValueFormatter(
@@ -135,11 +139,11 @@ public class ExercisesOverviewFragment extends Fragment {
                   public String getFormattedValue(float value) {
                     return String.format(Locale.US, "%.2f", value);
                   }
-                });
+                });*/
 
-            BarData barData = new BarData(barDataSetAmount, barDataSetDuration, barDataSetAverage);
+            BarData barData = new BarData(barDataSetAmount, barDataSetDuration);
             barData.setBarWidth(0.2f);
-            barData.groupBars(-0.5f, 0.4f, 0f);
+            barData.groupBars(-0.5f, 0.6f, 0f);
             barData.setValueTextSize(14f);
             barData.setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
@@ -176,6 +180,8 @@ public class ExercisesOverviewFragment extends Fragment {
 
     hbc.setEnabled(true);
     hbc.setDrawGridBackground(false);
+    hbc.setBackgroundColor(getResources().getColor(R.color.black));
+    hbc.getData().setValueTextColor(getResources().getColor(R.color.white));
     hbc.setTouchEnabled(false);
     hbc.setDrawValueAboveBar(true);
     hbc.setExtraOffsets(0f, 0f, 35f, 30f);
@@ -190,6 +196,8 @@ public class ExercisesOverviewFragment extends Fragment {
     xAxis.setSpaceMin(0.5f);
     xAxis.setSpaceMax(0.5f);
     xAxis.setAvoidFirstLastClipping(true);
+    xAxis.setTextColor(getResources().getColor(R.color.white));
+
 
     YAxis yAxisR = hbc.getAxisRight();
     yAxisR.setEnabled(false);
@@ -204,6 +212,10 @@ public class ExercisesOverviewFragment extends Fragment {
     yAxisL.setAxisMinimum(0f);
 
     Legend legend = hbc.getLegend();
+    List<LegendEntry> l = new ArrayList<>();
+    for (LegendEntry e: legend.getEntries()) l.add(e);
+    Collections.rotate(l, l.size() - 1);
+    legend.setCustom(l);
     legend.setEnabled(true);
     legend.setDrawInside(false);
     legend.setTextSize(14f);
@@ -213,6 +225,7 @@ public class ExercisesOverviewFragment extends Fragment {
     legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
     legend.setForm(Legend.LegendForm.CIRCLE);
     legend.setYOffset(20f);
+    legend.setTextColor(getResources().getColor(R.color.white));
 
     Description description = hbc.getDescription();
     description.setEnabled(false);

@@ -105,7 +105,6 @@
                     android:contentDescription="@string/info"
                     android:minWidth="48dp"
                     android:minHeight="48dp"
-                    app:layout_constraintBottom_toTopOf="@+id/imagebutton_add_set_exercise_item"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_info_black_24dp"
