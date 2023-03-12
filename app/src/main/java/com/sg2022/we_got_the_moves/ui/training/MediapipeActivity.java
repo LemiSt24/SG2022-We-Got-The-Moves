@@ -112,7 +112,6 @@ public class MediapipeActivity extends AppCompatActivity {
   private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
   private static final String OUTPUT_VIDEO_STREAM_NAME = "output_video";
   private static final String OUTPUT_LANDMARKS_STREAM_NAME = "pose_world_landmarks";
-  private static final int STATE_CHANGE_VALUE = 10;
   // Flips the camera-preview frames vertically before sending them into FrameProcessor to be
   // processed in a MediaPipe graph, and flips the processed frames back when they are displayed.
   // This is needed because OpenGL represents images assuming the image origin is at the bottom-left
@@ -238,7 +237,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
     startTime = new Date(System.currentTimeMillis());
 
-    classifier = new PoseClassifier(getApplicationContext(), 20, 10, "dataset.csv");
+    classifier = new PoseClassifier(getApplicationContext(), 20, 10);
 
     previewDisplayView = new SurfaceView(this);
     setupPreviewDisplayView();
@@ -550,30 +549,6 @@ public class MediapipeActivity extends AppCompatActivity {
             });
   }
 
-  /**
-   * checks if the state of the user has changes to the expected next state
-   *
-   * @param classifierOutput output of the classifier that gets checked
-   * @return true if the next (expected) state is recognised, otherwise false
-   */
-  public boolean checkExerciseState(Map<String, Integer> classifierOutput) {
-    Log.println(Log.DEBUG, "classifier", classifierOutput.toString());
-    if (classifierOutput != null) {
-      int nextState = lastState + 1;
-      if (nextState >= exerciseToExerciseStates.get(currentExercise).size()) {
-        nextState = 0;
-      }
-      if (classifierOutput.containsKey(currentExercise.name.toLowerCase() + "_" + nextState)
-          && classifierOutput.get(currentExercise.name.toLowerCase() + "_" + nextState)
-              >= STATE_CHANGE_VALUE) {
-        lastState = nextState;
-        if (lastState == 0) countRepUp();
-        return true;
-      }
-    }
-    return false;
-  }
-
   public boolean checkExerciseState() {
     int nextState = lastState + 1;
     if (nextState >= exerciseToExerciseStates.get(currentExercise).size()) {
@@ -874,7 +849,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
               String filename = e.name.toLowerCase() + ".csv";
               Log.println(Log.DEBUG, "Test", filename);
-              classifier = new PoseClassifier(getApplicationContext(), 20, 10, filename);
+              classifier = new PoseClassifier(getApplicationContext(), 20, 10);
 
               pause_countdown.setOnChronometerTickListener(
                       chronometer -> {
