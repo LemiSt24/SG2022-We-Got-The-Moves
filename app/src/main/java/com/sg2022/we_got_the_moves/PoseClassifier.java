@@ -71,7 +71,7 @@ public class PoseClassifier {
   private List<ClassificationResult> classification_history;
   private int history_depth = 10; // wie viele Schritte kann man in die Vergangenheit blicken?
 
-  public PoseClassifier(Context myContext, int top_n_max, int top_n_mean) {
+  public PoseClassifier(Context myContext, int top_n_max, int top_n_mean, String filename) {
     dataset = new ArrayList<PoseSample>();
     class_names = new ArrayList<String>();
 
@@ -80,8 +80,8 @@ public class PoseClassifier {
     context = myContext;
     top_n_by_max_distance = top_n_max;
     top_n_by_mean_distance = top_n_mean;
-    //dataset_filename = filename;
-    //load_pose_samples();
+    dataset_filename = filename;
+    load_pose_samples();
   }
 
   private void load_pose_samples() {
