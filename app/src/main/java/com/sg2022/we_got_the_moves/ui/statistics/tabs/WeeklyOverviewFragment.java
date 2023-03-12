@@ -55,6 +55,9 @@ public class WeeklyOverviewFragment extends Fragment {
 
   private DisplayMetrics displayMetrics;
 
+  private int black;
+  private int white;
+
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -64,8 +67,10 @@ public class WeeklyOverviewFragment extends Fragment {
         new ViewModelProvider(this.requireActivity(), factory).get(StatisticsViewModel.class);
     this.barDataSet = new MutableLiveData<>(new BarDataSet(new ArrayList<>(), "Data"));
     this.currentDate = new MutableLiveData<>(new Date());
-      this.displayMetrics = new DisplayMetrics();
-      requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+    this.displayMetrics = new DisplayMetrics();
+    black = getResources().getColor(R.color.black);
+    white = getResources().getColor(R.color.white);
+    requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
   }
 
   public View onCreateView(
@@ -264,7 +269,7 @@ public class WeeklyOverviewFragment extends Fragment {
     bc.setExtraLeftOffset(20f);
     bc.setTouchEnabled(false);
     bc.setVerticalScrollBarEnabled(true);
-    bc.setBackgroundColor(getResources().getColor(R.color.black));
+    bc.setBackgroundColor(black);
 
     YAxis yAxisR = bc.getAxisRight();
     yAxisR.setEnabled(false);
@@ -272,7 +277,7 @@ public class WeeklyOverviewFragment extends Fragment {
     XAxis xAxis = bc.getXAxis();
     xAxis.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
     xAxis.setTextSize(14f);
-    xAxis.setTextColor(getResources().getColor(R.color.white));
+    xAxis.setTextColor(white);
     xAxis.setSpaceMax(1f);
     xAxis.setValueFormatter(
         new IndexAxisValueFormatter(
@@ -281,7 +286,7 @@ public class WeeklyOverviewFragment extends Fragment {
                 .collect(Collectors.toList())));
 
     YAxis yAxisL = bc.getAxisLeft();
-    yAxisL.setTextColor(getResources().getColor(R.color.white));
+    yAxisL.setTextColor(white);
     yAxisL.setValueFormatter(
         new ValueFormatter() {
           @Override
