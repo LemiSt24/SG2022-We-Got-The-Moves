@@ -4,7 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="sg_design_green">#009D81</color>
     <color name="sg_design_green_transparent">#E6009D81</color>
-    <color name="sg_design_light_green">#8BC34A</color>
+    <color name="sg_design_light_green">#82D345</color><!--#8BC34A,#82D345<-->
     <color name="transparent">#00000000</color>
     <color name="grey">#FF1F2F32</color>
     <color name="gold">#FFEAB308</color>

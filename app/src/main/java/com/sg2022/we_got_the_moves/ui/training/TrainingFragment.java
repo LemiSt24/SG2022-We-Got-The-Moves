@@ -30,8 +30,8 @@ public class TrainingFragment extends Fragment {
     super.onCreate(savedInstanceState);
     this.tabFragments =
         Arrays.asList(
-            TrainingOverviewFragment.class, RecordingFragment.class, PlaybackFragment.class);
-    this.tabLabels = Arrays.asList("Training Overview", "Test Recorder", "Playbacks");
+            TrainingOverviewFragment.class, PlaybackFragment.class);
+    this.tabLabels = Arrays.asList("Training Overview", "Playbacks");
   }
 
   public View onCreateView(

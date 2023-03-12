@@ -12,26 +12,26 @@
 
     <fragment
         android:id="@+id/navigation_tutorial_training"
-        android:name="com.sg2022.we_got_the_moves.ui.training.TrainingFragment"
+        android:name="com.sg2022.we_got_the_moves.ui.tutorial.fragments.TrainingTutorialFragment"
         android:label="@string/title_tutorial_training"
-        tools:layout="@layout/fragment_training_overview" />
+        tools:layout="@layout/fragment_tutorial_training" />
 
     <fragment
         android:id="@+id/navigation_tutorial_workouts"
-        android:name="com.sg2022.we_got_the_moves.ui.workouts.WorkoutsFragment"
+        android:name="com.sg2022.we_got_the_moves.ui.tutorial.fragments.WorkoutsTutorialFragment"
         android:label="@string/title_tutorial_workouts"
-        tools:layout="@layout/fragment_workouts" />
+        tools:layout="@layout/fragment_tutorial_workouts" />
 
     <fragment
         android:id="@+id/navigation_tutorial_statistics"
-        android:name="com.sg2022.we_got_the_moves.ui.statistics.StatisticsFragment"
+        android:name="com.sg2022.we_got_the_moves.ui.tutorial.fragments.StatisticsTutorialFragment"
         android:label="@string/title_tutorial_statistics"
-        tools:layout="@layout/fragment_statistics" />
+        tools:layout="@layout/fragment_tutorial_statistics" />
 
     <fragment
         android:id="@+id/navigation_tutorial_settings"
-        android:name="com.sg2022.we_got_the_moves.ui.settings.SettingsFragment"
+        android:name="com.sg2022.we_got_the_moves.ui.tutorial.fragments.SettingsTutorialFragment"
         android:label="@string/title_tutorial_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_tutorial_settings" />
 
 </navigation>

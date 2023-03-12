@@ -4,68 +4,69 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout_tutorial_training"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageButton
-            android:id="@+id/imagebutton_dashboard_end_tutorial"
+            android:id="@+id/imagebutton_training_end_tutorial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/finish_activity"
             android:background="@null"
             android:padding="10dp"
-            app:layout_constraintBottom_toTopOf="@+id/tutorial_dashboard_imageview"
+            app:layout_constraintBottom_toTopOf="@+id/tutorial_training_imageview"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_back_white_24dp"
             tools:ignore="ImageContrastCheck" />
 
         <TextView
-            android:id="@+id/textview_dashboard_end_tutorial"
+            android:id="@+id/textview_training_end_tutorial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/end_tutorial"
             android:textStyle="bold"
             android:textSize="16sp"
-            app:layout_constraintTop_toTopOf="@id/imagebutton_dashboard_end_tutorial"
-            app:layout_constraintBottom_toBottomOf="@id/imagebutton_dashboard_end_tutorial"
-            app:layout_constraintStart_toEndOf="@id/imagebutton_dashboard_end_tutorial"
+            app:layout_constraintTop_toTopOf="@id/imagebutton_training_end_tutorial"
+            app:layout_constraintBottom_toBottomOf="@id/imagebutton_training_end_tutorial"
+            app:layout_constraintStart_toEndOf="@id/imagebutton_training_end_tutorial"
             />
 
         <TextView
-            android:id="@+id/textview_tutorial_dashboard_page_info"
+            android:id="@+id/textview_tutorial_training_page_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:textStyle="bold"
             android:textSize="16sp"
-            app:layout_constraintTop_toTopOf="@id/imagebutton_dashboard_end_tutorial"
-            app:layout_constraintBottom_toBottomOf="@id/imagebutton_dashboard_end_tutorial"
+            app:layout_constraintTop_toTopOf="@id/imagebutton_training_end_tutorial"
+            app:layout_constraintBottom_toBottomOf="@id/imagebutton_training_end_tutorial"
             app:layout_constraintEnd_toEndOf="parent"
             />
 
         <ImageView
-            android:id="@+id/tutorial_dashboard_imageview"
+            android:id="@+id/tutorial_training_imageview"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:paddingBottom="120dp"
-            app:layout_constraintTop_toBottomOf="@id/imagebutton_dashboard_end_tutorial"
+            app:layout_constraintTop_toBottomOf="@id/imagebutton_training_end_tutorial"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
 
        <androidx.cardview.widget.CardView
-            android:id="@+id/cardview_tutorial_dashboard"
+            android:id="@+id/cardview_tutorial_training"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="80sp"
             android:backgroundTint="@color/sg_design_green_transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
-                android:id="@+id/textview_tutorial_dashboard_instruction"
+                android:id="@+id/textview_tutorial_training_instruction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
