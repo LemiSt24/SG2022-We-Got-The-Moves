@@ -134,9 +134,11 @@ public class TrophiesFragment extends Fragment {
       @Override public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
       @Override
       public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Duration> durations) {
-        Duration longest = durations.get(0);
         int minutes = 0;
-        if (longest != null) minutes = (int) (longest.getSeconds()/60);
+        if (durations.size() > 0) {
+          Duration longest = durations.get(0);
+          if (longest != null) minutes = (int) (longest.getSeconds()/60);
+        }
         if (!achievements.containsKey("longTraining"))
             achievements.put("longTraining", ACHIEVEMENT.NOT);
         if (minutes >= 30 && achievements.get("longTraining").getValue() < 1)
