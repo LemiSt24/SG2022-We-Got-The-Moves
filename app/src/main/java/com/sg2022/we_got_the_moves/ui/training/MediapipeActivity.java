@@ -46,6 +46,7 @@ import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
+import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.UserRepository;
@@ -214,6 +215,7 @@ public class MediapipeActivity extends AppCompatActivity {
               @Override
               public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Boolean aBoolean) {
                 ttsBoolean = aBoolean;
+                tts("");
               }
 
               @Override
@@ -232,7 +234,6 @@ public class MediapipeActivity extends AppCompatActivity {
         @Override
         public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
-    tts("");
     setContentView(getContentViewLayoutResId());
 
     startTime = new Date(System.currentTimeMillis());
@@ -272,29 +273,24 @@ public class MediapipeActivity extends AppCompatActivity {
         .getAllWorkoutExerciseAndExercise(workoutId)
         .observe(
             this,
-            wee -> {
-              wee.sort(new WorkoutListAdapter.WorkoutExerciseComparator());
-
-              exercises = wee.stream().map(e -> e.exercise).collect(Collectors.toList());
+            workoutExerciseAndExercises -> {
+              for (WorkoutExerciseAndExercise wee : workoutExerciseAndExercises){
+                  exercises.add(wee.exercise);
+                  exerciseIdToAmount.put(wee.exercise.id, wee.workoutExercise.amount);
+              }
               currentExercise = exercises.get(0);
               setExerciseName(currentExercise.name);
               if (currentExercise.isCountable()) setRepetition("0");
 
+              //showing the first dialog only five seconds so that longer pause time affect training start
+              showNextExerciseSetDialog(
+                      currentExercise,
+                      exerciseIdToAmount.get(currentExercise.id).get(0),
+                      5);
+
               for (int i = 0; i < exercises.size(); i++) {
-                Exercise exercise = exercises.get(i);
-                workoutsRepository
-                    .getWorkoutExercise(workoutId, exercises.get(i).id)
-                    .observe(
-                        this,
-                        workoutExercise -> {
-                          exerciseIdToAmount.put(
-                              workoutExercise.exerciseId, workoutExercise.amount);
-                          if (firstTimeShowDialog) {
-                            showNextExerciseSetDialog(currentExercise, workoutExercise.amount.get(setPointer), timeBetweenExercises);
-                            firstTimeShowDialog = false;
-                          }
-                        });
-                  workoutsRepository.getAllExerciseStates(exercises.get(i).id,
+                  Exercise exercise = exercises.get(i);
+                  workoutsRepository.getAllExerciseStates(exercise.id,
                       new SingleObserver<>() {
                           @Override
                           public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
@@ -420,7 +416,10 @@ public class MediapipeActivity extends AppCompatActivity {
     Button skip_but = findViewById(R.id.mediapipe_skip_exercise_button);
     Button finish_but = findViewById(R.id.mediapipe_finish_button);
     stop_but.setOnClickListener(
-        v -> showPauseCard());
+        v -> {
+            showPauseCard();
+        }
+    );
     continue_but.setOnClickListener(
         v -> {
           countableStartTime += (SystemClock.elapsedRealtime() - time_counter_time);
@@ -431,7 +430,8 @@ public class MediapipeActivity extends AppCompatActivity {
           finish_but.setClickable(false);
           startTimeCounter();
           Pause = false;
-        });
+        }
+    );
     skip_but.setOnClickListener(
         v -> {
           countableStartTime += (SystemClock.elapsedRealtime() - time_counter_time);
@@ -449,7 +449,8 @@ public class MediapipeActivity extends AppCompatActivity {
           countableEndTime = SystemClock.elapsedRealtime();
           addFinishedExercise(currentExercise, false);
           showEndScreenAndSave();
-        });
+        }
+    );
   }
 
   // Used to obtain the content view for this application. If you are extending this class, and
@@ -657,7 +658,7 @@ public class MediapipeActivity extends AppCompatActivity {
   }
 
   public void startTimeCounter() {
-    if (time_stopped) {
+    if (time_stopped && !currentExercise.isCountable()) {
       Chronometer time_counter = findViewById(R.id.mediapipe_time_counter);
       time_counter.setBase(
           time_counter.getBase() + SystemClock.elapsedRealtime() - time_counter_time);

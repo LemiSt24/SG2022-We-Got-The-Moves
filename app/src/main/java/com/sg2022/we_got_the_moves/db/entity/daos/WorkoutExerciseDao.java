@@ -48,14 +48,14 @@ public interface WorkoutExerciseDao {
       "SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId = :workoutId AND WorkoutExercise.exerciseId = :exerciseId")
   LiveData<WorkoutExercise> getWorkoutExercise(long workoutId, long exerciseId);
 
-  @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId = :workoutId")
+  @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId = :workoutId order by orderNum asc")
   Single<List<WorkoutExercise>> getAllWorkoutExerciseSingle(long workoutId);
 
   @Transaction
-  @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId == :workoutId")
+  @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId == :workoutId order by orderNum asc")
   LiveData<List<WorkoutExerciseAndExercise>> getAllWorkoutExerciseAndExercise(long workoutId);
 
   @Transaction
-  @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId == :workoutId")
+  @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId == :workoutId order by orderNum asc")
   Single<List<WorkoutExerciseAndExercise>> getAllWorkoutExerciseAndExerciseSingle(long workoutId);
 }
