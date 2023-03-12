@@ -61,7 +61,7 @@ public class WorkoutsTutorialFragment extends Fragment {
         instructions.add("You can also see the exercise instructions as in the dashboard by " +
                 "clicking on the info icon.");
         instructions.add("The order of the exercises can be changed per drag and drop.");
-        instructions.add("When you have completed your adjustments, you can save the training " +
+        instructions.add("When you have completed your adjustments, you can save the workout " +
                 "by clicking on the save button.");
     }
 

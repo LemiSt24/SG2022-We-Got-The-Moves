@@ -32,10 +32,17 @@ public class DashboardTutorialFragment extends Fragment {
         this.images = new ArrayList<>();
         this.instructions = new ArrayList<>();
         images.add(R.drawable.tutorial_dashboard_01);
+        images.add(R.drawable.tutorial_dashboard_01);
+        images.add(R.drawable.tutorial_dashboard_01);
         images.add(R.drawable.tutorial_dashboard_02);
+        instructions.add("Welcome to We GOT THE MOVES" + "\n" +
+                "This app will help you structure your workout and increase your training progress." +
+                "\n"+ "(swipe for next tutorial page)");
+        instructions.add("You are currently in the tutorial where you will learn how the app works. "+
+                "The tutorial consists of 5 parts, which can be accessed by clicking " +
+                "on the navigation bar at the bottom.");
         instructions.add("In the Dashboard you get an overview of all exercises supported by the app."
-                + "\n" + "When you click on an exercise, the instructions are displayed. " +
-                "(swipe for next tutorial page)");
+                + "\n" + "When you click on an exercise, the instructions are displayed. " );
         instructions.add("The exercise instruction consists of 2 parts:"
                 + "\n" + "1. video tutorial with correct execution"
                 + "\n" + "2. step by step written instructions");

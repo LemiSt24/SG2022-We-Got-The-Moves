@@ -43,7 +43,7 @@ public class StatisticsTutorialFragment extends Fragment {
                 "time in total, on average and per day");
         instructions.add("If you scroll down, you can change the calendar week to which the chart " +
                 "refers by clicking the arrow icon.");
-        instructions.add("Through this table you will get an overview of the number of repetitions " +
+        instructions.add("Through this chart you will get an overview of the number of repetitions " +
                 "and the duration you have performed the different exercises");
         instructions.add("There are many trophies you can unlock by training with the app. " +
                 "You will get a hint how to unlock the trophy when you click on it");
