@@ -277,7 +277,7 @@ public class TrophiesFragment extends Fragment {
               "Zugspitze mastered. Next Challenge Mount Everest(8848m).",
               "You squatted to the top of Mount Everest. Your a real high climber.",};
       float value = achievements.get("squatToTheTop").getValue();
-      if (value < 1) {
+      if (value > 1) {
         if (value == 2) value = 3;
         if (value == 1.5) value = 2;
       }
