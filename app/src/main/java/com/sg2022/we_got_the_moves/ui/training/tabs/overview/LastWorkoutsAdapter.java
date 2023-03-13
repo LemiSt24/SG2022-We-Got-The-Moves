@@ -49,12 +49,17 @@ public class LastWorkoutsAdapter
               workoutList = new ArrayList<>();
               Log.println(Log.DEBUG, TAG, finishedTraining.toString());
               finishedWorkouts = finishedTraining;
+
+              //getting the last 3 unique WorkoutIds by adding the ids into List
               for (int i = 0; i < finishedWorkouts.size() && workoutIds.size() < 3; i++) {
                 if (!workoutIds.contains(finishedWorkouts.get(i).workoutId)) {
                   workoutIds.add(finishedWorkouts.get(i).workoutId);
                 }
               }
 
+              //getting the workouts, from the workoutIds for displaying the right name,
+              //as finished workouts ony save workoutIds
+              //getting all workouts and matching then later is needed to guarantee the right order of trainings
               this.model
                   .workoutsRepository
                   .getAllWorkouts()
@@ -94,6 +99,11 @@ public class LastWorkoutsAdapter
     holder.binding.workoutName.setOnClickListener(v -> showWorkoutDialog(w));
   }
 
+  /**
+   * Method for displaying the summary of the workout and
+   * starting the MediaPipe Activity using this Workout
+   * @param w Workout to be started
+   */
   private void showWorkoutDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstanceActivity());
     DialogStartWorkoutBinding binding =
@@ -102,6 +112,8 @@ public class LastWorkoutsAdapter
             R.layout.dialog_start_workout,
             null,
             false);
+
+    //building the dialog box for summary and starting the Workout
     builder
         .setView(binding.getRoot())
         .setPositiveButton(
@@ -114,6 +126,8 @@ public class LastWorkoutsAdapter
         .create()
         .show();
     binding.textviewStartWorkoutWorkout.setText(w.name);
+
+    //getting all Exercises of the Workout for displaying the summary
     exercisesString = "";
     model
         .workoutsRepository
@@ -123,13 +137,15 @@ public class LastWorkoutsAdapter
             wee -> {
               wee.sort(new WorkoutListAdapter.WorkoutExerciseComparator());
               for (WorkoutExerciseAndExercise e : wee) {
+
+                //differentiation between countable and time bases exercises
                 if (e.exercise.isCountable()) {
-                  for (int a : e.workoutExercise.amount) {
-                    exercisesString += a + " x " + e.exercise.name + "\n";
+                  for (int amount : e.workoutExercise.amount) {
+                    exercisesString += amount + " x " + e.exercise.name + "\n";
                   }
                 } else
-                  for (int a : e.workoutExercise.amount) {
-                    exercisesString += a + " s " + e.exercise.name + "\n";
+                  for (int amount : e.workoutExercise.amount) {
+                    exercisesString += amount + " s " + e.exercise.name + "\n";
                   }
               }
               binding.textviewStartWorkoutExercises.setText(exercisesString);

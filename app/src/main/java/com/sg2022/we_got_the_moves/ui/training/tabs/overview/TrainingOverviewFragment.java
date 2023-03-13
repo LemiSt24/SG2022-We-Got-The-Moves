@@ -35,16 +35,22 @@ public class TrainingOverviewFragment extends Fragment {
       @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     FragmentTrainingOverviewBinding binding =
         FragmentTrainingOverviewBinding.inflate(inflater, container, false);
+
+    //Last 3 Workouts
     binding.textviewRecentlyTrainingsOverview.setText(R.string.last_workouts);
     LinearLayoutManager layoutManager =
         new LinearLayoutManager(this.requireContext(), LinearLayoutManager.VERTICAL, false);
     binding.recyclerviewTrainingsOverview.setLayoutManager(layoutManager);
     binding.recyclerviewTrainingsOverview.setAdapter(this.adapterLastWorkouts);
+
+    //All Workouts
     binding.textviewAllTrainingsOverview.setText(R.string.all_workouts);
     layoutManager =
         new LinearLayoutManager(this.requireContext(), LinearLayoutManager.VERTICAL, false);
     binding.recyclerviewAllTrainingsOverview.setLayoutManager(layoutManager);
     binding.recyclerviewAllTrainingsOverview.setAdapter(this.adapterAllWorkouts);
+
     return binding.getRoot();
   }
+
 }

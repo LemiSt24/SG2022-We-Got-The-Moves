@@ -84,6 +84,13 @@ public class WorkoutsRepository {
     return this.workoutDao.getAllWorkouts();
   }
 
+  public void getAllWorkoutsSingle(SingleObserver<List<Workout>> observer){
+    this.workoutDao.getAllWorkoutsSingle()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(observer);
+  }
+
   public LiveData<Workout> getWorkout(long id) {
     return this.workoutDao.getWorkout(id);
   }

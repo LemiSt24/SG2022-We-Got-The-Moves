@@ -1,6 +1,7 @@
 package com.sg2022.we_got_the_moves.ui.training.tabs.overview;
 
 import android.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -17,7 +18,11 @@ import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 import com.sg2022.we_got_the_moves.ui.workouts.WorkoutListAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 public class AllWorkoutsAdapter
     extends RecyclerView.Adapter<AllWorkoutsAdapter.AllWorkoutsListViewHolder> {
@@ -32,16 +37,23 @@ public class AllWorkoutsAdapter
     this.fragment = fragment;
     this.model = model;
 
-    this.model
-        .workoutsRepository
-        .getAllWorkouts()
-        .observe(
-            fragment,
-            workouts -> {
-              if (workouts == null || workouts.isEmpty()) workoutList.clear();
-              else workoutList = workouts;
-              notifyDataSetChanged();
-            });
+    //getting all workouts for displaying the names
+    this.model.workoutsRepository.getAllWorkoutsSingle(new SingleObserver<List<Workout>>() {
+      @Override
+      public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
+
+      @Override
+      public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Workout> workouts) {
+        workoutList = workouts;
+        Log.println(Log.DEBUG, TAG, workouts.toString());
+      }
+
+      @Override
+      public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+        workoutList = new ArrayList<>();
+      }
+    });
+
   }
 
   @NonNull
@@ -62,47 +74,58 @@ public class AllWorkoutsAdapter
     holder.binding.workoutName.setOnClickListener(v -> showWorkoutDialog(w));
   }
 
+  /**
+   * Method for displaying the summary of the workout and
+   * starting the MediaPipe Activity using this Workout
+   * @param w Workout to be started
+   */
   private void showWorkoutDialog(@NonNull Workout w) {
     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.getInstanceActivity());
     DialogStartWorkoutBinding binding =
-        DataBindingUtil.inflate(
-            LayoutInflater.from(MainActivity.getInstanceActivity()),
-            R.layout.dialog_start_workout,
-            null,
-            false);
+            DataBindingUtil.inflate(
+                    LayoutInflater.from(MainActivity.getInstanceActivity()),
+                    R.layout.dialog_start_workout,
+                    null,
+                    false);
+
+    //building the dialog box for summary and starting the Workout
     builder
-        .setView(binding.getRoot())
-        .setPositiveButton(
-            "Start",
-            (dialog, id) -> {
-              MainActivity.getInstanceActivity().openMediapipeActivity(w.id);
-              dialog.dismiss();
-            })
-        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
-        .create()
-        .show();
+            .setView(binding.getRoot())
+            .setPositiveButton(
+                    "Start",
+                    (dialog, id) -> {
+                      MainActivity.getInstanceActivity().openMediapipeActivity(w.id);
+                      dialog.dismiss();
+                    })
+            .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
+            .create()
+            .show();
     binding.textviewStartWorkoutWorkout.setText(w.name);
+
+    //getting all Exercises of the Workout for displaying the summary
     exercisesString = "";
     model
-        .workoutsRepository
-        .getAllWorkoutExerciseAndExercise(w.id)
-        .observe(
-            fragment,
-            wee -> {
-              wee.sort(new WorkoutListAdapter.WorkoutExerciseComparator());
-              for (WorkoutExerciseAndExercise e : wee) {
-                if (e.exercise.isCountable()) {
-                  for (int a : e.workoutExercise.amount) {
-                    exercisesString += a + " x " + e.exercise.name + "\n";
-                  }
-                } else
-                  for (int a : e.workoutExercise.amount) {
-                    exercisesString += a + " s " + e.exercise.name + "\n";
-                  }
-              }
-              binding.textviewStartWorkoutExercises.setText(exercisesString);
-              notifyDataSetChanged();
-            });
+            .workoutsRepository
+            .getAllWorkoutExerciseAndExercise(w.id)
+            .observe(
+                    fragment,
+                    wee -> {
+                      wee.sort(new WorkoutListAdapter.WorkoutExerciseComparator());
+                      for (WorkoutExerciseAndExercise e : wee) {
+
+                        //differentiation between countable and time bases exercises
+                        if (e.exercise.isCountable()) {
+                          for (int amount : e.workoutExercise.amount) {
+                            exercisesString += amount + " x " + e.exercise.name + "\n";
+                          }
+                        } else
+                          for (int amount : e.workoutExercise.amount) {
+                            exercisesString += amount + " s " + e.exercise.name + "\n";
+                          }
+                      }
+                      binding.textviewStartWorkoutExercises.setText(exercisesString);
+                      notifyDataSetChanged();
+                    });
   }
 
   @Override
