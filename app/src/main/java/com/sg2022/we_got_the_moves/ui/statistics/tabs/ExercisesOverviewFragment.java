@@ -71,6 +71,7 @@ public class ExercisesOverviewFragment extends Fragment {
 
           @Override
           public void onSuccess(@NonNull List<ExerciseAndFinishedExercises> list) {
+            //data for amount
             List<BarEntry> entriesAmount =
                 IntStream.range(0, list.size())
                     .mapToObj(
@@ -84,6 +85,7 @@ public class ExercisesOverviewFragment extends Fragment {
                         })
                     .collect(Collectors.toList());
 
+            //data for duration of all exercises
             List<BarEntry> entriesDuration =
                 IntStream.range(0, list.size())
                     .mapToObj(
@@ -96,6 +98,13 @@ public class ExercisesOverviewFragment extends Fragment {
                               efe.exercise);
                         })
                     .collect(Collectors.toList());
+
+          // average duration per repetition of en exercise
+          // if you want to add this metric back,
+          // 1. uncomment entriesAverage (Line 109) and barDataSetAverage (Line 142),
+          // 2. add barDataSetAverage in BarData (Line 153) and
+          // 3. set groupSpace to 0.4f (Line 155) (Label has granularity of 1, each bar has 0.2 width
+          // -> numberOfBarCharts * 0.2 + groupSpace == 1 for correct chart)
 
           /*  List<BarEntry> entriesAverage =
                 IntStream.range(0, list.size())
@@ -197,7 +206,6 @@ public class ExercisesOverviewFragment extends Fragment {
     xAxis.setSpaceMax(0.5f);
     xAxis.setAvoidFirstLastClipping(true);
     xAxis.setTextColor(getResources().getColor(R.color.white));
-
 
     YAxis yAxisR = hbc.getAxisRight();
     yAxisR.setEnabled(false);
