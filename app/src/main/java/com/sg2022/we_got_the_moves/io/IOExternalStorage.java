@@ -31,17 +31,13 @@ public class IOExternalStorage extends IOStorage {
   }
 
   @Override
-  public String getDirectoryPath(Subdirectory subdirectory) {
-    return this.getTargetDirectoryPath() + File.separator + subdirectory.name();
+  public String getDirectoryPath() {
+    return this.getTargetDirectoryPath();
   }
 
   @Override
-  public String getRelativeDirectoryPath(Subdirectory subdirectory) {
-    return this.getRootDirectoryName()
-        + File.separator
-        + getTargetDirectoryName()
-        + File.separator
-        + subdirectory.name();
+  public String getRelativeDirectoryPath() {
+    return this.getRootDirectoryName() + File.separator + getTargetDirectoryName();
   }
 
   public String getTargetDirectoryPath() {

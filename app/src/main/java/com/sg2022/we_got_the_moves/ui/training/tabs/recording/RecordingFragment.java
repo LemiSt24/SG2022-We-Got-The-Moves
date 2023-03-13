@@ -23,7 +23,6 @@ import com.hbisoft.hbrecorder.HBRecorder;
 import com.hbisoft.hbrecorder.HBRecorderListener;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentTrainingRecordingBinding;
-import com.sg2022.we_got_the_moves.io.Subdirectory;
 import com.sg2022.we_got_the_moves.repository.FileRepository;
 import com.sg2022.we_got_the_moves.ui.PermissionsHelper;
 import java.io.File;
@@ -113,8 +112,7 @@ public class RecordingFragment extends Fragment implements HBRecorderListener {
 
   private void prepareRecording() {
     final String filename = String.valueOf(System.currentTimeMillis());
-    final String extension = Subdirectory.Videos.getSupportedFormats()[0];
-    final String directoryPath = this.fileRepository.getDirectoryPathDefault(Subdirectory.Videos);
+    final String directoryPath = this.fileRepository.getDirectoryPathDefault();
     final Uri uri =
         Uri.fromFile(
             new File(
@@ -122,12 +120,12 @@ public class RecordingFragment extends Fragment implements HBRecorderListener {
                     + File.separator
                     + filename
                     + FilenameUtils.EXTENSION_SEPARATOR
-                    + extension));
+                    + ".mp4"));
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       this.hbRecorder.setOutputUri(uri);
     } else {
       this.hbRecorder.setOutputPath(directoryPath);
-      this.hbRecorder.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
+      this.hbRecorder.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + ".mp4");
     }
   }
 

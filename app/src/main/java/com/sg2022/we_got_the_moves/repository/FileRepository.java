@@ -5,8 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import com.sg2022.we_got_the_moves.io.IOInternalStorage;
 import com.sg2022.we_got_the_moves.io.IOStorage;
-import com.sg2022.we_got_the_moves.io.MutableLiveItemData;
-import com.sg2022.we_got_the_moves.io.Subdirectory;
+import com.sg2022.we_got_the_moves.io.MutableLiveVideoItemData;
 import com.sg2022.we_got_the_moves.io.VideoItem;
 import java.util.List;
 
@@ -32,11 +31,11 @@ public class FileRepository {
   }
 
   public LiveData<List<VideoItem>> getAllVideoItemsDefault() {
-    return new MutableLiveItemData(this.defaultStorage, Subdirectory.Videos);
+    return new MutableLiveVideoItemData(this.defaultStorage);
   }
 
-  public String getDirectoryPathDefault(Subdirectory subdirectory) {
-    return this.defaultStorage.createDirectory(subdirectory);
+  public String getDirectoryPathDefault() {
+    return this.defaultStorage.createDirectory();
   }
 
   public String[] getPermissionsDefault() {

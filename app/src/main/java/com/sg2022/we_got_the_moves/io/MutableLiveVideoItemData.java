@@ -9,10 +9,9 @@ import androidx.lifecycle.Observer;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class MutableLiveItemData extends MutableLiveData<List<VideoItem>> {
+public class MutableLiveVideoItemData extends MutableLiveData<List<VideoItem>> {
 
   private static final String TAG = "MutableLiveFileData";
   public final IOStorage ios;
@@ -20,24 +19,23 @@ public class MutableLiveItemData extends MutableLiveData<List<VideoItem>> {
     FileObserver.CREATE,
     FileObserver.DELETE,
     FileObserver.DELETE_SELF,
-    // FileObserver.MODIFY,
+    FileObserver.CLOSE_WRITE,
+    FileObserver.MODIFY,
     FileObserver.MOVED_FROM,
     FileObserver.MOVED_TO,
     FileObserver.MOVE_SELF,
   };
-  private final Subdirectory subdirectory;
   private FileObserver fileObserver;
 
-  public MutableLiveItemData(List<VideoItem> value, IOStorage ios, Subdirectory subdirectory) {
+  public MutableLiveVideoItemData(List<VideoItem> value, IOStorage ios) {
     super(value);
     this.ios = ios;
-    this.subdirectory = subdirectory;
     this.setValue(new ArrayList<>());
     this.setupFileObserver();
   }
 
-  public MutableLiveItemData(IOStorage ios, Subdirectory subdirectory) {
-    this(new ArrayList<>(), ios, subdirectory);
+  public MutableLiveVideoItemData(IOStorage ios) {
+    this(new ArrayList<>(), ios);
   }
 
   private List<VideoItem> filesToItems(List<File> files) {
@@ -45,17 +43,15 @@ public class MutableLiveItemData extends MutableLiveData<List<VideoItem>> {
   }
 
   private void setupFileObserver() {
-    String directoryPath = ios.getDirectoryPath(this.subdirectory);
+    String directoryPath = ios.getDirectoryPath();
     this.fileObserver =
         new FileObserver(directoryPath) {
           @Override
           public void onEvent(int event, @Nullable String path) {
-            if (!Objects.equals(path, subdirectory.name())) {
-              for (int e : relevantEvents) {
-                if (e == event) {
-                  postValue(filesToItems(List.of(ios.readFiles(subdirectory))));
-                  break;
-                }
+            for (int e : relevantEvents) {
+              if (e == event) {
+                postValue(filesToItems(List.of(ios.readFiles())));
+                break;
               }
             }
           }
@@ -66,13 +62,13 @@ public class MutableLiveItemData extends MutableLiveData<List<VideoItem>> {
   public void observe(
       @NonNull LifecycleOwner owner, @NonNull Observer<? super List<VideoItem>> observer) {
     super.observe(owner, observer);
-    observer.onChanged(this.filesToItems(List.of(ios.readFiles(subdirectory))));
+    observer.onChanged(this.filesToItems(List.of(ios.readFiles())));
   }
 
   @Override
   public void observeForever(@NonNull Observer<? super List<VideoItem>> observer) {
     super.observeForever(observer);
-    observer.onChanged(this.filesToItems(List.of(ios.readFiles(subdirectory))));
+    observer.onChanged(this.filesToItems(List.of(ios.readFiles())));
   }
 
   @Override
