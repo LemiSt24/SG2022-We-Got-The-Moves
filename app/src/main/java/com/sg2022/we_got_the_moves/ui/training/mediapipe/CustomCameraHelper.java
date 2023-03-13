@@ -3,9 +3,9 @@ package com.sg2022.we_got_the_moves.ui.training.mediapipe;
 import static android.content.Context.WINDOW_SERVICE;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -27,16 +27,16 @@ import android.view.WindowManager;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import com.google.mediapipe.components.CameraHelper;
-import com.sg2022.we_got_the_moves.repository.UserRepository;
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
+import com.sg2022.we_got_the_moves.util.PermissionsChecker;
 import java.util.List;
 
-public class Camera2Helper extends CameraHelper {
-  private static final int REQUEST_CAMERA_PERMISSION = 0;
+public class CustomCameraHelper extends CameraHelper {
+  public static final String TAG = "CustomCameraHelper";
   private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+  private static final String[] PERMISSIONS = {
+    Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE
+  };
 
   static {
     ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -45,7 +45,8 @@ public class Camera2Helper extends CameraHelper {
     ORIENTATIONS.append(Surface.ROTATION_270, 180);
   }
 
-  public final String TAG = "Camera2Helper";
+  private final Activity activity;
+  private final Context context;
   protected CameraDevice cameraDevice;
   protected CameraCaptureSession cameraCaptureSessions;
   protected CaptureRequest.Builder captureRequestBuilder;
@@ -54,11 +55,8 @@ public class Camera2Helper extends CameraHelper {
   private ImageReader imageReader;
   private Handler mBackgroundHandler;
   private HandlerThread mBackgroundThread;
-  private final Activity activity;
   private SurfaceTexture outputSurface;
   private Size frameSize;
-  private int frameRotation;
-  private final Context context;
   private final CameraDevice.StateCallback stateCallback =
       new CameraDevice.StateCallback() {
         @Override
@@ -88,8 +86,9 @@ public class Camera2Helper extends CameraHelper {
           }
         }
       };
+  private int frameRotation;
 
-  public Camera2Helper(@NonNull Activity activity, @NonNull SurfaceTexture surfaceTexture) {
+  public CustomCameraHelper(@NonNull Activity activity, @NonNull SurfaceTexture surfaceTexture) {
     this.activity = activity;
     this.context = this.activity.getApplicationContext();
     this.outputSurface = surfaceTexture;
@@ -100,7 +99,7 @@ public class Camera2Helper extends CameraHelper {
       Activity context, CameraFacing cameraFacing, @Nullable SurfaceTexture surfaceTexture) {
     closeCamera();
     startBackgroundThread();
-    openCamera();
+    openCamera(cameraFacing);
   }
 
   @Override
@@ -121,8 +120,7 @@ public class Camera2Helper extends CameraHelper {
             : frameSize.getWidth() / (float) frameSize.getHeight();
 
     float viewAspectRatio = viewSize.getWidth() / (float) viewSize.getHeight();
-
-    // Match shortest sides together.
+    
     int scaledWidth;
     int scaledHeight;
     if (frameAspectRatio < viewAspectRatio) {
@@ -161,82 +159,36 @@ public class Camera2Helper extends CameraHelper {
     }
   }
 
-  private void openCamera() {
+  @SuppressLint("MissingPermission")
+  private void openCamera(@NonNull final CameraFacing cameraFacing) {
     CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
     try {
-      for (String cameraId : manager.getCameraIdList()) {
-        CameraCharacteristics cameraCharacteristics = manager.getCameraCharacteristics(cameraId);
+      int cameraLensFacing =
+          (cameraFacing == CameraFacing.FRONT)
+              ? CameraMetadata.LENS_FACING_FRONT
+              : CameraMetadata.LENS_FACING_BACK;
+      for (String cameraIdListElement : manager.getCameraIdList()) {
+        CameraCharacteristics cameraCharacteristics =
+            manager.getCameraCharacteristics(cameraIdListElement);
+        if (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING) == cameraLensFacing) {
+          cameraId = cameraIdListElement;
+          break;
+        }
       }
 
-      UserRepository userRepository = UserRepository.getInstance(this.activity.getApplication());
-      userRepository.getCameraBoolean(
-          new SingleObserver<>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {}
+      CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+      StreamConfigurationMap map =
+          characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+      imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
 
-            @Override
-            public void onSuccess(@NonNull Boolean aBoolean) {
-              try {
-                if (aBoolean) {
-                  for (String cameraIdListElement : manager.getCameraIdList()) {
-                    CameraCharacteristics cameraCharacteristics =
-                        manager.getCameraCharacteristics(cameraIdListElement);
-                    if (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING) == 0) {
-                      cameraId = cameraIdListElement;
-                      break;
-                    }
-                  }
-                } else {
-                  for (String cameraIdListElement : manager.getCameraIdList()) {
-                    CameraCharacteristics cameraCharacteristics =
-                        manager.getCameraCharacteristics(cameraIdListElement);
-                    if (cameraCharacteristics.get(CameraCharacteristics.LENS_FACING) == 1) {
-                      cameraId = cameraIdListElement;
-                      break;
-                    }
-                  }
-                }
-                Log.e(TAG, "camera is open");
-
-                CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-                StreamConfigurationMap map =
-                    characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-                imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
-                // Add permission for camera and let user grant the permission
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                        != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(
-                            context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                  ActivityCompat.requestPermissions(
-                      (Activity) context,
-                      new String[] {
-                        Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE
-                      },
-                      REQUEST_CAMERA_PERMISSION);
-                  Log.d(TAG, "Permission issue");
-                  return;
-                }
-                Log.d(TAG, "Opening camera from manager " + cameraId);
-                manager.openCamera(cameraId, stateCallback, null);
-                Log.println(Log.DEBUG, "test", "boolean now: " + aBoolean);
-
-              } catch (CameraAccessException e) {
-                e.printStackTrace();
-                Log.d(TAG, e.toString());
-              }
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {}
-          });
-
-      Log.d(TAG, "Camera debug start 113");
-
+      if (PermissionsChecker.checkPermissions(this.context, PERMISSIONS)) {
+        manager.openCamera(cameraId, stateCallback, null);
+      }
     } catch (CameraAccessException e) {
       e.printStackTrace();
       Log.d(TAG, e.toString());
     }
+
     Log.e(TAG, "openCamera X");
   }
 

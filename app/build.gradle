@@ -121,6 +121,7 @@ dependencies {
     //Youtube Player
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0'
 
+    implementation 'com.github.HBiSoft:HBRecorder:3.0.1'
 
     //Video Playback
     def exoplayerVersion = '2.9.6'

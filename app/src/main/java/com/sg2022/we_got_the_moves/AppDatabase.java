@@ -41,7 +41,7 @@ import java.util.HashMap;
     },
     version = 1,
     exportSchema = false)
-@TypeConverters({TypeConverters.class})
+@TypeConverters({com.sg2022.we_got_the_moves.db.converter.TypeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
   public static final String DB_NAME = "SGWeGotTheMovesDB";
   private static final String TAG = "AppDatabase";
