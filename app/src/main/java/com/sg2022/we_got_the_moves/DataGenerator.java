@@ -245,11 +245,6 @@ public class DataGenerator {
         continue;
       else {
         List<ExerciseState> exerciseStates = new ArrayList<>();
-        /*for (ExerciseState state : states) {
-          if (state.exerciseId == i + 1) {
-            exerciseStates.add(state);
-          }
-        }*/
         e.add(
             new Exercise(
                 i + 1,
@@ -456,15 +451,6 @@ public class DataGenerator {
                   DummyExercises.get(2).id,
                   new ArrayList<>(List.of(5,5,5,5,5)),
                   2));
-      }
-
-      for (int j = 0; j < DummyExercises.size(); ++j) {
-        we.add(
-            new WorkoutExercise(
-                DummyWorkouts.get(i).id,
-                DummyExercises.get(j).id,
-                new ArrayList<>(List.of(5, 7)),
-                j));
       }
     }
     return we;
