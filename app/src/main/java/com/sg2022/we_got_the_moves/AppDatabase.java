@@ -30,6 +30,9 @@ import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
 
 import java.util.HashMap;
 
+// IMPORTANT: This class gets only executed if you do a full install on a device
+// -> you have to delete the old app on your phone first
+
 // TODO: Add entity classes here
 @Database(
     entities = {
@@ -55,7 +58,11 @@ public abstract class AppDatabase extends RoomDatabase {
       synchronized (AppDatabase.class) {
         if (INSTANCE == null) {
           AppExecutors e = AppExecutors.getInstance();
+
+          //Use this function to use the buildDatabase in combination with the DataGenerator
           INSTANCE = buildDatabase(app, e);
+
+          //Use this function to use the DB file for building your Database
           /*INSTANCE = Room.databaseBuilder(app.getApplicationContext(), AppDatabase.class, DB_NAME)
                         .fallbackToDestructiveMigration()
                         .createFromAsset("database/SGWeGotTheMovesDB.db")
@@ -88,7 +95,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     .getPoolThread()
                     .execute(
                         () -> {
-                          // TODO: Init DB with Dummy Data only at creation time
+                          // Init DB with Dummy Data only at creation time
                           getInstance(app)
                               .ExerciseDao()
                               .insertAll(DataGenerator.getDummyExercises());
@@ -121,14 +128,14 @@ public abstract class AppDatabase extends RoomDatabase {
                               .insert(DataGenerator.getDummyFinsishedExercise());
                           getInstance(app)
                               .ConstraintDao()
-                              .insert(DataGenerator.giveMeDummyConstraints());
+                              .insert(DataGenerator.getDummyConstraints());
                         });
               }
             })
         .build();
   }
 
-  // TODO: Add DAOs below
+  // TODO: Add your DAOs below if you are using buildDatabase
   public abstract ExerciseDao ExerciseDao();
 
   public abstract WorkoutDao WorkoutDao();

@@ -18,6 +18,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Class for generating Data for the App Database.
+ * Adapt this class for new Excercises, Workouts, Constraints etc. or change the DB file provided.
+ * Chose your way of building the App Database in AppDatabase
+ */
 public class DataGenerator {
 
   private static final String TAG = "DataGenerator";
@@ -70,17 +75,6 @@ public class DataGenerator {
     "EvNPYh3OMKw",
     "P8MNX2ocp2U",
     "-DpZGUsnp80"
-  };
-
-  public static int[] imageIds = {
-    R.drawable.squats,
-    R.drawable.side_planks,
-    R.drawable.mountain_climbers,
-    R.drawable.push_ups,
-    R.drawable.sit_ups,
-    R.drawable.planks,
-    R.drawable.bicep_curls,
-    R.drawable.romanian_deadlifts
   };
 
   public static Exercise.UNIT[] isCountable = {
@@ -234,6 +228,7 @@ public class DataGenerator {
         140,
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
   };
+
   public static List<ExerciseState> getDummyExerciseStates(){
     List<ExerciseState> exerciseStates = new ArrayList<>();
     for (ExerciseState exerciseState: states) exerciseStates.add(exerciseState);
@@ -320,7 +315,7 @@ public class DataGenerator {
     return fe;
   }
 
-  public static List<Constraint> giveMeDummyConstraints() {
+  public static List<Constraint> getDummyConstraints() {
     List<Constraint> constraints = new ArrayList<>();
     // Füße schulterbreit - außen (nach außen mehr Variation erlauben, als nach innen) (squat-global, plank-global, bicep_curl-global, push_up-global)
     constraints.add(
