@@ -32,8 +32,8 @@
         tools:targetApi="33">
         <service
             android:name=".ui.training.RecordService"
-            android:foregroundServiceType="mediaProjection"
-        ></service>
+            android:foregroundServiceType="mediaProjection">
+        </service>
         <activity
             android:name=".MainActivity"
             android:exported="true"

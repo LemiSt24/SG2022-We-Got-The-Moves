@@ -1,11 +1,15 @@
 package com.sg2022.we_got_the_moves.ui.training;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
 import android.media.projection.MediaProjectionManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -28,6 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -42,21 +48,30 @@ import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.hbisoft.hbrecorder.HBRecorder;
+import com.hbisoft.hbrecorder.HBRecorderListener;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.DialogBetweenExerciseScreenBinding;
 import com.sg2022.we_got_the_moves.databinding.DialogFinishedTrainingScreenBinding;
+import com.sg2022.we_got_the_moves.databinding.FragmentTrainingRecordingBinding;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
+import com.sg2022.we_got_the_moves.io.Subdirectory;
 import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
+import com.sg2022.we_got_the_moves.repository.FileRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.UserRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
+import com.sg2022.we_got_the_moves.ui.PermissionUtil;
 import com.sg2022.we_got_the_moves.ui.workouts.WorkoutListAdapter;
 
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -73,7 +88,7 @@ import java.util.stream.Collectors;
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
 
-public class MediapipeActivity extends AppCompatActivity {
+public class MediapipeActivity extends AppCompatActivity implements HBRecorderListener {
 
   public static final List<String> landmark_names =
       Arrays.asList(
@@ -174,7 +189,7 @@ public class MediapipeActivity extends AppCompatActivity {
   private Long timeLastCheck = SystemClock.elapsedRealtime();
   private TextToSpeech tts;
   private boolean ttsBoolean = true;
-  private int timeBetweenExercises = 5;
+  private int timeBetweenExercises = 15;
 
   private boolean inStartPosition = false;
 
@@ -184,65 +199,93 @@ public class MediapipeActivity extends AppCompatActivity {
     return weakMediapipeActivity.get();
   }
 
-  private static final int PERMISSION_CODE = 1;
-  private MediaProjectionManager mProjectionManager;
+
+    private final String[] permissions = {
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.FOREGROUND_SERVICE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+    private HBRecorder hbRecorder;
+    private Intent screenCaptureIntent;
+    private Context context;
+    private ActivityResultLauncher<Intent> intentActivityResultLauncher;
+    private ActivityResultLauncher<String[]> permissionActivityLauncher;
+    private FileRepository fileRepository;
+
+    private void prepareRecording() {
+        final String filename = String.valueOf(System.currentTimeMillis());
+        final String extension = Subdirectory.Videos.getSupportedFormats()[0];
+        final String directoryPath = this.fileRepository.getDirectoryPathDefault(Subdirectory.Videos);
+        final Uri uri =
+                Uri.fromFile(
+                        new File(
+                                directoryPath
+                                        + File.separator
+                                        + filename
+                                        + FilenameUtils.EXTENSION_SEPARATOR
+                                        + extension));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            this.hbRecorder.setOutputUri(uri);
+        } else {
+            this.hbRecorder.setOutputPath(directoryPath);
+            this.hbRecorder.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
+        }
+    }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode != PERMISSION_CODE) {
-            Log.e(TAG, "Unknown request code: " + requestCode);
-            return;
-        }
-        if (resultCode == RESULT_OK) {
-            Log.v("test", "startRecordingService from Activity");
-            startRecordingService(resultCode, data);
-        } else {
-            Toast.makeText(this, "Screen Cast Permission Denied", Toast.LENGTH_SHORT).show();
-            //mToggleButton.setChecked(false);
-            return;
-        }
+    public void HBRecorderOnStart() {
+        Toast.makeText(this.context, "VideoRecording has started", Toast.LENGTH_SHORT).show();
     }
 
-    public void onToggleScreenShare(View view) {
-        if ( ((ToggleButton)view).isChecked() ) {
-            // ask for permission to capture screen and act on result after
-            startActivityForResult(mProjectionManager.createScreenCaptureIntent(), PERMISSION_CODE);
-            Log.v("test", "onToggleScreenShare");
-        } else {
-            Log.v("test", "onToggleScreenShare: Recording Stopped");
-            stopRecordingService();
-        }
+    @Override
+    public void HBRecorderOnComplete() {
+        Toast.makeText(this.context, "VideoRecording has finished", Toast.LENGTH_SHORT).show();
     }
 
-    private void startRecordingService(int resultCode, Intent data){
-        Intent intent = RecordService.newIntent(this, resultCode, data);
-        /*PendingIntent pendingIntent = PendingIntent.getActivity(
-                this, 0,intent, 0);*/
-        startService(intent);
+    @Override
+    public void HBRecorderOnError(int errorCode, String reason) {
+        Toast.makeText(this.context, "Error: " + errorCode, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, reason);
     }
 
-    private void stopRecordingService(){
-        Intent intent = new Intent(this, RecordService.class);
-        stopService(intent);
-    }
-
-    private boolean isServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (this.hbRecorder.isRecordingPaused()) this.hbRecorder.stopScreenRecording();
     }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+      this.context = this;
+      this.fileRepository = FileRepository.getInstance(this.getApplication());
+      this.hbRecorder = new HBRecorder(this.context, this);
+      MediaProjectionManager mediaProjectionManager =
+              (MediaProjectionManager) this.context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+      this.screenCaptureIntent = mediaProjectionManager.createScreenCaptureIntent();
+      this.intentActivityResultLauncher =
+              this.registerForActivityResult(
+                      new ActivityResultContracts.StartActivityForResult(),
+                      result -> {
+                          boolean permissionsGranted =
+                                  PermissionUtil.checkPermissions(this.context, this.permissions);
+                          if (result.getResultCode() == Activity.RESULT_OK && permissionsGranted) {
+                              this.prepareRecording();
+                              this.hbRecorder.startScreenRecording(result.getData(), result.getResultCode());
+                          }
+                      });
+      this.permissionActivityLauncher =
+              this.registerForActivityResult(
+                      new ActivityResultContracts.RequestMultiplePermissions(),
+                      result ->
+                              result.entrySet().stream()
+                                      .filter((Map.Entry<String, Boolean> e) -> !e.getValue())
+                                      .forEach(
+                                              (Map.Entry<String, Boolean> e) ->
+                                                      Log.i(TAG, "Required Permission :" + e.getKey() + " is missing")));
 
-    mProjectionManager = (MediaProjectionManager) getSystemService (Context.MEDIA_PROJECTION_SERVICE);
-    startActivityForResult(mProjectionManager.createScreenCaptureIntent(), PERMISSION_CODE);
+
 
     weakMediapipeActivity = new WeakReference<>(MediapipeActivity.this);
     timeLastCheck = SystemClock.elapsedRealtime();
@@ -372,7 +415,8 @@ public class MediapipeActivity extends AppCompatActivity {
               }
             });
 
-    processor.addPacketCallback(
+
+      processor.addPacketCallback(
         OUTPUT_LANDMARKS_STREAM_NAME,
         (packet) -> {
           byte[] landmarksRaw = PacketGetter.getProtoBytes(packet);
@@ -479,7 +523,9 @@ public class MediapipeActivity extends AppCompatActivity {
     Button skip_but = findViewById(R.id.mediapipe_skip_exercise_button);
     Button finish_but = findViewById(R.id.mediapipe_finish_button);
     stop_but.setOnClickListener(
-        v -> showPauseCard());
+        v -> {
+            showPauseCard();
+        });
     continue_but.setOnClickListener(
         v -> {
           countableStartTime += (SystemClock.elapsedRealtime() - time_counter_time);
@@ -526,6 +572,7 @@ public class MediapipeActivity extends AppCompatActivity {
     if (PermissionHelper.cameraPermissionsGranted(this)) {
       startCamera();
     }
+    if (this.hbRecorder.isRecordingPaused()) this.hbRecorder.resumeScreenRecording();
   }
 
   @Override
@@ -535,6 +582,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
     // Hide preview display until we re-open the camera again.
     previewDisplayView.setVisibility(View.GONE);
+    if (this.hbRecorder.isBusyRecording()) this.hbRecorder.pauseScreenRecording();
   }
 
   @Override
@@ -938,6 +986,16 @@ public class MediapipeActivity extends AppCompatActivity {
                       chronometer -> {
                         long base = pause_countdown.getBase();
                         if (base < SystemClock.elapsedRealtime()) {
+                            if (hbRecorder.isBusyRecording()) {
+                                hbRecorder.stopScreenRecording();
+                            } else {
+                                boolean permissionsGranted =
+                                        PermissionUtil.checkPermissions(this.context, this.permissions);
+                                if (!permissionsGranted) {
+                                    this.permissionActivityLauncher.launch(this.permissions);
+                                }
+                                this.intentActivityResultLauncher.launch(this.screenCaptureIntent);
+                            }
                           loadConstraintsForExercise();
                           dialog.dismiss();
                           Pause = false;
@@ -986,6 +1044,7 @@ public class MediapipeActivity extends AppCompatActivity {
                   "Finish",
                   (dialog, id) -> {
                     tts("Training finished");
+                    hbRecorder.stopScreenRecording();
                     cameraHelper.closeCamera();
                     finish();
                     dialog.dismiss();
