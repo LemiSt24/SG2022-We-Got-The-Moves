@@ -19,13 +19,13 @@ public class PlaybackItemAdapter
     extends RecyclerView.Adapter<PlaybackItemAdapter.PlaybackViewHolder> {
 
   private static final String TAG = "PlaybackItemAdapter";
-  public final List<VideoItem> vids;
+  public final List<VideoItem> videoItems;
   private final Context context;
   private final MuteListener muteListener;
 
   public PlaybackItemAdapter(
       @NonNull Context context, List<VideoItem> vids, MuteListener muteListener) {
-    this.vids = vids;
+    this.videoItems = vids;
     this.context = context;
     this.muteListener = muteListener;
   }
@@ -43,14 +43,14 @@ public class PlaybackItemAdapter
   public void onBindViewHolder(@NonNull PlaybackViewHolder holder, int position) {
 
     Glide.with(this.context)
-        .load(vids.get(position).uri)
+        .load(videoItems.get(position).uri)
         .centerCrop()
         .placeholder(R.drawable.placeholder)
         .into(holder.binding.imageviewPlaceholderViditem);
-    holder.binding.autoplayerViditem.setUrl(vids.get(position).uri.toString());
+    holder.binding.autoplayerViditem.setUrl(videoItems.get(position).uri.toString());
     holder.binding.autoplayerViditem.setAnimationTime(500);
     holder.binding.autoplayerViditem.setPlaceholderView(holder.binding.imageviewPlaceholderViditem);
-    if (vids.get(position).mute) {
+    if (videoItems.get(position).mute) {
       holder.binding.imageviewVolumeViditem.setImageResource(R.drawable.ic_volume_off_white_24dp);
     } else {
       holder.binding.imageviewVolumeViditem.setImageResource(R.drawable.ic_volume_on_white_24dp);
@@ -105,7 +105,7 @@ public class PlaybackItemAdapter
 
   @Override
   public int getItemCount() {
-    return this.vids.size();
+    return this.videoItems.size();
   }
 
   public static class PlaybackViewHolder extends RecyclerView.ViewHolder {

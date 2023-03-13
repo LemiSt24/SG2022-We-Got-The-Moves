@@ -2,8 +2,6 @@ package com.sg2022.we_got_the_moves.io;
 
 import android.app.Application;
 
-import java.io.File;
-
 public class IOInternalStorage extends IOStorage {
 
   public static final String TAG = "IOInternalStorage";
@@ -25,13 +23,13 @@ public class IOInternalStorage extends IOStorage {
     return this.app.getFilesDir().getName();
   }
 
-  public String getDirectoryPath(Subdirectory subdirectory) {
-    return this.getRootDirectoryPath() + File.separator + subdirectory.name();
+  public String getDirectoryPath() {
+    return this.getRootDirectoryPath();
   }
 
   @Override
-  public String getRelativeDirectoryPath(Subdirectory subdirectory) {
-    return this.getRootDirectoryName() + File.separator + subdirectory.name();
+  public String getRelativeDirectoryPath() {
+    return this.getRootDirectoryName();
   }
 
   @Override

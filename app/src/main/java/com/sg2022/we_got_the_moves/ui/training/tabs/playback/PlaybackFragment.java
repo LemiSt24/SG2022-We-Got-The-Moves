@@ -54,9 +54,10 @@ public class PlaybackFragment extends Fragment {
                       this,
                       list -> {
                         DiffUtil.DiffResult diff =
-                            DiffUtil.calculateDiff(new VidDiffUtil(playbackItemAdapter.vids, list));
-                        playbackItemAdapter.vids.clear();
-                        playbackItemAdapter.vids.addAll(list);
+                            DiffUtil.calculateDiff(
+                                new VidDiffUtil(playbackItemAdapter.videoItems, list));
+                        playbackItemAdapter.videoItems.clear();
+                        playbackItemAdapter.videoItems.addAll(list);
                         diff.dispatchUpdatesTo(playbackItemAdapter);
                       });
                 }
@@ -84,8 +85,8 @@ public class PlaybackFragment extends Fragment {
             new ArrayList<>(),
             position -> {
               isMute = !isMute;
-              for (int i = 0; i < playbackItemAdapter.vids.size(); i++) {
-                playbackItemAdapter.vids.get(i).mute = isMute;
+              for (int i = 0; i < playbackItemAdapter.videoItems.size(); i++) {
+                playbackItemAdapter.videoItems.get(i).mute = isMute;
                 if (i != position) {
                   playbackItemAdapter.notifyItemChanged(i);
                 }
