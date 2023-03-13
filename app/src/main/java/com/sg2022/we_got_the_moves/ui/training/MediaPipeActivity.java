@@ -185,6 +185,8 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
   private boolean ttsBoolean = true;
 
   private boolean recordingBoolean;
+
+  private boolean recordingStarted = false;
   private int timeBetweenExercises = 5;
 
   private boolean inStartPosition = false;
@@ -938,10 +940,11 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
               chronometer -> {
                 long base = pause_countdown.getBase();
                 if (base < SystemClock.elapsedRealtime()) {
-                    if (recordingBoolean){
+                    if (recordingBoolean && !recordingStarted){
                         /*if (hbRecorder.isBusyRecording()) {
                             hbRecorder.stopScreenRecording();
                         }*/
+                        recordingStarted = true;
                         boolean permissionsGranted =
                                 PermissionsHelper.checkPermissions(this.context, this.permissions);
                         if (!permissionsGranted) {
