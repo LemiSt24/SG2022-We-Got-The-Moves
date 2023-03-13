@@ -30,6 +30,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SG2022WeGotTheMoves"
         tools:targetApi="33">
+        <service
+            android:name=".ui.training.RecordService"
+            android:foregroundServiceType="mediaProjection"
+        ></service>
         <activity
             android:name=".MainActivity"
             android:exported="true"

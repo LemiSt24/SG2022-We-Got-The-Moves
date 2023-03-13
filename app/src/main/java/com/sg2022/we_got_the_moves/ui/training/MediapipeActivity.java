@@ -1,8 +1,11 @@
 package com.sg2022.we_got_the_moves.ui.training;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
+import android.media.projection.MediaProjectionManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +25,8 @@ import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -67,7 +72,6 @@ import java.util.stream.Collectors;
 
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MediapipeActivity extends AppCompatActivity {
 
@@ -180,13 +184,68 @@ public class MediapipeActivity extends AppCompatActivity {
     return weakMediapipeActivity.get();
   }
 
+  private static final int PERMISSION_CODE = 1;
+  private MediaProjectionManager mProjectionManager;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != PERMISSION_CODE) {
+            Log.e(TAG, "Unknown request code: " + requestCode);
+            return;
+        }
+        if (resultCode == RESULT_OK) {
+            Log.v("test", "startRecordingService from Activity");
+            startRecordingService(resultCode, data);
+        } else {
+            Toast.makeText(this, "Screen Cast Permission Denied", Toast.LENGTH_SHORT).show();
+            //mToggleButton.setChecked(false);
+            return;
+        }
+    }
+
+    public void onToggleScreenShare(View view) {
+        if ( ((ToggleButton)view).isChecked() ) {
+            // ask for permission to capture screen and act on result after
+            startActivityForResult(mProjectionManager.createScreenCaptureIntent(), PERMISSION_CODE);
+            Log.v("test", "onToggleScreenShare");
+        } else {
+            Log.v("test", "onToggleScreenShare: Recording Stopped");
+            stopRecordingService();
+        }
+    }
+
+    private void startRecordingService(int resultCode, Intent data){
+        Intent intent = RecordService.newIntent(this, resultCode, data);
+        /*PendingIntent pendingIntent = PendingIntent.getActivity(
+                this, 0,intent, 0);*/
+        startService(intent);
+    }
+
+    private void stopRecordingService(){
+        Intent intent = new Intent(this, RecordService.class);
+        stopService(intent);
+    }
+
+    private boolean isServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+    mProjectionManager = (MediaProjectionManager) getSystemService (Context.MEDIA_PROJECTION_SERVICE);
+    startActivityForResult(mProjectionManager.createScreenCaptureIntent(), PERMISSION_CODE);
+
     weakMediapipeActivity = new WeakReference<>(MediapipeActivity.this);
     timeLastCheck = SystemClock.elapsedRealtime();
-
 
     UserRepository userRepository = UserRepository.getInstance(this.getApplication());
     userRepository.getCameraBoolean(
