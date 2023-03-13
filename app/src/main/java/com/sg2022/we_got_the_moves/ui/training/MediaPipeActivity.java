@@ -57,7 +57,6 @@ import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
-import com.sg2022.we_got_the_moves.io.Subdirectory;
 import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FileRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
@@ -214,33 +213,6 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-      this.context = this;
-      this.fileRepository = FileRepository.getInstance(this.getApplication());
-      this.hbRecorder = new HBRecorder(this.context, this);
-      MediaProjectionManager mediaProjectionManager =
-              (MediaProjectionManager) this.context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-      this.screenCaptureIntent = mediaProjectionManager.createScreenCaptureIntent();
-      this.intentActivityResultLauncher =
-              this.registerForActivityResult(
-                      new ActivityResultContracts.StartActivityForResult(),
-                      result -> {
-                          boolean permissionsGranted =
-                                  PermissionsHelper.checkPermissions(this.context, this.permissions);
-                          if (result.getResultCode() == Activity.RESULT_OK && permissionsGranted) {
-                              this.prepareRecording();
-                              this.hbRecorder.startScreenRecording(result.getData(), result.getResultCode());
-                          }
-                      });
-      this.permissionActivityLauncher =
-              this.registerForActivityResult(
-                      new ActivityResultContracts.RequestMultiplePermissions(),
-                      result ->
-                              result.entrySet().stream()
-                                      .filter((Map.Entry<String, Boolean> e) -> !e.getValue())
-                                      .forEach(
-                                              (Map.Entry<String, Boolean> e) ->
-                                                      Log.i(TAG, "Required Permission :" + e.getKey() + " is missing")));
-
     weakMediapipeActivity = new WeakReference<>(MediaPipeActivity.this);
     timeLastCheck = SystemClock.elapsedRealtime();
 
@@ -316,6 +288,34 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
     Bundle extras = intent.getExtras();
     workoutId = extras.getLong("WORKOUT_ID");
     recordingBoolean = extras.getBoolean("RECORDING_BOOLEAN");
+    if (recordingBoolean){
+        this.context = this;
+        this.fileRepository = FileRepository.getInstance(this.getApplication());
+        this.hbRecorder = new HBRecorder(this.context, this);
+        MediaProjectionManager mediaProjectionManager =
+                (MediaProjectionManager) this.context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        this.screenCaptureIntent = mediaProjectionManager.createScreenCaptureIntent();
+        this.intentActivityResultLauncher =
+                this.registerForActivityResult(
+                        new ActivityResultContracts.StartActivityForResult(),
+                        result -> {
+                            boolean permissionsGranted =
+                                    PermissionsHelper.checkPermissions(this.context, this.permissions);
+                            if (result.getResultCode() == Activity.RESULT_OK && permissionsGranted) {
+                                this.prepareRecording();
+                                this.hbRecorder.startScreenRecording(result.getData(), result.getResultCode());
+                            }
+                        });
+        this.permissionActivityLauncher =
+                this.registerForActivityResult(
+                        new ActivityResultContracts.RequestMultiplePermissions(),
+                        result ->
+                                result.entrySet().stream()
+                                        .filter((Map.Entry<String, Boolean> e) -> !e.getValue())
+                                        .forEach(
+                                                (Map.Entry<String, Boolean> e) ->
+                                                        Log.i(TAG, "Required Permission :" + e.getKey() + " is missing")));
+    }
 
     Log.println(Log.DEBUG, TAG, "workoutId" + workoutId);
 
@@ -939,16 +939,15 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
                 long base = pause_countdown.getBase();
                 if (base < SystemClock.elapsedRealtime()) {
                     if (recordingBoolean){
-                        if (hbRecorder.isBusyRecording()) {
+                        /*if (hbRecorder.isBusyRecording()) {
                             hbRecorder.stopScreenRecording();
-                        } else {
-                            boolean permissionsGranted =
-                                    PermissionsHelper.checkPermissions(this.context, this.permissions);
-                            if (!permissionsGranted) {
-                                this.permissionActivityLauncher.launch(this.permissions);
-                            }
-                            this.intentActivityResultLauncher.launch(this.screenCaptureIntent);
+                        }*/
+                        boolean permissionsGranted =
+                                PermissionsHelper.checkPermissions(this.context, this.permissions);
+                        if (!permissionsGranted) {
+                            this.permissionActivityLauncher.launch(this.permissions);
                         }
+                        this.intentActivityResultLauncher.launch(this.screenCaptureIntent);
                     }
                   loadConstraintsForExercise();
                   dialog.dismiss();
@@ -1107,9 +1106,9 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
     }
 
     private void prepareRecording() {
+      Log.println(Log.DEBUG, "test", "preparerecording");
         final String filename = String.valueOf(System.currentTimeMillis());
-        final String extension = Subdirectory.Videos.getSupportedFormats()[0];
-        final String directoryPath = this.fileRepository.getDirectoryPathDefault(Subdirectory.Videos);
+        final String directoryPath = this.fileRepository.getDirectoryPathDefault();
         final Uri uri =
                 Uri.fromFile(
                         new File(
@@ -1117,12 +1116,12 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
                                         + File.separator
                                         + filename
                                         + FilenameUtils.EXTENSION_SEPARATOR
-                                        + extension));
+                                        + ".mp4"));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             this.hbRecorder.setOutputUri(uri);
         } else {
             this.hbRecorder.setOutputPath(directoryPath);
-            this.hbRecorder.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
+            this.hbRecorder.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + ".mp4");
         }
     }
 
