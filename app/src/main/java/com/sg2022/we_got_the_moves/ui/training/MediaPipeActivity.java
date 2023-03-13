@@ -230,7 +230,7 @@ public class MediaPipeActivity extends AppCompatActivity {
 
     startTime = new Date(System.currentTimeMillis());
 
-    classifier = new PoseClassifier(getApplicationContext(), 20, 10, "dataset.csv");
+    classifier = new PoseClassifier();
 
     previewDisplayView = new SurfaceView(this);
     setupPreviewDisplayView();
@@ -866,7 +866,7 @@ public class MediaPipeActivity extends AppCompatActivity {
 
           String filename = e.name.toLowerCase() + ".csv";
           Log.println(Log.DEBUG, "Test", filename);
-          classifier = new PoseClassifier(getApplicationContext(), 20, 10, filename);
+          classifier = new PoseClassifier();
 
           pause_countdown.setOnChronometerTickListener(
               chronometer -> {

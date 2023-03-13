@@ -94,5 +94,13 @@
     <string name="tutorial">tutorial</string>
     <string name="is_accessed">is_accessed</string>
     <string name="empty_workout_error">"You are trying to start an empty workout. Please press cancel!"</string>
+    <string name="please_grant_camera_access">Please grant camera access</string>
+    <string name="training_paused">Training Paused</string>
+    <string name="continue_msg">Continue</string>
+    <string name="skip">Skip</string>
+    <string name="finish">Finish</string>
+    <string name="all_correct">all correct</string>
+    <string name="exercise">exercise</string>
+    <string name="_0_x">0 / X</string>
 
 </resources>
