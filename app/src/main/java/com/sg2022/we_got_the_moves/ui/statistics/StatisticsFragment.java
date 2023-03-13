@@ -4,11 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsBinding;
 import com.sg2022.we_got_the_moves.ui.CustomFragmentStateAdapter;
@@ -16,7 +14,6 @@ import com.sg2022.we_got_the_moves.ui.statistics.tabs.DailyOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.ExercisesOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.WeeklyOverviewFragment;
-
 import java.util.Arrays;
 import java.util.List;
 

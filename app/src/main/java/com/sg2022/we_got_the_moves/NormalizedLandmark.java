@@ -3,7 +3,6 @@ package com.sg2022.we_got_the_moves;
 import static java.lang.Double.max;
 
 import com.google.mediapipe.formats.proto.LandmarkProto;
-
 import java.util.Arrays;
 import java.util.List;
 

@@ -1,11 +1,9 @@
 package com.sg2022.we_got_the_moves.ui.settings;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.sg2022.we_got_the_moves.repository.UserRepository;
 
 public class SettingsViewModel extends ViewModel {

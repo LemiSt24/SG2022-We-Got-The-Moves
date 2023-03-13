@@ -16,7 +16,7 @@ import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
-import com.sg2022.we_got_the_moves.ui.training.mediapipe.MediapipeActivity;
+import com.sg2022.we_got_the_moves.ui.training.mediapipe.MediaPipeActivity;
 import com.sg2022.we_got_the_moves.ui.workouts.WorkoutListAdapter;
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -111,42 +111,10 @@ public class RecentWorkoutsAdapter
 
                     @Override
                     public void onSuccess(@NonNull User user) {
-                      Intent intent = new Intent(fragment.getContext(), MediapipeActivity.class);
-                      intent.putExtra(TrainingOverviewFragment.WORKOUT_TITLE, w.name);
-                      intent.putExtra(TrainingOverviewFragment.WORKOUT_ID, w.id);
-                      intent.putExtra(TrainingOverviewFragment.RECORDING_FLAG, false);
-                      intent.putExtra(
-                          TrainingOverviewFragment.CAMERA_FACING_FLAG, user.frontCamera);
-                      intent.putExtra(TrainingOverviewFragment.TEXT_TO_SPEECH_FLAG, user.tts);
-                      fragment.launchMediaPipe(intent);
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                      Log.e(TAG, "Couldn't retrieve user configuration");
-                      e.printStackTrace();
-                    }
-                  });
-              dialog.dismiss();
-            })
-        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
-        .setNeutralButton(
-            "Start with Recording",
-            (dialog, which) -> {
-              this.model.userRepository.getUser(
-                  new SingleObserver<>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {}
-
-                    @Override
-                    public void onSuccess(@NonNull User user) {
-                      Intent intent = new Intent(fragment.getContext(), MediapipeActivity.class);
-                      intent.putExtra(TrainingOverviewFragment.WORKOUT_TITLE, w.name);
-                      intent.putExtra(TrainingOverviewFragment.WORKOUT_ID, w.id);
-                      intent.putExtra(TrainingOverviewFragment.RECORDING_FLAG, true);
-                      intent.putExtra(
-                          TrainingOverviewFragment.CAMERA_FACING_FLAG, user.frontCamera);
-                      intent.putExtra(TrainingOverviewFragment.TEXT_TO_SPEECH_FLAG, user.tts);
+                      Intent intent = new Intent(fragment.getContext(), MediaPipeActivity.class);
+                      intent.putExtra(MediaPipeActivity.WORKOUT_ID, w.id);
+                      intent.putExtra(MediaPipeActivity.CAMERA_FACING_FLAG, user.frontCamera);
+                      intent.putExtra(MediaPipeActivity.TEXT_TO_SPEECH_FLAG, user.tts);
                       fragment.launchMediaPipe(intent);
                     }
 
@@ -156,7 +124,9 @@ public class RecentWorkoutsAdapter
                       e.printStackTrace();
                     }
                   });
-            });
+              dialog.dismiss();
+            })
+        .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss());
     model.workoutsRepository.getAllWorkoutExerciseAndExerciseSingle(
         w.id,
         new SingleObserver<>() {

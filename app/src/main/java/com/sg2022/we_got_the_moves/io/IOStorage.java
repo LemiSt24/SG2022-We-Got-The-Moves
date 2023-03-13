@@ -9,20 +9,20 @@ public abstract class IOStorage {
 
   public abstract String getRootDirectoryPath();
 
-  public abstract String getDirectoryPath(Subdirectory subdirectory);
+  public abstract String getDirectoryPath();
 
   public abstract String[] getPermissions();
 
-  public String createDirectory(Subdirectory subdirectory) {
-    File f = new File(this.getDirectoryPath(subdirectory));
+  public String createDirectory() {
+    File f = new File(this.getDirectoryPath());
     if (!f.exists()) {
       if (!f.mkdirs()) Log.e(TAG, "Couldn't create folders");
     }
     return f.getPath();
   }
 
-  public File[] readFiles(Subdirectory subdirectory) {
-    File f = new File(this.createDirectory(subdirectory));
+  public File[] readFiles() {
+    File f = new File(this.createDirectory());
     return f.listFiles();
   }
 }

@@ -1,12 +1,10 @@
 package com.sg2022.we_got_the_moves.ui.training.tabs.playback;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.sg2022.we_got_the_moves.repository.FileRepository;
 
 public class FileViewModel extends AndroidViewModel {

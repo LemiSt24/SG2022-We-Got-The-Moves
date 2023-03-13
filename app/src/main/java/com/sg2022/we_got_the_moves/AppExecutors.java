@@ -16,8 +16,6 @@
 
 package com.sg2022.we_got_the_moves;
 
-
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -28,13 +26,15 @@ public class AppExecutors {
   private static volatile AppExecutors INSTANCE;
 
   private final Executor PoolThread;
+  private final Executor SingleThread;
 
   public AppExecutors() {
-    this(Executors.newFixedThreadPool(NUMBER_OF_THREADS));
+    this(Executors.newFixedThreadPool(NUMBER_OF_THREADS), Executors.newSingleThreadExecutor());
   }
 
-  private AppExecutors(Executor PoolThread) {
+  private AppExecutors(Executor PoolThread, Executor SingleThread) {
     this.PoolThread = PoolThread;
+    this.SingleThread = SingleThread;
   }
 
   public static AppExecutors getInstance() {
@@ -49,6 +49,10 @@ public class AppExecutors {
   }
 
   public Executor getPoolThread() {
-    return PoolThread;
+    return this.PoolThread;
+  }
+
+  public Executor getSingleThread() {
+    return this.SingleThread;
   }
 }

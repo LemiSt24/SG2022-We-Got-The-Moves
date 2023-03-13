@@ -6,25 +6,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsTrophiesBinding;
 import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedWorkoutAndFinishedExercises;
 import com.sg2022.we_got_the_moves.ui.statistics.StatisticsViewModel;
-
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
-
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
-
 
 public class TrophiesFragment extends Fragment {
   private final String TAG = "TrophiesFragment";
@@ -40,8 +35,8 @@ public class TrophiesFragment extends Fragment {
         new StatisticsViewModel.Factory(this.requireActivity().getApplication());
     this.model =
         new ViewModelProvider(this.requireActivity(), factory).get(StatisticsViewModel.class);
-    achievements = new HashMap<String, ACHIEVEMENT>();
-    this.model.userRepository.getUser(new SingleObserver<User>() {
+    achievements = new HashMap<>();
+    this.model.userRepository.getUser(new SingleObserver<>() {
       @Override public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
       @Override
       public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull User user) {

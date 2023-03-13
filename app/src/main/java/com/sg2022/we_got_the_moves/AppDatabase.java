@@ -2,14 +2,12 @@ package com.sg2022.we_got_the_moves;
 
 import android.app.Application;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
@@ -27,7 +25,6 @@ import com.sg2022.we_got_the_moves.db.entity.daos.UserDao;
 import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutDao;
 import com.sg2022.we_got_the_moves.db.entity.daos.WorkoutExerciseDao;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
-
 import java.util.HashMap;
 
 // TODO: Add entity classes here
@@ -44,7 +41,7 @@ import java.util.HashMap;
     },
     version = 1,
     exportSchema = false)
-@TypeConverters({com.sg2022.we_got_the_moves.db.converter.TypeConverters.class})
+@TypeConverters({TypeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
   public static final String DB_NAME = "SGWeGotTheMovesDB";
   private static final String TAG = "AppDatabase";

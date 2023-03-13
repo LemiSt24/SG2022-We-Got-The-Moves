@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-
 import javax.annotation.Nullable;
 
 @Entity(tableName = "Constraint")
@@ -61,7 +60,7 @@ public class Constraint {
       Constraint.TYPE type,
       Constraint.INEQUALITY_TYPE inequalityType,
       Constraint.INSIGNIFICANT_DIMENSION insignificantDimension,
-      Integer compareAngle) {
+      @Nullable Integer compareAngle) {
     this.id = id;
     this.from1 = from1;
     this.to1 = to1;
@@ -87,7 +86,7 @@ public class Constraint {
       Constraint.TYPE type,
       Constraint.INEQUALITY_TYPE inequalityType,
       Constraint.INSIGNIFICANT_DIMENSION insignificantDimension,
-      Integer compareAngle) {
+      @Nullable Integer compareAngle) {
     this.from1 = from1;
     this.to1 = to1;
     this.from2 = from2;

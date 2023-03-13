@@ -3,7 +3,6 @@ package com.sg2022.we_got_the_moves.db.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-
 import java.util.List;
 
 @Entity(

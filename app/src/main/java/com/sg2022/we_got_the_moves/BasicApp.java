@@ -1,7 +1,6 @@
 package com.sg2022.we_got_the_moves;
 
 import android.app.Application;
-
 import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FileRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;

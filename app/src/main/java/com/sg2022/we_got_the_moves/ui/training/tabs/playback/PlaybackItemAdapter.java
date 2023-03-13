@@ -21,13 +21,10 @@ public class PlaybackItemAdapter
   private static final String TAG = "PlaybackItemAdapter";
   public final List<VideoItem> vids;
   private final Context context;
-  private final MuteListener muteListener;
 
-  public PlaybackItemAdapter(
-      @NonNull Context context, List<VideoItem> vids, MuteListener muteListener) {
-    this.vids = vids;
+  public PlaybackItemAdapter(@NonNull Context context, List<VideoItem> items) {
+    this.vids = items;
     this.context = context;
-    this.muteListener = muteListener;
   }
 
   @NonNull
@@ -45,7 +42,7 @@ public class PlaybackItemAdapter
     Glide.with(this.context)
         .load(vids.get(position).uri)
         .centerCrop()
-        .placeholder(R.drawable.placeholder)
+        // .placeholder(R.drawable.placeholder)
         .into(holder.binding.imageviewPlaceholderViditem);
     holder.binding.autoplayerViditem.setUrl(vids.get(position).uri.toString());
     holder.binding.autoplayerViditem.setAnimationTime(500);
@@ -55,18 +52,6 @@ public class PlaybackItemAdapter
     } else {
       holder.binding.imageviewVolumeViditem.setImageResource(R.drawable.ic_volume_on_white_24dp);
     }
-    /*    holder.binding.imageviewVolumeViditem.setOnClickListener(
-    v -> {
-      holder.binding.autoplayerViditem.setMute(!holder.binding.autoplayerViditem.isMute());
-      if (holder.binding.autoplayerViditem.isMute()) {
-        holder.binding.imageviewVolumeViditem.setImageResource(
-            R.drawable.ic_volume_off_white_24dp);
-      } else {
-        holder.binding.imageviewVolumeViditem.setImageResource(
-            R.drawable.ic_volume_on_white_24dp);
-      }
-      muteListener.onMute(holder.getBindingAdapterPosition());
-    });*/
     holder.binding.autoplayerViditem.setPlayerListener(
         new PlayerListener() {
           @Override

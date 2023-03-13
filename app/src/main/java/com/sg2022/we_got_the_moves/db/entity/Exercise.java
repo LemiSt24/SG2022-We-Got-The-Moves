@@ -4,12 +4,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-
 import com.sg2022.we_got_the_moves.R;
-
 import java.util.List;
 import java.util.Objects;
-
 import javax.annotation.Nullable;
 
 @Entity(tableName = "Exercise")

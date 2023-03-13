@@ -1,19 +1,15 @@
 package com.sg2022.we_got_the_moves.repository;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
-
 import com.sg2022.we_got_the_moves.AppDatabase;
 import com.sg2022.we_got_the_moves.AppExecutors;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.daos.ConstraintDao;
 import com.sg2022.we_got_the_moves.db.entity.daos.ExerciseStateDao;
-
-import java.util.List;
-
 import io.reactivex.rxjava3.core.Single;
+import java.util.List;
 
 public class ConstraintRepository {
 

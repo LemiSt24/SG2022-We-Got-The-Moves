@@ -121,15 +121,12 @@ dependencies {
     //Youtube Player
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0'
 
-    //Video Recording
-    implementation 'com.github.HBiSoft:HBRecorder:2.0.5'
-    implementation 'cn.ezandroid:EZFilter:2.0.9'
-    implementation 'cn.ezandroid:EZPermission:1.1.2'
-
 
     //Video Playback
     def exoplayerVersion = '2.9.6'
-    implementation 'com.google.android.exoplayer:exoplayer-core:exoplayerVersion'
-    implementation 'com.google.android.exoplayer:exoplayer:exoplayerVersion'
+    //noinspection GradleDependency
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
+    //noinspection GradleDependency
+    implementation "com.google.android.exoplayer:exoplayer:$exoplayerVersion"
     implementation 'com.github.kishansinghpanwar:AutoPlayer:v1.0.0'
 }

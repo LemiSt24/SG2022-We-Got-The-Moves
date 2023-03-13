@@ -90,8 +90,9 @@ public class ExerciseListAdapter
       btn.setId(buttonNumber);
     if (wee.exercise.isCountable()) {
       btn.setText(String.valueOf(wee.workoutExercise.amount.get(buttonNumber)));
-    } else
+    } else {
       btn.setText(TimeFormatter.formatTimeHhmmss(wee.workoutExercise.amount.get(buttonNumber)));
+    }
 
       btn.setOnClickListener(v -> showAmountDialog(holder, wee, v.getId()));
       holder.binding.linearLayoutButtonsAmountExerciseItem.addView(btn);

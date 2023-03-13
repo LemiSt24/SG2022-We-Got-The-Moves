@@ -63,8 +63,7 @@ public class Camera2Helper extends CameraHelper {
       new CameraDevice.StateCallback() {
         @Override
         public void onOpened(CameraDevice camera) {
-          // This is called when the camera is open
-          Log.e(TAG, "onOpened");
+          Log.i(TAG, "onOpened");
           cameraDevice = camera;
           createCameraPreview();
           if (onCameraStartedListener != null) {
@@ -187,7 +186,6 @@ public class Camera2Helper extends CameraHelper {
                       break;
                     }
                   }
-                  Log.d(TAG, "Opening front camera");
                 } else {
                   for (String cameraIdListElement : manager.getCameraIdList()) {
                     CameraCharacteristics cameraCharacteristics =
@@ -197,7 +195,6 @@ public class Camera2Helper extends CameraHelper {
                       break;
                     }
                   }
-                  Log.d(TAG, "Opening back camera");
                 }
                 Log.e(TAG, "camera is open");
 

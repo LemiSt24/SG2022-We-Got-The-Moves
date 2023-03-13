@@ -83,5 +83,12 @@
     <string name="stop">STOP</string>
     <string name="start">Start</string>
     <string name="all_correct">all correct</string>
+    <string name="please_grant_camera_access">Please grant camera access</string>
+    <string name="training_paused">Training Paused</string>
+    <string name="skip">Skip</string>
+    <string name="finish">Finish</string>
+    <string name="exercise">exercise</string>
+    <string name="_0_x">0 / X</string>
+    <string name="continue_text">continue</string>
 
 </resources>

@@ -31,10 +31,7 @@ public class PlaybackFragment extends Fragment {
   private PlaybackItemAdapter playbackItemAdapter;
   private LiveData<List<VideoItem>> data;
 
-  private boolean isMute;
-
   public PlaybackFragment() {
-    this.isMute = false;
     this.permissionActivityLauncher =
         this.registerForActivityResult(
             new ActivityResultContracts.RequestMultiplePermissions(),
@@ -77,19 +74,7 @@ public class PlaybackFragment extends Fragment {
     FragmentTrainingPlaybackBinding binding =
         DataBindingUtil.inflate(inflater, R.layout.fragment_training_playback, container, false);
     LinearLayoutManager layoutManager = new LinearLayoutManager(this.requireContext());
-    this.playbackItemAdapter =
-        new PlaybackItemAdapter(
-            this.requireContext(),
-            new ArrayList<>(),
-            position -> {
-              isMute = !isMute;
-              for (int i = 0; i < playbackItemAdapter.vids.size(); i++) {
-                playbackItemAdapter.vids.get(i).mute = isMute;
-                if (i != position) {
-                  playbackItemAdapter.notifyItemChanged(i);
-                }
-              }
-            });
+    this.playbackItemAdapter = new PlaybackItemAdapter(this.requireContext(), new ArrayList<>());
     binding.recyclerviewReplays.setLayoutManager(layoutManager);
     binding.recyclerviewReplays.setAdapter(playbackItemAdapter);
     this.autoPlayerManager.setAutoPlayerId(R.id.autoplayer_viditem);

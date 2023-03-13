@@ -1,21 +1,17 @@
 package com.sg2022.we_got_the_moves.repository;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
-
 import com.sg2022.we_got_the_moves.AppDatabase;
 import com.sg2022.we_got_the_moves.AppExecutors;
 import com.sg2022.we_got_the_moves.db.entity.User;
 import com.sg2022.we_got_the_moves.db.entity.daos.UserDao;
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
-
-import java.util.HashMap;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import java.util.HashMap;
 
 public class UserRepository {
   private static final String TAG = "UserRepository";
@@ -77,15 +73,6 @@ public class UserRepository {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer);
   }
-
-  /*
-  public void getTrophies(SingleObserver<Map<String, TrophiesFragment.ACHIEVEMENT>> observer){
-    this.userDao
-        .getTrophiesMap()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(observer);
-  }*/
 
   public void updateTrophies(HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies){
     this.executors.getPoolThread().execute(() -> this.userDao.updateTrophies(trophies));

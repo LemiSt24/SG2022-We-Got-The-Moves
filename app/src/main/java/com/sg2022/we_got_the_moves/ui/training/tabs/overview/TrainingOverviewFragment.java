@@ -21,11 +21,6 @@ import com.sg2022.we_got_the_moves.util.PermissionsChecker;
 public class TrainingOverviewFragment extends Fragment {
 
   private static final String TAG = "TrainingOverviewFragment";
-  public static final String WORKOUT_TITLE = "WORKOUT_TITLE";
-  public static final String WORKOUT_ID = "WORKOUT_ID";
-  public static final String RECORDING_FLAG = "RECORDING_FLAG";
-  public static final String CAMERA_FACING_FLAG = "CAMERA_FACING_FLAG";
-  public static final String TEXT_TO_SPEECH_FLAG = "TEXT_TO_SPEECH_FLAG";
   private final String[] recorderPermissions = {
     Manifest.permission.RECORD_AUDIO,
     Manifest.permission.FOREGROUND_SERVICE,
@@ -40,7 +35,6 @@ public class TrainingOverviewFragment extends Fragment {
   private AllWorkoutsAdapter adapterAllWorkouts;
   private RecentWorkoutsAdapter adapterLastWorkouts;
   private ActivityResultLauncher<String[]> permissionActivityLauncher;
-  private ActivityResultLauncher<Intent> intentActivityResultLauncher;
   private FragmentTrainingOverviewBinding binding;
   private Intent intent;
 

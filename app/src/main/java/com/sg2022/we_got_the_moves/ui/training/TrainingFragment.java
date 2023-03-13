@@ -12,7 +12,6 @@ import com.sg2022.we_got_the_moves.databinding.FragmentTrainingBinding;
 import com.sg2022.we_got_the_moves.ui.CustomFragmentStateAdapter;
 import com.sg2022.we_got_the_moves.ui.training.tabs.overview.TrainingOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.training.tabs.playback.PlaybackFragment;
-import com.sg2022.we_got_the_moves.ui.training.tabs.recording.RecordingFragment;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,10 +24,8 @@ public class TrainingFragment extends Fragment {
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    this.tabFragments =
-        Arrays.asList(
-            TrainingOverviewFragment.class, RecordingFragment.class, PlaybackFragment.class);
-    this.tabLabels = Arrays.asList("Training Overview", "Test Recorder", "Playbacks");
+    this.tabFragments = Arrays.asList(TrainingOverviewFragment.class, PlaybackFragment.class);
+    this.tabLabels = Arrays.asList("Training Overview", "Playbacks");
   }
 
   public View onCreateView(

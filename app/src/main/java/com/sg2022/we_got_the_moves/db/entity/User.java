@@ -3,9 +3,7 @@ package com.sg2022.we_got_the_moves.db.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
 import com.sg2022.we_got_the_moves.ui.statistics.tabs.TrophiesFragment;
-
 import java.util.HashMap;
 
 @Entity(tableName = "User")
