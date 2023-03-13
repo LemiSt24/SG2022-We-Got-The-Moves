@@ -238,7 +238,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
     startTime = new Date(System.currentTimeMillis());
 
-    classifier = new PoseClassifier(getApplicationContext(), 20, 10, "dataset.csv");
+    classifier = new PoseClassifier();
 
     previewDisplayView = new SurfaceView(this);
     setupPreviewDisplayView();
@@ -330,9 +330,7 @@ public class MediapipeActivity extends AppCompatActivity {
               }
             }
 
-            // Perform classification.
-            // The classifier stores the result, it can be retrieved from get_result and used for
-            // further analysis
+            // Convert the landmarks into their normalized form and store them in the classifier object
             classifier.classify(landmarks);
 
             if (exercises.size() != 0) {
@@ -874,7 +872,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
               String filename = e.name.toLowerCase() + ".csv";
               Log.println(Log.DEBUG, "Test", filename);
-              classifier = new PoseClassifier(getApplicationContext(), 20, 10, filename);
+              classifier = new PoseClassifier();
 
               pause_countdown.setOnChronometerTickListener(
                       chronometer -> {

@@ -100,7 +100,7 @@ public class DataGenerator {
   };
 
   public static String[] workoutNames = {
-    "Power", "Basic", "Relaxing", "Heavy", "Endurance", "Strength", "Agility", "Training"
+    "Full Body Power", "Full Body Endurance", "Quick Upper Body", "Quick Core", "Quick Legs"
   };
 
   public static ExerciseState[] states = {
@@ -109,7 +109,7 @@ public class DataGenerator {
     new ExerciseState(
         0,
         1,
-        new ArrayList<>(Arrays.asList(1L, 8L, 13L)),
+        new ArrayList<>(Arrays.asList(1L, 8L, 12L)),
         "left_ankle,right_ankle",
         "left_knee,right_knee",
         "left_hip,right_hip",
@@ -276,6 +276,188 @@ public class DataGenerator {
     List<Exercise> DummyExercises = getDummyExercises();
     List<WorkoutExercise> we = new ArrayList<>();
     for (int i = 0; i < DummyWorkouts.size(); ++i) {
+      
+      switch (i)
+      {
+        case 0: // Full Body Power
+          // Planks 60 Sek
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(5).id,
+                  new ArrayList<>(List.of(60)),
+                  0));
+          // 5 x 5 Squats
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(0).id,
+                  new ArrayList<>(List.of(5,5,5,5,5)),
+                  1));
+          // 5 x 5 Sit-Ups
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(4).id,
+                  new ArrayList<>(List.of(5,5,5,5,5)),
+                  2));
+          // 5 x 5 Push-Ups
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(3).id,
+                  new ArrayList<>(List.of(5,5,5,5,5)),
+                  1));
+          // 5 x 5 Bicep Curls
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(6).id,
+                  new ArrayList<>(List.of(5,5,5,5,5)),
+                  1));
+          break;
+        case 1: // Full Body Endurance
+          // Planks 60 Sek
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(5).id,
+                  new ArrayList<>(List.of(60)),
+                  0));
+          // 15 Push-Ups
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(3).id,
+                  new ArrayList<>(List.of(15)),
+                  1));
+          // 15 Mountain Climbers
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(2).id,
+                  new ArrayList<>(List.of(15)),
+                  2));
+          // 15 Push-Ups
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(3).id,
+                  new ArrayList<>(List.of(15)),
+                  3));
+          // 15 Mountain Climbers
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(2).id,
+                  new ArrayList<>(List.of(15)),
+                  4));
+          // 2 * 60 Sek Side Planks (jede Seite)
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(1).id,
+                  new ArrayList<>(List.of(60, 60)),
+                  5));
+          // 15 Squats
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(0).id,
+                  new ArrayList<>(List.of(15)),
+                  6));
+          // 15 Sit-Ups
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(4).id,
+                  new ArrayList<>(List.of(15)),
+                  7));
+          // 15 Squats
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(0).id,
+                  new ArrayList<>(List.of(15)),
+                  8));
+          // 15 Sit-Ups
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(4).id,
+                  new ArrayList<>(List.of(15)),
+                  9));
+          // Planks 60 Sek
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(5).id,
+                  new ArrayList<>(List.of(60)),
+                  10));
+          break;
+        case 2: // Quick Upper Body
+          // 5 x 5 Push-Ups
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(3).id,
+                  new ArrayList<>(List.of(5,5,5,5,5)),
+                  0));
+          // 5 x 5 Bicep Curls
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(6).id,
+                  new ArrayList<>(List.of(5,5,5,5,5)),
+                  1));
+          break;
+        case 3: // Quick Core
+          // 60 Sek Plank
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(5).id,
+                  new ArrayList<>(List.of(60)),
+                  0));
+          // 5 x 5 Sit-Ups
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(4).id,
+                  new ArrayList<>(List.of(5,5,5,5,5)),
+                  1));
+          // 5 x 5 Romanian Deadlifts
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(7).id,
+                  new ArrayList<>(List.of(5,5,5,5,5)),
+                  2));
+          break;
+        case 4: // Quick Legs
+          // 60 Sek Plank
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(5).id,
+                  new ArrayList<>(List.of(60)),
+                  0));
+          // 5 x 5 Squats
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(0).id,
+                  new ArrayList<>(List.of(5,5,5,5,5)),
+                  1));
+          // 5 x 5 Mountain Climbers
+          we.add(
+              new WorkoutExercise(
+                  DummyWorkouts.get(i).id,
+                  DummyExercises.get(2).id,
+                  new ArrayList<>(List.of(5,5,5,5,5)),
+                  2));
+      }
+
       for (int j = 0; j < DummyExercises.size(); ++j) {
         we.add(
             new WorkoutExercise(
