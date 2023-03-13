@@ -93,5 +93,6 @@
     <string name="title_tutorial_settings">Settings Tutorial</string>
     <string name="tutorial">tutorial</string>
     <string name="is_accessed">is_accessed</string>
+    <string name="empty_workout_error">"You are trying to start an empty workout. Please press cancel!"</string>
 
 </resources>

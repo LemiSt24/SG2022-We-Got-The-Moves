@@ -148,6 +148,8 @@ public class LastWorkoutsAdapter
                     exercisesString += amount + " s " + e.exercise.name + "\n";
                   }
               }
+              if (exercisesString == "")
+                exercisesString = fragment.getString(R.string.empty_workout_error);
               binding.textviewStartWorkoutExercises.setText(exercisesString);
               notifyDataSetChanged();
             });

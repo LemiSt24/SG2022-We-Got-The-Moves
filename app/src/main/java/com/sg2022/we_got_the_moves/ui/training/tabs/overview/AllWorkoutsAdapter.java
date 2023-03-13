@@ -1,5 +1,6 @@
 package com.sg2022.we_got_the_moves.ui.training.tabs.overview;
 
+
 import android.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ public class AllWorkoutsAdapter
       @Override
       public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Workout> workouts) {
         workoutList = workouts;
+        notifyDataSetChanged();
         Log.println(Log.DEBUG, TAG, workouts.toString());
       }
 
@@ -123,6 +125,8 @@ public class AllWorkoutsAdapter
                             exercisesString += amount + " s " + e.exercise.name + "\n";
                           }
                       }
+                      if (exercisesString == "")
+                        exercisesString = fragment.getString(R.string.empty_workout_error);
                       binding.textviewStartWorkoutExercises.setText(exercisesString);
                       notifyDataSetChanged();
                     });
