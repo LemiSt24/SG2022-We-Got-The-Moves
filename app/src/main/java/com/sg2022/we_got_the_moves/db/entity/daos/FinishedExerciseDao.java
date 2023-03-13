@@ -24,34 +24,14 @@ public interface FinishedExerciseDao {
   @Insert(onConflict = REPLACE)
   void insert(List<FinishedExercise> l);
 
-  @Insert(onConflict = REPLACE)
-  Single<Long> insertSingle(FinishedExercise fe);
-
-  @Insert(onConflict = REPLACE)
-  Single<List<Long>> insertAllSingle(List<FinishedExercise> l);
-
   @Update(onConflict = REPLACE)
   void update(FinishedExercise fe);
 
   @Delete
   void delete(FinishedExercise fe);
 
-  @Query(
-      "SELECT * FROM FinishedExercise WHERE FinishedExercise.exerciseId = :exerciseId AND FinishedExercise.finishedWorkoutId = :finishedWorkoutId")
-  Single<FinishedExercise> getSingle(long finishedWorkoutId, long exerciseId);
-
-  @Query(
-      "SELECT * FROM FinishedExercise WHERE FinishedExercise.finishedWorkoutId = :finishedWorkoutId")
-  Single<List<FinishedExercise>> getAllByFinishedWorkoutIdSingle(long finishedWorkoutId);
-
-  @Query("SELECT * FROM FinishedExercise WHERE FinishedExercise.exerciseId = :exerciseId")
-  Single<List<FinishedExercise>> getAllByExerciseIdSingle(long exerciseId);
-
   @Query("SELECT SUM(fe.amount) FROM FinishedExercise fe WHERE fe.exerciseId = :exerciseId")
   Single<List<Integer>> getTotalReps(long exerciseId);
-
-  @Query("SELECT SUM(fe.duration) FROM FinishedExercise fe WHERE fe.exerciseId = :exerciseId")
-  Single<List<Duration>> getTotalDuration(long exerciseId);
 
   @Query("SELECT COUNT(*) FROM (SELECT fe.exerciseId FROM FinishedExercise fe WHERE fe.duration > 0 GROUP BY fe.exerciseId)")
   Single<List<Integer>> getNumberDistinctFinishedExercises();

@@ -39,10 +39,6 @@ public interface UserDao {
   @Query("SELECT timeBetweenExercises FROM USER LIMIT 1")
   Single<Integer> getTimeBetweenExercise();
 
-  /*
-  @Query("Select trophies FROM User LIMIT 1")
-  Single<Map<String, TrophiesFragment.ACHIEVEMENT>> getTrophiesMap(); */
-
   @Query("UPDATE User set trophies = :trophies")
   void updateTrophies(HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies);
 }

@@ -27,9 +27,6 @@ public interface WorkoutExerciseDao {
   @Insert(onConflict = REPLACE)
   void insertAll(List<WorkoutExercise> ws);
 
-  @Transaction
-  @Insert(onConflict = REPLACE)
-  Single<List<Long>> insertAllSingle(List<WorkoutExercise> ws);
 
   @Update(onConflict = REPLACE)
   void update(WorkoutExercise e);
@@ -40,13 +37,6 @@ public interface WorkoutExerciseDao {
   @Transaction
   @Delete
   void deleteAll(List<WorkoutExercise> wes);
-
-  @Query("SELECT * FROM WorkoutExercise")
-  LiveData<List<WorkoutExercise>> getAllWorkoutExercise();
-
-  @Query(
-      "SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId = :workoutId AND WorkoutExercise.exerciseId = :exerciseId")
-  LiveData<WorkoutExercise> getWorkoutExercise(long workoutId, long exerciseId);
 
   @Query("SELECT * FROM WorkoutExercise WHERE WorkoutExercise.workoutId = :workoutId order by orderNum asc")
   Single<List<WorkoutExercise>> getAllWorkoutExerciseSingle(long workoutId);

@@ -42,10 +42,6 @@ public class UserRepository {
     return INSTANCE;
   }
 
-  public void insertUser(User u) {
-    this.executors.getPoolThread().execute(() -> this.userDao.insert(u));
-  }
-
   public LiveData<User> getUser() {
     return this.userDao.getUser();
   }
@@ -86,14 +82,6 @@ public class UserRepository {
             .subscribe(observer);
   }
 
-  /*
-  public void getTrophies(SingleObserver<Map<String, TrophiesFragment.ACHIEVEMENT>> observer){
-    this.userDao
-        .getTrophiesMap()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(observer);
-  }*/
 
   public void updateTrophies(HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies){
     this.executors.getPoolThread().execute(() -> this.userDao.updateTrophies(trophies));

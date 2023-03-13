@@ -44,14 +44,6 @@ public interface ExerciseDao {
   LiveData<List<Exercise>> getAllExercises(long workoutId);
 
   @Transaction
-  @Query(
-      "SELECT Exercise.* FROM Exercise JOIN WorkoutExercise ON (Exercise.id == WorkoutExercise.exerciseId) WHERE WorkoutExercise.workoutId == :workoutId")
-  Single<List<Exercise>> getAllExercisesSingle(long workoutId);
-
-  @Query("SELECT * FROM Exercise WHERE Exercise.id = :exerciseId")
-  LiveData<Exercise> getExercise(long exerciseId);
-
-  @Transaction
   @Query("SELECT * FROM Exercise")
   Single<List<ExerciseAndFinishedExercises>> getAllFinishedExercisesSingle();
 

@@ -84,14 +84,6 @@ public class WorkoutsRepository {
     return this.workoutDao.getAllWorkouts();
   }
 
-  public void getAllWorkouts(SingleObserver<List<Workout>> observer) {
-    this.workoutDao
-        .getAllWorkoutsSingle()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(observer);
-  }
-
   public LiveData<Workout> getWorkout(long id) {
     return this.workoutDao.getWorkout(id);
   }
@@ -108,14 +100,6 @@ public class WorkoutsRepository {
             .subscribe(observer);
   }
 
-  public void getAllExercises(int workoutId, SingleObserver<List<Exercise>> observer) {
-    this.exerciseDao
-        .getAllExercisesSingle(workoutId)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(observer);
-  }
-
   public LiveData<List<Exercise>> getAllExercises() {
     return this.exerciseDao.getAllExercises();
   }
@@ -126,10 +110,6 @@ public class WorkoutsRepository {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(observer);
-  }
-
-  public LiveData<Exercise> getExercise(long exerciseId) {
-    return this.exerciseDao.getExercise(exerciseId);
   }
 
   public LiveData<List<WorkoutExerciseAndExercise>> getAllWorkoutExerciseAndExercise(
@@ -186,32 +166,8 @@ public class WorkoutsRepository {
             });
   }
 
-  public void insertWorkoutExercise(List<WorkoutExercise> l, SingleObserver<List<Long>> observer) {
-    this.workoutExerciseDao
-        .insertAllSingle(l)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(observer);
-  }
-
   public void deleteWorkout(Workout w) {
     this.executors.getPoolThread().execute(() -> this.workoutDao.delete(w));
-  }
-
-  public void deleteWorkouts(List<Workout> ws) {
-    this.executors.getPoolThread().execute(() -> this.workoutDao.delete(ws));
-  }
-
-  public void deleteWorkoutExercise(WorkoutExercise we) {
-    this.executors.getPoolThread().execute(() -> this.workoutExerciseDao.delete(we));
-  }
-
-  public void deleteWorkoutExercises(List<WorkoutExercise> wes) {
-    this.executors.getPoolThread().execute(() -> this.workoutExerciseDao.deleteAll(wes));
-  }
-
-  public LiveData<WorkoutExercise> getWorkoutExercise(long workoutId, long exerciseId) {
-    return this.workoutExerciseDao.getWorkoutExercise(workoutId, exerciseId);
   }
 
   public LiveData<List<WorkoutAndWorkoutExercises>> getAllWorkoutsWithExerciseAndWorkoutExercise() {

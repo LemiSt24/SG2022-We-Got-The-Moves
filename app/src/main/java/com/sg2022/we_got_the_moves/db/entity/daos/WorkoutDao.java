@@ -29,9 +29,6 @@ public interface WorkoutDao {
   @Insert(onConflict = REPLACE)
   void insertAll(List<Workout> ws);
 
-  @Insert(onConflict = REPLACE)
-  Single<List<Long>> insertAllSingle(List<Workout> ws);
-
   @Update(onConflict = REPLACE)
   void update(Workout w);
 
@@ -44,14 +41,8 @@ public interface WorkoutDao {
   @Query("SELECT * FROM Workout WHERE Workout.id = :workoutId")
   LiveData<Workout> getWorkout(long workoutId);
 
-  @Query("SELECT * FROM Workout WHERE Workout.id = :workoutId")
-  Single<Workout> getWorkoutSingle(long workoutId);
-
   @Query("SELECT * FROM Workout")
   LiveData<List<Workout>> getAllWorkouts();
-
-  @Query("SELECT * FROM Workout")
-  Single<List<Workout>> getAllWorkoutsSingle();
 
   @Transaction
   @Query("SELECT * FROM Workout")

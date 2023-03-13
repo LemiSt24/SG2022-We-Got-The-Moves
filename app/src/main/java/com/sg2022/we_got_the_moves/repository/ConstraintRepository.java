@@ -46,22 +46,6 @@ public class ConstraintRepository {
     return INSTANCE;
   }
 
-  public void insertExerciseState(ExerciseState es) {
-    this.executors.getPoolThread().execute(() -> this.exerciseStateDao.insert(es));
-  }
-
-  public void insertExerciseStates(List<ExerciseState> l) {
-    this.executors.getPoolThread().execute(() -> this.exerciseStateDao.insert(l));
-  }
-
-  public void insertConstraint(Constraint c) {
-    this.executors.getPoolThread().execute(() -> this.constraintDao.insert(c));
-  }
-
-  public void insertConstraints(List<Constraint> l) {
-    this.executors.getPoolThread().execute(() -> this.constraintDao.insert(l));
-  }
-
   public void getConstraint(Long id, SingleObserver<Constraint> observer) {
     this.constraintDao
             .getSingle(id)

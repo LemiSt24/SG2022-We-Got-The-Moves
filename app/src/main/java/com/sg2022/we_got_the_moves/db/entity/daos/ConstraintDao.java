@@ -29,9 +29,6 @@ public interface ConstraintDao {
   @Delete
   void delete(Constraint c);
 
-  @Query("SELECT * FROM [Constraint]") // square brackets for escaping reserved keywords
-  Single<List<Constraint>> getAllSingle();
-
-  @Query("SELECT * FROM [Constraint] WHERE [Constraint].id == :constraintId")
+  @Query("SELECT * FROM [Constraint] WHERE [Constraint].id == :constraintId") // square brackets for escaping reserved keywords
   Single<Constraint> getSingle(Long constraintId);
 }
