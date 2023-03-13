@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -16,13 +15,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.google.android.exoplayer2.C;
 import com.player.autoplayer.AutoPlayerManager;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentTrainingPlaybackBinding;
-import com.sg2022.we_got_the_moves.io.VidItem;
-
+import com.sg2022.we_got_the_moves.io.VideoItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +30,7 @@ public class PlaybackFragment extends Fragment {
   private AutoPlayerManager autoPlayerManager;
   private FileViewModel model;
   private PlaybackItemAdapter playbackItemAdapter;
-  private LiveData<List<VidItem>> data;
+  private LiveData<List<VideoItem>> data;
 
   private boolean isMute;
 
@@ -132,10 +129,10 @@ public class PlaybackFragment extends Fragment {
 
   private static class VidDiffUtil extends DiffUtil.Callback {
 
-    private final List<VidItem> oldList;
-    private final List<VidItem> newList;
+    private final List<VideoItem> oldList;
+    private final List<VideoItem> newList;
 
-    public VidDiffUtil(List<VidItem> oldList, List<VidItem> newList) {
+    public VidDiffUtil(List<VideoItem> oldList, List<VideoItem> newList) {
       this.oldList = oldList;
       this.newList = newList;
     }

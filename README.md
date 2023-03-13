@@ -16,13 +16,16 @@ Project-)Praktikum.
 
 ## Features
 
-- Camera tracking of movements (via [Google's mediapipe](https://google.github.io/mediapipe/))
+- Camera tracking of movements during a selected workout (
+  via [Google's mediapipe](https://google.github.io/mediapipe/))
 - Quality measurement for exercises during workout sessions
-- Statistics for user and exercises
+- Statistics for user's calories (daily & calendar) and exercises
 - Profile settings
-- Tutorials for exercises (e.g.[darebee](https://darebee.com/))
+- Tutorial for the app (as manual)
+- Tutorials for exercises
 - Workout planner
-- Video playback recording
+- Training video replays
+- Training video recording (Future work)
 
 ## Demo
 
@@ -31,14 +34,6 @@ Android [here](https://github.com/LemiSt24/SG2022-We-Got-The-Moves/releases/tag/
 app can run on phones with Android 9.0 or newer installed and is not running on emulators in Android
 Studio due to problems with OpenGL. Currently when you start a training, the camera sometimes
 doesn't automatically start. If this happens simply rotate your device or restart the training.
-
-## Github repository
-
-Alternatively, you can clone this project using [Git](https://git-scm.com/) into target folder:
-
-```
-$ git clone https://github.com/LemiSt24/SG2022-We-Got-The-Moves.git
-```
 
 ## License
 

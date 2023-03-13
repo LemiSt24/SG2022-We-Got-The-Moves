@@ -8,13 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
@@ -25,12 +23,12 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentStatisticsWeeklyBinding;
 import com.sg2022.we_got_the_moves.db.entity.relation.FinishedWorkoutAndFinishedExercises;
-import com.sg2022.we_got_the_moves.ui.TimeFormatUtil;
+import com.sg2022.we_got_the_moves.ui.TimeFormatHelper;
 import com.sg2022.we_got_the_moves.ui.statistics.StatisticsViewModel;
-
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -40,9 +38,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
 import kotlin.Pair;
 
 public class WeeklyOverviewFragment extends Fragment {
@@ -52,11 +47,7 @@ public class WeeklyOverviewFragment extends Fragment {
   private StatisticsViewModel model;
   private MutableLiveData<BarDataSet> barDataSet;
   private MutableLiveData<Date> currentDate;
-
   private DisplayMetrics displayMetrics;
-
-  private int black;
-  private int white;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,8 +59,6 @@ public class WeeklyOverviewFragment extends Fragment {
     this.barDataSet = new MutableLiveData<>(new BarDataSet(new ArrayList<>(), "Data"));
     this.currentDate = new MutableLiveData<>(new Date());
     this.displayMetrics = new DisplayMetrics();
-    black = getResources().getColor(R.color.black);
-    white = getResources().getColor(R.color.white);
     requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
   }
 
@@ -77,10 +66,11 @@ public class WeeklyOverviewFragment extends Fragment {
       @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     this.binding = FragmentStatisticsWeeklyBinding.inflate(inflater, container, false);
     this.binding.imagebtnCalenderRightStatisticsWeekly.setOnClickListener(
-        v -> currentDate.setValue(TimeFormatUtil.dateAdjustedByWeeks(currentDate.getValue(), 1)));
+        v -> currentDate.setValue(TimeFormatHelper.dateAdjustedByWeeks(currentDate.getValue(), 1)));
 
     this.binding.imagebtnCalenderLeftStatisticsWeekly.setOnClickListener(
-        v -> currentDate.setValue(TimeFormatUtil.dateAdjustedByWeeks(currentDate.getValue(), -1)));
+        v ->
+            currentDate.setValue(TimeFormatHelper.dateAdjustedByWeeks(currentDate.getValue(), -1)));
 
     this.setTotalTime();
     this.currentDate.observe(
@@ -96,12 +86,12 @@ public class WeeklyOverviewFragment extends Fragment {
 
   private void loadData(Date date) {
     final List<Pair<DayOfWeek, Pair<Date, Date>>> intervals =
-        TimeFormatUtil.weekOfDayIntervals(date);
-    final int weekDay = TimeFormatUtil.dateToWeekDay(date);
+        TimeFormatHelper.weekOfDayIntervals(date);
+    final int weekDay = TimeFormatHelper.dateToWeekDay(date);
     final Date startDayOfWeekBegin = intervals.get(0).getSecond().getFirst();
     final Date finalDayOfWeekEnd = intervals.get(6).getSecond().getSecond();
-    Pair<Integer, Integer> cwDate = TimeFormatUtil.dateToYearAndCalendarWeek(date);
-    Pair<Integer, Integer> cwNow = TimeFormatUtil.dateToYearAndCalendarWeek(new Date());
+    Pair<Integer, Integer> cwDate = TimeFormatHelper.dateToYearAndCalendarWeek(date);
+    Pair<Integer, Integer> cwNow = TimeFormatHelper.dateToYearAndCalendarWeek(new Date());
     boolean isCurrentCw =
         Objects.equals(cwDate.getFirst(), cwNow.getFirst())
             && Objects.equals(cwDate.getSecond(), cwNow.getSecond());
@@ -175,15 +165,15 @@ public class WeeklyOverviewFragment extends Fragment {
                         .getValue()
                         .setValueTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
-                    long totalWeektime =
+                    long totalWeekTime =
                         totalWorkoutDurationOnWeekdays.stream()
                             .reduce(0L, (result, e) -> result + e.getSecond(), Long::sum);
-                    long avgWeektime = totalWeektime / weekDay;
+                    long avgWeekTime = totalWeekTime / weekDay;
 
                     binding.textviewValueTotalWeekStatisticsWeekly.setText(
-                        TimeFormatUtil.formatTimeHhmmss((int) totalWeektime));
+                        TimeFormatHelper.formatTimeHhmmss((int) totalWeekTime));
                     binding.textviewValueAverageStatisticsWeekly.setText(
-                        TimeFormatUtil.formatTimeHhmmss((int) avgWeektime));
+                        TimeFormatHelper.formatTimeHhmmss((int) avgWeekTime));
 
                     BarData barData = new BarData(barDataSet.getValue());
                     barData.setValueFormatter(
@@ -192,7 +182,7 @@ public class WeeklyOverviewFragment extends Fragment {
                           public String getBarLabel(BarEntry barEntry) {
                             return barEntry.getY() == 0f
                                 ? ""
-                                : TimeFormatUtil.formatTimeHhmmss((int) barEntry.getY());
+                                : TimeFormatHelper.formatTimeHhmmss((int) barEntry.getY());
                           }
                         });
                     BarChart bc = binding.barChartStatisticsWeekly;
@@ -223,7 +213,7 @@ public class WeeklyOverviewFragment extends Fragment {
 
   private void disableRightBtnCheck(Date date) {
     this.binding.imagebtnCalenderRightStatisticsWeekly.setEnabled(
-        !TimeFormatUtil.getDayInterval(date).equals(TimeFormatUtil.getDayInterval(new Date())));
+        !TimeFormatHelper.getDayInterval(date).equals(TimeFormatHelper.getDayInterval(new Date())));
     if (!this.binding.imagebtnCalenderRightStatisticsWeekly.isEnabled()) {
       this.binding.imagebtnCalenderRightStatisticsWeekly.setVisibility(View.INVISIBLE);
     } else {
@@ -232,7 +222,7 @@ public class WeeklyOverviewFragment extends Fragment {
   }
 
   private void setupCW(Date date) {
-    Pair<Integer, Integer> p = TimeFormatUtil.dateToYearAndCalendarWeek(date);
+    Pair<Integer, Integer> p = TimeFormatHelper.dateToYearAndCalendarWeek(date);
     this.binding.textviewCalenderStatisticsWeekly.setText(
         String.format(Locale.US, "%04d CW%02d", p.getFirst(), p.getSecond()));
   }
@@ -246,7 +236,7 @@ public class WeeklyOverviewFragment extends Fragment {
           @Override
           public void onSuccess(@NonNull Duration duration) {
             binding.textviewValueTotalStatistics.setText(
-                TimeFormatUtil.formatTimeHhmmss((int) duration.getSeconds()));
+                TimeFormatHelper.formatTimeHhmmss((int) duration.getSeconds()));
           }
 
           @Override
@@ -269,7 +259,7 @@ public class WeeklyOverviewFragment extends Fragment {
     bc.setExtraLeftOffset(20f);
     bc.setTouchEnabled(false);
     bc.setVerticalScrollBarEnabled(true);
-    bc.setBackgroundColor(black);
+    bc.setBackgroundColor(Color.BLACK);
 
     YAxis yAxisR = bc.getAxisRight();
     yAxisR.setEnabled(false);
@@ -277,21 +267,21 @@ public class WeeklyOverviewFragment extends Fragment {
     XAxis xAxis = bc.getXAxis();
     xAxis.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
     xAxis.setTextSize(14f);
-    xAxis.setTextColor(white);
+    xAxis.setTextColor(Color.WHITE);
     xAxis.setSpaceMax(1f);
     xAxis.setValueFormatter(
         new IndexAxisValueFormatter(
-            EnumSet.allOf(TimeFormatUtil.DAY.class).stream()
+            EnumSet.allOf(TimeFormatHelper.DAY.class).stream()
                 .map(Enum::name)
                 .collect(Collectors.toList())));
 
     YAxis yAxisL = bc.getAxisLeft();
-    yAxisL.setTextColor(white);
+    yAxisL.setTextColor(Color.WHITE);
     yAxisL.setValueFormatter(
         new ValueFormatter() {
           @Override
           public String getFormattedValue(float value) {
-            return TimeFormatUtil.formatTimeHhmmss((int) value);
+            return TimeFormatHelper.formatTimeHhmmss((int) value);
           }
         });
     yAxisL.setLabelCount(5, true);

@@ -3,15 +3,13 @@ package com.sg2022.we_got_the_moves.ui;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-
 import androidx.core.content.ContextCompat;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class PermissionUtil {
+public class PermissionsHelper {
 
-  private static final String TAG = "PermissionUtil";
+  private static final String TAG = "PermissionsHelper";
 
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public static boolean checkPermission(Context context, String permission) {

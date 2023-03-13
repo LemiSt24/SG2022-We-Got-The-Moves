@@ -25,7 +25,7 @@ import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentTrainingRecordingBinding;
 import com.sg2022.we_got_the_moves.io.Subdirectory;
 import com.sg2022.we_got_the_moves.repository.FileRepository;
-import com.sg2022.we_got_the_moves.ui.PermissionUtil;
+import com.sg2022.we_got_the_moves.ui.PermissionsHelper;
 import java.io.File;
 import java.util.Map;
 import org.apache.commons.io.FilenameUtils;
@@ -70,7 +70,7 @@ public class RecordingFragment extends Fragment implements HBRecorderListener {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
               boolean permissionsGranted =
-                  PermissionUtil.checkPermissions(this.context, this.permissions);
+                  PermissionsHelper.checkPermissions(this.context, this.permissions);
               if (result.getResultCode() == Activity.RESULT_OK && permissionsGranted) {
                 this.prepareRecording();
                 this.binding.btnRecording.setText(R.string.stop);
@@ -100,7 +100,7 @@ public class RecordingFragment extends Fragment implements HBRecorderListener {
             binding.btnRecording.setText(R.string.start);
           } else {
             boolean permissionsGranted =
-                PermissionUtil.checkPermissions(this.context, this.permissions);
+                PermissionsHelper.checkPermissions(this.context, this.permissions);
             if (!permissionsGranted) {
               this.permissionActivityLauncher.launch(this.permissions);
             } else {

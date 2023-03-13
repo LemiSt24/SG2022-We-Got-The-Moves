@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".ui.training.MediapipeActivity">
+    tools:context=".ui.training.MediaPipeActivity">
 
     <FrameLayout
         android:id="@+id/preview_display_layout"
@@ -21,7 +21,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:text="Please grant camera access"
+            android:text="@string/please_grant_camera_access"
             android:textAlignment="center" />
 
     </FrameLayout>
@@ -30,13 +30,13 @@
         android:id="@+id/mediapipe_stop_button"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginLeft="15sp"
+        android:layout_marginStart="15sp"
         android:layout_marginTop="15sp"
         android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_stop_red_24dp"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="ContentDescription" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/mediapipe_stop_card"
@@ -60,7 +60,7 @@
                 android:id="@+id/mediapipe_paused_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Training Paused"
+                android:text="@string/training_paused"
                 android:textColor="#FF0000"
                 android:textSize="25sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4sp"
                 android:layout_marginRight="4sp"
-                android:text="Continue"
+                android:text="@string/continue_msg"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:backgroundTint="@color/sg_design_green"
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4sp"
                 android:layout_marginRight="4sp"
-                android:text="Skip"
+                android:text="@string/skip"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintStart_toEndOf="@+id/mediapipe_continue_button"
@@ -101,7 +101,7 @@
                 android:layout_marginLeft="4sp"
                 android:layout_marginRight="4sp"
                 android:backgroundTint="#FF0000"
-                android:text="Finish"
+                android:text="@string/finish"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -134,7 +134,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_check_green_24dp" />
+                app:srcCompat="@drawable/ic_check_green_24dp"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/mediapipe_evaluation_text"
@@ -142,7 +143,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10sp"
                 android:paddingRight="10sp"
-                android:text="all correct"
+                android:text="@string/all_correct"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -157,7 +158,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15sp"
-        android:layout_marginRight="15sp"
+        android:layout_marginEnd="15sp"
         android:visibility="visible"
         app:cardCornerRadius="16dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -173,7 +174,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="20sp"
                 android:paddingRight="20sp"
-                android:text="exercise"
+                android:text="@string/exercise"
                 android:textSize="25sp"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -196,7 +197,7 @@
                 android:id="@+id/mediapipe_repetition_counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 / X"
+                android:text="@string/_0_x"
                 android:textSize="25sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"

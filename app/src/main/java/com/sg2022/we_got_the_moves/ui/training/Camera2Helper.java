@@ -14,7 +14,6 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.ImageReader;
 import android.os.Handler;
@@ -26,19 +25,15 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-
 import com.google.mediapipe.components.CameraHelper;
 import com.sg2022.we_got_the_moves.repository.UserRepository;
-
-import java.io.File;
-import java.util.Arrays;
-
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
+import java.util.Arrays;
+import java.util.List;
 
 public class Camera2Helper extends CameraHelper {
   public static final String TAG = "Camera2Helper";
@@ -55,7 +50,6 @@ public class Camera2Helper extends CameraHelper {
   protected CameraDevice cameraDevice;
   protected CameraCaptureSession cameraCaptureSessions;
   protected CaptureRequest.Builder captureRequestBuilder;
-  String new_cam_id;
   private String cameraId;
   private Size imageDimension;
   private ImageReader imageReader;
@@ -65,7 +59,7 @@ public class Camera2Helper extends CameraHelper {
   private Size frameSize;
   private int frameRotation;
   private CameraHelper.CameraFacing cameraFacing;
-  private Context context;
+  private final Context context;
   private final CameraDevice.StateCallback stateCallback =
       new CameraDevice.StateCallback() {
         @Override
@@ -91,26 +85,11 @@ public class Camera2Helper extends CameraHelper {
             cameraDevice.close();
             cameraDevice = null;
           } catch (Exception e) {
-            Log.d(TAG, "ERROR: " + e.toString() + " ER " + error);
+            Log.d(TAG, "ERROR: " + e + " ER " + error);
             e.printStackTrace();
           }
         }
       };
-  private File file;
-  final CameraCaptureSession.CaptureCallback captureCallbackListener =
-      new CameraCaptureSession.CaptureCallback() {
-        @Override
-        public void onCaptureCompleted(
-            CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
-          super.onCaptureCompleted(session, request, result);
-          Toast.makeText(context, "Saved:" + file, Toast.LENGTH_SHORT).show();
-          createCameraPreview();
-        }
-      };
-
-  public Camera2Helper(Context context) {
-    this.context = context;
-  }
 
   public Camera2Helper(Context context, SurfaceTexture surfaceTexture) {
     this.context = context;
@@ -162,7 +141,7 @@ public class Camera2Helper extends CameraHelper {
   @Override
   public boolean isCameraRotated() {
     Display display =
-        ((WindowManager) MediapipeActivity.getInstanceActivity().getSystemService(WINDOW_SERVICE))
+        ((WindowManager) MediaPipeActivity.getInstanceActivity().getSystemService(WINDOW_SERVICE))
             .getDefaultDisplay();
     this.frameRotation = display.getRotation();
     return this.frameRotation % 2 == 1;
@@ -189,7 +168,7 @@ public class Camera2Helper extends CameraHelper {
     CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
     try {
 
-      Log.d(TAG, "CameraListSiize " + manager.getCameraIdList().length);
+      Log.d(TAG, "CameraListSize " + manager.getCameraIdList().length);
 
       for (String cameraId : manager.getCameraIdList()) {
 
@@ -207,21 +186,12 @@ public class Camera2Helper extends CameraHelper {
             Log.DEBUG,
             TAG,
             cameraCharacteristics.get(cameraCharacteristics.LENS_FACING).toString());
-        /*    if (CameraCharacteristics.isCameraFacingBack(cameraCharacteristics) && backCameraId == null) {
-            backCameraId = cameraId;
-        } else if (isCameraFacingFront(cameraCharacteristics) && frontCameraId == null) {
-            frontCameraId = cameraId;
-        }*/
       }
 
-      //    CameraSelector cameraSelector = cameraFacing == CameraFacing.FRONT ?
-      // CameraSelector.DEFAULT_FRONT_CAMERA : CameraSelector.DEFAULT_BACK_CAMERA;
-      // Camera camera = this.cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, new
-      // UseCase[]{this.preview, this.imageCapture});
       UserRepository userRepository =
-          UserRepository.getInstance(MediapipeActivity.getInstanceActivity().getApplication());
+          UserRepository.getInstance(MediaPipeActivity.getInstanceActivity().getApplication());
       userRepository.getCameraBoolean(
-          new SingleObserver<Boolean>() {
+          new SingleObserver<>() {
             @Override
             public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {}
 
@@ -285,14 +255,6 @@ public class Camera2Helper extends CameraHelper {
             public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
           });
 
-      // fetchFrame();
-      /*if(previewDisplayView!=null){
-          previewDisplayView.setVisibility(View.VISIBLE);
-      }*/
-      /* if(outputTextureView!=null){
-          outputTextureView.setVisibility(View.VISIBLE);
-          initRecorder();
-      }*/
       Log.d(TAG, "Camera debug start 113");
 
     } catch (CameraAccessException e) {
@@ -309,20 +271,17 @@ public class Camera2Helper extends CameraHelper {
       Log.d(TAG, "Creating camera preview");
       outputSurface = (outputSurface == null) ? new CustomSurfaceTexture(0) : outputSurface;
 
-      SurfaceTexture texture = outputSurface; // textureView.getSurfaceTexture();
-      assert texture != null;
+      SurfaceTexture texture = outputSurface;
       texture.setDefaultBufferSize(imageDimension.getWidth(), imageDimension.getHeight());
       frameSize = imageDimension;
       Surface surface = new Surface(texture);
       captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-      // captureRequestBuilder.set(CaptureRequest.CONTROL_VIDEO_STABILIZATION_MODE,
-      // CameraMetadata.CONTROL_VIDEO_STABILIZATION_MODE_ON);
       captureRequestBuilder.set(
           CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE,
           CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE_ON);
       captureRequestBuilder.addTarget(surface);
       cameraDevice.createCaptureSession(
-          Arrays.asList(surface),
+          List.of(surface),
           new CameraCaptureSession.StateCallback() {
             @Override
             public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {

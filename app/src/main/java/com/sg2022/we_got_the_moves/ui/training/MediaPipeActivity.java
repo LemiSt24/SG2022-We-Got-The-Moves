@@ -22,12 +22,10 @@ import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
-
 import com.google.mediapipe.components.CameraHelper;
 import com.google.mediapipe.components.ExternalTextureConverter;
 import com.google.mediapipe.components.FrameProcessor;
@@ -51,8 +49,8 @@ import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.UserRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
-import com.sg2022.we_got_the_moves.ui.workouts.WorkoutListAdapter;
-
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 import java.lang.ref.WeakReference;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -64,13 +62,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
-public class MediapipeActivity extends AppCompatActivity {
+public class MediaPipeActivity extends AppCompatActivity {
 
   public static final List<String> landmark_names =
       Arrays.asList(
@@ -107,7 +100,7 @@ public class MediapipeActivity extends AppCompatActivity {
           "right_heel",
           "left_foot_index",
           "right_foot_index");
-  private static final String TAG = "MediapipeActivity";
+  private static final String TAG = "MediaPipeActivity";
   private static final String BINARY_GRAPH_NAME = "pose_tracking_gpu.binarypb";
   private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
   private static final String OUTPUT_VIDEO_STREAM_NAME = "output_video";
@@ -119,7 +112,7 @@ public class MediapipeActivity extends AppCompatActivity {
   // corner, whereas MediaPipe in general assumes the image origin is at top-left.
   private static final boolean FLIP_FRAMES_VERTICALLY = true;
   private static CameraHelper.CameraFacing CAMERA_FACING;
-  private static WeakReference<MediapipeActivity> weakMediapipeActivity;
+  private static WeakReference<MediaPipeActivity> weakMediapipeActivity;
 
   static {
     // Load all native libraries needed by the app.
@@ -177,7 +170,7 @@ public class MediapipeActivity extends AppCompatActivity {
 
   private WorkoutsRepository workoutsRepository;
 
-  public static MediapipeActivity getInstanceActivity() {
+  public static MediaPipeActivity getInstanceActivity() {
     return weakMediapipeActivity.get();
   }
 
@@ -185,9 +178,8 @@ public class MediapipeActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    weakMediapipeActivity = new WeakReference<>(MediapipeActivity.this);
+    weakMediapipeActivity = new WeakReference<>(MediaPipeActivity.this);
     timeLastCheck = SystemClock.elapsedRealtime();
-
 
     UserRepository userRepository = UserRepository.getInstance(this.getApplication());
     userRepository.getCameraBoolean(
@@ -846,47 +838,46 @@ public class MediapipeActivity extends AppCompatActivity {
       @NonNull Exercise e, int amount, int seconds) {
     tts("Next Exercise " + amount + e.name);
     runOnUiThread(
-            () -> {
-              AlertDialog.Builder builder = new AlertDialog.Builder(MediapipeActivity.this);
-              DialogBetweenExerciseScreenBinding binding =
-                  DataBindingUtil.inflate(
-                      LayoutInflater.from(MediapipeActivity.this),
-                      R.layout.dialog_between_exercise_screen,
-                      null,
-                      false);
-              binding.setExercise(e);
-              builder.setView(binding.getRoot());
-              AlertDialog dialog = builder.create();
-              dialog.setCanceledOnTouchOutside(false);
-              dialog.setCancelable(false);
-              dialog.show();
+        () -> {
+          AlertDialog.Builder builder = new AlertDialog.Builder(MediaPipeActivity.this);
+          DialogBetweenExerciseScreenBinding binding =
+              DataBindingUtil.inflate(
+                  LayoutInflater.from(MediaPipeActivity.this),
+                  R.layout.dialog_between_exercise_screen,
+                  null,
+                  false);
+          binding.setExercise(e);
+          builder.setView(binding.getRoot());
+          AlertDialog dialog = builder.create();
+          dialog.setCanceledOnTouchOutside(false);
+          dialog.setCancelable(false);
+          dialog.show();
 
-              Chronometer pause_countdown = dialog.findViewById(R.id.pause_countdown);
-              pause_countdown.setBase(SystemClock.elapsedRealtime() + 1000L * (long)seconds);
-              pause_countdown.start();
+          Chronometer pause_countdown = dialog.findViewById(R.id.pause_countdown);
+          pause_countdown.setBase(SystemClock.elapsedRealtime() + 1000L * (long) seconds);
+          pause_countdown.start();
 
-              TextView amountView = dialog.findViewById(R.id.pause_screen_excercise_amount);
-              String text = String.valueOf(amount);
-              if (e.isCountable()) text += " x ";
-              else text += " s ";
-              text += e.name;
-              amountView.setText(text);
+          TextView amountView = dialog.findViewById(R.id.pause_screen_excercise_amount);
+          String text = String.valueOf(amount);
+          if (e.isCountable()) text += " x ";
+          else text += " s ";
+          text += e.name;
+          amountView.setText(text);
 
-              String filename = e.name.toLowerCase() + ".csv";
-              Log.println(Log.DEBUG, "Test", filename);
-              classifier = new PoseClassifier(getApplicationContext(), 20, 10, filename);
+          String filename = e.name.toLowerCase() + ".csv";
+          Log.println(Log.DEBUG, "Test", filename);
+          classifier = new PoseClassifier(getApplicationContext(), 20, 10, filename);
 
-              pause_countdown.setOnChronometerTickListener(
-                      chronometer -> {
-                        long base = pause_countdown.getBase();
-                        if (base < SystemClock.elapsedRealtime()) {
-                          loadConstraintsForExercise();
-                          dialog.dismiss();
-                          Pause = false;
-                        }
-                      });
-            });
-
+          pause_countdown.setOnChronometerTickListener(
+              chronometer -> {
+                long base = pause_countdown.getBase();
+                if (base < SystemClock.elapsedRealtime()) {
+                  loadConstraintsForExercise();
+                  dialog.dismiss();
+                  Pause = false;
+                }
+              });
+        });
   }
 
   private void showEndScreenAndSave() {
@@ -915,10 +906,10 @@ public class MediapipeActivity extends AppCompatActivity {
 
     runOnUiThread(
         () -> {
-          AlertDialog.Builder builder = new AlertDialog.Builder(MediapipeActivity.this);
+          AlertDialog.Builder builder = new AlertDialog.Builder(MediaPipeActivity.this);
           DialogFinishedTrainingScreenBinding binding =
               DataBindingUtil.inflate(
-                  LayoutInflater.from(MediapipeActivity.this),
+                  LayoutInflater.from(MediaPipeActivity.this),
                   R.layout.dialog_finished_training_screen,
                   null,
                   false);
@@ -946,9 +937,7 @@ public class MediapipeActivity extends AppCompatActivity {
           WorkoutsRepository workoutsRepository = WorkoutsRepository.getInstance(getApplication());
           workoutsRepository
               .getWorkout(workoutId)
-              .observe(
-                  MediapipeActivity.this,
-                  x -> titel.setText(x.name));
+              .observe(MediaPipeActivity.this, x -> titel.setText(x.name));
 
           // Setting the duration
           String durationString = "Duration: " + timeSpent.toMinutes() + ":";
@@ -964,13 +953,13 @@ public class MediapipeActivity extends AppCompatActivity {
           workoutsRepository
               .getAllExercises(workoutId)
               .observe(
-                  MediapipeActivity.this,
+                  MediaPipeActivity.this,
                   exercises -> {
                     for (FinishedExercise finishedExercise : finishedExercises) {
                       for (Exercise exercise : exercises) {
                         if (exercise.id == finishedExercise.exerciseId) {
                           if (exercise.isCountable()) {
-                        //
+                            //
                             finishedExerciseSummary +=
                                 finishedExercise.amount + " x " + exercise.name + "\n";
                           } else {

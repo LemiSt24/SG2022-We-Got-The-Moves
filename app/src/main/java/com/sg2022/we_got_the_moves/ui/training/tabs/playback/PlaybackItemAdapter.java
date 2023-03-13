@@ -3,31 +3,28 @@ package com.sg2022.we_got_the_moves.ui.training.tabs.playback;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.player.autoplayer.utils.PlayerListener;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.ItemViditemBinding;
-import com.sg2022.we_got_the_moves.io.VidItem;
-
+import com.sg2022.we_got_the_moves.io.VideoItem;
 import java.util.List;
 
 public class PlaybackItemAdapter
     extends RecyclerView.Adapter<PlaybackItemAdapter.PlaybackViewHolder> {
 
   private static final String TAG = "PlaybackItemAdapter";
-  public final List<VidItem> vids;
+  public final List<VideoItem> vids;
   private final Context context;
   private final MuteListener muteListener;
 
   public PlaybackItemAdapter(
-      @NonNull Context context, List<VidItem> vids, MuteListener muteListener) {
+      @NonNull Context context, List<VideoItem> vids, MuteListener muteListener) {
     this.vids = vids;
     this.context = context;
     this.muteListener = muteListener;
