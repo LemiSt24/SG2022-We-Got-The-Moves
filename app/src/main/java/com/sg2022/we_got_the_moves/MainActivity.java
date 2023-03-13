@@ -61,8 +61,9 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 
-  public void openMediapipeActivity(long id) {
+  public void openMediapipeActivity(long id, boolean recordingBoolean) {
     Intent intent = new Intent(this, MediaPipeActivity.class);
+    intent.putExtra("RECORDING_BOOLEAN", recordingBoolean);
     intent.putExtra("WORKOUT_ID", id);
     startActivity(intent);
   }

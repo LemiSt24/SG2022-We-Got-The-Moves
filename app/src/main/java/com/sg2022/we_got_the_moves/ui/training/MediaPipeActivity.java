@@ -1,8 +1,14 @@
 package com.sg2022.we_got_the_moves.ui.training;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
+import android.media.projection.MediaProjectionManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,6 +28,10 @@ import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -35,6 +45,8 @@ import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.hbisoft.hbrecorder.HBRecorder;
+import com.hbisoft.hbrecorder.HBRecorderListener;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.DialogBetweenExerciseScreenBinding;
@@ -45,12 +57,20 @@ import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
+import com.sg2022.we_got_the_moves.io.Subdirectory;
 import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
+import com.sg2022.we_got_the_moves.repository.FileRepository;
 import com.sg2022.we_got_the_moves.repository.FinishedWorkoutRepository;
 import com.sg2022.we_got_the_moves.repository.UserRepository;
 import com.sg2022.we_got_the_moves.repository.WorkoutsRepository;
+import com.sg2022.we_got_the_moves.ui.PermissionsHelper;
+
+import org.apache.commons.io.FilenameUtils;
+
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
+
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -63,7 +83,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class MediaPipeActivity extends AppCompatActivity {
+public class MediaPipeActivity extends AppCompatActivity implements HBRecorderListener {
 
   public static final List<String> landmark_names =
       Arrays.asList(
@@ -164,11 +184,27 @@ public class MediaPipeActivity extends AppCompatActivity {
   private Long timeLastCheck = SystemClock.elapsedRealtime();
   private TextToSpeech tts;
   private boolean ttsBoolean = true;
+
+  private boolean recordingBoolean;
   private int timeBetweenExercises = 5;
 
   private boolean inStartPosition = false;
 
   private WorkoutsRepository workoutsRepository;
+
+  //recording variables
+  private final String[] permissions = {
+    Manifest.permission.RECORD_AUDIO,
+    Manifest.permission.FOREGROUND_SERVICE,
+    Manifest.permission.READ_EXTERNAL_STORAGE,
+    Manifest.permission.WRITE_EXTERNAL_STORAGE
+  };
+  private HBRecorder hbRecorder;
+  private Intent screenCaptureIntent;
+  private Context context;
+  private ActivityResultLauncher<Intent> intentActivityResultLauncher;
+  private ActivityResultLauncher<String[]> permissionActivityLauncher;
+  private FileRepository fileRepository;
 
   public static MediaPipeActivity getInstanceActivity() {
     return weakMediapipeActivity.get();
@@ -177,6 +213,33 @@ public class MediaPipeActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+      this.context = this;
+      this.fileRepository = FileRepository.getInstance(this.getApplication());
+      this.hbRecorder = new HBRecorder(this.context, this);
+      MediaProjectionManager mediaProjectionManager =
+              (MediaProjectionManager) this.context.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+      this.screenCaptureIntent = mediaProjectionManager.createScreenCaptureIntent();
+      this.intentActivityResultLauncher =
+              this.registerForActivityResult(
+                      new ActivityResultContracts.StartActivityForResult(),
+                      result -> {
+                          boolean permissionsGranted =
+                                  PermissionsHelper.checkPermissions(this.context, this.permissions);
+                          if (result.getResultCode() == Activity.RESULT_OK && permissionsGranted) {
+                              this.prepareRecording();
+                              this.hbRecorder.startScreenRecording(result.getData(), result.getResultCode());
+                          }
+                      });
+      this.permissionActivityLauncher =
+              this.registerForActivityResult(
+                      new ActivityResultContracts.RequestMultiplePermissions(),
+                      result ->
+                              result.entrySet().stream()
+                                      .filter((Map.Entry<String, Boolean> e) -> !e.getValue())
+                                      .forEach(
+                                              (Map.Entry<String, Boolean> e) ->
+                                                      Log.i(TAG, "Required Permission :" + e.getKey() + " is missing")));
 
     weakMediapipeActivity = new WeakReference<>(MediaPipeActivity.this);
     timeLastCheck = SystemClock.elapsedRealtime();
@@ -252,6 +315,7 @@ public class MediaPipeActivity extends AppCompatActivity {
     Intent intent = getIntent();
     Bundle extras = intent.getExtras();
     workoutId = extras.getLong("WORKOUT_ID");
+    recordingBoolean = extras.getBoolean("RECORDING_BOOLEAN");
 
     Log.println(Log.DEBUG, TAG, "workoutId" + workoutId);
 
@@ -278,7 +342,7 @@ public class MediaPipeActivity extends AppCompatActivity {
               showNextExerciseSetDialog(
                       currentExercise,
                       exerciseIdToAmount.get(currentExercise.id).get(0),
-                      5);
+                      10);
 
               for (int i = 0; i < exercises.size(); i++) {
                   Exercise exercise = exercises.get(i);
@@ -460,12 +524,14 @@ public class MediaPipeActivity extends AppCompatActivity {
     if (PermissionHelper.cameraPermissionsGranted(this)) {
       startCamera();
     }
+    if (this.hbRecorder.isRecordingPaused()) this.hbRecorder.resumeScreenRecording();
   }
 
   @Override
   protected void onPause() {
     super.onPause();
     converter.close();
+      if (this.hbRecorder.isBusyRecording()) this.hbRecorder.pauseScreenRecording();
 
     // Hide preview display until we re-open the camera again.
     previewDisplayView.setVisibility(View.GONE);
@@ -872,6 +938,18 @@ public class MediaPipeActivity extends AppCompatActivity {
               chronometer -> {
                 long base = pause_countdown.getBase();
                 if (base < SystemClock.elapsedRealtime()) {
+                    if (recordingBoolean){
+                        if (hbRecorder.isBusyRecording()) {
+                            hbRecorder.stopScreenRecording();
+                        } else {
+                            boolean permissionsGranted =
+                                    PermissionsHelper.checkPermissions(this.context, this.permissions);
+                            if (!permissionsGranted) {
+                                this.permissionActivityLauncher.launch(this.permissions);
+                            }
+                            this.intentActivityResultLauncher.launch(this.screenCaptureIntent);
+                        }
+                    }
                   loadConstraintsForExercise();
                   dialog.dismiss();
                   Pause = false;
@@ -919,6 +997,7 @@ public class MediaPipeActivity extends AppCompatActivity {
                   "Finish",
                   (dialog, id) -> {
                     tts("Training finished");
+                    if (recordingBoolean) hbRecorder.stopScreenRecording();
                     cameraHelper.closeCamera();
                     finish();
                     dialog.dismiss();
@@ -1025,5 +1104,47 @@ public class MediaPipeActivity extends AppCompatActivity {
         public int compare(ExerciseState o1, ExerciseState o2) {
             return Integer.compare((int) o1.id,(int) o2.id);
         }
+    }
+
+    private void prepareRecording() {
+        final String filename = String.valueOf(System.currentTimeMillis());
+        final String extension = Subdirectory.Videos.getSupportedFormats()[0];
+        final String directoryPath = this.fileRepository.getDirectoryPathDefault(Subdirectory.Videos);
+        final Uri uri =
+                Uri.fromFile(
+                        new File(
+                                directoryPath
+                                        + File.separator
+                                        + filename
+                                        + FilenameUtils.EXTENSION_SEPARATOR
+                                        + extension));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            this.hbRecorder.setOutputUri(uri);
+        } else {
+            this.hbRecorder.setOutputPath(directoryPath);
+            this.hbRecorder.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
+        }
+    }
+
+    @Override
+    public void HBRecorderOnStart() {
+        Toast.makeText(this.context, "VideoRecording has started", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void HBRecorderOnComplete() {
+        Toast.makeText(this.context, "VideoRecording has finished", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void HBRecorderOnError(int errorCode, String reason) {
+        Toast.makeText(this.context, "Error: " + errorCode, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, reason);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (this.hbRecorder.isRecordingPaused()) this.hbRecorder.stopScreenRecording();
     }
 }

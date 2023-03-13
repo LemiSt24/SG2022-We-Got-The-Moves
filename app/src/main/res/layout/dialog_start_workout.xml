@@ -40,6 +40,17 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/textview_start_workout_workout" />
 
+                <CheckBox
+                    android:id="@+id/checkbox_active_recording"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:value="false"
+                    android:backgroundTint="@color/sg_design_green"
+                    android:buttonTint="@color/sg_design_green"
+                    android:text="enable recording"
+                    app:layout_constraintTop_toBottomOf="@id/textview_start_workout_exercises"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

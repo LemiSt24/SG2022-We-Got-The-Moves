@@ -96,7 +96,8 @@ public class AllWorkoutsAdapter
             .setPositiveButton(
                     "Start",
                     (dialog, id) -> {
-                      MainActivity.getInstanceActivity().openMediapipeActivity(w.id);
+                      MainActivity.getInstanceActivity().openMediapipeActivity(w.id,
+                              binding.checkboxActiveRecording.isChecked());
                       dialog.dismiss();
                     })
             .setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss())
