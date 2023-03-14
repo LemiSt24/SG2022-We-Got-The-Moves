@@ -3,18 +3,21 @@ package com.sg2022.we_got_the_moves.ui.training.tabs.playback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.MediaController;
 import android.os.Bundle;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.sg2022.we_got_the_moves.R;
-import com.sg2022.we_got_the_moves.databinding.ActivityPlaybackBinding;
 import com.sg2022.we_got_the_moves.repository.FileRepository;
 import com.sg2022.we_got_the_moves.ui.PermissionsHelper;
 
@@ -29,42 +32,43 @@ public class PlaybackActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.READ_MEDIA_VIDEO
     };
-    private ActivityResultLauncher<String[]> permissionActivityLauncher;
+
+    private int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playback);
 
-        this.permissionActivityLauncher =
-                this.registerForActivityResult(
-                        new ActivityResultContracts.RequestMultiplePermissions(),
-                        result ->
-                                result.entrySet().stream()
-                                        .filter((Map.Entry<String, Boolean> e) -> !e.getValue())
-                                        .forEach(
-                                                (Map.Entry<String, Boolean> e) ->
-                                                        Log.i("test", "Required Permission :" + e.getKey() + " is missing")));
-        boolean permissionsGranted =
-                PermissionsHelper.checkPermissions(this, this.permissions);
+        // Check if the permission has been granted
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Request permission
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        } else {
+            // Permission already granted, proceed to access the video file
+            Intent intent = getIntent();
+            Bundle extras = intent.getExtras();
+            this.filename = extras.getString("FILENAME");
+            String directoryPath = FileRepository.getInstance(
+                    this.getApplication()).getDirectoryPathDefault();
+            File file = new File(directoryPath, filename);
+            file.setReadable(true);
+            Uri filename = Uri.parse(directoryPath + File.separator + this.filename);
 
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        this.filename = extras.getString("FILENAME");
-        String directoryPath = FileRepository.getInstance(
-                this.getApplication()).getDirectoryPathDefault();
-        Uri file = Uri.parse(directoryPath + File.separator + filename);
-        Log.println(Log.DEBUG, "test", file.toString());
-
-        if (permissionsGranted){
-            VideoView videoView =(VideoView)findViewById(R.id.videoView_playbackActivity);
+            VideoView videoView = (VideoView)findViewById(R.id.videoView_playbackActivity);
             MediaController mediaController= new MediaController(this);
             videoView.setMediaController(mediaController);
             mediaController.setMediaPlayer(videoView);
             videoView.setVisibility(View.VISIBLE);
-            videoView.setVideoURI(file);
+            videoView.setVideoURI(filename);
             videoView.requestFocus();
             videoView.start();
         }
+
+
     }
+
 }

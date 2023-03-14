@@ -1127,7 +1127,7 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
     }
 
     private void prepareRecording() {
-        final String filename = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss")
+        final String filename = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss")
                 .format(new Date()) +"."+ currentWorkout.name
                         .replace(" ", "_");
         Log.println(Log.DEBUG, "test", "filename: " + filename);
@@ -1144,7 +1144,7 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
             this.hbRecorder.setOutputUri(uri);
         } else {
             this.hbRecorder.setOutputPath(directoryPath);
-            this.hbRecorder.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + "mp4");
+            this.hbRecorder.setFileName(filename);
         }
     }
 
