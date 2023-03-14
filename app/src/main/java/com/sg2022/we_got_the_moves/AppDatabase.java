@@ -60,13 +60,13 @@ public abstract class AppDatabase extends RoomDatabase {
           AppExecutors e = AppExecutors.getInstance();
 
           //Use this function to use the buildDatabase in combination with the DataGenerator
-          INSTANCE = buildDatabase(app, e);
+          //INSTANCE = buildDatabase(app, e);
 
           //Use this function to use the DB file for building your Database
-          /*INSTANCE = Room.databaseBuilder(app.getApplicationContext(), AppDatabase.class, DB_NAME)
+          INSTANCE = Room.databaseBuilder(app.getApplicationContext(), AppDatabase.class, DB_NAME)
                         .fallbackToDestructiveMigration()
                         .createFromAsset("database/SGWeGotTheMovesDB.db")
-                        .build();*/
+                        .build();
         }
       }
     }
