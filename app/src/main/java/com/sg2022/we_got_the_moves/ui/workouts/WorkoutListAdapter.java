@@ -87,7 +87,7 @@ public class WorkoutListAdapter
     holder.binding.setVisible(false);
     holder.binding.saveBtnWorkoutItem.setOnClickListener(
         v -> {
-          itemTouchHelper.attachToRecyclerView(null);
+          if (itemTouchHelper != null) itemTouchHelper.attachToRecyclerView(null);
           saveWorkoutExercises(weeList);
         });
     holder.binding.editBtnWorkoutItem.setOnClickListener(v -> showEditDialog(w));
