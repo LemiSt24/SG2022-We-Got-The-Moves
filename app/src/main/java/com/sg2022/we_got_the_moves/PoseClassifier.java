@@ -167,11 +167,10 @@ public class PoseClassifier {
       double compareAngle = (double) constraint.compareAngle;
 
       if(constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
-        return dist <= compareAngle || dist <= compareAngle * (1.0 - constraint.maxDiff) || dist <= compareAngle * (1.0 + constraint.maxDiff);
-      } else if(constraint.inequalityType == Constraint.INEQUALITY_TYPE.EQUAL) {
-        return dist == compareAngle || (dist >= compareAngle * (1.0 - constraint.maxDiff) && dist <= compareAngle * (1.0 + constraint.maxDiff));
-      } else if(constraint.inequalityType == Constraint.INEQUALITY_TYPE.GREATER) {
-        return dist >= compareAngle || dist <= compareAngle * (1.0 - constraint.maxDiff) || dist >= compareAngle * (1.0 + constraint.maxDiff);
+        return dist <= constraint.maxDiff;
+      }
+      else {
+        return dist >= constraint.maxDiff;
       }
     } else {
 

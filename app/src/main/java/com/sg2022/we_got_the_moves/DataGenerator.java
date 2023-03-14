@@ -109,13 +109,13 @@ public class DataGenerator {
     new ExerciseState(
         0,
         1,
-        new ArrayList<>(Arrays.asList(1L, 8L, 12L)),
+        new ArrayList<>(Arrays.asList(1L, 7L, 12L)),
         "left_ankle,right_ankle",
         "left_knee,right_knee",
         "left_hip,right_hip",
         ExerciseState.COMPARATOR.GREATER,
         160,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L),
+        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L),
           // top
     new ExerciseState(
         1,
@@ -126,7 +126,7 @@ public class DataGenerator {
         "left_hip,right_hip",
         ExerciseState.COMPARATOR.LESS,
         120,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
+        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // bottom
           /*
     // Side-planks
     new ExerciseState(0,2, new ArrayList<>(List.of()), "", "", "", null, 0, null, 500L),
@@ -143,7 +143,7 @@ public class DataGenerator {
         "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.GREATER,
         160,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
+        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // top
     new ExerciseState(
         1,
         4,
@@ -153,7 +153,7 @@ public class DataGenerator {
         "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.LESS,
         100,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
+        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // bottom
     // Sit-Up
     new ExerciseState(
         0,
@@ -164,7 +164,7 @@ public class DataGenerator {
         "left_ankle,right_ankle",
         ExerciseState.COMPARATOR.LESS,
         190,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
+        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // bottom
     new ExerciseState(
         1,
         5,
@@ -174,7 +174,7 @@ public class DataGenerator {
         "left_ankle,right_ankle",
         ExerciseState.COMPARATOR.GREATER,
         250,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
+        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // top
     // Plank
     new ExerciseState(
             0,
@@ -216,7 +216,7 @@ public class DataGenerator {
     "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.GREATER,
         160,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
+        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // bottom
     new ExerciseState(
         1,
         8,
@@ -226,7 +226,7 @@ public class DataGenerator {
         "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.LESS,
         135,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
+        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // top
   };
 
   public static List<ExerciseState> getDummyExerciseStates(){
@@ -461,7 +461,7 @@ public class DataGenerator {
             "Keep knees right behind your toe tips.",
             Constraint.TYPE.ANGLE,
             Constraint.INEQUALITY_TYPE.GREATER,
-            Constraint.INSIGNIFICANT_DIMENSION.Z,
+            Constraint.INSIGNIFICANT_DIMENSION.X,
             85));
     // Körper gerade (side_plank-global, mountain_climbers-top, push_up-global,
     // plank-global)
@@ -488,21 +488,21 @@ public class DataGenerator {
             "Keep your hands at shoulder height.",
             Constraint.TYPE.ANGLE,
             Constraint.INEQUALITY_TYPE.EQUAL,
-            Constraint.INSIGNIFICANT_DIMENSION.Z,
+            Constraint.INSIGNIFICANT_DIMENSION.X,
             75));
-    // Knie angewinkelt (sit_up-global)
+    // Füße flach auf Boden (sit_up-global)
     constraints.add(
         new Constraint(
             "left_ankle,right_ankle",
             "left_knee,right_knee", // unused from here
             "left_ankle,right_ankle",
             "left_knee,right_knee",
-            0.5,
+            25,
             "Keep your feet flat on the ground.",
             Constraint.TYPE.FLOOR_DISTANCE,
             Constraint.INEQUALITY_TYPE.LESS,
-            Constraint.INSIGNIFICANT_DIMENSION.Z,
-            25)); // hier wird compareAngle für eine Distanz verwendet
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null)); // hier wird compareAngle für eine Distanz verwendet
     // Ellenbogen am Körper (bicep_curl-global)
     constraints.add(
         new Constraint(
@@ -536,19 +536,19 @@ public class DataGenerator {
             "nose", // unused from here
             "left_elbow",
             "right_elbow",
-            0.5,
+            25,
             "Lie with your back flat on the floor.",
             Constraint.TYPE.FLOOR_DISTANCE,
             Constraint.INEQUALITY_TYPE.LESS,
-            Constraint.INSIGNIFICANT_DIMENSION.Z,
-            25)); // hier wird compareAngle für eine Distanz verwendet
+            Constraint.INSIGNIFICANT_DIMENSION.NONE,
+            null)); // hier wird compareAngle für eine Distanz verwendet
     // annähernd rechter Winkel im Oberarm (Plank)
     constraints.add(
         new Constraint(
             "left_elbow,right_elbow",
-            "left_shoulder,right_shoulder",
-            "left_hip,right_hip",
-            "left_shoulder,right_shoulder",
+                "left_wrist,right_wrist",
+                "left_shoulder,right_shoulder",
+                "left_elbow,right_elbow",
             30,
             "Keep your arms at approximately 90 degrees.",
             Constraint.TYPE.ANGLE,
