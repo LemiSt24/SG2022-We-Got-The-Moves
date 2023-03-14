@@ -87,7 +87,6 @@ public abstract class AppDatabase extends RoomDatabase {
               @Override
               public void onCreate(@NonNull SupportSQLiteDatabase db1) {
                 super.onCreate(db1);
-                Log.d(TAG, "DB created");
 
 
                 HashMap<String, TrophiesFragment.ACHIEVEMENT> trophies = new HashMap<>();

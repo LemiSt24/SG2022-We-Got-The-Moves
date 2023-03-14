@@ -135,8 +135,7 @@ public class PoseClassifier {
 
       angle = abs(angle);
       if (angle > 180) angle = 360 - angle;
-      Log.println(Log.DEBUG, "test", "constraint: " + constraint.message);
-      Log.println(Log.DEBUG, "test", "angle: " + angle);
+
 
       double compareAngle = (double) constraint.compareAngle;
 
@@ -206,10 +205,6 @@ public class PoseClassifier {
       // Vergleiche angegebenen Punkt mit dem kleinsten Y-Wert
       double dist = smallest_y - normFrom1.y;
       dist = Math.abs(dist);
-      Log.println(Log.DEBUG, "test", "normFrom1: " + normFrom1.y);
-      Log.println(Log.DEBUG, "test", "smallesYName: " + y_name);
-      Log.println(Log.DEBUG, "test", "smallesY: " + smallest_y);
-      Log.println(Log.DEBUG, "test", "dist: " + dist);
 
       if(constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
         return dist <= constraint.maxDiff;

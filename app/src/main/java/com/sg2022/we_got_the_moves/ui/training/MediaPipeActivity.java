@@ -330,8 +330,6 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
                                                         Log.i(TAG, "Required Permission :" + e.getKey() + " is missing")));
     }
 
-    Log.println(Log.DEBUG, TAG, "workoutId" + workoutId);
-
     // loading of the workout form db, with exercises and amounts
     workoutsRepository = WorkoutsRepository.getInstance(this.getApplication());
     finishedExercises = new ArrayList<>();

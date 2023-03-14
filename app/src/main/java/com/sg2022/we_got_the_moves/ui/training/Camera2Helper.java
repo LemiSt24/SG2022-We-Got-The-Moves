@@ -65,7 +65,6 @@ public class Camera2Helper extends CameraHelper {
         @Override
         public void onOpened(CameraDevice camera) {
           // This is called when the camera is open
-          Log.e(TAG, "onOpened");
           cameraDevice = camera;
           createCameraPreview();
           if (onCameraStartedListener != null) {
@@ -81,11 +80,9 @@ public class Camera2Helper extends CameraHelper {
         @Override
         public void onError(CameraDevice camera, int error) {
           try {
-            Log.d(TAG, " Error on CameraDevice ");
             cameraDevice.close();
             cameraDevice = null;
           } catch (Exception e) {
-            Log.d(TAG, "ERROR: " + e + " ER " + error);
             e.printStackTrace();
           }
         }
@@ -150,7 +147,6 @@ public class Camera2Helper extends CameraHelper {
   public void closeCamera() {
     try {
       stopBackgroundThread();
-      Log.d(TAG, "Closing camera ");
       if (null != cameraDevice) {
         cameraDevice.close();
         cameraDevice = null;
@@ -160,33 +156,13 @@ public class Camera2Helper extends CameraHelper {
         imageReader = null;
       }
     } catch (Exception e) {
-      Log.d(TAG, e.toString());
+      Log.e(TAG, e.toString());
     }
   }
 
   private void openCamera() {
     CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
-    try {
 
-      Log.d(TAG, "CameraListSize " + manager.getCameraIdList().length);
-
-      for (String cameraId : manager.getCameraIdList()) {
-
-        CameraCharacteristics cameraCharacteristics = manager.getCameraCharacteristics(cameraId);
-        Log.println(
-            Log.DEBUG,
-            TAG,
-            "Camera #"
-                + cameraId
-                + " ===> "
-                + Arrays.toString(
-                    cameraCharacteristics.get(
-                        CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES)));
-        Log.println(
-            Log.DEBUG,
-            TAG,
-            cameraCharacteristics.get(cameraCharacteristics.LENS_FACING).toString());
-      }
 
       UserRepository userRepository =
           UserRepository.getInstance(MediaPipeActivity.getInstanceActivity().getApplication());
@@ -207,7 +183,6 @@ public class Camera2Helper extends CameraHelper {
                       break;
                     }
                   }
-                  Log.d(TAG, "Opening front camera");
                 } else {
                   for (String cameraIdListElement : manager.getCameraIdList()) {
                     CameraCharacteristics cameraCharacteristics =
@@ -217,9 +192,7 @@ public class Camera2Helper extends CameraHelper {
                       break;
                     }
                   }
-                  Log.d(TAG, "Opening back camera");
                 }
-                Log.e(TAG, "camera is open");
 
                 CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
                 StreamConfigurationMap map =
@@ -255,20 +228,12 @@ public class Camera2Helper extends CameraHelper {
             public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
           });
 
-      Log.d(TAG, "Camera debug start 113");
-
-    } catch (CameraAccessException e) {
-      e.printStackTrace();
-      Log.d(TAG, e.toString());
     }
-    Log.e(TAG, "openCamera X");
-  }
 
   // private CameraCaptureSession cameraCaptureSession;
   // @RequiresApi(api = Build.VERSION_CODES.O)
   protected void createCameraPreview() {
     try {
-      Log.d(TAG, "Creating camera preview");
       outputSurface = (outputSurface == null) ? new CustomSurfaceTexture(0) : outputSurface;
 
       SurfaceTexture texture = outputSurface;

@@ -51,7 +51,6 @@ public class PlaybackItemAdapterBackup
     holder.binding.autoplayerViditem.setUrl(videoItems.get(position).uri.toString());
     holder.binding.autoplayerViditem.setAnimationTime(500);
     holder.binding.autoplayerViditem.setPlaceholderView(holder.binding.imageviewPlaceholderViditem);
-    Log.println(Log.DEBUG, "test", "filename: " + videoItems.get(position).filename);
     String[] filenameArray = videoItems.get(position).filename.
             replace("_", " ").split("\\.");
     holder.binding.textviewInfoViditem.setText(filenameArray[0] + "\n" + filenameArray[1]);

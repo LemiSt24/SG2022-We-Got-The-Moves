@@ -47,7 +47,6 @@ public class AllWorkoutsAdapter
       public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Workout> workouts) {
         workoutList = workouts;
         notifyDataSetChanged();
-        Log.println(Log.DEBUG, TAG, workouts.toString());
       }
 
       @Override

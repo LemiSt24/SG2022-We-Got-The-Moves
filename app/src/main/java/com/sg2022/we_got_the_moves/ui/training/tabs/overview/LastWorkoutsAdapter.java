@@ -47,7 +47,6 @@ public class LastWorkoutsAdapter
             finishedTraining -> {
               workoutIds = new ArrayList<>();
               workoutList = new ArrayList<>();
-              Log.println(Log.DEBUG, TAG, finishedTraining.toString());
               finishedWorkouts = finishedTraining;
 
               //getting the last 3 unique WorkoutIds by adding the ids into List

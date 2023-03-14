@@ -46,13 +46,11 @@ public class TrophiesFragment extends Fragment {
       @Override
       public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull User user) {
         if (user.trophies != null){
-          Log.println(Log.DEBUG, TAG, user.trophies.toString());
           achievements = user.trophies;}
         checkAchievements();
       }
       @Override public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {}
     });
-    Log.println(Log.DEBUG, TAG, "onCreate");
   }
 
   public View onCreateView(

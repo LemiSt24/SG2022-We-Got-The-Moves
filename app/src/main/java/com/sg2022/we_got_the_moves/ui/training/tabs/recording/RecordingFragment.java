@@ -142,7 +142,7 @@ public class RecordingFragment extends Fragment implements HBRecorderListener {
   @Override
   public void HBRecorderOnError(int errorCode, String reason) {
     Toast.makeText(this.context, "Error: " + errorCode, Toast.LENGTH_SHORT).show();
-    Log.d(TAG, reason);
+    Log.e(TAG, reason);
   }
 
   @Override

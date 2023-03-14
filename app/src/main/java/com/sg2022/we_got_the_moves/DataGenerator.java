@@ -232,7 +232,6 @@ public class DataGenerator {
   public static List<ExerciseState> getDummyExerciseStates(){
     List<ExerciseState> exerciseStates = new ArrayList<>();
     for (ExerciseState exerciseState: states) exerciseStates.add(exerciseState);
-    Log.println(Log.DEBUG, "TAG", exerciseStates.toString());
     return exerciseStates;
   }
 
