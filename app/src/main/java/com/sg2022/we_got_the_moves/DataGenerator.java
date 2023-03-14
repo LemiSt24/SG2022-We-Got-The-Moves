@@ -188,23 +188,23 @@ public class DataGenerator {
     new ExerciseState(
         0,
         7,
-        new ArrayList<>(Arrays.asList(1L, 6L, 3L, 7L)),
+        new ArrayList<>(Arrays.asList(1L, 6L, 3L, 7L, 13L)),
         "left_wrist,right_wrist",
         "left_elbow,right_elbow",
         "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.GREATER,
         150,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
+        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // bottom
     new ExerciseState(
         1,
         7,
-        new ArrayList<>(Arrays.asList(1L, 6L, 3L, 7L)),
+        new ArrayList<>(Arrays.asList(1L, 6L, 3L, 7L, 13L)),
         "left_wrist,right_wrist",
         "left_elbow,right_elbow",
         "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.LESS,
         90,
-        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
+        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // top
 
     // Romanian Deadlift
     new ExerciseState(
@@ -510,7 +510,7 @@ public class DataGenerator {
             "right_shoulder",
             "left_elbow",
             "right_elbow",
-            0.2,
+            0.3,
             "Keep your elbows close to your body.",
             Constraint.TYPE.DISTANCE,
             Constraint.INEQUALITY_TYPE.EQUAL,
@@ -594,6 +594,19 @@ public class DataGenerator {
             Constraint.INEQUALITY_TYPE.GREATER,
             Constraint.INSIGNIFICANT_DIMENSION.NONE,
             null));
+    // Ellenbogen nicht nach vorne bei BicepCurl (bicep_curl-global)
+    constraints.add(
+            new Constraint(
+                    "left_elbow,right_elbow",
+                    "left_shoulder,right_shoulder",
+                    "left_hip,right_hip",
+                    "left_shoulder,right_shoulder",
+                    45,
+                    "Keep your elbows close to your body.",
+                    Constraint.TYPE.ANGLE,
+                    Constraint.INEQUALITY_TYPE.GREATER,
+                    Constraint.INSIGNIFICANT_DIMENSION.X,
+                    0));
     return constraints;
   }
 }
