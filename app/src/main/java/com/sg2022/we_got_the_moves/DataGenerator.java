@@ -210,22 +210,22 @@ public class DataGenerator {
     new ExerciseState(
         0,
         8,
-        new ArrayList<>(Arrays.asList(1L, 2L, 3L, 7L, 10L, 11L, 12L)),
-    "left_ankle,right_ankle",
+        new ArrayList<>(Arrays.asList(1L, 7L, 10L, 11L, 12L)), //1L, 2L, 3L, 7L, 10L, 11L, 12L
     "left_knee,right_knee",
     "left_hip,right_hip",
+    "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.GREATER,
         160,
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     new ExerciseState(
         1,
         8,
-        new ArrayList<>(Arrays.asList(1L, 2L, 10L, 11L, 12L)),
-        "left_ankle,right_ankle",
+        new ArrayList<>(Arrays.asList(1L, 2L, 10L, 11L, 12L)), //1L, 2L, 10L, 11L, 12L
         "left_knee,right_knee",
         "left_hip,right_hip",
+        "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.LESS,
-        140,
+        135,
         ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
   };
 
@@ -444,7 +444,7 @@ public class DataGenerator {
             "right_shoulder",
             "left_ankle",
             "right_ankle",
-            0.3,
+            0.4,
             "Keep your feet at shoulder width.",
             Constraint.TYPE.DISTANCE,
             Constraint.INEQUALITY_TYPE.LESS,
@@ -457,10 +457,10 @@ public class DataGenerator {
             "left_heel,right_heel",
             "left_knee,right_knee",
             "left_heel,right_heel",
-            10,
+            25,
             "Keep knees right behind your toe tips.",
             Constraint.TYPE.ANGLE,
-            Constraint.INEQUALITY_TYPE.EQUAL,
+            Constraint.INEQUALITY_TYPE.GREATER,
             Constraint.INSIGNIFICANT_DIMENSION.Z,
             85));
     // Körper gerade (side_plank-global, mountain_climbers-top, push_up-global,
@@ -588,7 +588,7 @@ public class DataGenerator {
             "right_shoulder",
             "left_ankle",
             "right_ankle",
-            0.2,
+            0.3,
             "Keep your feet at shoulder width.",
             Constraint.TYPE.DISTANCE,
             Constraint.INEQUALITY_TYPE.GREATER,
