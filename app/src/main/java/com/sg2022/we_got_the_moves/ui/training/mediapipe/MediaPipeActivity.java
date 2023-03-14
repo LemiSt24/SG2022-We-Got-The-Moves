@@ -43,7 +43,6 @@ import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.hbisoft.hbrecorder.HBRecorder;
-import com.hbisoft.hbrecorder.HBRecorderListener;
 import com.sg2022.we_got_the_moves.NormalizedLandmark;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
@@ -64,6 +63,7 @@ import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 
-public class MediaPipeActivity extends AppCompatActivity implements HBRecorderListener {
+public class MediaPipeActivity extends AppCompatActivity {
 
   public static final String WORKOUT_TITLE = "WORKOUT_TITLE";
   private static final String BINARY_GRAPH_NAME = "pose_tracking_gpu.binarypb";
@@ -178,7 +178,6 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
     this.setupPreviewDisplay();
     this.setupOverlayView();
     this.setupProcessing();
-    this.hbRecorder = new HBRecorder(this, this);
     this.setupTextToSpeech("");
   }
 
@@ -220,49 +219,14 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
           addFinishedExercise(currentExercise, false);
           showEndScreenAndSave();
         });
-    /*    recoding_but.setOnClickListener(
-    v -> {
-      if (isRecording) {
-        try {
-          mediaRecorder.stop();
-        } catch (Exception e) {
-          Log.e(TAG, "Recording btn click-listener error", e);
-        }
-        //releaseRecorder();
-        recoding_but.setImageResource(R.drawable.ic_videocam_off_red_24dp);
-        Toast.makeText(this, "Recording stopped", Toast.LENGTH_SHORT).show();
-        isRecording = false;
-      } else if ( setupRecorder()
-      ) {
-        try {
-          mediaRecorder.start();
-        } catch (Exception e) {
-          isRecording = false;
-          Log.e(TAG, "Error when starting recording");
-          return;
-        }
-        recoding_but.setImageResource(R.drawable.ic_videocam_on_red_24dp);
-        Toast.makeText(this, "Started recording", Toast.LENGTH_SHORT).show();
-        isRecording = true;
-      } else {
-        releaseRecorder();
-        Toast.makeText(getApplicationContext(), "Couldn't do recording", Toast.LENGTH_SHORT)
-            .show();
-        recoding_but.setImageResource(R.drawable.ic_videocam_off_red_24dp);
-        isRecording = false;
-      }
-    });*/
     recoding_but.setOnClickListener(
-        new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-            if (hbRecorder.isBusyRecording()) {
-              hbRecorder.pauseScreenRecording();
-              hbRecorder.stopScreenRecording();
-            } else {
-              prepareHBRecorder();
-              startRecordingScreen();
-            }
+        v-> {
+          if (hbRecorder.isBusyRecording()) {
+            hbRecorder.pauseScreenRecording();
+            hbRecorder.stopScreenRecording();
+          } else {
+            prepareHBRecorder();
+            startRecordingScreen();
           }
         });
   }
@@ -950,34 +914,9 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
     }
   }
 
-  @Override
-  public void HBRecorderOnStart() {}
-
-  @Override
-  public void HBRecorderOnComplete() {}
-
-  @Override
-  public void HBRecorderOnError(int errorCode, String reason) {}
-
-  @Override
-  public void HBRecorderOnPause() {}
-
-  @Override
-  public void HBRecorderOnResume() {}
-
-  /*  private void releaseRecorder() {
-    if (mediaRecorder != null) {
-      mediaRecorder.reset();
-      mediaRecorder.release();
-      mediaRecorder = null;
-    }
-  }
-
   private boolean setupRecorder() {
-    CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
     mediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
     mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
-    mediaRecorder.setProfile(profile);
     mediaRecorder.setOutputFile(createVideoOutputFile());
     try {
       mediaRecorder.prepare();
@@ -991,6 +930,10 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
       return false;
     }
     return true;
-  }*/
+  }
+
+  private void releaseRecorder(){
+
+  }
 
 }
