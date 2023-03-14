@@ -57,8 +57,12 @@ public class PlaybackFragment extends Fragment {
                                             DiffUtil.calculateDiff(
                                                     new PlaybackFragment.VidDiffUtil(playbackItemAdapter.videoItems, list));
                                     list.sort(new PlaybackFragment.VideoItemComparator());
+
                                     playbackItemAdapter.videoItems.clear();
-                                    playbackItemAdapter.videoItems.addAll(list);
+                                    for (VideoItem v : list) {
+                                      if (v.filename.contains(".mp4")) playbackItemAdapter.videoItems.add(v);;
+                                    }
+                                    //playbackItemAdapter.videoItems.addAll(list);
                                     diff.dispatchUpdatesTo(playbackItemAdapter);
                                   });
                         }
