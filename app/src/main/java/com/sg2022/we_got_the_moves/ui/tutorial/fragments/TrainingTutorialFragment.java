@@ -50,7 +50,8 @@ public class TrainingTutorialFragment extends Fragment {
                 "You can select from the most recently completed workouts or " +
                 "from the entire list of all your workouts.");
         instructions.add("When you select a workout by clicking on it, a box with the training " +
-                 "schedule will appear. "+ "\n" + "To start the workout, click on \"Start\".");
+                "schedule will appear. There you can check if you want to record the workout. " +
+                "To start the workout, click on \"Start\".");
         instructions.add("The first time you train with the app, you need to give it permission " +
                 "to access your camera.");
         instructions.add("At the beginning and between each set a pause is displayed with " +
@@ -79,7 +80,9 @@ public class TrainingTutorialFragment extends Fragment {
         instructions.add("At the end of the workout the app will give you a summary of your " +
                 "performed exercises and the total time of your training." +
                 "\n" + "Click on \"Finish\" to end to workout.");
-        instructions.add("to be done");
+        instructions.add("Your recorded workouts are displayed in this list and are played " +
+                "when you click on an item. To update the list for new recordings, you need " +
+                "to switch between the views in the navbar.");
     }
 
     @SuppressLint("ClickableViewAccessibility")
