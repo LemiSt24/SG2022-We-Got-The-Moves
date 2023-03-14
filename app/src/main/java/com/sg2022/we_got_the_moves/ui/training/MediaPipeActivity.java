@@ -421,16 +421,22 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
             if (exercises.size() != 0) {
 
               if(!inStartPosition && !Pause){
+                  int counter = 0;
                 for (Constraint constraint :
                         currentConstraints.get((exerciseToExerciseStates.get(currentExercise)).get(lastState))) {
+                    Log.println(Log.DEBUG, "test", constraint.message);
                   if (!classifier.judge_constraint(constraint)) {
                     setExerciseX(constraint.message);
                     return;
                   }
-                  if (currentExercise.isCountable())
-                    countableStartTime = SystemClock.elapsedRealtime();
-                  stateStartTime = SystemClock.elapsedRealtime();
-                  inStartPosition = true;
+                  counter += 1;
+                }
+                if (counter == currentConstraints.get((exerciseToExerciseStates.
+                        get(currentExercise)).get(lastState)).size()){
+                    if (currentExercise.isCountable())
+                        countableStartTime = SystemClock.elapsedRealtime();
+                    stateStartTime = SystemClock.elapsedRealtime();
+                    inStartPosition = true;
                 }
               }
 
