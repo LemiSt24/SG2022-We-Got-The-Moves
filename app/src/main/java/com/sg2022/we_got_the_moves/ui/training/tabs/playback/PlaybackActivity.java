@@ -72,4 +72,9 @@ public class PlaybackActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
 }
