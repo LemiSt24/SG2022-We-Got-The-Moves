@@ -13,11 +13,10 @@
         android:layout_height="match_parent">
 
         <androidx.cardview.widget.CardView
-
             android:id="@+id/cardview_viditem"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:cardBackgroundColor="@color/sg_design_light_green"
+            app:cardBackgroundColor="@color/sg_design_green"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,10 +28,21 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/textview_info_viditem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
                 <com.player.autoplayer.AutoPlayer
                     android:id="@+id/autoplayer_viditem"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginTop="40dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

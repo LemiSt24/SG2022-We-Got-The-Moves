@@ -14,7 +14,6 @@ import com.sg2022.we_got_the_moves.databinding.FragmentTrainingBinding;
 import com.sg2022.we_got_the_moves.ui.CustomFragmentStateAdapter;
 import com.sg2022.we_got_the_moves.ui.training.tabs.overview.TrainingOverviewFragment;
 import com.sg2022.we_got_the_moves.ui.training.tabs.playback.PlaybackFragment;
-import com.sg2022.we_got_the_moves.ui.training.tabs.recording.RecordingFragment;
 
 import java.util.Arrays;
 import java.util.List;

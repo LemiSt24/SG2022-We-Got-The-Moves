@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -15,54 +16,54 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.google.android.exoplayer2.C;
 import com.player.autoplayer.AutoPlayerManager;
 import com.sg2022.we_got_the_moves.R;
 import com.sg2022.we_got_the_moves.databinding.FragmentTrainingPlaybackBinding;
 import com.sg2022.we_got_the_moves.io.VideoItem;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 public class PlaybackFragment extends Fragment {
   private static final String TAG = "PlaybackFragment";
   private final ActivityResultLauncher<String[]> permissionActivityLauncher;
-  private AutoPlayerManager autoPlayerManager;
   private FileViewModel model;
   private PlaybackItemAdapter playbackItemAdapter;
   private LiveData<List<VideoItem>> data;
 
-  private boolean isMute;
-
   public PlaybackFragment() {
-    this.isMute = false;
     this.permissionActivityLauncher =
-        this.registerForActivityResult(
-            new ActivityResultContracts.RequestMultiplePermissions(),
-            result -> {
-              result.entrySet().stream()
-                  .filter((Map.Entry<String, Boolean> e) -> !e.getValue())
-                  .forEach(
-                      (Map.Entry<String, Boolean> e) ->
-                          Log.i(TAG, "Required Permission :" + e.getKey() + " is missing"));
-              boolean permissionsGranted =
-                  result.entrySet().parallelStream().allMatch(Map.Entry::getValue);
-              if (permissionsGranted) {
-                if (this.data == null) {
-                  this.data = this.model.repository.getAllVideoItemsDefault();
-                  this.data.observe(
-                      this,
-                      list -> {
-                        DiffUtil.DiffResult diff =
-                            DiffUtil.calculateDiff(
-                                new VidDiffUtil(playbackItemAdapter.videoItems, list));
-                        playbackItemAdapter.videoItems.clear();
-                        playbackItemAdapter.videoItems.addAll(list);
-                        diff.dispatchUpdatesTo(playbackItemAdapter);
-                      });
-                }
-              }
-            });
+            this.registerForActivityResult(
+                    new ActivityResultContracts.RequestMultiplePermissions(),
+                    result -> {
+                      result.entrySet().stream()
+                              .filter((Map.Entry<String, Boolean> e) -> !e.getValue())
+                              .forEach(
+                                      (Map.Entry<String, Boolean> e) ->
+                                              Log.i(TAG, "Required Permission :" + e.getKey() + " is missing"));
+                      boolean permissionsGranted =
+                              result.entrySet().parallelStream().allMatch(Map.Entry::getValue);
+                      if (permissionsGranted) {
+                        if (this.data == null) {
+                          this.data = this.model.repository.getAllVideoItemsDefault();
+                          this.data.observe(
+                                  this,
+                                  list -> {
+                                    DiffUtil.DiffResult diff =
+                                            DiffUtil.calculateDiff(
+                                                    new PlaybackFragment.VidDiffUtil(playbackItemAdapter.videoItems, list));
+                                    list.sort(new PlaybackFragment.VideoItemComparator());
+                                    playbackItemAdapter.videoItems.clear();
+                                    playbackItemAdapter.videoItems.addAll(list);
+                                    diff.dispatchUpdatesTo(playbackItemAdapter);
+                                  });
+                        }
+                      }
+                    });
   }
 
   @Override
@@ -71,7 +72,7 @@ public class PlaybackFragment extends Fragment {
     FileViewModel.Factory factory =
         new FileViewModel.Factory(this.requireActivity().getApplication());
     this.model = new ViewModelProvider(this.requireActivity(), factory).get(FileViewModel.class);
-    this.autoPlayerManager = new AutoPlayerManager(this);
+
   }
 
   public View onCreateView(
@@ -80,30 +81,18 @@ public class PlaybackFragment extends Fragment {
         DataBindingUtil.inflate(inflater, R.layout.fragment_training_playback, container, false);
     LinearLayoutManager layoutManager = new LinearLayoutManager(this.requireContext());
     this.playbackItemAdapter =
-        new PlaybackItemAdapter(
-            this.requireContext(),
-            new ArrayList<>(),
-            position -> {
-              isMute = !isMute;
-              for (int i = 0; i < playbackItemAdapter.videoItems.size(); i++) {
-                playbackItemAdapter.videoItems.get(i).mute = isMute;
-                if (i != position) {
-                  playbackItemAdapter.notifyItemChanged(i);
-                }
-              }
-            });
+            new PlaybackItemAdapter(
+                    this.requireContext(),
+                    new ArrayList<>(),
+                    position -> {
+                      for (int i = 0; i < playbackItemAdapter.videoItems.size(); i++) {
+                        if (i != position) {
+                          playbackItemAdapter.notifyItemChanged(i);
+                        }
+                      }
+                    });
     binding.recyclerviewReplays.setLayoutManager(layoutManager);
     binding.recyclerviewReplays.setAdapter(playbackItemAdapter);
-    this.autoPlayerManager.setAutoPlayerId(R.id.autoplayer_viditem);
-    this.autoPlayerManager.setUseController(true);
-    this.autoPlayerManager.attachRecyclerView(binding.recyclerviewReplays);
-    this.autoPlayerManager.setup();
-    this.autoPlayerManager.setAutoPlayPlayer(true);
-    assert this.autoPlayerManager.getHelperForExoPlayer() != null;
-    this.autoPlayerManager
-        .getHelperForExoPlayer()
-        .getPlayer()
-        .setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
     this.permissionActivityLauncher.launch(this.model.repository.getPermissionsDefault());
     return binding.getRoot();
   }
@@ -156,6 +145,13 @@ public class PlaybackFragment extends Fragment {
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
       return true;
+    }
+  }
+
+  public static class VideoItemComparator implements Comparator<VideoItem> {
+    @Override
+    public int compare(VideoItem o1, VideoItem o2) {
+      return o1.filename.compareTo(o2.filename)*-1;
     }
   }
 }

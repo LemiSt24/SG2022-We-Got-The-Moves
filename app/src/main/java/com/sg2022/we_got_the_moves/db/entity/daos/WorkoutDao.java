@@ -41,6 +41,9 @@ public interface WorkoutDao {
   @Query("SELECT * FROM Workout WHERE Workout.id = :workoutId")
   LiveData<Workout> getWorkout(long workoutId);
 
+  @Query("SELECT * FROM Workout WHERE Workout.id = :workoutId")
+  Single<Workout> getWorkoutSingle(long workoutId);
+
   @Query("SELECT * FROM Workout")
   LiveData<List<Workout>> getAllWorkouts();
 

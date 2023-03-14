@@ -13,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.sg2022.we_got_the_moves.databinding.ActivityMainBinding;
 import com.sg2022.we_got_the_moves.ui.training.MediaPipeActivity;
+import com.sg2022.we_got_the_moves.ui.training.tabs.playback.PlaybackActivity;
 import com.sg2022.we_got_the_moves.ui.tutorial.TutorialActivity;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -69,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
   }
   public void openTutorialActivity() {
     Intent intent = new Intent(this, TutorialActivity.class);
+    startActivity(intent);
+  }
+
+  public void openReplayActivity(String filename) {
+    Intent intent = new Intent(this, PlaybackActivity.class);
+    intent.putExtra("FILENAME", filename);
     startActivity(intent);
   }
 }

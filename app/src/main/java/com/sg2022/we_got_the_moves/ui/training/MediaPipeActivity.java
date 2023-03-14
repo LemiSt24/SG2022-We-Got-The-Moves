@@ -56,6 +56,7 @@ import com.sg2022.we_got_the_moves.db.entity.Exercise;
 import com.sg2022.we_got_the_moves.db.entity.ExerciseState;
 import com.sg2022.we_got_the_moves.db.entity.FinishedExercise;
 import com.sg2022.we_got_the_moves.db.entity.FinishedWorkout;
+import com.sg2022.we_got_the_moves.db.entity.Workout;
 import com.sg2022.we_got_the_moves.db.entity.relation.WorkoutExerciseAndExercise;
 import com.sg2022.we_got_the_moves.repository.ConstraintRepository;
 import com.sg2022.we_got_the_moves.repository.FileRepository;
@@ -71,6 +72,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -192,6 +194,8 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
   private boolean inStartPosition = false;
 
   private WorkoutsRepository workoutsRepository;
+
+  private Workout currentWorkout;
 
   //recording variables
   private final String[] permissions = {
@@ -327,6 +331,20 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
     exercises = new ArrayList<>();
     exerciseIdToAmount = new HashMap<>();
     exerciseToExerciseStates = new HashMap<>();
+    workoutsRepository.getWorkoutSingle(workoutId, new SingleObserver<Workout>() {
+        @Override
+        public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+        }
+
+        @Override
+        public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull Workout workout) {
+            currentWorkout = workout;
+        }
+
+        @Override
+        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+        }
+    });
     workoutsRepository
         .getAllWorkoutExerciseAndExercise(workoutId)
         .observe(
@@ -1109,8 +1127,10 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
     }
 
     private void prepareRecording() {
-      Log.println(Log.DEBUG, "test", "preparerecording");
-        final String filename = String.valueOf(System.currentTimeMillis());
+        final String filename = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss")
+                .format(new Date()) +"."+ currentWorkout.name
+                        .replace(" ", "_");
+        Log.println(Log.DEBUG, "test", "filename: " + filename);
         final String directoryPath = this.fileRepository.getDirectoryPathDefault();
         final Uri uri =
                 Uri.fromFile(
@@ -1119,12 +1139,12 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
                                         + File.separator
                                         + filename
                                         + FilenameUtils.EXTENSION_SEPARATOR
-                                        + ".mp4"));
+                                        + "mp4"));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             this.hbRecorder.setOutputUri(uri);
         } else {
             this.hbRecorder.setOutputPath(directoryPath);
-            this.hbRecorder.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + ".mp4");
+            this.hbRecorder.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + "mp4");
         }
     }
 
