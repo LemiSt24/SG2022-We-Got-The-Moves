@@ -10,6 +10,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.MediaController;
@@ -41,7 +42,7 @@ public class PlaybackActivity extends AppCompatActivity {
         setContentView(R.layout.activity_playback);
 
         // Check if the permission has been granted
-        if (ContextCompat.checkSelfPermission(this,
+        if (Build.VERSION.SDK_INT <= 29 && ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // Request permission
             ActivityCompat.requestPermissions(this,
@@ -58,17 +59,17 @@ public class PlaybackActivity extends AppCompatActivity {
             file.setReadable(true);
             Uri filename = Uri.parse(directoryPath + File.separator + this.filename);
 
-            VideoView videoView = (VideoView)findViewById(R.id.videoView_playbackActivity);
-            MediaController mediaController= new MediaController(this);
+            VideoView videoView = (VideoView) findViewById(R.id.videoView_playbackActivity);
+            MediaController mediaController = new MediaController(this);
             videoView.setMediaController(mediaController);
             mediaController.setMediaPlayer(videoView);
             videoView.setVisibility(View.VISIBLE);
             videoView.setVideoURI(filename);
             videoView.requestFocus();
             videoView.start();
+
+
         }
-
-
     }
 
 }
