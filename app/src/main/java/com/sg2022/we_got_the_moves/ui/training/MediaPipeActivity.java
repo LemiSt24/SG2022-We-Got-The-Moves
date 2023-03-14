@@ -198,7 +198,7 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
   private Workout currentWorkout;
 
   //recording variables
-  private final String[] permissions = {
+  private String[] permissions = {
     Manifest.permission.RECORD_AUDIO,
     Manifest.permission.FOREGROUND_SERVICE,
     Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -218,6 +218,13 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    if(Build.VERSION.SDK_INT > 29){
+        permissions = new String[]{
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.FOREGROUND_SERVICE,
+        };
+    }
 
     weakMediapipeActivity = new WeakReference<>(MediaPipeActivity.this);
     timeLastCheck = SystemClock.elapsedRealtime();
@@ -544,14 +551,14 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
     if (PermissionHelper.cameraPermissionsGranted(this)) {
       startCamera();
     }
-    if (this.hbRecorder.isRecordingPaused()) this.hbRecorder.resumeScreenRecording();
+    if (this.hbRecorder != null && this.hbRecorder.isRecordingPaused()) this.hbRecorder.resumeScreenRecording();
   }
 
   @Override
   protected void onPause() {
     super.onPause();
     converter.close();
-      if (this.hbRecorder.isBusyRecording()) this.hbRecorder.pauseScreenRecording();
+      if (this.hbRecorder != null && this.hbRecorder.isBusyRecording()) this.hbRecorder.pauseScreenRecording();
 
     // Hide preview display until we re-open the camera again.
     previewDisplayView.setVisibility(View.GONE);
@@ -1167,6 +1174,6 @@ public class MediaPipeActivity extends AppCompatActivity implements HBRecorderLi
     @Override
     public void onStop() {
         super.onStop();
-        if (this.hbRecorder.isRecordingPaused()) this.hbRecorder.stopScreenRecording();
+        if (this.hbRecorder != null && this.hbRecorder.isRecordingPaused()) this.hbRecorder.stopScreenRecording();
     }
 }
