@@ -4,8 +4,10 @@ import static java.lang.Double.max;
 import static java.lang.Double.min;
 import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
+import static java.lang.Math.log;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.mediapipe.formats.proto.LandmarkProto;
 import com.sg2022.we_got_the_moves.db.entity.Constraint;
@@ -131,6 +133,8 @@ public class PoseClassifier {
       }
 
       angle = abs(angle);
+      Log.println(Log.DEBUG, "test", "constraint: " + constraint.message);
+      Log.println(Log.DEBUG, "test", "angle: " + angle);
 
       double compareAngle = (double) constraint.compareAngle;
 
@@ -187,11 +191,11 @@ public class PoseClassifier {
         normFrom2.z = 0;
         normTo2.z = 0;
       }
-
+      Log.println(Log.DEBUG, "test", "conatraint: " +constraint.message );
       double dist1 = normFrom1.getDistance(normTo1);
       double dist2 = normFrom2.getDistance(normTo2);
-     // Log.println(Log.DEBUG, "test3", "dist1 " + String.valueOf(dist1));
-     // Log.println(Log.DEBUG, "test3", "dist2 " + String.valueOf(dist2));
+     Log.println(Log.DEBUG, "test", "dist1 " + String.valueOf(dist1));
+     Log.println(Log.DEBUG, "test", "dist2 " + String.valueOf(dist2));
 
       if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
         if (dist1 < dist2 * (1 - constraint.maxDiff)) return false;
@@ -228,6 +232,8 @@ public class PoseClassifier {
               - calcAngleDegrees(start.y - mid.y, start.x - mid.x);
     }
     angle = abs(angle);
+    //Log.println(Log.DEBUG, "test", "stateid: " + exerciseState.id);
+    //Log.println(Log.DEBUG, "test", "angle: " + angle);
 
     if (exerciseState.comparator == ExerciseState.COMPARATOR.LESS) {
       if (angle < exerciseState.compareAngle) return true;

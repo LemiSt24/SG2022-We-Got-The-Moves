@@ -471,11 +471,11 @@ public class DataGenerator {
             "right_hip,left_hip",
             "right_ankle,left_ankle",
             "right_hip,left_hip",
-            10,
+            15,
             "Straighten your body.",
             Constraint.TYPE.ANGLE,
             Constraint.INEQUALITY_TYPE.EQUAL,
-            Constraint.INSIGNIFICANT_DIMENSION.Z,
+            Constraint.INSIGNIFICANT_DIMENSION.X,
             180));
     // Hände auf Schulterhöhe (push_up-top)
     constraints.add(
@@ -545,15 +545,15 @@ public class DataGenerator {
     // annähernd rechter Winkel im Oberarm (Plank)
     constraints.add(
         new Constraint(
+            "left_elbow,right_elbow",
             "left_shoulder,right_shoulder",
-            "left_elbow,right_elbow",
-            "left_wrist,right_wrist",
-            "left_elbow,right_elbow",
-            25,
+            "left_hip,right_hip",
+            "left_shoulder,right_shoulder",
+            30,
             "Keep your arms at approximately 90 degrees.",
             Constraint.TYPE.ANGLE,
             Constraint.INEQUALITY_TYPE.EQUAL,
-            Constraint.INSIGNIFICANT_DIMENSION.Z,
+            Constraint.INSIGNIFICANT_DIMENSION.X,
             90));
     // gerade Arme (Romanian Deadlift
     constraints.add(
