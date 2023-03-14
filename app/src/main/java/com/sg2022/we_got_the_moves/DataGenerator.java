@@ -110,9 +110,9 @@ public class DataGenerator {
         0,
         1,
         new ArrayList<>(Arrays.asList(1L, 7L, 12L)),
-        "left_ankle,right_ankle",
-        "left_knee,right_knee",
+        "left_shoulder,right_shoulder",
         "left_hip,right_hip",
+        "left_knee,right_knee",
         ExerciseState.COMPARATOR.GREATER,
         160,
         ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L),
@@ -121,9 +121,9 @@ public class DataGenerator {
         1,
         1,
         new ArrayList<>(Arrays.asList(1L, 2L, 7L, 12L)),
-        "left_ankle,right_ankle",
-        "left_knee,right_knee",
-        "left_hip,right_hip",
+            "left_shoulder,right_shoulder",
+            "left_hip,right_hip",
+            "left_knee,right_knee",
         ExerciseState.COMPARATOR.LESS,
         120,
         ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // bottom
@@ -142,8 +142,8 @@ public class DataGenerator {
         "left_elbow,right_elbow",
         "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.GREATER,
-        160,
-        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // top
+        150,
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
     new ExerciseState(
         1,
         4,
@@ -153,7 +153,7 @@ public class DataGenerator {
         "left_shoulder,right_shoulder",
         ExerciseState.COMPARATOR.LESS,
         100,
-        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // bottom
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     // Sit-Up
     new ExerciseState(
         0,
@@ -161,20 +161,20 @@ public class DataGenerator {
         new ArrayList<>(List.of(5L, 8L)),
         "left_shoulder,right_shoulder",
         "left_hip,right_hip",
-        "left_ankle,right_ankle",
-        ExerciseState.COMPARATOR.LESS,
-        190,
-        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // bottom
+        "left_knee,right_knee",
+        ExerciseState.COMPARATOR.GREATER,
+        120,
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // bottom
     new ExerciseState(
         1,
         5,
         new ArrayList<>(List.of(5L)),
         "left_shoulder,right_shoulder",
         "left_hip,right_hip",
-        "left_ankle,right_ankle",
-        ExerciseState.COMPARATOR.GREATER,
-        250,
-        ExerciseState.INSIGNIFICANT_DIMENSION.X, 500L), // top
+        "left_knee,right_knee",
+        ExerciseState.COMPARATOR.LESS,
+        80,
+        ExerciseState.INSIGNIFICANT_DIMENSION.Z, 500L), // top
     // Plank
     new ExerciseState(
             0,
@@ -188,7 +188,7 @@ public class DataGenerator {
     new ExerciseState(
         0,
         7,
-        new ArrayList<>(Arrays.asList(1L, 6L, 3L, 7L, 13L)),
+        new ArrayList<>(Arrays.asList(1L, 6L, 7L, 13L)),
         "left_wrist,right_wrist",
         "left_elbow,right_elbow",
         "left_shoulder,right_shoulder",
@@ -198,7 +198,7 @@ public class DataGenerator {
     new ExerciseState(
         1,
         7,
-        new ArrayList<>(Arrays.asList(1L, 6L, 3L, 7L, 13L)),
+        new ArrayList<>(Arrays.asList(1L, 6L, 7L, 13L)),
         "left_wrist,right_wrist",
         "left_elbow,right_elbow",
         "left_shoulder,right_shoulder",
@@ -444,7 +444,7 @@ public class DataGenerator {
             "right_shoulder",
             "left_ankle",
             "right_ankle",
-            0.4,
+            0.7,
             "Keep your feet at shoulder width.",
             Constraint.TYPE.DISTANCE,
             Constraint.INEQUALITY_TYPE.LESS,
@@ -457,12 +457,12 @@ public class DataGenerator {
             "left_heel,right_heel",
             "left_knee,right_knee",
             "left_heel,right_heel",
-            25,
+            35,
             "Keep knees right behind your toe tips.",
             Constraint.TYPE.ANGLE,
             Constraint.INEQUALITY_TYPE.GREATER,
             Constraint.INSIGNIFICANT_DIMENSION.X,
-            85));
+            90));
     // Körper gerade (side_plank-global, mountain_climbers-top, push_up-global,
     // plank-global)
     constraints.add(
@@ -471,7 +471,7 @@ public class DataGenerator {
             "right_hip,left_hip",
             "right_ankle,left_ankle",
             "right_hip,left_hip",
-            15,
+            20,
             "Straighten your body.",
             Constraint.TYPE.ANGLE,
             Constraint.INEQUALITY_TYPE.EQUAL,
@@ -553,7 +553,7 @@ public class DataGenerator {
             "Keep your arms at approximately 90 degrees.",
             Constraint.TYPE.ANGLE,
             Constraint.INEQUALITY_TYPE.EQUAL,
-            Constraint.INSIGNIFICANT_DIMENSION.X,
+            Constraint.INSIGNIFICANT_DIMENSION.Z,
             90));
     // gerade Arme (Romanian Deadlift
     constraints.add(

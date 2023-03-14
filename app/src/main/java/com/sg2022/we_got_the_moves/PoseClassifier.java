@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -133,6 +134,7 @@ public class PoseClassifier {
       }
 
       angle = abs(angle);
+      if (angle > 180) angle = 360 - angle;
       Log.println(Log.DEBUG, "test", "constraint: " + constraint.message);
       Log.println(Log.DEBUG, "test", "angle: " + angle);
 
@@ -150,21 +152,64 @@ public class PoseClassifier {
       return abs(normFrom1.y - normTo1.y) > (abs(normFrom1.x - normTo1.x) + abs(normFrom1.z - normTo1.z)) / 2.0;
     } else if (constraint.type == Constraint.TYPE.FLOOR_DISTANCE){
 
-      double smallest_y = Double.POSITIVE_INFINITY;
+      double smallest_y = Double.NEGATIVE_INFINITY;
+      List<String> landmark_names =
+              Arrays.asList(
+                      "nose",
+                      "left_eye_inner",
+                      "left_eye",
+                      "left_eye_outer",
+                      "right_eye_inner",
+                      "right_eye",
+                      "right_eye_outer",
+                      "left_ear",
+                      "right_ear",
+                      "mouth_left",
+                      "mouth_right",
+                      "left_shoulder",
+                      "right_shoulder",
+                      "left_elbow",
+                      "right_elbow",
+                      "left_wrist",
+                      "right_wrist",
+                      "left_pinky_1",
+                      "right_pinky_1",
+                      "left_index_1",
+                      "right_index_1",
+                      "left_thumb_2",
+                      "right_thumb_2",
+                      "left_hip",
+                      "right_hip",
+                      "left_knee",
+                      "right_knee",
+                      "left_ankle",
+                      "right_ankle",
+                      "left_heel",
+                      "right_heel",
+                      "left_foot_index",
+                      "right_foot_index");
+
 
       // niedrigsten Punkt in der aktuellen Pose finden
+      String y_name="";
       NormalizedLandmark[] landmarks =
               classification_history.get(classification_history.size() - 1).landmarks;
       for(int i = 0; i < landmarks.length; i++)
       {
-        if(landmarks[i].y < smallest_y)
+        if(landmarks[i].y > smallest_y)
         {
           smallest_y = landmarks[i].y;
+          y_name = landmark_names.get(i);
         }
       }
+
       // Vergleiche angegebenen Punkt mit dem kleinsten Y-Wert
-      double dist = normFrom1.y - smallest_y;
-      double compareAngle = (double) constraint.compareAngle;
+      double dist = smallest_y - normFrom1.y;
+      dist = Math.abs(dist);
+      Log.println(Log.DEBUG, "test", "normFrom1: " + normFrom1.y);
+      Log.println(Log.DEBUG, "test", "smallesYName: " + y_name);
+      Log.println(Log.DEBUG, "test", "smallesY: " + smallest_y);
+      Log.println(Log.DEBUG, "test", "dist: " + dist);
 
       if(constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
         return dist <= constraint.maxDiff;
@@ -190,20 +235,19 @@ public class PoseClassifier {
         normFrom2.z = 0;
         normTo2.z = 0;
       }
-      Log.println(Log.DEBUG, "test", "conatraint: " +constraint.message );
+      Log.println(Log.DEBUG, "test", "constraint: " + constraint.message );
       double dist1 = normFrom1.getDistance(normTo1);
       double dist2 = normFrom2.getDistance(normTo2);
      Log.println(Log.DEBUG, "test", "dist1 " + String.valueOf(dist1));
      Log.println(Log.DEBUG, "test", "dist2 " + String.valueOf(dist2));
 
       if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.LESS) {
-        if (dist1 < dist2 * (1 - constraint.maxDiff)) return false;
+        if (dist2 > dist1 * (1 + constraint.maxDiff)) return false;
       } else if (constraint.inequalityType == Constraint.INEQUALITY_TYPE.GREATER) {
-        if (dist1 > dist2 * (1 + constraint.maxDiff)) return false;
+        if (dist2 < dist1 * (1 - constraint.maxDiff)) return false;
       } else {
-        if (dist1 < dist2 * (1 - constraint.maxDiff) || dist1 > dist2 * (1 + constraint.maxDiff))
+        if (dist2 > dist1 * (1 + constraint.maxDiff) || dist2 < dist1 * (1 - constraint.maxDiff))
           return false;
-        // if (rel < 1.0 - constraint.maxDiff || rel > 1.0 + constraint.maxDiff) return false;
       }
     }
     return true;
@@ -231,8 +275,9 @@ public class PoseClassifier {
               - calcAngleDegrees(start.y - mid.y, start.x - mid.x);
     }
     angle = abs(angle);
-    //Log.println(Log.DEBUG, "test", "stateid: " + exerciseState.id);
-    //Log.println(Log.DEBUG, "test", "angle: " + angle);
+    if (angle > 180) angle = 360 - angle;
+    Log.println(Log.DEBUG, "test", "stateid: " + exerciseState.id);
+    Log.println(Log.DEBUG, "test", "angle: " + angle);
 
     if (exerciseState.comparator == ExerciseState.COMPARATOR.LESS) {
       if (angle < exerciseState.compareAngle) return true;
