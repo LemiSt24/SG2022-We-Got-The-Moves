@@ -109,12 +109,12 @@ public abstract class AppDatabase extends RoomDatabase {
                               .UserDao()
                               .insert(
                                   new User(
-                                      "Simon Westermann",
-                                      (float) 1.77,
+                                      "John Smith",
+                                      (float) 1.8,
                                       50,
                                       User.SEX.MALE,
-                                      22,
-                                      500,
+                                      20,
+                                      100,
                                       10,
                                       true,
                                       true,
