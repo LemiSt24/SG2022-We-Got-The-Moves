@@ -2,13 +2,10 @@ package com.sg2022.we_got_the_moves.ui.training.mediapipe;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.SurfaceTexture;
+import android.media.MediaCodec;
 import android.media.MediaRecorder;
-import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,11 +26,13 @@ import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.databinding.DataBindingUtil;
 import com.google.mediapipe.components.CameraHelper;
+import com.google.mediapipe.components.CameraXPreviewHelper;
 import com.google.mediapipe.components.ExternalTextureConverter;
 import com.google.mediapipe.components.FrameProcessor;
 import com.google.mediapipe.components.PermissionHelper;
@@ -42,7 +41,6 @@ import com.google.mediapipe.framework.AndroidAssetUtil;
 import com.google.mediapipe.framework.PacketGetter;
 import com.google.mediapipe.glutil.EglManager;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.hbisoft.hbrecorder.HBRecorder;
 import com.sg2022.we_got_the_moves.NormalizedLandmark;
 import com.sg2022.we_got_the_moves.PoseClassifier;
 import com.sg2022.we_got_the_moves.R;
@@ -63,7 +61,6 @@ import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import java.io.File;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -83,6 +80,8 @@ public class MediaPipeActivity extends AppCompatActivity {
   private static final String INPUT_VIDEO_STREAM_NAME = "input_video";
   private static final String OUTPUT_VIDEO_STREAM_NAME = "output_video";
   private static final String OUTPUT_LANDMARKS_STREAM_NAME = "pose_world_landmarks";
+
+  private static final Size HD_RESOLUTION = new Size(1080, 1920);
   // Flips the camera-preview frames vertically before sending them into FrameProcessor to be
   // processed in a MediaPipe graph, and flips the processed frames back when they are displayed.
   // This is needed because OpenGL represents images assuming the image origin is at the bottom-left
@@ -112,7 +111,7 @@ public class MediaPipeActivity extends AppCompatActivity {
   private List<Exercise> exercises;
   private long timeCounter;
   private boolean timeStopped;
-  private CustomCameraHelper cameraHelper;
+  private CameraXPreviewHelper cameraHelper;
   private int setPointer;
   private int exercisePointer;
   private Exercise currentExercise;
@@ -135,11 +134,9 @@ public class MediaPipeActivity extends AppCompatActivity {
   private ConstraintRepository constraintRepository;
   private String workoutTitle;
   private MediaRecorder mediaRecorder;
-
-  private MediaRecorder mMediaRecorder;
-  private HBRecorder hbRecorder;
-  private Intent permissionIntent;
-  private MediaProjectionManager mediaProjectionManager;
+  private FrameProcessor processor2;
+  private Surface persistentSurface;
+  private boolean isRecording;
 
   public MediaPipeActivity() {
     this.exercises = new ArrayList<>();
@@ -160,6 +157,7 @@ public class MediaPipeActivity extends AppCompatActivity {
     this.reps = 0;
     this.timeCounter = 0;
     this.timeStopped = false;
+    this.isRecording = false;
   }
 
   @Override
@@ -175,9 +173,8 @@ public class MediaPipeActivity extends AppCompatActivity {
     this.classifier = new PoseClassifier(getApplicationContext(), 20, 10, "dataset.csv");
     this.loadWorkoutData();
     this.setContentView(R.layout.activity_mediapipe);
-    this.setupPreviewDisplay();
-    this.setupOverlayView();
     this.setupProcessing();
+    this.setupOverlayView();
     this.setupTextToSpeech("");
   }
 
@@ -188,8 +185,6 @@ public class MediaPipeActivity extends AppCompatActivity {
     Button skip_but = findViewById(R.id.mediapipe_skip_exercise_button);
     Button finish_but = findViewById(R.id.mediapipe_finish_button);
     ImageButton recoding_but = findViewById(R.id.mediapipe_recording_button);
-    // recoding_but.setVisibility(cameraFacing == CameraHelper.CameraFacing.FRONT? View.GONE :
-    // View.VISIBLE);
     stop_but.setOnClickListener(v -> showPauseCard());
     continue_but.setOnClickListener(
         v -> {
@@ -220,13 +215,20 @@ public class MediaPipeActivity extends AppCompatActivity {
           showEndScreenAndSave();
         });
     recoding_but.setOnClickListener(
-        v-> {
-          if (hbRecorder.isBusyRecording()) {
-            hbRecorder.pauseScreenRecording();
-            hbRecorder.stopScreenRecording();
-          } else {
-            prepareHBRecorder();
-            startRecordingScreen();
+        new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            if (!isRecording) {
+              mediaRecorder.start();
+              Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_SHORT)
+                  .show();
+              recoding_but.setImageResource(R.drawable.ic_videocam_on_red_24dp);
+              isRecording = true;
+            } else {
+              mediaRecorder.stop();
+              recoding_but.setImageResource(R.drawable.ic_videocam_off_red_24dp);
+              isRecording = false;
+            }
           }
         });
   }
@@ -284,7 +286,15 @@ public class MediaPipeActivity extends AppCompatActivity {
             BINARY_GRAPH_NAME,
             INPUT_VIDEO_STREAM_NAME,
             OUTPUT_VIDEO_STREAM_NAME);
+    this.processor2 =
+        new FrameProcessor(
+            this,
+            eglManager.getNativeContext(),
+            BINARY_GRAPH_NAME,
+            INPUT_VIDEO_STREAM_NAME,
+            OUTPUT_VIDEO_STREAM_NAME);
     this.processor.getVideoSurfaceOutput().setFlipY(FLIP_FRAMES_VERTICALLY);
+    this.processor2.getVideoSurfaceOutput().setFlipY(FLIP_FRAMES_VERTICALLY);
     this.processor.addPacketCallback(
         OUTPUT_LANDMARKS_STREAM_NAME,
         (packet) -> {
@@ -378,6 +388,7 @@ public class MediaPipeActivity extends AppCompatActivity {
     this.converter = new ExternalTextureConverter(eglManager.getContext(), 2);
     this.converter.setFlipY(FLIP_FRAMES_VERTICALLY);
     this.converter.addConsumer(this.processor);
+    this.converter.addConsumer(this.processor2);
   }
 
   private void getBundleData() {
@@ -400,14 +411,13 @@ public class MediaPipeActivity extends AppCompatActivity {
   protected void onResume() {
     super.onResume();
     this.startCamera();
+    this.setupRecorder();
   }
 
   @Override
   protected void onPause() {
     super.onPause();
-    // this.releaseRecorder();
-    this.pauseRecording();
-    this.converter.close();
+    this.stopRecorder();
     surfaceView.setVisibility(View.GONE);
   }
 
@@ -420,7 +430,9 @@ public class MediaPipeActivity extends AppCompatActivity {
   protected void onDestroy() {
     super.onDestroy();
     this.converter.close();
-    this.cameraHelper.closeCamera();
+    surfaceTexture.release();
+    mediaRecorder.release();
+    persistentSurface.release();
   }
 
   private File createVideoOutputFile() {
@@ -444,27 +456,19 @@ public class MediaPipeActivity extends AppCompatActivity {
     PermissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == SCREEN_RECORD_REQUEST_CODE) {
-      if (resultCode == RESULT_OK) {
-        hbRecorder.startScreenRecording(data, resultCode);
-      }
-    }
-  }
-
   private void startCamera() {
-    this.cameraHelper = new CustomCameraHelper(this, surfaceTexture);
+    this.setupPreviewDisplay();
+    this.cameraHelper = new CameraXPreviewHelper();
     this.cameraHelper.setOnCameraStartedListener(
-        surfaceTexture -> {
-          this.surfaceTexture = surfaceTexture;
+        sft -> {
+          this.surfaceTexture = sft;
           this.surfaceView.setVisibility(View.VISIBLE);
         });
-    cameraHelper.startCamera(this, this.cameraFacing, null);
+    cameraHelper.startCamera(this, this.cameraFacing, null, HD_RESOLUTION);
   }
 
   private void setupPreviewDisplay() {
+    this.persistentSurface = MediaCodec.createPersistentInputSurface();
     this.surfaceView = new SurfaceView(this);
     this.surfaceView.setVisibility(View.GONE);
     ViewGroup viewGroup = findViewById(R.id.preview_display_layout);
@@ -477,6 +481,7 @@ public class MediaPipeActivity extends AppCompatActivity {
               public void surfaceCreated(SurfaceHolder holder) {
                 Surface sf = holder.getSurface();
                 processor.getVideoSurfaceOutput().setSurface(sf);
+                processor2.getVideoSurfaceOutput().setSurface(persistentSurface);
               }
 
               @Override
@@ -496,6 +501,7 @@ public class MediaPipeActivity extends AppCompatActivity {
               @Override
               public void surfaceDestroyed(SurfaceHolder holder) {
                 processor.getVideoSurfaceOutput().setSurface(null);
+                processor2.getVideoSurfaceOutput().setSurface(null);
               }
             });
   }
@@ -856,84 +862,35 @@ public class MediaPipeActivity extends AppCompatActivity {
             });
   }
 
-  private void prepareHBRecorder() {
-    File f = createVideoOutputFile();
-    String filename = FilenameUtils.getName(f.getPath());
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      this.hbRecorder.setOutputUri(Uri.fromFile(createVideoOutputFile()));
-    } else {
-      String path = FilenameUtils.getPath(f.getPath());
-      this.hbRecorder.setOutputPath(path);
-    }
-
-    this.hbRecorder.setFileName(filename);
-
-    /*    this.hbRecorder.startScreenRecording(permissionIntent, Activity.RESULT_OK);
-    this.hbRecorder.pauseScreenRecording();
-    this.hbRecorder.resumeScreenRecording();
-    this.hbRecorder.stopScreenRecording();
-    this.hbRecorder.isBusyRecording();*/
-
-    /*      this.hbRecorder.setNotificationSmallIcon(int);
-    this.hbRecorder.setNotificationSmallIcon(byte[]);
-    this.hbRecorder.setNotificationSmallIconVector(vector);
-    this.hbRecorder.setNotificationTitle(String);
-    this.hbRecorder.setNotificationDescription(String);
-    this.hbRecorder.setNotificationButtonText(String);*/
-    int rotation = getWindowManager().getDefaultDisplay().getRotation();
-    int angle = 0;
-    switch (rotation) {
-      case Surface.ROTATION_90:
-        angle = -90;
-        break;
-      case Surface.ROTATION_180:
-        angle = 180;
-        break;
-      case Surface.ROTATION_270:
-        angle = 90;
-        break;
-      default:
-        angle = 0;
-        break;
-    }
-    this.hbRecorder.setOrientationHint(angle);
-  }
-
-  private void startRecordingScreen() {
-    mediaProjectionManager =
-        (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-    permissionIntent =
-        mediaProjectionManager != null ? mediaProjectionManager.createScreenCaptureIntent() : null;
-    startActivityForResult(permissionIntent, SCREEN_RECORD_REQUEST_CODE);
-  }
-
-  private void pauseRecording() {
-    if (this.hbRecorder.isBusyRecording()) {
-      this.hbRecorder.pauseScreenRecording();
-      this.hbRecorder.stopScreenRecording();
-    }
-  }
-
-  private boolean setupRecorder() {
-    mediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
-    mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
-    mediaRecorder.setOutputFile(createVideoOutputFile());
+  private void setupRecorder() {
     try {
+      mediaRecorder.setInputSurface(persistentSurface);
+      mediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+      mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
+      mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+      mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+      mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
+      mediaRecorder.setVideoSize(HD_RESOLUTION.getWidth(), HD_RESOLUTION.getWidth());
+      mediaRecorder.setOutputFile(createVideoOutputFile());
+
+      mediaRecorder.setOnErrorListener((mr,what,extra)-> {
+        Log.d(TAG, "MediaRecorder: what: "+what+ " extra: "+extra);
+        mediaRecorder.reset();
+        isRecording=false;
+  });
       mediaRecorder.prepare();
-    } catch (IllegalStateException e) {
+    } catch (Exception e) {
       Log.d(TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
-      releaseRecorder();
-      return false;
-    } catch (IOException e) {
-      Log.d(TAG, "IOException preparing MediaRecorder: " + e.getMessage());
-      releaseRecorder();
-      return false;
+      mediaRecorder.reset();
+      isRecording=false;
     }
-    return true;
   }
 
-  private void releaseRecorder(){
-
+  private void stopRecorder() {
+    if (isRecording) {
+      mediaRecorder.stop();
+    }
+    mediaRecorder.reset();
+    isRecording = false;
   }
-
 }
