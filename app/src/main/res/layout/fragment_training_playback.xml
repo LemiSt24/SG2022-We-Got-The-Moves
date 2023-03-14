@@ -12,14 +12,42 @@
         android:layout_height="match_parent"
         tools:ignore="MissingDefaultResource">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_replays"
+        <ScrollView
+            android:id="@+id/scrollview_training_replays"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/item_viditem" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_layout_content_training_replays"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:context="com.sg2022.we_got_the_moves.ui.training.tabs.playback.PlaybackActivity">
+
+                    <TextView
+                        android:id="@+id/textview_recorded_trainings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/recorded_trainings"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerview_replays"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textview_recorded_trainings"
+                        tools:listitem="@layout/item_videoitem" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
